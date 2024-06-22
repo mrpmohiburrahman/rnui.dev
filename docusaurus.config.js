@@ -5,7 +5,7 @@ module.exports = {
   tagline:
     "Awesome React Native components, news, tools, and learning material! 🚀",
   url: "https://mrpmohiburrahman.github.io",
-  baseUrl: "/awesome-react-native/",
+  baseUrl: "/awesome-react-native-ui/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   organizationName: "gorhom",
@@ -27,7 +27,7 @@ module.exports = {
         // { to: "blog", label: "Blog", position: "left" },
         // { to: "sponsors", label: "Sponsors", position: "right" },
         // {
-        //   href: "https://github.com/mrpmohiburrahman/awesome-react-native",
+        //   href: "https://github.com/mrpmohiburrahman/awesome-react-native-ui",
         //   label: "GitHub",
         //   position: "right",
         // },
