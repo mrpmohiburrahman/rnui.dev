@@ -27,11 +27,11 @@ A performant interactive bottom sheet with fully configurable options �
 
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import { Video } from "@site/components/video";
+import loaders from "@site/data/loaders.json"
 
-<Video
-	title="React Native Bottom Sheet"
-	url={useBaseUrl("video/morphingCircle.mp4")}
-/>
+import Gallery from '@site/components/gallery/Gallery';
+
+<Gallery items={loaders} />
 
 ## Features
 
