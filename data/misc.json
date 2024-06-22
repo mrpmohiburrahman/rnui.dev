@@ -14,5 +14,37 @@
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
     "twitterId": "wa2goose",
     "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Expo Pulse",
+    "demo": "demo/misc/expo_pulse_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ExpoPulse",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Morphing Circle",
+    "demo": "demo/misc/morphing_circle_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/MorphingCircle",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Vital Sign Monitor",
+    "demo": "demo/misc/vital_sign_monitor_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/VitalSignMonitor",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Confetti",
+    "demo": "demo/misc/confetti_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
   }
 ]
