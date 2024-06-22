@@ -1,21 +1,20 @@
 const { themes } = require("prism-react-renderer");
 
 module.exports = {
-  title: "React Native Bottom Sheet",
-  tagline:
-    "Awesome React Native components, news, tools, and learning material! 🚀",
+  title: "Awesome React Native UI",
+  tagline: "Awesome React Native UI components made by community! 🚀",
   url: "https://mrpmohiburrahman.github.io",
   baseUrl: "/awesome-react-native-ui/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
-  organizationName: "gorhom",
+  organizationName: "mrpmohiburrahman",
   projectName: "react-native-bottom-sheet",
   favicon: "img/favicon.ico",
   onBrokenLinks: "warn",
   themeConfig: {
     image: "img/icon.png",
     navbar: {
-      title: "Awesome React Native",
+      title: "Awesome React Native UI",
       hideOnScroll: false,
       items: [
         // {
