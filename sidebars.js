@@ -1,3 +1,3 @@
 module.exports = {
-  packages: ["getting-started", "loaders", "charts"],
+  packages: ["getting-started", "loaders", "charts", "miscellaneous"],
 };

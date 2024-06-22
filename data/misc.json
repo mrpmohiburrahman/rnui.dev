@@ -1,0 +1,18 @@
+[
+  {
+    "caption": "Bending Circle",
+    "demo": "demo/misc/bending_circle_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Chasing Bubble",
+    "demo": "demo/misc/chasing_bubble_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  }
+]
