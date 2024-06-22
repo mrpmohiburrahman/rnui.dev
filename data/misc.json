@@ -46,5 +46,61 @@
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
     "twitterId": "wa2goose",
     "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Gran Turismo Countdown",
+    "demo": "demo/misc/gran_turismo_countdown_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/GranTurismo",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Metaball Shader",
+    "demo": "demo/misc/metaball_shader_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/MetaballShader",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Random Circle Shader",
+    "demo": "demo/misc/random_circle_shader_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/RandomCircles",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Focus Animation",
+    "demo": "demo/misc/focus_animation_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Gradient Clock",
+    "demo": "demo/misc/gradient_clock_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Donut Chart",
+    "demo": "demo/misc/donut_chart_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/DonutChart",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
+  },
+  {
+    "caption": "Arc Slider",
+    "demo": "demo/misc/arc_slider_david_friyia.mp4",
+    "Author": "David Friyia",
+    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ArcSlider",
+    "twitterId": "wa2goose",
+    "linkedInId": "thefriyia"
   }
 ]
