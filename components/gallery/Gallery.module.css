@@ -42,6 +42,7 @@
   flex-direction: column;
   height: 350px;
   transition: background 0.3s ease;
+  /* Removed cursor: pointer; */
 }
 
 .videoContainer {
@@ -51,6 +52,8 @@
   padding-top: 56.25%;
   /* 16:9 Aspect Ratio */
   overflow: hidden;
+  cursor: pointer;
+  /* Added cursor: pointer; */
 }
 
 .cardContent {
@@ -76,6 +79,8 @@
 .icon {
   font-size: 1.2rem;
   color: var(--icon-color);
+  cursor: pointer;
+  /* Added cursor: pointer; */
 }
 
 .source {
@@ -90,8 +95,53 @@
   border-radius: 4px;
   font-size: 0.9rem;
   transition: background 0.3s ease;
+  cursor: pointer;
+  /* Added cursor: pointer; */
 }
 
 .sourceButton:hover {
   background: darken(var(--button-background), 10%);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100vh;
+  width: auto;
+  max-width: 90%;
+  background: #000;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+.modalContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.fullscreenVideo {
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
 }
