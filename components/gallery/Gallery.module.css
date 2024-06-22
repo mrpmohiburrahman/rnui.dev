@@ -1,5 +1,31 @@
 /* src/components/gallery/Gallery.module.css */
 
+:root {
+  --card-background-light: #f0f0f0;
+  --card-background-dark: #2d2d2d;
+  --text-color-light: #333;
+  --text-color-dark: #ddd;
+  --icon-color-light: #555;
+  --icon-color-dark: #aaa;
+  --button-background-light: #007acc;
+  --button-background-dark: #005fa3;
+  --button-text-color: #fff;
+}
+
+[data-theme='light'] {
+  --card-background: var(--card-background-light);
+  --text-color: var(--text-color-light);
+  --icon-color: var(--icon-color-light);
+  --button-background: var(--button-background-light);
+}
+
+[data-theme='dark'] {
+  --card-background: var(--card-background-dark);
+  --text-color: var(--text-color-dark);
+  --icon-color: var(--icon-color-dark);
+  --button-background: var(--button-background-dark);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -8,13 +34,14 @@
 }
 
 .card {
-  background: #fff;
+  background: var(--card-background);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   height: 350px;
+  transition: background 0.3s ease;
 }
 
 .videoContainer {
@@ -37,7 +64,7 @@
 .author {
   margin: 0;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-color);
 }
 
 .icons {
@@ -48,7 +75,7 @@
 
 .icon {
   font-size: 1.2rem;
-  color: #555;
+  color: var(--icon-color);
 }
 
 .source {
@@ -56,14 +83,15 @@
 }
 
 .sourceButton {
-  background: #007acc;
-  color: #fff;
+  background: var(--button-background);
+  color: var(--button-text-color);
   padding: 6px 12px;
   text-decoration: none;
   border-radius: 4px;
   font-size: 0.9rem;
+  transition: background 0.3s ease;
 }
 
 .sourceButton:hover {
-  background: #005fa3;
+  background: darken(var(--button-background), 10%);
 }
