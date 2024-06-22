@@ -1,0 +1,52 @@
+name: documentation
+
+on:
+  pull_request:
+    branches:
+      - mrp/buildWebSite
+  push:
+    branches:
+      - mrp/buildWebSite
+
+jobs:
+  checks:
+    name: Run Build Check
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          standalone: true
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile, --strict-peer-dependencies]
+
+      - name: Build website
+        run: pnpm build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          standalone: true
+          run_install: |
+            - recursive: true
+              args: [ --strict-peer-dependencies]
+
+      - name: Build website
+        run: pnpm build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          user_name: mrpmohiburrahman
+          user_email: 35300157+mrpmohiburrahman@users.noreply.github.com

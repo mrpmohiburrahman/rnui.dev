@@ -1,0 +1,45 @@
+---
+id: media
+title: Media
+description: Media For React Native
+---
+
+- [react-native-camera ★6227](https://github.com/lwansbrough/react-native-camera) - Camera component
+- [react-native-video ★3470](https://github.com/brentvatne/react-native-video) - A Video component for react-native
+- [react-native-sound ★1556](https://github.com/zmxv/react-native-sound) - React Native module for playing sound clips
+- [react-native-audio ★798](https://github.com/jsierles/react-native-audio) - Record and play back audio in your iOS or Android React Native apps. (no longer maintained)
+- [react-native-audio-toolkit ★764](https://github.com/react-native-community/react-native-audio-toolkit) - Audio playback and recording for react-native. In addition to basic functionality, many useful features are implemented such as seeking, looping and streaming audio files over the network.
+- [react-native-camera-kit ★701](https://github.com/wix/react-native-camera-kit) - Advanced native camera and gallery components and device photos API.
+- [react-native-audio-streaming ★679](https://github.com/tlenclos/react-native-audio-streaming) - iOS & Android module to play an audio stream, with background support and media controls :speaker:
+- [react-native-video-processing ★712](https://github.com/shahen94/react-native-video-processing) - Native Video editing/trimming/filtering library for React-Native
+- [react-native-track-player ★441](https://github.com/react-native-kit/react-native-track-player) - A fully fledged audio module created for music apps. Provides audio playback, external media controls, chromecast support and background mode for Android, iOS and Windows.
+- [react-native-music-control](https://github.com/tanguyantoine/react-native-music-control/) - React Native module to display Now playing Info on lockscreen and handle control events
+- [react-native-camera-roll-picker ★312](https://github.com/jeanpan/react-native-camera-roll-picker) - A React Native component providing images selection from camera roll
+- [react-native-incall-manager ★272](https://github.com/zxcpoiu/react-native-incall-manager) - Handling media-routes/sensors/events during a audio/video chat like webrtc
+- [react-native-speech ★246](https://github.com/naoufal/react-native-speech) - A text-to-speech library for React Native.
+- [react-native-screcorder ★214](https://github.com/maxs15/react-native-screcorder) - Capture pictures and record Video with Vine-like tap to record
+- [react-native-photos-framework ★154](https://github.com/olofd/react-native-photos-framework) - A modern and comprehensive CameraRoll/iCloud-library for React Native
+- [react-native-audioplayer ★99](https://github.com/andreaskeller/react-native-audioplayer) - Small audio player library for react native
+- [react-native-player ★81](https://github.com/xeodou/react-native-player) - Media player for react-native
+- [react-native-vlc-player ★80](https://github.com/ghondar/react-native-vlc-player) - VLC Player for react-native
+- [react-native-volume-slider ★69](https://github.com/IFours/react-native-volume-slider) - React Native VolumeView component
+- [react-native-sound-demo ★63](https://github.com/zmxv/react-native-sound-demo) - react-native-sound demo project
+- [react-native-interactive-image-gallery ★60](https://github.com/InterfaceKit/react-native-interactive-image-gallery) - A React Native component to display a gallery of images.
+- [react-native-color-grabber ★57](https://github.com/bsudekum/react-native-color-grabber) - React native component for finding dominant colors in an image
+- [react-native-hue-player ★43](https://github.com/App2Sales/react-native-hue-player) - Audio Player to offline/local and online/streaming audio.
+- [react-native-media-meta ★41](https://github.com/mybigday/react-native-media-meta) - Get media file metadata in your React Native app
+- [react-native-sound-recorder ★41](https://github.com/kevinresol/react-native-sound-recorder) - No-hassle Sound Recorder for React Native.
+- [react-native-fullscreen-video ★39](https://github.com/mostafa/react-native-fullscreen-video) - A full-screen video component on top of react-native-video
+- [react-native-android-audio-streaming-aac ★25](https://github.com/EstebanFuentealba/react-native-android-audio-streaming-aac) - A react native streaming player
+- [react-native-photoeditorsdk ★24](https://github.com/imgly/pesdk-react-native) - React Native module for [PhotoEditor SDK](https://www.photoeditorsdk.com) (Android & iOS)
+- [react-native-videoeditorsdk ★18](https://github.com/imgly/vesdk-react-native) - React Native module for [VideoEditor SDK](https://www.videoeditorsdk.com) (Android & iOS)
+- [react-native-true-sight ★18](https://github.com/ScreamZ/react-native-true-sight) - A cross-platform video player with customizable controls for React Native.
+- [react-native-audio-manager ★15](https://github.com/Tricy/react-native-audio-manager) - Audio player library for react native Android
+- [react-native-safe-image ★13](https://github.com/xcarpentier/react-native-safe-image) - Really light React-Native package to handle fallback when image is on error
+- [react-native-audio-player ★12](https://github.com/sh3rawi/react-native-audio-player) - A React Native module to play audio on Android
+- [react-native-mediaplayer ★12](https://github.com/chriselly/react-native-mediaplayer) - Simple full screen media player for React Native.
+- [react-native-simple-sound ★11](https://github.com/mikehedman/react-native-simple-sound) - Start, stop, and pause a sound. iOS only. Derived from `react-native-sound`
+- [react-native-tone ★7](https://github.com/oliviachang29/react-native-tone) - Generates simple sine wave, specify a frequency and amplitude. Play sound indefinitely or for a specified time interval (iOS only).
+- [react-native-media-capture ★6](https://github.com/remobile/react-native-media-capture) - A media-capture for react-native
+- [react-native-android-video ★8](https://github.com/Cherrypick-Consulting/react-native-android-video) - Android ExoPlayer Video component for react-native.
+- [react-native-airplay-button](https://github.com/CBCNewMedia/react-native-airplay-button) - Native iOS Airplay button component

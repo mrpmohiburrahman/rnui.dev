@@ -1,0 +1,92 @@
+:root {
+  --ifm-code-font-size: 95%;
+}
+
+:root[data-theme="dark"] {
+  --ifm-background-color: #000000;
+  --ifm-color-primary: #ffcc00;
+  --ifm-color-primary-dark: #e6b800;
+  --ifm-color-primary-darker: #d9ad00;
+  --ifm-color-primary-darkest: #b38f00;
+  --ifm-color-primary-light: #ffd11a;
+  --ifm-color-primary-lighter: #ffd426;
+  --ifm-color-primary-lightest: #ffdb4d;
+
+  --ifm-toggle-icon-color: #ffffff;
+  --ifm-table-border-color: #282c34;
+  --ifm-table-head-background: #242526;
+  --ifm-table-stripe-background: #101113;
+
+  --ifm-hr-border-color: #18191a;
+
+  --ifm-navbar-background-color: #101113;
+  --ifm-toc-border-color: #101113;
+
+  --ifm-navbar-search-input-icon: url('data:image/svg+xml;utf8,<svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16px" width="16px"><path d="M6.02945,10.20327a4.17382,4.17382,0,1,1,4.17382-4.17382A4.15609,4.15609,0,0,1,6.02945,10.20327Zm9.69195,4.2199L10.8989,9.59979A5.88021,5.88021,0,0,0,12.058,6.02856,6.00467,6.00467,0,1,0,9.59979,10.8989l4.82338,4.82338a.89729.89729,0,0,0,1.29912,0,.89749.89749,0,0,0-.00087-1.29909Z" /></svg>');
+}
+
+:root[data-theme="light"] {
+  --ifm-background-color: #ffffff;
+  --ifm-color-primary: #8800ff;
+  --ifm-color-primary-dark: #7a00e6;
+  --ifm-color-primary-darker: #7400d9;
+  --ifm-color-primary-darkest: #5f00b3;
+  --ifm-color-primary-light: #941aff;
+  --ifm-color-primary-lighter: #9a26ff;
+  --ifm-color-primary-lightest: #ac4dff;
+
+  --ifm-toggle-icon-color: #000000;
+  --ifm-table-border-color: #dadde1;
+  --ifm-table-head-background: #ececec;
+  --ifm-table-stripe-background: #f5f6f7;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+article table {
+  display: table;
+  width: 100%;
+  font-size: 14px;
+}
+article table thead th {
+  text-align: left;
+  text-transform: uppercase;
+}
+
+article table th,
+article table td {
+  padding: 6px 10px;
+}
+
+article table tr:nth-child(2n) {
+  background-color: var(--ifm-table-stripe-background);
+}
+
+.row .col.col--3 {
+  padding: 0 var(--ifm-spacing-horizontal) 0, 0;
+}
+
+.table-of-contents ul {
+  padding-left: 0px;
+}
+
+.table-of-contents ul li {
+  margin-left: 0px;
+}
+
+.navbar__search {
+  padding: 0px var(--ifm-navbar-item-padding-horizontal);
+}
+
+.navbar__search input {
+  outline: none;
+}
+
+html[data-theme="dark"] .navbar__search {
+  color: var(--ifm-font-color-base);
+}

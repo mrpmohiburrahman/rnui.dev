@@ -1,0 +1,90 @@
+---
+id: system
+title: System
+description: System For React Native
+---
+
+- [react-native-firebase ★4192](https://github.com/invertase/react-native-firebase) - A well tested feature rich Firebase implementation for React Native, supporting both iOS & Android platforms for 10+ Firebase modules (including Cloud Firestore).
+- [react-native-push-notification ★3431](https://github.com/zo0r/react-native-push-notification) - React Native Local and Remote Notifications
+- [react-native-device-info ★3145](https://github.com/rebeccahughes/react-native-device-info) - Get device information using react-native
+- [react-native-fs ★2465](https://github.com/johanneslumpe/react-native-fs) - Native filesystem access for react-native
+- [react-native-config ★1894](https://github.com/luggit/react-native-config) - Config variables for React Native apps
+- [react-native-ultimate-config](https://github.com/maxkomarychev/react-native-ultimate-config) - Configure all levels of your react-native app with a single file
+- [react-native-fcm ★1564](https://github.com/evollu/react-native-fcm) - react native module for firebase cloud messaging and local notification
+- [react-native-notifications ★1396](https://github.com/wix/react-native-notifications) - React native notifications
+- [react-native-arkit ★1290](https://github.com/HippoAR/react-native-arkit) - React Native binding for iOS ARKit
+- [react-native-permissions ★1118](https://github.com/yonahforst/react-native-permissions) - Check and request all permissions with a single api
+- [react-native-keychain ★992](https://github.com/oblador/react-native-keychain) - Keychain Access for React Native
+- [react-native-touch-id ★902](https://github.com/naoufal/react-native-touch-id) - React Native authentication with the native Touch ID popup.
+- [react-native-contacts ★882](https://github.com/rt2zz/react-native-contacts) - React Native Contacts (android & ios)
+- [react-native-communications ★871](https://github.com/anarchicknight/react-native-communications) - Easily call, email, text or iMessage someone in React Native
+- [react-native-onesignal ★871](https://github.com/geektimecoil/react-native-onesignal) - React Native Library for OneSignal Push Notifications Service (iOS + Android)
+- [react-native-in-app-utils ★743](https://github.com/chirag04/react-native-in-app-utils) - A react-native wrapper for handling in-app payments.
+- [react-native-image-resizer ★636](https://github.com/bamlab/react-native-image-resizer) - Rescale local image files with React Native.
+- [react-native-quick-actions ★593](https://github.com/madriska/react-native-quick-actions) - A react-native interface for 3D Touch home screen quick actions
+- [react-native-billing ★534](https://github.com/idehub/react-native-billing) - In-app purchase implementation for React Native on Android.
+- [react-native-barcodescanner ★491](https://github.com/ideacreation/react-native-barcodescanner) - A barcode scanner component for react native - not maintained anymore - use react-native-camera.
+- [react-native-iap ★450](https://github.com/dooboolab/react-native-iap) - React-native native module for In-App Purchase.
+- [react-native-dotenv ★450](https://github.com/zetachang/react-native-dotenv) - A Babel preset let you import application configs from .env file (zero runtime dependency)
+- [react-native-location ★425](https://github.com/timfpark/react-native-location) - Native GPS location support for React Native.
+- [react-native-background-fetch ★373](https://github.com/transistorsoft/react-native-background-fetch) - iOS BackgroundFetch API implementation. Awakens a suspended iOS app in the background to execute a `callbackFn` about every 15 min.
+- [react-native-queue ★359](https://github.com/billmalarky/react-native-queue) - Your swiss army knife for task management in React Native - easily manage background tasks that run periodically when app is closed and dedicated worker threads.
+- [react-native-sensors ★355](https://github.com/react-native-sensors/react-native-sensors) - Platform independent wrapper for sensors like Gyroscope, Accelerometer and Magnetometer with RxJS interface
+- [react-native-social-share ★347](https://github.com/doefler/react-native-social-share) - Use the iOS native Twitter and Facebook share view from react native
+- [react-native-ibeacon ★334](https://github.com/geniuxconsulting/react-native-ibeacon) - iBeacon support for React Native. The API is very similar to the CoreLocation Objective-C one with the only major difference that regions are plain JavaScript objects. Beacons don't work in the iOS simulator.
+- [react-native-lock-ios ★291](https://github.com/auth0/react-native-lock-ios) - Auth0 Lock for React Native (iOS)
+- [react-native-motion-manager ★223](https://github.com/pwmckenna/react-native-motion-manager) - A react-native interface for using the Gyroscope, Accelerometer and Magnetometer
+- [react-native-android-sms-listener ★194](https://github.com/CentaurWarchief/react-native-android-sms-listener) - Allows you to listen for incoming SMS messages
+- [react-native-device ★185](https://github.com/GertjanReynaert/react-native-device) - UIDevice wrapper for React Native
+- [react-native-gcm-android ★174](https://github.com/oney/react-native-gcm-android) - GCM for Android
+- [react-native-sensor-manager ★172](https://github.com/kprimice/react-native-sensor-manager) - Wrapper for react-native providing native sensors access. (Gyroscope, accelerometer, magnetometer, thermometer...)
+- [react-native-ble ★157](https://github.com/jacobrosenthal/react-native-ble) - React Native BLE using noble api surface
+- [react-native-haptic ★137](https://github.com/charlesvinette/react-native-haptic) - iOS 10 + haptic feedback for React Native applications
+- [react-native-pinch ★130](https://github.com/localz/react-native-pinch) - SSL pinning for react native
+- [react-native-unified-contacts ★120](https://github.com/joshuapinter/react-native-unified-contacts) - React Native iOS 9+ Contacts (ios)
+- [react-native-callkit ★94](https://github.com/ianlin/react-native-callkit) - iOS 10 CallKit framework for React Native
+- [react-native-discovery ★89](https://github.com/yonahforst/react-native-discovery) - Discover nearby devics using BLE. Turn iOS and Android devices into beacons
+- [react-native-passcode-auth ★87](https://github.com/naoufal/react-native-passcode-auth) - React Native authentication with iOS Passcode.
+- [react-native-addressbook ★81](https://github.com/rt2zz/react-native-addressbook) - AddressBook module for react-native
+- [react-native-fingerprint-identify ★79](https://github.com/williamtran29/react-native-fingerprint-identify) - React Native authentication with the Fingerprint on Android, fingerprint API compatible lib, which also combines Samsung, Xiaomi and MeiZu's official Fingerprint API.
+- [react-native-phone-call ★76](https://github.com/tiaanduplessis/react-native-phone-call) - A simple way to initiate a phone call in React Native
+- [react-native-calendar-reminders ★69](https://github.com/wmcmahan/React-Native-CalendarReminders) - React Native module for IOS EventKit Reminders
+- [react-native-bluetooth-state ★61](https://github.com/frostney/react-native-bluetooth-state) - Answering the question of "Is my bluetooth on?" in React Native
+- [react-native-google-nearby-messages ★14](https://github.com/mrousavy/react-native-google-nearby-messages) - Communicate with nearby devices using Bluetooth, BLE, WiFi and near-ultrasonic audio by using the Google Nearby Messages API
+- [react-native-barcode-scanner ★60](https://github.com/lifuzu/ReactNativeBarcodeScanner) - Barcode scanner for React Native
+- [react-native-haptic-feedback ★60](https://github.com/mkuczera/react-native-haptic-feedback) - Trigger Haptic Native Feedback on iOS and Android
+- [react-native-clipboard ★58](https://github.com/silentcloud/react-native-clipboard) - React Native component for getting or setting clipboard content
+- [react-native-media-clipboard](https://github.com/Jarred-Sumner/react-native-media-clipboard) - React Native module for getting images, URLs, and strings from the clipboard
+- [react-native-nfc-ios ★52](https://github.com/barodeur/react-native-nfc-ios) - Easy to use CoreNFC for React Native
+- [react-native-android-sms ★48](https://github.com/msmakhlouf/react-native-android-sms) - A react native android module to list/send sms.
+- [react-native-voip-push-notification ★48](https://github.com/ianlin/react-native-voip-push-notification) - iOS prioritized VoIP Push Notification
+- [react-native-android-speech ★47](https://github.com/mihirsoni/react-native-android-speech) - A text-to-speech library for Android React Native.
+- [react-native-app-info ★42](https://github.com/Iragne/react-native-app-info) - React Native app info and version
+- [react-native-icloud-sync ★41](https://github.com/chirag04/react-native-icloud-sync) - A react-native wrapper for syncing with icloud
+- [react-native-carrier-info ★41](https://github.com/anarchicknight/react-native-carrier-info) - React Native module bridge to obtain information about the user’s home cellular service provider.
+- [react-native-sms-android ★40](https://github.com/rhaker/react-native-sms-android) - A react-native module for sending a sms message to a phone number.
+- [react-native-touch-id-android ★32](https://github.com/ElekenAgency/react-native-touch-id-android) - React Native authentication with the Fingerprint on Android.
+- [react-native-heading ★31](https://github.com/yonahforst/react-native-heading) - Get device heading (compass) information on iOS or Android
+- [react-native-battery ★30](https://github.com/oojr/react-native-battery) - A React Native module that returns the battery level/status of a device
+- [react-native-device-battery ★30](https://github.com/robinpowered/react-native-device-battery) - Observe battery state changes in your react native application
+- [react-native-device-motion ★29](https://github.com/paramaggarwal/react-native-device-motion) - iOS device motion wrapper for React Native.
+- [react-native-wifi-manager ★29](https://github.com/skierkowski/react-native-wifi-manager) - Wifi Connection Manager for React Native on Android
+- [react-native-android-sqlite ★28](https://github.com/jbrodriguez/react-native-android-sqlite) - A react native android wrapper for SQLite
+- [react-native-search-api ★27](https://github.com/ombori/react-native-search-api) - The SearchApi module gives you a general React Native interface to interact with the iOS Search API, Core Spotlight.
+- [react-native-ssl-pinning ★20](https://github.com/MaxToyberman/react-native-ssl-pinning) - React Native SSL pinning using OkHttp 3 on Android, and AFNetworking on iOS
+- [react-native-localsearch ★17](https://github.com/wmcmahan/React-Native-LocalSearch) - React Native Module for MapKit Local Search
+- [rn-secure-storage ★17](https://github.com/talut/rn-secure-storage) - Secure Storage for React Native (Android & iOS)
+- [react-native-contacts-rx ★14](https://github.com/JeanLebrument/react-native-contacts-rx) - react-native-contacts counterpart that include the support of RxJS.
+- [react-native-mipush ★13](https://github.com/cpunion/react-native-mipush) - MiPush for React Native
+- [react-native-device-angles ★12](https://github.com/cristianszwarc/RNDeviceAngles) - Get rotation information in degrees (pitch, yaw, roll) - ios
+- [react-native-detect-device ★11](https://github.com/peachmeco/react-native-detect-device) - Detect a device on iOS or android in react-native.
+- [react-native-battery-status ★11](https://github.com/remobile/react-native-battery-status) - A battery-status for react-native
+- [react-native-system-notification ★10](https://github.com/Neson/react-native-system-notification) - Notification for React Native
+- [react-native-home-pressed ★8](https://github.com/evanjmg/react-native-home-pressed) - Listen to home and recent app events for Android
+- [react-native-lock-android ★7](https://github.com/auth0/react-native-lock-android) - Auth0 Lock for React Native (Android)
+- [react-native-push-with-gcm ★6](https://github.com/lilach/react-native-push-with-gcm) - Register device for GCM push notifications services (supported only for iOS)
+- [react-native-device-info-pod ★3](https://github.com/mchinyakov/react-native-device-info) - Get device information using react-native
+- [react-native-sms-retriever](https://github.com/Bruno-Furtado/react-native-sms-retriever) - SMS Retriever API (Android).
+- [react-native-background-downloader ★93](https://github.com/EkoLabs/react-native-background-downloader) - Help you download large files on iOS and Android both in the foreground and most importantly in the background.
+- [rn-in-app-review](https://github.com/ravirupareliya/rn-in-app-review) - Help you to integrate in-app review for android and iOS
+- [react-native-system-setting](https://github.com/c19354837/react-native-system-setting)- Provides some system setting APIs iOS and Android.

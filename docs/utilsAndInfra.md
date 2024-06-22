@@ -1,0 +1,47 @@
+---
+id: utilsAndInfra
+title: Utils & Infra
+description: Utils for React Native
+---
+
+- [react-native-workers ★616](https://github.com/devfd/react-native-workers) - Background services and web workers for react-native
+- [react-native-mock ★504](https://github.com/RealOrangeOne/react-native-mock) - A fully mocked and test-friendly version of react native
+- [loki ★395](https://github.com/oblador/loki) - Visual Regression Testing for Storybook
+- [react-native-slowlog ★271](https://github.com/jondot/react-native-slowlog) - A high-performance timer based profiler for React Native that helps you track big performance problems
+- [react-native-zip-archive ★173](https://github.com/plrthink/react-native-zip-archive) - Zip / Unzip archive utility
+- [react-native-tips ★160](https://github.com/frichti/react-native-tips) - This module is used to create easily some tips to help your new users to understand how works your app.
+- [codemod-RN24-to-RN25 ★104](https://github.com/sibeliusseraphini/codemod-RN24-to-RN25) - a simple codemod to handle the new import style on >=RN25
+- [react-native-linkedin ★101](https://github.com/xcarpentier/react-native-linkedin) React-Native LinkedIn, a simple LinkedIn login library for React-Native or Expo with WebView and Modal
+- [react-native-eval ★75](https://github.com/artemyarulin/react-native-eval) - Call any JS functions from your native code
+- [react-native-device-log ★73](https://github.com/olofd/react-native-device-log) - A UI and service for displaying dev-logs on devices.
+- [react-native-call-detection ★73](https://github.com/priteshrnandgaonkar/react-native-call-detection) - Helps to detect different call states like Incoming, Disconnected, Dialing and Connected
+- [react-native-userdefaults-ios ★66](https://github.com/dsibiski/react-native-userdefaults-ios) - React Native Module for NSUserDefaults
+- [react-native-webp ★56](https://github.com/dbasedow/react-native-webp) - react-native-webp adds support for WebP images for react-native components.
+- [react-native-global-event-emitter ★50](https://github.com/paramaggarwal/react-native-global-event-emitter) - Shared event emitter between native and JS for React Native.
+- [react-native-user-defaults ★48](https://github.com/wwayne/react-native-user-defaults) - ios UserDefaults used by react-native
+- [react-native-console-time-polyfill ★45](https://github.com/MaxGraey/react-native-console-time-polyfill) - console.time and console.timeEnd polyfill for react-native
+- [react-native-aws-signature ★42](https://github.com/leimd/react-native-aws-signature) - help generate signature required for using AWS API. Necessary to use S3, ec2, or other services.
+- [react-native-rsa ★41](https://github.com/z-hao-wang/react-native-rsa) - RSA crypto lib for react native
+- [react-native-html-parser ★38](https://github.com/g6ling/react-native-html-parser) - parse html in react-native
+- [pixels-catcher ★26](https://github.com/rumax/react-native-PixelsCatcher) - Library for testing React Native UI components and screens
+- [react-native-aes ★24](https://github.com/mvayngrib/react-native-aes) - AES in react-native
+- [react-native-network-logger ★20](https://github.com/alexbrazier/react-native-network-logger) - An HTTP network request monitor for React Native including an in-app interface.
+- [eslint-config-kingstinct-react-native ★23](https://github.com/robertherber/eslint-config-kingstinct-react-native) - Opinionated ESLint configurarition for React Native and TypeScript
+- [react-native-hour-format ★20](https://github.com/SoftwareMansion/react-native-hour-format) - Get hour format from OS settings.
+- [react-native-des ★20](https://github.com/remobile/react-native-des) - A des crypto for react-native
+- [react-native-babel-jest ★15](https://github.com/apentle/react-native-babel-jest) - Simple testing configuration for React Native with Jest
+- [react-native-simple-encryption ★14](https://github.com/BhavanPatel/react-native-simple-encryption) - Simple XOR and base_64 encryption decryption for react-native
+- [react-native-immutable ★12](https://github.com/thewei/react-native-immutable) - using immutable.js library with react-native
+- [react-native-util ★12](https://github.com/exponentjs/react-native-util) - A fork of io.js's util module that works with React Native
+- [react-native-referrer ★11](https://github.com/JeandeCampredon/react-native-referrer) - React Native android only library to retrieve campaign referrer.
+- [react-native-webpackager-server ★6](https://github.com/changfuguo/react-native-webpackager-server) - react native webpackager server
+- [react-native-crypto ★6](https://github.com/mvayngrib/react-native-crypto) - implementation of crypto for React Native
+- [react-native-fluxbone ★5](https://github.com/jgable/react-native-fluxbone) - A group of libraries that help with the FluxBone pattern in React Native
+- [react-native-cross-settings ★5](https://github.com/aMarCruz/react-native-cross-settings) - React Native Settings module for both Android & iOS.
+- [react-native-HsvToRgb ★3](https://github.com/Copypeng/react-native-HsvToRgb) - a helper to convert HSV(HSB) color to RGB.
+- [react-native-use-persist-storage ★3](https://github.com/visuallylab/react-native-use-persist-storage) - Persist and rehydrate your context(state) using React Hooks
+- [react-native-tools ★0](https://github.com/kkennis/react-native-tools) - Tools for react native project development
+- [react-native-call-observer](https://github.com/liamse/react-native-call-observer) - Helps to observe call status like incoming, ended, and connected (iOS).
+- [react-native-iphone-se-helper ★0](https://github.com/heyman333/react-native-iphone-se-helper) - utils for developing iphone SE size.
+- [react-native-native-log ★0](https://github.com/JessicaYeh/react-native-native-log) - A React Native log function that under the hood calls native logs.
+- [react-native-mov-to-mp4 ★44](https://github.com/taltultc/react-native-mov-to-mp4) - utils for Converting mov file to mp4 for cross-platform playback compatibility.
