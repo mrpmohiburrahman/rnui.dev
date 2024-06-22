@@ -3,10 +3,10 @@ name: documentation
 on:
   pull_request:
     branches:
-      - mrp/buildWebSite
+      - main
   push:
     branches:
-      - mrp/buildWebSite
+      - main
 
 jobs:
   checks:
