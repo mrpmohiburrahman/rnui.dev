@@ -1,4 +1,7 @@
-import React from 'react';
+// src/components/video/Video.js
+
+import React from "react";
+import styles from "./Video.module.css";
 
 const Video = ({ title, url }) => {
   return (
@@ -9,8 +12,7 @@ const Video = ({ title, url }) => {
       controls={false}
       playsInline={true}
       title={title}
-      width="100%"
-    >
+      className={styles.video}>
       <source src={url} type="video/mp4" />
     </video>
   );

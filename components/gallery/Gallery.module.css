@@ -1,30 +1,69 @@
-/* src/components/Gallery.module.css */
+/* src/components/gallery/Gallery.module.css */
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
   padding: 20px;
 }
 
-.gridItem {
-  background: #f9f9f9;
-  padding: 16px;
-  border: 1px solid #ddd;
+.card {
+  background: #fff;
   border-radius: 8px;
-  text-align: center;
+  overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 350px;
 }
 
-.gridItem img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin-bottom: 8px;
+.videoContainer {
+  flex: 0 0 70%;
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  /* 16:9 Aspect Ratio */
+  overflow: hidden;
 }
 
-.gridItem p {
+.cardContent {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.author {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #333;
+}
+
+.icons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.icon {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.source {
+  text-align: right;
+}
+
+.sourceButton {
+  background: #007acc;
+  color: #fff;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.sourceButton:hover {
+  background: #005fa3;
 }
