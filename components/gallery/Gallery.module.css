@@ -40,20 +40,20 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  height: 350px;
+  height: 400px;
+  /* Increased height for caption */
   transition: background 0.3s ease;
-  /* Removed cursor: pointer; */
 }
 
 .videoContainer {
-  flex: 0 0 70%;
+  flex: 0 0 60%;
+  /* Reduced height percentage for video */
   position: relative;
   width: 100%;
   padding-top: 56.25%;
   /* 16:9 Aspect Ratio */
   overflow: hidden;
   cursor: pointer;
-  /* Added cursor: pointer; */
 }
 
 .cardContent {
@@ -62,6 +62,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.caption {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin: 0 0 -8px 0;
+  /* Margin to separate from author */
+
 }
 
 .author {
@@ -80,7 +88,6 @@
   font-size: 1.2rem;
   color: var(--icon-color);
   cursor: pointer;
-  /* Added cursor: pointer; */
 }
 
 .source {
@@ -96,7 +103,6 @@
   font-size: 0.9rem;
   transition: background 0.3s ease;
   cursor: pointer;
-  /* Added cursor: pointer; */
 }
 
 .sourceButton:hover {

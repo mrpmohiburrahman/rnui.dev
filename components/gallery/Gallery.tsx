@@ -35,15 +35,14 @@ const Gallery = ({ items }) => {
               <Video title={item.Author} url={videoUrl} />
             </div>
             <div className={styles.cardContent}>
+              {item.caption && <p className={styles.caption}>{item.caption}</p>}
               <h3 className={styles.author}>{item.Author}</h3>
               <div className={styles.icons}>
                 {item.twitterId && (
                   <a
                     href={`https://twitter.com/${item.twitterId}`}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    // onClick={(e) => e.stopPropagation()}
-                  >
+                    rel="noopener noreferrer">
                     <FaTwitter className={styles.icon} />
                   </a>
                 )}
@@ -51,9 +50,7 @@ const Gallery = ({ items }) => {
                   <a
                     href={`https://linkedin.com/in/${item.linkedInId}`}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    // onClick={(e) => e.stopPropagation()}
-                  >
+                    rel="noopener noreferrer">
                     <FaLinkedin className={styles.icon} />
                   </a>
                 )}
@@ -61,9 +58,7 @@ const Gallery = ({ items }) => {
                   <a
                     href={item.personalSite}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    // onClick={(e) => e.stopPropagation()}
-                  >
+                    rel="noopener noreferrer">
                     <FaGlobe className={styles.icon} />
                   </a>
                 )}
@@ -73,9 +68,7 @@ const Gallery = ({ items }) => {
                   href={item.source}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.sourceButton}
-                  // onClick={(e) => e.stopPropagation()}
-                >
+                  className={styles.sourceButton}>
                   Get Source
                 </a>
               </div>
