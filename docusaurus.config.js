@@ -25,11 +25,11 @@ module.exports = {
         // },
         // { to: "blog", label: "Blog", position: "left" },
         // { to: "sponsors", label: "Sponsors", position: "right" },
-        // {
-        //   href: "https://github.com/mrpmohiburrahman/awesome-react-native-ui",
-        //   label: "GitHub",
-        //   position: "right",
-        // },
+        {
+          href: "https://github.com/mrpmohiburrahman/awesome-react-native-ui",
+          label: "GitHub",
+          position: "right",
+        },
       ],
     },
     prism: {
