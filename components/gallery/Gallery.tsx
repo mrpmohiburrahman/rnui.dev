@@ -87,6 +87,7 @@ const Gallery = ({ items }) => {
             src={currentVideoUrl}
             controls
             autoPlay
+            loop
             className={styles.fullscreenVideo}
           />
         </div>
