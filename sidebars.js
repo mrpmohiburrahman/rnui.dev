@@ -4,6 +4,7 @@ module.exports = {
     "loaders",
     "charts",
     "buttons",
+    "accordions",
     "miscellaneous",
   ],
 };
