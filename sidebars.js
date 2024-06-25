@@ -1,6 +1,7 @@
 module.exports = {
   packages: [
     "getting-started",
+    "arcsliders",
     "tabbars",
     "loaders",
     "charts",
