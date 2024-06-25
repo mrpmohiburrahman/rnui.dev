@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Micro Swipe Actions",
+    "demo": "demo/misc/micro_swipe_actions_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/micro-swipe-actions",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Genetic AI",
     "demo": "demo/misc/geneticai_david_friyia.mp4",
     "Author": "Daniel Friyia",
