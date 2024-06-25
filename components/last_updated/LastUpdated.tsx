@@ -15,7 +15,8 @@ const LastUpdated: React.FC = () => {
         const data = await response.json();
         if (data && data.length > 0) {
           const lastCommitDate = new Date(data[0].commit.committer.date);
-          setLastUpdatedMessage(`Last updated: ${format(lastCommitDate)}`);
+          const formattedDate = format(lastCommitDate);
+          setLastUpdatedMessage(`Last updated: ${formattedDate}`);
         }
       } catch (error) {
         console.error("Failed to fetch last commit date:", error);
@@ -25,10 +26,22 @@ const LastUpdated: React.FC = () => {
     fetchLastCommitDate();
   }, []);
 
+  const renderLastUpdatedMessage = (message: string) => {
+    const parts = message.split("Last updated: ");
+    if (parts.length > 1) {
+      return (
+        <p>
+          Last updated: <strong>{parts[1]}</strong>
+        </p>
+      );
+    }
+    return <p>{message}</p>;
+  };
+
   return (
     <div>
       {lastUpdatedMessage ? (
-        <p>{lastUpdatedMessage}</p>
+        renderLastUpdatedMessage(lastUpdatedMessage)
       ) : (
         <p>Loading last updated date...</p>
       )}
