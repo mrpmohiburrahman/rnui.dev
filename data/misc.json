@@ -1,13 +1,5 @@
 [
   {
-    "caption": "Circular Onboarding",
-    "demo": "demo/misc/circular_onboarding_hewad_mubariz.mp4",
-    "Author": "Hewad Mubariz",
-    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-onboarding",
-    "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
-  },
-  {
     "caption": "Animated Cards",
     "demo": "demo/misc/animated_cards_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
