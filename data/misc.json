@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Animated Cards",
+    "demo": "demo/misc/animated_cards_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-cards",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Animated Shapes",
     "demo": "demo/misc/animated_shapes_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
