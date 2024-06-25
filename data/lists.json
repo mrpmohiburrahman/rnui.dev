@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Swipeable Rows",
+    "demo": "demo/lists/swipeable_rows_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/swipeable-rows",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Expandable List",
     "demo": "demo/lists/expandable_list_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
