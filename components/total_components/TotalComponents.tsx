@@ -22,8 +22,7 @@ const TotalComponents: React.FC = () => {
   return (
     <div>
       <p>
-        We currently have <strong>{total}</strong> awesome UI components created
-        by the React Native community!
+        Number Of Components: <strong>{total}</strong>
       </p>
     </div>
   );
