@@ -25,6 +25,7 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.2.1",
     "react-modal": "^3.16.1",
+    "timeago.js": "^4.0.2",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {
