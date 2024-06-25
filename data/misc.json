@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Flippy Card",
+    "demo": "demo/misc/flippy_card_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flippy-card",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Playing Cards",
     "demo": "demo/misc/playing_cards_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
