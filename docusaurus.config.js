@@ -36,7 +36,7 @@ module.exports = {
       theme: themes.dracula,
     },
     footer: {
-      copyright: `Copyright © ${new Date().getFullYear()} <a rel="noreferrer" href="https://gorhom.dev/" target="_blank">MD. MOHIBUR RAHMAN</a>. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} <a rel="noreferrer" href="https://www.linkedin.com/in/mrpmohiburrahman/" target="_blank">MD. MOHIBUR RAHMAN</a>. Built with Docusaurus.`,
     },
     algolia: {
       appId: "V136OEODKA",
