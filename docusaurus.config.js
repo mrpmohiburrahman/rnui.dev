@@ -53,8 +53,8 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           routeBasePath: "/",
           path: "docs",
-          editUrl:
-            "https://github.com/gorhom/react-native-bottom-sheet/edit/website/",
+          // editUrl:
+          //   "https://github.com/gorhom/react-native-bottom-sheet/edit/website/",
           // lastVersion: "current",
           include: ["**/*.md", "**/*.mdx"],
         },
