@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Playing Cards",
+    "demo": "demo/misc/playing_cards_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Rating Wave",
     "demo": "demo/misc/rating_wave_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
