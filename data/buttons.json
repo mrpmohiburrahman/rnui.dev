@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Dial Button",
+    "demo": "demo/buttons/dial_button_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dial-button",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Floating Button",
     "demo": "demo/buttons/floating_button_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
