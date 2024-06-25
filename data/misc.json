@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Rating Wave",
+    "demo": "demo/misc/rating_wave_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Expandable FAB",
     "demo": "demo/misc/expandable_fab_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
