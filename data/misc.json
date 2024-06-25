@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Animated Shapes",
+    "demo": "demo/misc/animated_shapes_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-shapes",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz"
+  },
+  {
     "caption": "Audio Input Visualizer",
     "demo": "demo/misc/audio_input_visualizer_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
