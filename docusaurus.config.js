@@ -63,10 +63,20 @@ module.exports = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
-        googleAnalytics: {
-          trackingID: "UA-193461439-1",
-          anonymizeIP: true,
-        },
+        // googleAnalytics: {
+        //   trackingID: "UA-193461439-1",
+        //   anonymizeIP: true,
+        // },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: "phc_7Pq4TSUWwqrOku8lgK8jfRD4TZcNsWA8eRPHE8iUPvq",
+        appUrl: "https://us.i.posthog.com", // optional, defaults to "https://us.i.posthog.com"
+        enableInDevelopment: false, // optional
       },
     ],
   ],
