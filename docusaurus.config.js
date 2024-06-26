@@ -75,8 +75,11 @@ module.exports = {
       "posthog-docusaurus",
       {
         apiKey: "phc_7Pq4TSUWwqrOku8lgK8jfRD4TZcNsWA8eRPHE8iUPvq",
-        appUrl: "https://us.i.posthog.com", // optional, defaults to "https://us.i.posthog.com"
-        enableInDevelopment: false, // optional
+        appUrl: "https://us.i.posthog.com",
+        enableInDevelopment: true,
+        onPostHogReady: () => {
+          console.log("PostHog is ready");
+        },
       },
     ],
   ],
