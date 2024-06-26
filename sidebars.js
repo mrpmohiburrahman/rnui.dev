@@ -11,5 +11,6 @@ module.exports = {
     "buttons",
     "accordions",
     "miscellaneous",
+    "fullapps",
   ],
 };
