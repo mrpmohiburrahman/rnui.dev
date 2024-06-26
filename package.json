@@ -16,6 +16,7 @@
     "@docusaurus/plugin-content-blog": "^3.3.2",
     "@docusaurus/preset-classic": "^3.3.2",
     "@docusaurus/theme-search-algolia": "^3.3.2",
+    "@easyops-cn/docusaurus-search-local": "^0.44.2",
     "@mdx-js/react": "^3.0.1",
     "@svgr/webpack": "^8.1.0",
     "clsx": "^2.1.1",
