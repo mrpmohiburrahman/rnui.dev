@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Ripple Effect With React Native Skia",
+    "demo": "demo/misc/ripple_effect_daehyeon_mun.mp4",
+    "Author": "Daehyeon Mun (문대현)",
+    "source": "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
+    "twitterId": "DaehyeonMun",
+    "linkedInId": "daehyeon-mun-5ba674164"
+  },
+  {
     "caption": "Animated Cards",
     "demo": "demo/misc/animated_cards_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
