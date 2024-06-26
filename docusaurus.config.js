@@ -38,12 +38,6 @@ module.exports = {
     footer: {
       copyright: `Copyright © ${new Date().getFullYear()} <a rel="noreferrer" href="https://www.linkedin.com/in/mrpmohiburrahman/" target="_blank">MD. MOHIBUR RAHMAN</a>. Built with Docusaurus.`,
     },
-    algolia: {
-      appId: "V136OEODKA",
-      apiKey: "184c49269442932465c46fe5489b63e6",
-      indexName: "react-native-bottom-sheet",
-      contextualSearch: true,
-    },
   },
   presets: [
     [
@@ -73,6 +67,14 @@ module.exports = {
           trackingID: "UA-193461439-1",
           anonymizeIP: true,
         },
+      },
+    ],
+  ],
+  plugins: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        hashed: true,
       },
     ],
   ],
