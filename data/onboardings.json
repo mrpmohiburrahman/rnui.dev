@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Onboarding Animation",
+    "demo": "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
+    "Author": "Alek Mikucki",
+    "source": "https://github.com/aleqsio/onboarding-animation-example",
+    "twitterId": "aleqsio",
+    "linkedInId": "aleqsio"
+  },
+  {
     "caption": "Bouncy Onboarding  ",
     "demo": "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
