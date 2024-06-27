@@ -76,7 +76,7 @@ module.exports = {
       {
         apiKey: "phc_7Pq4TSUWwqrOku8lgK8jfRD4TZcNsWA8eRPHE8iUPvq",
         appUrl: "https://us.i.posthog.com",
-        enableInDevelopment: true,
+        enableInDevelopment: false,
         onPostHogReady: () => {
           console.log("PostHog is ready");
         },
