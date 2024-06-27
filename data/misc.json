@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Gradient Picker",
+    "demo": "demo/misc/gradient_picker_alek_mikucki.mp4",
+    "Author": "Alek Mikucki",
+    "source": "https://github.com/aleqsio/gradient-picker-reanimated",
+    "twitterId": "aleqsio",
+    "linkedInId": "aleqsio"
+  },
+  {
     "caption": "Micro Interactoins",
     "demo": "demo/misc/micro_interactions_alek_mikucki.mp4",
     "Author": "Alek Mikucki",
