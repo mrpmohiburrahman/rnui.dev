@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Jelly button",
+    "demo": "demo/buttons/jelly_button_kacper_kapuściak.mp4",
+    "Author": "Kacper Kapuściak",
+    "source": "https://github.com/kacperkapusciak/reanimated-squishy-button",
+    "twitterId": "kacperkapusciak",
+    "linkedInId": "kacperkapusciak"
+  },
+  {
     "caption": "Dial Button",
     "demo": "demo/buttons/dial_button_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
