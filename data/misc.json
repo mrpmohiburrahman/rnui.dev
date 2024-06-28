@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Magic Curtain Effect",
+    "demo": "demo/misc/magic_curtain_effect_kacper_kapuściak.mp4",
+    "Author": "Kacper Kapuściak",
+    "source": "https://github.com/kacperkapusciak/expo-magic-curtain",
+    "twitterId": "kacperkapusciak",
+    "linkedInId": "kacperkapusciak"
+  },
+  {
     "caption": "Parallax Effect",
     "demo": "demo/misc/parallax_effect_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
