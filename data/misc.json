@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Parallax Effect",
+    "demo": "demo/misc/parallax_effect_kacper_kapuściak.mp4",
+    "Author": "Kacper Kapuściak",
+    "source": "https://github.com/software-mansion-labs/reanimated-parallax",
+    "twitterId": "kacperkapusciak",
+    "linkedInId": "kacperkapusciak"
+  },
+  {
     "caption": "Fake Shared Element Transition",
     "demo": "demo/misc/fake_shared_element_transition_alek_mikucki.mp4",
     "Author": "Alek Mikucki",
