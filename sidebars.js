@@ -5,6 +5,7 @@ module.exports = {
     "headers",
     "lists",
     "arcsliders",
+    "sliders",
     "tabbars",
     "bottomsheets",
     "loaders",
