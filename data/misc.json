@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Shared Element Transitions Example",
+    "demo": "demo/misc/shared_element_transitions_example_kacper_kapuściak.mp4",
+    "Author": "Kacper Kapuściak",
+    "source": "https://github.com/software-mansion/react-native-reanimated/blob/4fcda2939cf70c9bb83efe08b8814e48653b1fa3/app/src/examples/SharedElementTransitions/Profiles.tsx",
+    "twitterId": "kacperkapusciak",
+    "linkedInId": "kacperkapusciak"
+  },
+  {
     "caption": "Gradient Shared Transition",
     "demo": "demo/misc/gradient_shared_transition_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
