@@ -9,7 +9,9 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "serve": "docusaurus serve",
-    "clear": "docusaurus clear"
+    "clear": "docusaurus clear",
+    "update:lastcommit": "node scripts/updateLastCommitDate.js",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@docusaurus/core": "^3.3.2",
@@ -33,6 +35,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.3.2",
     "@tsconfig/docusaurus": "^2.0.3",
+    "husky": "^9.0.11",
     "typescript": "^5.4.5"
   },
   "browserslist": {
