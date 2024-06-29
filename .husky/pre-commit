@@ -1,0 +1,1 @@
+pnpm run update:lastcommit && git add scripts/lastCommitDate.json
