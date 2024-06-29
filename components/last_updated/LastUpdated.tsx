@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
-
+import data from "../../scripts/lastCommitDate.json";
 const LastUpdated: React.FC = () => {
   const [lastUpdatedMessage, setLastUpdatedMessage] = useState<string | null>(
     null
@@ -9,12 +9,8 @@ const LastUpdated: React.FC = () => {
   useEffect(() => {
     const fetchLastCommitDate = async () => {
       try {
-        const response = await fetch(
-          "https://api.github.com/repos/mrpmohiburrahman/awesome-react-native-ui/commits?per_page=1"
-        );
-        const data = await response.json();
-        if (data && data.length > 0) {
-          const lastCommitDate = new Date(data[0].commit.committer.date);
+        if (data && data.lastCommitDate) {
+          const lastCommitDate = new Date(data.lastCommitDate);
           const formattedDate = format(lastCommitDate);
           setLastUpdatedMessage(`Last updated: ${formattedDate}`);
         }
