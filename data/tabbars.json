@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Tab Bar Micro Interactions",
+    "demo": "demo/tabbars/tab_bar_micro_interactions_kacper_kapuściak.mp4",
+    "Author": "Kacper Kapuściak",
+    "source": "https://github.com/kacperkapusciak/reanimated-expo-router-tabs",
+    "twitterId": "kacperkapusciak",
+    "linkedInId": "kacperkapusciak"
+  },
+  {
     "caption": "Dynamic Tabs",
     "demo": "demo/tabbars/dynamic_tabs_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
