@@ -11,6 +11,7 @@
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
+    "update:updateChangedItems": "node scripts/updateChangedItems.js",
     "prepare": "husky install"
   },
   "dependencies": {

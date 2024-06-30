@@ -1,1 +1,1 @@
-pnpm run update:lastcommit && git add scripts/lastCommitDate.json && node scripts/updateChangedItems.js && git add data/changedItems.json
+pnpm run update:lastcommit && git add scripts/lastCommitDate.json && pnpm run update:updateChangedItems && git add data/changedItems.json
