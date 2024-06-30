@@ -1,5 +1,3 @@
-// src/components/gallery/Gallery.js
-
 import React, { useState } from "react";
 import styles from "./Gallery.module.css";
 import Video from "../video/Video";
@@ -8,6 +6,11 @@ import Modal from "react-modal";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
 Modal.setAppElement("#__docusaurus");
+
+const categoryMapping = {
+  misc: "miscellaneous",
+  // Add more categories here if needed
+};
 
 const Gallery = ({ items }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -27,11 +30,21 @@ const Gallery = ({ items }) => {
     <div className={styles.grid}>
       {items.map((item, index) => {
         const videoUrl = useBaseUrl(item.demo);
+        const categoryUrl = useBaseUrl(
+          `/${categoryMapping[item.category] || item.category}`
+        );
+
+        const handleVideoClick = () => {
+          if (item.category) {
+            window.location.href = categoryUrl;
+          } else {
+            openModal(videoUrl);
+          }
+        };
+
         return (
           <div key={index} className={styles.card}>
-            <div
-              className={styles.videoContainer}
-              onClick={() => openModal(videoUrl)}>
+            <div className={styles.videoContainer} onClick={handleVideoClick}>
               <Video title={item.Author} url={videoUrl} />
             </div>
             <div className={styles.cardContent}>
@@ -63,14 +76,21 @@ const Gallery = ({ items }) => {
                   </a>
                 )}
               </div>
-              <div className={styles.source}>
-                <a
-                  href={item.source}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.sourceButton}>
-                  Get Source
-                </a>
+              <div className={styles.sourceCategoryContainer}>
+                {item.category && (
+                  <span className={styles.category}>
+                    {categoryMapping[item.category] || item.category}
+                  </span>
+                )}
+                <div className={styles.source}>
+                  <a
+                    href={item.source}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.sourceButton}>
+                    Get Source
+                  </a>
+                </div>
               </div>
             </div>
           </div>
