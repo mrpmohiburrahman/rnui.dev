@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Double Pendulum",
+    "demo": "demo/misc/double_pendulum_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/DoublePendulum",
+    "twitterId": "alireza-hadjar-526590197",
+    "linkedInId": "alireza_hadjar"
+  },
+  {
     "caption": "Shared Element Transitions Example",
     "demo": "demo/misc/shared_element_transitions_example_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
