@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Phyllotaxis Spiral",
+    "demo": "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Phyllotaxis",
+    "twitterId": "alireza_hadjar",
+    "linkedInId": "alireza-hadjar-526590197"
+  },
+  {
     "caption": "Flappy Bird",
     "demo": "demo/misc/flappy_bird_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
