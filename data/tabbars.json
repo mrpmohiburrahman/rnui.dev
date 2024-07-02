@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Sticky Tabs",
+    "demo": "demo/tabbars/sticky_tabs_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://github.com/AlirezaHadjar/stickyTab",
+    "twitterId": "alireza_hadjar",
+    "linkedInId": "alireza-hadjar-526590197"
+  },
+  {
     "caption": "Tab Bar Micro Interactions",
     "demo": "demo/tabbars/tab_bar_micro_interactions_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
