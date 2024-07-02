@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Fractal Tree",
+    "demo": "demo/misc/fractal_tree_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FractalTree",
+    "twitterId": "alireza-hadjar-526590197",
+    "linkedInId": "alireza_hadjar"
+  },
+  {
     "caption": "Starfield Simulation",
     "demo": "demo/misc/starfield_simulation_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
