@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Flappy Bird",
+    "demo": "demo/misc/flappy_bird_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FlappyBird",
+    "twitterId": "alireza-hadjar-526590197",
+    "linkedInId": "alireza_hadjar"
+  },
+  {
     "caption": "Firework",
     "demo": "demo/misc/firework_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
