@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Spotify Tab",
+    "demo": "demo/tabbars/spotify_tab_alireza_hadjar.mp4",
+    "Author": "Alireza Hadjar",
+    "source": "https://snack.expo.dev/@alirezahadjar/spotify-tab",
+    "twitterId": "alireza_hadjar",
+    "linkedInId": "alireza-hadjar-526590197"
+  },
+  {
     "caption": "Sticky Tabs",
     "demo": "demo/tabbars/sticky_tabs_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
