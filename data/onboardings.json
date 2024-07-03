@@ -5,7 +5,8 @@
     "Author": "Alek Mikucki",
     "source": "https://github.com/aleqsio/onboarding-animation-example",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "Bouncy Onboarding  ",
@@ -13,7 +14,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/BouncyOnboarding",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Circular Onboarding",
@@ -21,6 +23,7 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-onboarding",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   }
 ]
