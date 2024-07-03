@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Gallery.module.css";
 import Video from "../video/Video";
-import { FaTwitter, FaLinkedin, FaGlobe } from "react-icons/fa";
+import { FaTwitter, FaLinkedin, FaGlobe, FaGithub } from "react-icons/fa";
 import Modal from "react-modal";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 
@@ -65,6 +65,14 @@ const Gallery = ({ items }) => {
                     target="_blank"
                     rel="noopener noreferrer">
                     <FaLinkedin className={styles.icon} />
+                  </a>
+                )}
+                {item.githubId && (
+                  <a
+                    href={`https://github.com/${item.githubId}`}
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    <FaGithub className={styles.icon} />
                   </a>
                 )}
                 {item.personalSite && (

@@ -5,7 +5,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Phyllotaxis",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Flappy Bird",
@@ -13,7 +14,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FlappyBird",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Firework",
@@ -21,7 +23,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Firework",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Fractal Tree",
@@ -29,7 +32,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FractalTree",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Starfield Simulation",
@@ -37,7 +41,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Starfield",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Double Pendulum",
@@ -45,7 +50,8 @@
     "Author": "Alireza Hadjar",
     "source": "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/DoublePendulum",
     "twitterId": "alireza_hadjar",
-    "linkedInId": "alireza-hadjar-526590197"
+    "linkedInId": "alireza-hadjar-526590197",
+    "githubId": "AlirezaHadjar"
   },
   {
     "caption": "Shared Element Transitions Example",
@@ -53,7 +59,8 @@
     "Author": "Kacper Kapuściak",
     "source": "https://github.com/software-mansion/react-native-reanimated/blob/4fcda2939cf70c9bb83efe08b8814e48653b1fa3/app/src/examples/SharedElementTransitions/Profiles.tsx",
     "twitterId": "kacperkapusciak",
-    "linkedInId": "kacperkapusciak"
+    "linkedInId": "kacperkapusciak",
+    "githubId": "kacperkapusciak"
   },
   {
     "caption": "Gradient Shared Transition",
@@ -61,7 +68,8 @@
     "Author": "Kacper Kapuściak",
     "source": "https://github.com/software-mansion-labs/gradient-shared-transitions-example",
     "twitterId": "kacperkapusciak",
-    "linkedInId": "kacperkapusciak"
+    "linkedInId": "kacperkapusciak",
+    "githubId": "kacperkapusciak"
   },
   {
     "caption": "Magic Curtain Effect",
@@ -69,7 +77,8 @@
     "Author": "Kacper Kapuściak",
     "source": "https://github.com/kacperkapusciak/expo-magic-curtain",
     "twitterId": "kacperkapusciak",
-    "linkedInId": "kacperkapusciak"
+    "linkedInId": "kacperkapusciak",
+    "githubId": "kacperkapusciak"
   },
   {
     "caption": "Parallax Effect",
@@ -77,7 +86,8 @@
     "Author": "Kacper Kapuściak",
     "source": "https://github.com/software-mansion-labs/reanimated-parallax",
     "twitterId": "kacperkapusciak",
-    "linkedInId": "kacperkapusciak"
+    "linkedInId": "kacperkapusciak",
+    "githubId": "kacperkapusciak"
   },
   {
     "caption": "Fake Shared Element Transition",
@@ -85,7 +95,8 @@
     "Author": "Alek Mikucki",
     "source": "https://github.com/aleqsio/sharedelement/blob/master/SharedElement.tsx",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "View Transition using Skia",
@@ -93,7 +104,8 @@
     "Author": "Alek Mikucki",
     "source": "https://gist.github.com/aleqsio/754b3a2b664b928f5c65d715b9452d77",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "Townscaper",
@@ -101,7 +113,8 @@
     "Author": "Alek Mikucki",
     "source": "https://github.com/aleqsio/expo-image-and-gesture-handler-demo",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "Gradient Picker",
@@ -109,7 +122,8 @@
     "Author": "Alek Mikucki",
     "source": "https://github.com/aleqsio/gradient-picker-reanimated",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "Micro Interactoins",
@@ -117,7 +131,8 @@
     "Author": "Alek Mikucki",
     "source": "https://x.com/aleqsio/status/1701164940629815741/photo/1",
     "twitterId": "aleqsio",
-    "linkedInId": "aleqsio"
+    "linkedInId": "aleqsio",
+    "githubId": "aleqsio"
   },
   {
     "caption": "Ripple Effect With React Native Skia",
@@ -125,7 +140,8 @@
     "Author": "Daehyeon Mun (문대현)",
     "source": "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
     "twitterId": "DaehyeonMun",
-    "linkedInId": "daehyeon-mun-5ba674164"
+    "linkedInId": "daehyeon-mun-5ba674164",
+    "githubId": "daehyeonmun2021"
   },
   {
     "caption": "Animated Cards",
@@ -133,7 +149,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-cards",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Animated Shapes",
@@ -141,7 +158,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-shapes",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Audio Input Visualizer",
@@ -149,7 +167,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/audio-input-visualizer",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Flippy Card",
@@ -157,7 +176,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flippy-card",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Playing Cards",
@@ -165,7 +185,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Rating Wave",
@@ -173,7 +194,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Expandable FAB",
@@ -181,7 +203,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expandable-fab",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Micro Swipe Actions",
@@ -189,7 +212,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/micro-swipe-actions",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Genetic AI",
@@ -197,7 +221,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/GeneticAI",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Bending Circle",
@@ -205,7 +230,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Chasing Bubble",
@@ -213,7 +239,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Expo Pulse",
@@ -221,7 +248,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ExpoPulse",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Morphing Circle",
@@ -229,7 +257,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/MorphingCircle",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Vital Sign Monitor",
@@ -237,7 +266,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/VitalSignMonitor",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Confetti",
@@ -245,7 +275,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Gran Turismo Countdown",
@@ -253,7 +284,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/GranTurismo",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Metaball Shader",
@@ -261,7 +293,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/MetaballShader",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Random Circle Shader",
@@ -269,7 +302,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/RandomCircles",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Focus Animation",
@@ -277,7 +311,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Gradient Clock",
@@ -285,7 +320,8 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   },
   {
     "caption": "Donut Chart",
@@ -293,6 +329,7 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/DonutChart",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   }
 ]
