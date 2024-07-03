@@ -5,7 +5,8 @@
     "Author": "Kacper Kapuściak",
     "source": "https://github.com/kacperkapusciak/reanimated-squishy-button",
     "twitterId": "kacperkapusciak",
-    "linkedInId": "kacperkapusciak"
+    "linkedInId": "kacperkapusciak",
+    "githubId": "kacperkapusciak"
   },
   {
     "caption": "Dial Button",
@@ -13,7 +14,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dial-button",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Floating Button",
@@ -21,7 +23,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/floating-button",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Runny Border",
@@ -29,7 +32,8 @@
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/runny-border",
     "twitterId": "hewad_mubariz",
-    "linkedInId": "hewad-mubariz"
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
   },
   {
     "caption": "Neumorphic Button",
@@ -37,6 +41,7 @@
     "Author": "Daniel Friyia",
     "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/NeumorphicButton",
     "twitterId": "wa2goose",
-    "linkedInId": "thefriyia"
+    "linkedInId": "thefriyia",
+    "githubId": "friyiajr"
   }
 ]
