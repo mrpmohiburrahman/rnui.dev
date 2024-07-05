@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Typography Metaball",
+    "demo": "demo/misc/typography_metaball_daehyeon_mun.mp4",
+    "Author": "Daehyeon Mun (문대현)",
+    "source": "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/typography-metaball",
+    "twitterId": "DaehyeonMun",
+    "linkedInId": "daehyeon-mun-5ba674164",
+    "githubId": "daehyeonmun2021"
+  },
+  {
     "caption": "Pixelated Image",
     "demo": "demo/misc/pixelated_image_daehyeon_mun.mp4",
     "Author": "Daehyeon Mun (문대현)",
