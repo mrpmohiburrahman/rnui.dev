@@ -1,5 +1,23 @@
 [
   {
+    "caption": "Pixelated Image",
+    "demo": "demo/misc/pixelated_image_daehyeon_mun.mp4",
+    "Author": "Daehyeon Mun (문대현)",
+    "source": "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/pixelated-image",
+    "twitterId": "DaehyeonMun",
+    "linkedInId": "daehyeon-mun-5ba674164",
+    "githubId": "daehyeonmun2021"
+  },
+  {
+    "caption": "Ripple Effect With React Native Skia",
+    "demo": "demo/misc/ripple_effect_daehyeon_mun.mp4",
+    "Author": "Daehyeon Mun (문대현)",
+    "source": "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
+    "twitterId": "DaehyeonMun",
+    "linkedInId": "daehyeon-mun-5ba674164",
+    "githubId": "daehyeonmun2021"
+  },
+  {
     "caption": "Phyllotaxis Spiral",
     "demo": "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
@@ -133,15 +151,6 @@
     "twitterId": "aleqsio",
     "linkedInId": "aleqsio",
     "githubId": "aleqsio"
-  },
-  {
-    "caption": "Ripple Effect With React Native Skia",
-    "demo": "demo/misc/ripple_effect_daehyeon_mun.mp4",
-    "Author": "Daehyeon Mun (문대현)",
-    "source": "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
-    "twitterId": "DaehyeonMun",
-    "linkedInId": "daehyeon-mun-5ba674164",
-    "githubId": "daehyeonmun2021"
   },
   {
     "caption": "Animated Cards",
