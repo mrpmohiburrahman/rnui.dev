@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated Twitter Profile",
+    "demo": "demo/misc/animated_twitter_profile_ evening_kid_ arnaud_dellinger.mp4",
+    "Author": "Arnaud Dellinger ( evening kid )",
+    "source": "https://gist.github.com/eveningkid/a894c86db4ee1091611e9dc6a2470348",
+    "linkedInId": "arnaud-dellinger",
+    "twitterId": "eveningkid",
+    "githubId": "eveningkid"
+  },
+  {
     "caption": "react-native-snow-bg",
     "demo": "demo/misc/react-native-snow-bg-epicode.mp4",
     "Author": "Epicode | 0xV",
