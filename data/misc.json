@@ -1,5 +1,13 @@
 [
   {
+    "caption": "react-native-snow-bg",
+    "demo": "demo/misc/react-native-snow-bg-epicode.mp4",
+    "Author": "Epicode | 0xV",
+    "source": "https://github.com/msadura/react-native-snow-bg",
+    "twitterId": "epicode_",
+    "githubId": "msadura"
+  },
+  {
     "caption": "Color Pixelated",
     "demo": "demo/misc/color_pixelated_daehyeon_mun.mp4",
     "Author": "Daehyeon Mun (문대현)",
