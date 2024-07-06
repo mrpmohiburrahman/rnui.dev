@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Masked Text",
+    "demo": "demo/misc/masked_text_yassire_mtioui.mp4",
+    "Author": "Yassire Mtioui",
+    "source": "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/MaskedText",
+    "linkedInId": "yassire-mtioui-908950277",
+    "twitterId": "YMtioui",
+    "githubId": "Yassiremt"
+  },
+  {
     "caption": "Speech Visualization",
     "demo": "demo/misc/speech_visualization_yassire_mtioui.mp4",
     "Author": "Yassire Mtioui",
