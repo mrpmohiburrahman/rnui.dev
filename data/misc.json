@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Sphere Animation",
+    "demo": "demo/misc/sphere_animation_andreev_danila.mp4",
+    "Author": "Andreev Danila",
+    "source": "https://github.com/andreev-danila/sphere-svg-animation",
+    "twitterId": "dan_w1d1",
+    "githubId": "andreev-danila"
+  },
+  {
     "caption": "Skia Gesture",
     "demo": "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
