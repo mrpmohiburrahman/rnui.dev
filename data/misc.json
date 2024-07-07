@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Spread Cards Effect ( Color Swatch )",
+    "demo": "demo/misc/color_swatch_aashu_dubey.mp4",
+    "Author": "Aashu Dubey",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/color_swatch",
+    "twitterId": "aashudubey_ad",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "Aashu-Dubey"
+  },
+  {
     "caption": "Animated Toolbar",
     "demo": "demo/misc/animated_toolbar_aashu_dubey.mp4",
     "Author": "Aashu Dubey",
