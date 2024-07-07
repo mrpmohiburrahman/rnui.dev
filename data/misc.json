@@ -1,11 +1,18 @@
 [
   {
+    "caption": "Rope Physics",
+    "demo": "demo/misc/rope_physics_aashu_dubey.mp4",
+    "Author": "Aashu Dubey",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/rope_physics",
+    "twitterId": "aashudubey_ad",
+    "githubId": "Aashu-Dubey"
+  },
+  {
     "caption": "Spread Cards Effect ( Color Swatch )",
     "demo": "demo/misc/color_swatch_aashu_dubey.mp4",
     "Author": "Aashu Dubey",
     "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/color_swatch",
     "twitterId": "aashudubey_ad",
-    "linkedInId": "enzomanuelmangano",
     "githubId": "Aashu-Dubey"
   },
   {
@@ -14,7 +21,6 @@
     "Author": "Aashu Dubey",
     "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_toolbar",
     "twitterId": "aashudubey_ad",
-    "linkedInId": "enzomanuelmangano",
     "githubId": "Aashu-Dubey"
   },
   {
@@ -58,7 +64,6 @@
     "Author": "Aashu Dubey",
     "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
     "twitterId": "aashudubey_ad",
-    "linkedInId": "enzomanuelmangano",
     "githubId": "Aashu-Dubey"
   },
   {
