@@ -36,6 +36,15 @@
   },
   {
     "caption": "Grid Magnification",
+    "demo": "demo/misc/grid_magnification_aashu_dubey.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
+    "twitterId": "aashudubey_ad",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "Aashu-Dubey"
+  },
+  {
+    "caption": "Grid Magnification",
     "demo": "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
     "source": "https://github.com/enzomanuelmangano/exploring-skia/tree/main/grid-magnification",
