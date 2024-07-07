@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Fancy Slider",
+    "demo": "demo/sliders/fancy_slider_andreev_danila.mp4",
+    "Author": "Andreev Danila",
+    "source": "https://github.com/andreev-danila/fancy-slider",
+    "twitterId": "dan_w1d1",
+    "githubId": "andreev-danila"
+  },
+  {
     "caption": "Sensor Based Slider",
     "demo": "demo/sliders/sensor_based_slider_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
