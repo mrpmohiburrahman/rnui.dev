@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Mention Input",
+    "demo": "demo/misc/mention_input_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/expo-mention",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Custom Menu",
     "demo": "demo/misc/custom_menu_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
