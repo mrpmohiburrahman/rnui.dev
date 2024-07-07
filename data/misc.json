@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Skia Gesture",
+    "demo": "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/react-native-skia-gesture/tree/main/example",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Skeleton",
     "demo": "demo/misc/skeleton_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
