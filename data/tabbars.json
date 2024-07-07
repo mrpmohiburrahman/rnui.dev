@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Custom Segmented Control",
+    "demo": "demo/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/19-segmented-control",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Detachable Bottom Tab Bar",
     "demo": "demo/tabbars/detachable_bottom_tab_bar_arunabh_verma.mp4",
     "Author": "Arunabh Verma ",
