@@ -2,6 +2,7 @@ module.exports = {
   packages: [
     "getting-started",
     "onboardings",
+    "carousels",
     "headers",
     "lists",
     "arcsliders",
