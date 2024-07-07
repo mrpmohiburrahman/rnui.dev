@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Detachable Bottom Tab Bar",
+    "demo": "demo/tabbars/detachable_bottom_tab_bar_arunabh_verma.mp4",
+    "Author": "Arunabh Verma ",
+    "source": "https://github.com/arunabhverma/expo-bottom-tab-anim",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Spotify Tab",
     "demo": "demo/tabbars/spotify_tab_alireza_hadjar.mp4",
     "Author": "Alireza Hadjar",
