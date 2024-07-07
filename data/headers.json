@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Apple Photos Inspired Header",
+    "demo": "demo/headers/apple_photos_inspired_header_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/react-native-chrome-header",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Chrome Header",
     "demo": "demo/headers/chrome_header_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
