@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Shake Animation",
+    "demo": "demo/misc/shake_animation_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/exploring-skia/tree/main/grid-magnification",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Grid Magnification",
     "demo": "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
