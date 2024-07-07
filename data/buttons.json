@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Interpolation Button",
+    "demo": "demo/buttons/interpolation_button_andreev_danila.mp4",
+    "Author": "Andreev Danila",
+    "source": "https://github.com/andreev-danila/interpolation-button",
+    "twitterId": "dan_w1d1",
+    "githubId": "andreev-danila"
+  },
+  {
     "caption": "Morph Button",
     "demo": "demo/buttons/morph_button_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
