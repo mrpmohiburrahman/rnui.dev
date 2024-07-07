@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Edge Panel",
+    "demo": "demo/misc/edge_panel_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/expo-edge-panel",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Masked Text",
     "demo": "demo/misc/masked_text_yassire_mtioui.mp4",
     "Author": "Yassire Mtioui",
