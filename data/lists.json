@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated FlatList",
+    "demo": "demo/lists/animated_flatList_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/15-animated-flatlist",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Swipeable Rows",
     "demo": "demo/lists/swipeable_rows_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
