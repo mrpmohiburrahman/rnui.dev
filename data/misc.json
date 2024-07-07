@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Cards Swap",
+    "demo": "demo/misc/cards_swap_aashu_dubey.mp4",
+    "Author": "Aashu Dubey",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/cards_swap/src/cards_swap",
+    "twitterId": "aashudubey_ad",
+    "githubId": "Aashu-Dubey"
+  },
+  {
     "caption": "Custom Cursor/Caret",
     "demo": "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
     "Author": "Aashu Dubey",
