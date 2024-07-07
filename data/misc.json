@@ -1,9 +1,18 @@
 [
   {
+    "caption": "Metaball Animation",
+    "demo": "demo/misc/metaball_animation_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/exploring-skia/tree/main/metaball",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Animated Gradient",
     "demo": "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
-    "source": "https://github.com/arunabhverma/expo-x-input",
+    "source": "https://github.com/enzomanuelmangano/exploring-skia/tree/main/animated-gradient",
     "twitterId": "reactiive_",
     "linkedInId": "enzomanuelmangano",
     "githubId": "enzomanuelmangano"
