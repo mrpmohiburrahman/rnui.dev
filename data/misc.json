@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Custom Cursor/Caret",
+    "demo": "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
+    "Author": "Aashu Dubey",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_caret",
+    "twitterId": "aashudubey_ad",
+    "githubId": "Aashu-Dubey"
+  },
+  {
     "caption": "Rope Physics",
     "demo": "demo/misc/rope_physics_aashu_dubey.mp4",
     "Author": "Aashu Dubey",
