@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated Gradient",
+    "demo": "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/arunabhverma/expo-x-input",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Text Input Inspired By X (Twitter)",
     "demo": "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
