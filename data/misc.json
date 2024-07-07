@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated Toolbar",
+    "demo": "demo/misc/animated_toolbar_aashu_dubey.mp4",
+    "Author": "Aashu Dubey",
+    "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_toolbar",
+    "twitterId": "aashudubey_ad",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "Aashu-Dubey"
+  },
+  {
     "caption": "Sphere Animation",
     "demo": "demo/misc/sphere_animation_andreev_danila.mp4",
     "Author": "Andreev Danila",
@@ -37,7 +46,7 @@
   {
     "caption": "Grid Magnification",
     "demo": "demo/misc/grid_magnification_aashu_dubey.mp4",
-    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "Author": "Aashu Dubey",
     "source": "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
     "twitterId": "aashudubey_ad",
     "linkedInId": "enzomanuelmangano",
