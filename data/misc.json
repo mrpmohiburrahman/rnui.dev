@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Text Input Inspired By X (Twitter)",
+    "demo": "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/expo-x-input",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Mention Input",
     "demo": "demo/misc/mention_input_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
