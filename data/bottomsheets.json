@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Bottom Sheet",
+    "demo": "demo/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/what-about-gestures/tree/main/03-full-bottom-sheet",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Reanimated Bottom Sheet",
     "demo": "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.mp4",
     "Author": "Kacper Kapuściak",
