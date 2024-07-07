@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Chrome Header",
+    "demo": "demo/headers/chrome_header_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/react-native-chrome-header",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Sticky Header",
     "demo": "demo/headers/sticky_header_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
