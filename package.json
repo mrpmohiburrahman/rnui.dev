@@ -12,7 +12,8 @@
     "clear": "docusaurus clear",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "update:updateChangedItems": "node scripts/updateChangedItems.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "extract-ids": "ts-node scripts/extractIds.ts"
   },
   "dependencies": {
     "@docusaurus/core": "^3.3.2",
@@ -38,7 +39,9 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.3.2",
     "@tsconfig/docusaurus": "^2.0.3",
+    "@types/node": "^20.14.10",
     "husky": "^9.0.11",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "browserslist": {
