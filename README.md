@@ -36,16 +36,18 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
      "Author": "Author Name",
      "source": "https://github.com/your-repo/animation-source",
      "twitterId": "your_twitter_id",
-     "linkedInId": "your_linkedin_id"
+     "linkedInId": "your_linkedin_id",
+     "githubId": "your_githubid_id"
    }
    ```
 
-   - `caption`: A brief description of the animation.
-   - `demo`: Path to the demo video of the animation.
-   - `Author`: Your name.
-   - `source`: URL to the source code repository for the animation.
-   - `twitterId`: Your Twitter username (without the `@`).
-   - `linkedInId`: Your LinkedIn profile ID.
+   - `caption`: ( Mandatory ) A brief description of the animation.
+   - `demo`: ( Mandatory ) Path to the demo video of the animation.
+   - `Author`: ( Mandatory ) Your name.
+   - `source`: ( Mandatory ) URL to the source code repository for the animation.
+   - `twitterId`: ( Optional ) Your Twitter username (without the `@`).
+   - `linkedInId`: ( Optional ) Your LinkedIn profile ID.
+   - `githubId`: ( Optional ) Your GitHub profile ID.
 
 3. **Add Demo Video**:
 
@@ -85,7 +87,8 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
      "Author": "Jane Doe",
      "source": "https://github.com/janedoe/circular-loader",
      "twitterId": "janedoe",
-     "linkedInId": "janedoe"
+     "linkedInId": "janedoe",
+     "githubId": "janedoe"
    }
    ```
 
