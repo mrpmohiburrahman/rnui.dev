@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated Split Button",
+    "demo": "demo/buttons/animated_split_button_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/21-animated-split-button",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Interpolation Button",
     "demo": "demo/buttons/interpolation_button_andreev_danila.mp4",
     "Author": "Andreev Danila",
