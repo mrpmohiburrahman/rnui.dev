@@ -1,8 +1,17 @@
 [
   {
+    "caption": "Heart Beat Animation",
+    "demo": "demo/misc/heart_beat_animation_william_candillon.mp4",
+    "Author": "William Candillon",
+    "source": "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Heartrate",
+    "twitterId": "wcandillon",
+    "linkedInId": "wcandillon",
+    "githubId": "wcandillon"
+  },
+  {
     "caption": "iOS UI",
     "demo": "demo/misc/ios_ui_enes_ozturk.mp4",
-    "Author": "Enes Öztürk ",
+    "Author": "Enes Öztürk",
     "source": "https://github.com/enesozturk/react-native-ios",
     "twitterId": "enesozturkdev",
     "linkedInId": "enes-ozturk",
@@ -11,7 +20,7 @@
   {
     "caption": "Instagram iOS Page Transitions",
     "demo": "demo/misc/instagram_ios_page_transitions_enes.mp4",
-    "Author": "Enes Öztürk ",
+    "Author": "Enes Öztürk",
     "source": "https://github.com/enesozturk/react-native-instagram",
     "twitterId": "enesozturkdev",
     "linkedInId": "enes-ozturk",
