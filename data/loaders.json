@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Generators",
+    "demo": "demo/loaders/generators_william_candillon.mp4",
+    "Author": "William Candillon",
+    "source": "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Generators",
+    "twitterId": "wcandillon",
+    "linkedInId": "wcandillon",
+    "githubId": "wcandillon"
+  },
+  {
     "caption": "Animated Loader",
     "demo": "demo/loaders/animated_loader_hewad_mubariz.mp4",
     "Author": "Daniel Friyia",
