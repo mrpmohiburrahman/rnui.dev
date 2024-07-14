@@ -3,6 +3,7 @@ module.exports = {
     "getting-started",
     "onboardings",
     "carousels",
+    "parallaxes",
     "dropdowns",
     "headers",
     "lists",
