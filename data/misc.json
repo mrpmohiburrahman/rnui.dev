@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Flight Animation",
+    "demo": "demo/misc/flight_animation_lucas_lima.mp4",
+    "Author": "Lucas Lima ",
+    "source": "https://github.com/lklima/rn-flight-animation",
+    "twitterId": "lima_lucas3",
+    "linkedInId": "lucas-lima-5b9282182",
+    "githubId": "lklima"
+  },
+  {
     "caption": "Heart Beat Animation",
     "demo": "demo/misc/heart_beat_animation_william_candillon.mp4",
     "Author": "William Candillon",
