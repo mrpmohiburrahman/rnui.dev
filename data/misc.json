@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Spinning Circle",
+    "demo": "demo/misc/spinning_circle_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/spinning-circle",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
+  },
+  {
     "caption": "Flight Animation",
     "demo": "demo/misc/flight_animation_lucas_lima.mp4",
     "Author": "Lucas Lima ",
