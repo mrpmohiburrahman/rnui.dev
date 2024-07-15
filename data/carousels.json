@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Wiggling Cards",
+    "demo": "demo/carousels/wiggling_cards_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/wiggling-cards",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
+  },
+  {
     "caption": "Circular Carousel",
     "demo": "demo/carousels/circular_carousel_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
