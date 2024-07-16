@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Swipable List",
+    "demo": "demo/lists/swipable_list_arunabh_verma.mp4",
+    "Author": "Arunabh Verma",
+    "source": "https://github.com/arunabhverma/expo-swipable-list-item",
+    "twitterId": "iamarunabh",
+    "linkedInId": "arunabhv",
+    "githubId": "arunabhverma"
+  },
+  {
     "caption": "Animated FlatList",
     "demo": "demo/lists/animated_flatList_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
