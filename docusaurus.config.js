@@ -5,30 +5,21 @@ module.exports = {
   tagline: "Awesome React Native UI components made by community! 🚀",
   url: "https://mrpmohiburrahman.github.io",
   baseUrl: "/awesome-react-native-ui/",
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   organizationName: "mrpmohiburrahman",
   projectName: "react-native-bottom-sheet",
   favicon: "img/favicon.ico",
-  onBrokenLinks: "warn",
   themeConfig: {
     image: "img/icon.png",
     navbar: {
       title: "Awesome React Native UI",
       hideOnScroll: false,
       items: [
-        // {
-        //   to: "modal",
-        //   activeBasePath: "modal",
-        //   label: "Bottom Sheet Modal",
-        //   position: "left",
-        // },
-        // { to: "blog", label: "Blog", position: "left" },
-        // { to: "sponsors", label: "Sponsors", position: "right" },
         {
           href: "https://github.com/mrpmohiburrahman/awesome-react-native-ui",
-          label: "GitHub",
           position: "right",
+          html: '<a class="navbar__link" href="https://github.com/mrpmohiburrahman/awesome-react-native-ui" target="_blank" rel="noopener noreferrer"><i class="fas fa-star"></i> Star Us on GitHub</a>',
         },
       ],
     },
@@ -47,19 +38,8 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           routeBasePath: "/",
           path: "docs",
-          // editUrl:
-          //   "https://github.com/gorhom/react-native-bottom-sheet/edit/website/",
-          // lastVersion: "current",
           include: ["**/*.md", "**/*.mdx"],
         },
-        // blog: {
-        //   path: "blog",
-        //   routeBasePath: "/blog",
-        //   showReadingTime: false,
-        //   blogSidebarCount: "ALL",
-        //   editUrl:
-        //     "https://github.com/gorhom/react-native-bottom-sheet/edit/website/website/blog/",
-        // },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
         },
@@ -82,5 +62,11 @@ module.exports = {
         },
       },
     ],
+  ],
+  stylesheets: [
+    {
+      href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+      type: "text/css",
+    },
   ],
 };
