@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Transitions",
+    "demo": "demo/misc/rn_transitions_lucas_lima.mp4",
+    "Author": "Lucas Lima",
+    "source": "https://github.com/lklima/rn-transitions",
+    "twitterId": "lima_lucas3",
+    "linkedInId": "lucas-lima-5b9282182",
+    "githubId": "lklima"
+  },
+  {
     "caption": "Spinning Circle",
     "demo": "demo/misc/spinning_circle_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
