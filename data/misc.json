@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Animated Stacked Cards",
+    "demo": "demo/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.mp4",
+    "Author": "Enzo Manuel Mangano ( Reactiive )",
+    "source": "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/22-stacked-cards",
+    "twitterId": "reactiive_",
+    "linkedInId": "enzomanuelmangano",
+    "githubId": "enzomanuelmangano"
+  },
+  {
     "caption": "Transitions",
     "demo": "demo/misc/rn_transitions_lucas_lima.mp4",
     "Author": "Lucas Lima",
