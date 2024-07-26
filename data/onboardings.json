@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Onboarding Steps",
+    "demo": "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/onboarding-steps",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
+  },
+  {
     "caption": "Onboarding Animation",
     "demo": "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
     "Author": "Alek Mikucki",
@@ -9,7 +18,7 @@
     "githubId": "aleqsio"
   },
   {
-    "caption": "Bouncy Onboarding  ",
+    "caption": "Bouncy Onboarding",
     "demo": "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
     "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/BouncyOnboarding",
