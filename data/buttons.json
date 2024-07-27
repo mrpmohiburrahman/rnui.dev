@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Split Button",
+    "demo": "demo/buttons/split_button_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/split-button",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
+  },
+ {
     "caption": "Animated Split Button",
     "demo": "demo/buttons/animated_split_button_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
