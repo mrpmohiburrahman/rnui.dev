@@ -12,6 +12,7 @@ module.exports = {
     "tabbars",
     "bottomsheets",
     "loaders",
+    "circular-progress-bars",
     "charts",
     "buttons",
     "accordions",
