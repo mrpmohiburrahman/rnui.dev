@@ -611,14 +611,5 @@
     "twitterId": "wa2goose",
     "linkedInId": "thefriyia",
     "githubId": "friyiajr"
-  },
-  {
-    "caption": "Donut Chart",
-    "demo": "demo/misc/donut_chart_david_friyia.mp4",
-    "Author": "Daniel Friyia",
-    "source": "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/DonutChart",
-    "twitterId": "wa2goose",
-    "linkedInId": "thefriyia",
-    "githubId": "friyiajr"
   }
 ]
