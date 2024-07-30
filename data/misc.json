@@ -1,5 +1,14 @@
 [
   {
+    "caption": "Flash Cards",
+    "demo": "demo/misc/flash_cards_hewad_mubariz.mp4",
+    "Author": "Hewad Mubariz",
+    "source": "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flash-cards",
+    "twitterId": "hewad_mubariz",
+    "linkedInId": "hewad-mubariz",
+    "githubId": "hewad-mubariz"
+  },
+  {
     "caption": "Animated Stacked Cards",
     "demo": "demo/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.mp4",
     "Author": "Enzo Manuel Mangano ( Reactiive )",
