@@ -5,6 +5,7 @@ module.exports = {
     "carousels",
     "parallaxes",
     "dropdowns",
+    "pickers",
     "headers",
     "lists",
     "arcsliders",
