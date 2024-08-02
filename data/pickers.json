@@ -1,7 +1,7 @@
 [
   {
     "caption": "Flash Cards",
-    "demo": "demo/pickers/pickers_konstantinos_efkarpidis .mp4",
+    "demo": "demo/pickers/pickers_konstantinos_efkarpidis.mp4",
     "Author": "Konstantinos Efkarpidis",
     "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ValuePickersScreen.tsx",
     "linkedInId": "konstantinos-efkarpidis",
