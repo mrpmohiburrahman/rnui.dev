@@ -1,5 +1,13 @@
 [
   {
+    "caption": "iOS shutdown slider",
+    "demo": "demo/sliders/ios_shutdown_sliders_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ShutdownIOSScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "Fancy Slider",
     "demo": "demo/sliders/fancy_slider_andreev_danila.mp4",
     "Author": "Andreev Danila",
