@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Airbnb's Search component",
+    "demo": "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/AirbnbScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "Flash Cards",
     "demo": "demo/misc/flash_cards_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
