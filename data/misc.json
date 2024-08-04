@@ -1,5 +1,13 @@
 [
   {
+    "caption": "NFC Reader",
+    "demo": "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/master/src/screens/NFCReaderScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "Airbnb's Search component",
     "demo": "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
     "Author": "Konstantinos Efkarpidis",
