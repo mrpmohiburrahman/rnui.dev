@@ -1,5 +1,13 @@
 [
   {
+    "caption": "iOS Search Bar",
+    "demo": "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b91bcc460cdccf1b7290bcacac8abb7606622494/src/screens/TranslateSearchIOSScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "NFC Reader",
     "demo": "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
     "Author": "Konstantinos Efkarpidis",
