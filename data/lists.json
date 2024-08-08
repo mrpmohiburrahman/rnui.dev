@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Double List",
+    "demo": "demo/lists/double_list_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b3563eca0c68b34ace412dec30b7f63d8a7e4aef/src/screens/DoubleListScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "Swipable List",
     "demo": "demo/lists/swipable_list_arunabh_verma.mp4",
     "Author": "Arunabh Verma",
