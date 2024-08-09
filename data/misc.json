@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Circular Animated Text Screen",
+    "demo": "demo/misc/circular_animated_text_screen_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b9b4ec750ad2ed172db4badcfa0164f95517fd82/src/screens/CircularAnimatedTextScreen.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "iOS Search Bar",
     "demo": "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
     "Author": "Konstantinos Efkarpidis",
