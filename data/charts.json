@@ -1,9 +1,9 @@
 [
   {
-    "caption": "Group Chart",
+    "caption": "Group Stack Charts",
     "demo": "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
     "Author": "Konstantinos Efkarpidis",
-    "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupChart.tsx",
+    "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupStackCharts.tsx",
     "linkedInId": "konstantinos-efkarpidis",
     "githubId": "kostas64"
   },
