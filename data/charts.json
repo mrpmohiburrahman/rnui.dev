@@ -1,5 +1,13 @@
 [
   {
+    "caption": "Group Chart",
+    "demo": "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
+    "Author": "Konstantinos Efkarpidis",
+    "source": "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupChart.tsx",
+    "linkedInId": "konstantinos-efkarpidis",
+    "githubId": "kostas64"
+  },
+  {
     "caption": "Pie Chart",
     "demo": "demo/charts/pie_chart_hewad_mubariz.mp4",
     "Author": "Hewad Mubariz",
