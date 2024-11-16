@@ -4,7 +4,7 @@ module.exports = {
   title: "Awesome React Native UI",
   tagline: "Awesome React Native UI components made by community! 🚀",
   url: "https://mrpmohiburrahman.github.io",
-  baseUrl: "/awesome-react-native-ui/",
+  baseUrl: "/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   organizationName: "mrpmohiburrahman",
