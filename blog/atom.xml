@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog</id>
+    <id>https://mrpmohiburrahman.github.io/blog</id>
     <title>Awesome React Native UI Blog</title>
     <updated>2021-08-30T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog"/>
+    <link rel="alternate" href="https://mrpmohiburrahman.github.io/blog"/>
     <subtitle>Awesome React Native UI Blog</subtitle>
-    <icon>https://mrpmohiburrahman.github.io/awesome-react-native-ui/img/favicon.ico</icon>
+    <icon>https://mrpmohiburrahman.github.io/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Awesome React Native UI]]></title>
-        <id>https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog/2021/08/30/bottom-sheet-v4</id>
-        <link href="https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog/2021/08/30/bottom-sheet-v4"/>
+        <id>https://mrpmohiburrahman.github.io/blog/2021/08/30/bottom-sheet-v4</id>
+        <link href="https://mrpmohiburrahman.github.io/blog/2021/08/30/bottom-sheet-v4"/>
         <updated>2021-08-30T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[A collection of beautiful animations created by the community]]></summary>
         <content type="html"><![CDATA[<p>This site a collection of beautiful animations created by the community.

@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Awesome React Native UI Blog</title>
-        <link>https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog</link>
+        <link>https://mrpmohiburrahman.github.io/blog</link>
         <description>Awesome React Native UI Blog</description>
         <lastBuildDate>Mon, 30 Aug 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,8 +10,8 @@
         <language>en</language>
         <item>
             <title><![CDATA[Awesome React Native UI]]></title>
-            <link>https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog/2021/08/30/bottom-sheet-v4</link>
-            <guid>https://mrpmohiburrahman.github.io/awesome-react-native-ui/blog/2021/08/30/bottom-sheet-v4</guid>
+            <link>https://mrpmohiburrahman.github.io/blog/2021/08/30/bottom-sheet-v4</link>
+            <guid>https://mrpmohiburrahman.github.io/blog/2021/08/30/bottom-sheet-v4</guid>
             <pubDate>Mon, 30 Aug 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[A collection of beautiful animations created by the community]]></description>
             <content:encoded><![CDATA[<p>This site a collection of beautiful animations created by the community.
