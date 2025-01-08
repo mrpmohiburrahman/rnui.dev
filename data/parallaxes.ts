@@ -1,0 +1,43 @@
+import type { ItemType } from "./items"
+
+export const parallaxes: ItemType[] = [
+  {
+    category: "Parallaxes",
+    id: "01JGQWKNN986FX3DQ254RT3GQ8",
+    created_at: "2025-01-04T05:29:08.947Z",
+    caption: "Parallax Carousel",
+    author: "Arunabh Verma",
+    twitterId: "iamarunabh",
+    linkedInId: "arunabhv",
+    githubId: "arunabhverma",
+    videoSrc: "demo/parallaxes/parallax_carousel_arunabh_verma.mp4",
+    thumbnailSrc: "thumbnails/parallaxes/parallax_carousel_arunabh_verma.jpg",
+    source: "https://github.com/arunabhverma/expo-parallax-carousel",
+  },
+  {
+    id: "01JFP0F1Y9P6RG4CR726AXTKZT",
+    caption: "Parallax Effect",
+    videoSrc: "demo/parallaxes/parallax_cards_lucas_lima.mp4",
+    thumbnailSrc: "thumbnails/parallaxes/parallax_cards_lucas_lima.jpg",
+    author: "Lucas Lima",
+    source: "https://github.com/lklima/rn-parallax-cards",
+    twitterId: "lima_lucas3",
+    linkedInId: "lucas-lima-5b9282182",
+    githubId: "lklima",
+    category: "Parallaxes",
+    created_at: "2024-12-23T06:01:11.142Z",
+  },
+  {
+    id: "01GZ4Z9V0P7K8JY8H1QX9T3B1M",
+    caption: "Parallax Effect",
+    videoSrc: "demo/parallaxes/parallax_effect_kacper_kapuściak.mp4",
+    thumbnailSrc: "thumbnails/parallaxes/parallax_effect_kacper_kapuściak.jpg",
+    author: "Kacper Kapuściak",
+    source: "https://github.com/software-mansion-labs/reanimated-parallax",
+    twitterId: "kacperkapusciak",
+    linkedInId: "kacperkapusciak",
+    githubId: "kacperkapusciak",
+    category: "Parallaxes",
+    created_at: "2024-12-23T06:01:10.142Z",
+  },
+]
