@@ -7,6 +7,7 @@ import "./globals.css"
 import { fontSans } from "@/data/font-sans"
 import { getUniqueAuthors, getUniqueCategories } from "@/data/items"
 import { metadata } from "@/data/meta-data"
+import { Analytics } from "@vercel/analytics/next"
 
 import { PostHogProvider } from "@/lib/posthog-provider"
 import { Toaster } from "@/components/ui/sonner"
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <Toaster richColors />
           </ThemeProvider>
           <SiteFooter />
+          <Analytics />
         </body>
       </PostHogProvider>
     </html>
