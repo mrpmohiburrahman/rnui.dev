@@ -9,7 +9,6 @@ import { BoxIcon, Hash, TagIcon, User } from "lucide-react"
 import { cn, truncateString } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-import { Logo } from "../logo"
 
 type ProductNavProps = {
   authors?: string[]
