@@ -1,5 +1,6 @@
 // components/nav/top-nav-bar.tsx
 import Link from "next/link"
+import { GitHubLogoIcon } from "@radix-ui/react-icons"
 import clsx from "clsx"
 
 import {
@@ -24,18 +25,6 @@ export function TopNavBar() {
       <div className="flex items-center space-x-4">
         <NavigationMenu>
           <NavigationMenuList>
-            {/* <NavigationMenuItem>
-              <Link href="/feedback" legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={clsx(
-                    navigationMenuTriggerStyle(),
-                    " border dark:border-gray-500 border-gray-100"
-                  )}
-                >
-                Feedback
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem> */}
             <NavigationMenuItem>
               <Link href="/bookmarks" legacyBehavior passHref>
                 <NavigationMenuLink
@@ -52,6 +41,26 @@ export function TopNavBar() {
               <Link href="/subscribe" legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Subscribe
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link
+                href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+                legacyBehavior
+                passHref
+              >
+                <NavigationMenuLink
+                  target="_blank" // Opens the link in a new tab
+                  rel="noopener noreferrer" // Security best practices
+                  className={clsx(
+                    navigationMenuTriggerStyle(),
+                    "border dark:border-gray-500 border-gray-100",
+                    "gap-2"
+                  )}
+                >
+                  <GitHubLogoIcon className="w-5 h-5" />
+                  Star us on GitHub
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
