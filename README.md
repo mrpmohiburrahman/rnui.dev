@@ -1,6 +1,26 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-<!--  -->
+<!-- paths -->
+<!--
+onboardings
+carousels
+parallaxes
+dropdowns
+pickers
+headers
+lists
+arcsliders
+sliders
+tabbars
+bottomsheets
+loaders
+circular-progress-bars
+charts
+buttons
+accordions
+miscellaneous
+fullapps
+-->
 
 ## Getting Started
 
