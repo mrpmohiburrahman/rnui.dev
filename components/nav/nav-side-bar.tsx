@@ -5,26 +5,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import {
-  Bookmark,
-  HomeIcon,
-  LogIn,
-  PanelLeftIcon,
-  PlusIcon,
-  Rss,
-} from "lucide-react"
+import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ModeToggle } from "@/app/providers"
 
