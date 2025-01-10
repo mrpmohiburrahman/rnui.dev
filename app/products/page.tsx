@@ -25,8 +25,6 @@ const ProductsPage = async ({
 
   return (
     <div className="flex">
-      {/* Optionally, include a sidebar or other server-rendered components here */}
-      {/* <NavSidebar /> */}
       <ProductsPageClient
         sortedData={data}
         filteredFeaturedData={null}
