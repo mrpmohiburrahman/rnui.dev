@@ -45,7 +45,7 @@ export const getProducts = cache(
     // }
     try {
       let filteredItems = await getItemsWithCounts()
-      console.log("🚀 ~ filteredItems:", JSON.stringify(filteredItems))
+      // console.log("🚀 ~ filteredItems:", JSON.stringify(filteredItems))
 
       // Apply search term filter
       if (searchTerm) {
