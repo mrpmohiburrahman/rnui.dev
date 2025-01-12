@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const misc: ItemType[] = [
   {
+    id: "01JHCZ6AAYSW466TKHCHG8774W",
+    caption: "Stroke Animation",
+    videoSrc: "demo/misc/stroke_animation_william_candillon.mp4",
+    thumbnailSrc: "thumbnails/misc/stroke_animation_william_candillon.jpg",
+    author: "William Candillon",
+    source:
+      "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/StrokeAnimation",
+    twitterId: "wcandillon",
+    linkedInId: "wcandillon",
+    githubId: "wcandillon",
+    category: "Misc",
+    created_at: "2025-01-12T09:58:20.649Z",
+  },
+  {
     id: "01JHCYDFAR37TH8G9PQ3P734BD",
     caption: "Masked View",
     videoSrc: "demo/misc/masked_view_william_candillon.mp4",
