@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const charts: ItemType[] = [
   {
+    id: "01JHD2J4P1QNVS869F9CAWMFDB",
+    caption: "Coinbase Charts",
+    videoSrc: "demo/charts/coinbase_charts_william_candillon.mp4",
+    thumbnailSrc: "thumbnails/charts/coinbase_charts_william_candillon.jpg",
+    author: "William Candillon",
+    source:
+      "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Coinbase",
+    twitterId: "wcandillon",
+    linkedInId: "wcandillon",
+    githubId: "wcandillon",
+    category: "Charts",
+    created_at: "2025-01-12T10:57:12.559Z",
+  },
+  {
     id: "01JFP0C5HYKWQK77P4C2MTS3ZB",
     caption: "Group Stack Charts",
     videoSrc: "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
