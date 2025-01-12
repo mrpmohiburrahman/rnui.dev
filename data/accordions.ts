@@ -12,7 +12,7 @@ export const accordions: ItemType[] = [
     twitterId: "wcandillon",
     linkedInId: "wcandillon",
     githubId: "wcandillon",
-    category: "Misc",
+    category: "Accordions",
     created_at: "2025-01-12T09:52:36.042Z",
   },
   {
