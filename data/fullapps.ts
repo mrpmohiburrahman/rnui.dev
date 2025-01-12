@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const full_apps: ItemType[] = [
   {
+    id: "01JHD1Q46CP7KW4M49A4YZCHXZ",
+    caption: "Nokia Snake",
+    videoSrc: "demo/fullapps/nokia_snake_william_candillon.mp4",
+    thumbnailSrc: "thumbnails/fullapps/nokia_snake_william_candillon.jpg",
+    author: "William Candillon",
+    source:
+      "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
+    twitterId: "wcandillon",
+    linkedInId: "wcandillon",
+    githubId: "wcandillon",
+    category: "Misc",
+    created_at: "2025-01-12T10:42:27.946Z",
+  },
+  {
     id: "01JGNC3S3NQCRBGB39YR5WCMZD",
     caption: "Snake",
     videoSrc: "demo/fullapps/snake_pushkar_tandon.mp4",
