@@ -34,6 +34,7 @@ export type LabelData = {
 export type TagData = {
   name: string
 }
+
 // Function to fetch items with counts from Firestore
 const localItems = [
   ...accordions,
@@ -55,14 +56,19 @@ const localItems = [
   ...sliders,
   ...tabbars,
 ]
+
+// Return the unique categories sorted alphabetically
 export function getUniqueCategories(): string[] {
   const categories = localItems.map((item) => item.category)
-  return Array.from(new Set(categories))
+  return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b))
 }
+
+// Return the unique authors sorted alphabetically
 export function getUniqueAuthors(): string[] {
   const authors = localItems.map((item) => item.author)
-  return Array.from(new Set(authors))
+  return Array.from(new Set(authors)).sort((a, b) => a.localeCompare(b))
 }
+
 export type ItemType = {
   id: string
   caption: string
