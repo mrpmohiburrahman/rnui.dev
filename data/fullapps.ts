@@ -12,7 +12,7 @@ export const full_apps: ItemType[] = [
     twitterId: "wcandillon",
     linkedInId: "wcandillon",
     githubId: "wcandillon",
-    category: "Misc",
+    category: "Full Apps",
     created_at: "2025-01-12T10:42:27.946Z",
   },
   {
