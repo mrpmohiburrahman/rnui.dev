@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const misc: ItemType[] = [
   {
+    id: "01JHD2522P2D74TYPHCW59P493",
+    caption: "Transitions",
+    videoSrc: "demo/misc/transitions_william_candillon.mp4",
+    thumbnailSrc: "thumbnails/misc/transitions_william_candillon.jpg",
+    author: "William Candillon",
+    source:
+      "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Transitions",
+    twitterId: "wcandillon",
+    linkedInId: "wcandillon",
+    githubId: "wcandillon",
+    category: "Misc",
+    created_at: "2025-01-12T10:50:03.941Z",
+  },
+  {
     id: "01JHD19XJ2FF8PDT18EXE6ZQ3F",
     caption: "Pizza Challenge",
     videoSrc: "demo/misc/pizza_challenge_william_candillon.mp4",
