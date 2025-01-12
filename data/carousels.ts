@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const carousels: ItemType[] = [
   {
+    id: "01JHD34DZZS0RHNSDBBXJ1RZ48",
+    caption: "Fluid Carousels",
+    videoSrc: "demo/carousels/fluid_carousels_william_candillon.mp4",
+    thumbnailSrc: "thumbnails/carousels/fluid_carousels_william_candillon.jpg",
+    author: "William Candillon",
+    source:
+      "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Fluid",
+    twitterId: "wcandillon",
+    linkedInId: "wcandillon",
+    githubId: "wcandillon",
+    category: "Carousels",
+    created_at: "2025-01-12T11:07:13.929Z",
+  },
+  {
     id: "01JFP0BT56X9X1M0EATC5WB5J2",
     caption: "Story List Ui",
     videoSrc: "demo/carousels/story_list_enzo_manuel_mangano_reactiive.mp4",
