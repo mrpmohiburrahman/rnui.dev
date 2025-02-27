@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const misc: ItemType[] = [
   {
+    id: "01JN3SHBDQDEEG7BZSQV0S3X53",
+    caption: "Star Rating",
+    videoSrc: "demo/misc/star_rating_hewad_mubariz.mp4",
+    thumbnailSrc: "thumbnails/misc/star_rating_hewad_mubariz.jpg",
+    author: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/ratings",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2025-02-27T13:30:28.624Z",
+  },
+  {
     id: "01JHD2522P2D74TYPHCW59P493",
     caption: "Transitions",
     videoSrc: "demo/misc/transitions_william_candillon.mp4",
