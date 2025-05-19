@@ -2,6 +2,19 @@ import type { ItemType } from "./items"
 
 export const carousels: ItemType[] = [
   {
+    id: "01JVM5M5W7AW6NH73T9N904827",
+    caption: "Vertical Carousel",
+    videoSrc: "demo/carousels/vertical_carousel_zakaria_kerkeb.mp4",
+    thumbnailSrc: "thumbnails/carousels/vertical_carousel_zakaria_kerkeb.jpg",
+    author: "Zakaria Kerkeb",
+    source: "https://github.com/zkerkeb/showcase-app",
+    twitterId: "akhi_html5",
+    linkedInId: "zkerkeb",
+    githubId: "zkerkeb",
+    category: "Carousels",
+    created_at: "2025-05-19T11:43:38.356Z",
+  },
+  {
     id: "01JHD34DZZS0RHNSDBBXJ1RZ48",
     caption: "Fluid Carousels",
     videoSrc: "demo/carousels/fluid_carousels_william_candillon.mp4",
