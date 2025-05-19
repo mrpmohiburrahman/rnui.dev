@@ -2,6 +2,20 @@ import type { ItemType } from "./items"
 
 export const loaders: ItemType[] = [
   {
+    id: "01JVM0CEFWAZ7BMHPJYB7ZJQR5",
+    caption: "Star Falling Loading Animation",
+    videoSrc: "demo/loaders/star_falling_loading_animation_zakaria_kerkeb.mp4",
+    thumbnailSrc:
+      "thumbnails/loaders/star_falling_loading_animation_zakaria_kerkeb.jpg",
+    author: "Zakaria Kerkeb",
+    source: "https://github.com/zkerkeb/showcase-app",
+    twitterId: "akhi_html5",
+    linkedInId: "zkerkeb",
+    githubId: "zkerkeb",
+    category: "Loaders",
+    created_at: "2025-05-19T10:11:36.216Z",
+  },
+  {
     id: "01JFP0DWPAN5CJE16DDRQNERJH",
     caption: "Generators",
     videoSrc: "demo/loaders/generators_william_candillon.mp4",
