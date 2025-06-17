@@ -2,6 +2,19 @@ import type { ItemType } from "./items"
 
 export const onboarding: ItemType[] = [
   {
+    id: "01JXY799CJQYANP6NGEGZ734NE",
+    caption: "Onboarding by Thomino",
+    videoSrc: "demo/onboardings/onboarding_thomino.mp4",
+    thumbnailSrc: "thumbnails/onboardings/onboarding_thomino.jpg",
+    author: "Thomino",
+    source:
+      "https://github.com/thomino/expo-playground/blob/main/app/screens/onboarding.tsx",
+    twitterId: "ThominoDesign",
+    githubId: "thomino",
+    category: "Onboarding",
+    created_at: "2025-06-17T05:55:13.995Z",
+  },
+  {
     id: "01JFP0EJCVNRH11VP1HD9524XW",
     caption: "Onboarding Steps",
     videoSrc: "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
