@@ -2,6 +2,19 @@ import type { ItemType } from "./items"
 
 export const misc: ItemType[] = [
   {
+    id: "01JXY8S0V9TQE2D53RJFHZXG4A",
+    caption: "Journal Cards",
+    videoSrc: "demo/misc/journal_cards_thomino.mp4",
+    thumbnailSrc: "thumbnails/misc/journal_cards_thomino.jpg",
+    author: "Thomino",
+    source:
+      "https://github.com/thomino/expo-playground/blob/main/app/screens/journal-cards.tsx",
+    twitterId: "ThominoDesign",
+    githubId: "thomino",
+    category: "Misc",
+    created_at: "2025-06-17T06:21:21.519Z",
+  },
+  {
     id: "01JXY8085GZA6K20CM9VXACYJY",
     caption: "Counter Card",
     videoSrc: "demo/misc/counter_card_thomino.mp4",
