@@ -2,6 +2,19 @@ import type { ItemType } from "./items"
 
 export const tabbars: ItemType[] = [
   {
+    id: "01JXYAYHQYD8591EBDK9GRGVWQ",
+    caption: "Bottom Bar",
+    videoSrc: "demo/tabbars/bottom_bar_thomino.mp4",
+    thumbnailSrc: "thumbnails/tabbars/bottom_bar_thomino.jpg",
+    author: "Thomino",
+    source:
+      "https://github.com/thomino/expo-playground/blob/main/app/screens/bottom-bar.tsx",
+    twitterId: "ThominoDesign",
+    githubId: "thomino",
+    category: "Tab bars",
+    created_at: "2025-06-17T06:59:05.604Z",
+  },
+  {
     category: "Tab bars",
     id: "01JGQTNR7P58P5TNX8TBQSYAX5",
     created_at: "2025-01-04T04:55:19.212Z",
