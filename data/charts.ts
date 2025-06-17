@@ -2,6 +2,19 @@ import type { ItemType } from "./items"
 
 export const charts: ItemType[] = [
   {
+    id: "01JXY8F2ZVEBM7NDAKKR7YJARE",
+    caption: "Chart Counter",
+    videoSrc: "demo/charts/chart_counter_thomino.mp4",
+    thumbnailSrc: "thumbnails/charts/chart_counter_thomino.jpg",
+    author: "Thomino",
+    source:
+      "https://github.com/thomino/expo-playground/blob/main/app/screens/chart.tsx",
+    twitterId: "ThominoDesign",
+    githubId: "thomino",
+    category: "Charts",
+    created_at: "2025-06-17T06:16:25.524Z",
+  },
+  {
     id: "01JHD2J4P1QNVS869F9CAWMFDB",
     caption: "Coinbase Charts",
     videoSrc: "demo/charts/coinbase_charts_william_candillon.mp4",
