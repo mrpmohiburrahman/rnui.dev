@@ -71,4 +71,18 @@ export const onboarding: ItemType[] = [
     category: "Onboarding",
     created_at: "2024-12-23T06:01:08.132Z",
   },
+{
+    id: "01KAY9AVAA84ZF3TYZZH7ZBB3N",
+    caption: "Github Onboarding",
+    videoSrc: "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc: "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
+    author: "Enzo Manuel Mangano ( Reactiive )",
+    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Onboarding",
+    created_at: "2025-11-25T19:54:48.000Z",
+  },
+
 ]
