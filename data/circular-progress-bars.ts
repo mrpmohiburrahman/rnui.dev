@@ -7,7 +7,7 @@ export const circular_progress_bars: ItemType[] = [
     videoSrc:
       "demo/circular-progress-bars/heart_progress_circle_hewad_mubariz.mp4",
     thumbnailSrc:
-      "thumbnails/circular-progress-bars/heart_progress_circle_hewad_mubariz.jpg",
+      "thumbnails/circular-progress-bars/heart_progress_circle_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/heart-progress-circle",
@@ -23,7 +23,7 @@ export const circular_progress_bars: ItemType[] = [
     videoSrc:
       "demo/circular-progress-bars/circular_progress_bars_hewad_mubariz.mp4",
     thumbnailSrc:
-      "thumbnails/circular-progress-bars/circular_progress_bars_hewad_mubariz.jpg",
+      "thumbnails/circular-progress-bars/circular_progress_bars_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-progress",
@@ -38,7 +38,7 @@ export const circular_progress_bars: ItemType[] = [
     caption: "Donut Chart",
     videoSrc: "demo/circular-progress-bars/donut_chart_david_friyia.mp4",
     thumbnailSrc:
-      "thumbnails/circular-progress-bars/donut_chart_david_friyia.jpg",
+      "thumbnails/circular-progress-bars/donut_chart_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/DonutChart",

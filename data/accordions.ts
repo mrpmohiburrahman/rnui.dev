@@ -5,7 +5,7 @@ export const accordions: ItemType[] = [
     id: "01JHCYVTTEX13MBTN0J187Z4EQ",
     caption: "Accordion",
     videoSrc: "demo/accordions/accordion_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/accordions/accordion_william_candillon.jpg",
+    thumbnailSrc: "thumbnails/accordions/accordion_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Accordion",
@@ -19,7 +19,7 @@ export const accordions: ItemType[] = [
     id: "01JFF8MZX970G22KKR06AEM9K3",
     caption: "Dynamic Accordion",
     videoSrc: "demo/accordions/dynamic_accordion_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/accordions/dynamic_accordion_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/accordions/dynamic_accordion_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/accordion",

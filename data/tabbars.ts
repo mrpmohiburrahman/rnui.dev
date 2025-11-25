@@ -5,7 +5,7 @@ export const tabbars: ItemType[] = [
     id: "01JXYAYHQYD8591EBDK9GRGVWQ",
     caption: "Bottom Bar",
     videoSrc: "demo/tabbars/bottom_bar_thomino.mp4",
-    thumbnailSrc: "thumbnails/tabbars/bottom_bar_thomino.jpg",
+    thumbnailSrc: "thumbnails/tabbars/bottom_bar_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/bottom-bar.tsx",
@@ -24,7 +24,7 @@ export const tabbars: ItemType[] = [
     linkedInId: "arunabhv",
     githubId: "arunabhverma",
     videoSrc: "demo/tabbars/linear_tab_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/tabbars/linear_tab_arunabh_verma.jpg",
+    thumbnailSrc: "thumbnails/tabbars/linear_tab_arunabh_verma.avif",
     source: "https://github.com/arunabhverma/expo-linear-tab-demo",
   },
   {
@@ -33,7 +33,7 @@ export const tabbars: ItemType[] = [
     videoSrc:
       "demo/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc:
-      "thumbnails/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.jpg",
+      "thumbnails/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/19-segmented-control",
@@ -48,7 +48,7 @@ export const tabbars: ItemType[] = [
     caption: "Detachable Bottom Tab Bar",
     videoSrc: "demo/tabbars/detachable_bottom_tab_bar_arunabh_verma.mp4",
     thumbnailSrc:
-      "thumbnails/tabbars/detachable_bottom_tab_bar_arunabh_verma.jpg",
+      "thumbnails/tabbars/detachable_bottom_tab_bar_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-bottom-tab-anim",
     twitterId: "iamarunabh",
@@ -61,7 +61,7 @@ export const tabbars: ItemType[] = [
     id: "01JFP1AXG70MX9T7TK45ZYAHZY",
     caption: "Spotify Tab",
     videoSrc: "demo/tabbars/spotify_tab_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/tabbars/spotify_tab_alireza_hadjar.jpg",
+    thumbnailSrc: "thumbnails/tabbars/spotify_tab_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source: "https://snack.expo.dev/@alirezahadjar/spotify-tab",
     twitterId: "alireza_hadjar",
@@ -74,7 +74,7 @@ export const tabbars: ItemType[] = [
     id: "01JFP1B1WC9PPK3AAN8ZWYKPTY",
     caption: "Sticky Tabs",
     videoSrc: "demo/tabbars/sticky_tabs_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/tabbars/sticky_tabs_alireza_hadjar.jpg",
+    thumbnailSrc: "thumbnails/tabbars/sticky_tabs_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source: "https://github.com/AlirezaHadjar/stickyTab",
     twitterId: "alireza_hadjar",
@@ -88,7 +88,7 @@ export const tabbars: ItemType[] = [
     caption: "Tab Bar Micro Interactions",
     videoSrc: "demo/tabbars/tab_bar_micro_interactions_kacper_kapuściak.mp4",
     thumbnailSrc:
-      "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapuściak.jpg",
+      "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapuściak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-expo-router-tabs",
     twitterId: "kacperkapusciak",
@@ -101,7 +101,7 @@ export const tabbars: ItemType[] = [
     id: "01JFP1BAPMR11CKR9ZBZ9F3HBR",
     caption: "Dynamic Tabs",
     videoSrc: "demo/tabbars/dynamic_tabs_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/tabbars/dynamic_tabs_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/tabbars/dynamic_tabs_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dynamic-tabs",
@@ -115,7 +115,7 @@ export const tabbars: ItemType[] = [
     id: "01JFP1BJP1AR1Y1ZC3W8950HEG",
     caption: "Direction Aware Tabs",
     videoSrc: "demo/tabbars/direction_aware_tabs_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/tabbars/direction_aware_tabs_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/tabbars/direction_aware_tabs_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/direction-aware-tabs",
