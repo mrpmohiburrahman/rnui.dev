@@ -5,7 +5,7 @@ export const pickers: ItemType[] = [
     id: "01G8YVZ8XY1G8VZ8XY1G8VZ8XY", // Replace with a valid ULID
     caption: "Flash Cards",
     videoSrc: "demo/pickers/pickers_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/pickers/pickers_konstantinos_efkarpidis.jpg",
+    thumbnailSrc: "thumbnails/pickers/pickers_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ValuePickersScreen.tsx",

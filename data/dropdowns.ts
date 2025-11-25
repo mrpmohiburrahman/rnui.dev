@@ -6,7 +6,7 @@ export const drop_down: ItemType[] = [
     caption: "Dropdown Menu",
     videoSrc: "demo/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc:
-      "thumbnails/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.jpg",
+      "thumbnails/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/16-smooth-dropdown",

@@ -5,7 +5,7 @@ export const full_apps: ItemType[] = [
     id: "01JHD1Q46CP7KW4M49A4YZCHXZ",
     caption: "Nokia Snake",
     videoSrc: "demo/fullapps/nokia_snake_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/fullapps/nokia_snake_william_candillon.jpg",
+    thumbnailSrc: "thumbnails/fullapps/nokia_snake_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
@@ -19,7 +19,7 @@ export const full_apps: ItemType[] = [
     id: "01JGNC3S3NQCRBGB39YR5WCMZD",
     caption: "Snake",
     videoSrc: "demo/fullapps/snake_pushkar_tandon.mp4",
-    thumbnailSrc: "thumbnails/fullapps/snake_pushkar_tandon.jpg",
+    thumbnailSrc: "thumbnails/fullapps/snake_pushkar_tandon.avif",
     author: "Pushkar Tandon ",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/snake-game",
@@ -33,7 +33,7 @@ export const full_apps: ItemType[] = [
     id: "01JGNAEFH6VZMDAV37P149X78E",
     caption: "Google Gemini Clone",
     videoSrc: "demo/fullapps/google_gemini_hubert_ryan.mp4",
-    thumbnailSrc: "thumbnails/fullapps/google_gemini_hubert_ryan.jpg",
+    thumbnailSrc: "thumbnails/fullapps/google_gemini_hubert_ryan.avif",
     author: "Hubert Ryan",
     source: "https://github.com/HubertRyanOfficial/google-gemini-app-clone",
     twitterId: "hubertryanoff",
@@ -47,7 +47,7 @@ export const full_apps: ItemType[] = [
     caption: "Screen Transition",
     videoSrc: "demo/fullapps/screen_transition_konstantinos_efkarpidis.mp4",
     thumbnailSrc:
-      "thumbnails/fullapps/screen_transition_konstantinos_efkarpidis.jpg",
+      "thumbnails/fullapps/screen_transition_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ScreenTransition/ScreenTransitionWelcome.tsx",
@@ -60,7 +60,7 @@ export const full_apps: ItemType[] = [
     id: "01JFP0CQDZBFBRY5SE2ZNSYPEK",
     caption: "Furniture App",
     videoSrc: "demo/fullapps/furniture_app_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/fullapps/furniture_app_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/fullapps/furniture_app_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source: "https://github.com/hewad-mubariz/Furniture_App",
     twitterId: "hewad_mubariz",

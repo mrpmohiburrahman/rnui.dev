@@ -6,7 +6,7 @@ export const loaders: ItemType[] = [
     caption: "Star Falling Loading Animation",
     videoSrc: "demo/loaders/star_falling_loading_animation_zakaria_kerkeb.mp4",
     thumbnailSrc:
-      "thumbnails/loaders/star_falling_loading_animation_zakaria_kerkeb.jpg",
+      "thumbnails/loaders/star_falling_loading_animation_zakaria_kerkeb.avif",
     author: "Zakaria Kerkeb",
     source: "https://github.com/zkerkeb/showcase-app",
     twitterId: "akhi_html5",
@@ -19,7 +19,7 @@ export const loaders: ItemType[] = [
     id: "01JFP0DWPAN5CJE16DDRQNERJH",
     caption: "Generators",
     videoSrc: "demo/loaders/generators_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/loaders/generators_william_candillon.jpg",
+    thumbnailSrc: "thumbnails/loaders/generators_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Generators",
@@ -33,7 +33,7 @@ export const loaders: ItemType[] = [
     id: "01JFP0QTQRB667GKSA8A8VVDDP",
     caption: "Animated Loader",
     videoSrc: "demo/loaders/animated_loader_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/loaders/animated_loader_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/loaders/animated_loader_hewad_mubariz.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-loader",
@@ -47,7 +47,7 @@ export const loaders: ItemType[] = [
     id: "01JFP0VE8A5KT8R0QSBQFE34VR",
     caption: "Morphing Loader",
     videoSrc: "demo/loaders/morphingLoader.mp4",
-    thumbnailSrc: "thumbnails/loaders/morphingLoader.jpg",
+    thumbnailSrc: "thumbnails/loaders/morphingLoader.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
