@@ -7,7 +7,7 @@ export const bottomsheets: ItemType[] = [
     videoSrc:
       "demo/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc:
-      "thumbnails/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.jpg",
+      "thumbnails/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/what-about-gestures/tree/main/03-full-bottom-sheet",
@@ -22,7 +22,7 @@ export const bottomsheets: ItemType[] = [
     caption: "Reanimated Bottom Sheet",
     videoSrc: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.mp4",
     thumbnailSrc:
-      "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.jpg",
+      "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/reanimated-bottom-sheet-video",

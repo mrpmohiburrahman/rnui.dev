@@ -11,7 +11,7 @@ export const buttons: ItemType[] = [
     linkedInId: "tandonpushkar",
     githubId: "tandonpushkar",
     videoSrc: "demo/buttons/add_to_cart_pushkar_tandon.mp4",
-    thumbnailSrc: "thumbnails/buttons/add_to_cart_pushkar_tandon.jpg",
+    thumbnailSrc: "thumbnails/buttons/add_to_cart_pushkar_tandon.avif",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/add-to-cart-animation",
   },
@@ -19,7 +19,7 @@ export const buttons: ItemType[] = [
     id: "01JFP077G0WYPAVXD4K0DMKHRR",
     caption: "Radial FAB",
     videoSrc: "demo/buttons/radial_fab_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/radial_fab_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/buttons/radial_fab_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/radial-fab",
@@ -33,7 +33,7 @@ export const buttons: ItemType[] = [
     id: "01JFP07GAHFRT6GRYFVM7YT67R",
     caption: "Split Button",
     videoSrc: "demo/buttons/split_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/split_button_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/buttons/split_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/split-button",
@@ -49,7 +49,7 @@ export const buttons: ItemType[] = [
     videoSrc:
       "demo/buttons/animated_split_button_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc:
-      "thumbnails/buttons/animated_split_button_enzo_manuel_mangano_reactiive.jpg",
+      "thumbnails/buttons/animated_split_button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/21-animated-split-button",
@@ -63,7 +63,7 @@ export const buttons: ItemType[] = [
     id: "01JFP07Z65VG20VZXVTH31EJ4G",
     caption: "Interpolation Button",
     videoSrc: "demo/buttons/interpolation_button_andreev_danila.mp4",
-    thumbnailSrc: "thumbnails/buttons/interpolation_button_andreev_danila.jpg",
+    thumbnailSrc: "thumbnails/buttons/interpolation_button_andreev_danila.avif",
     author: "Andreev Danila",
     source: "https://github.com/andreev-danila/interpolation-button",
     twitterId: "dan_w1d1",
@@ -75,7 +75,7 @@ export const buttons: ItemType[] = [
     id: "01JFP087EPFZFXC64CPAEXPJWS",
     caption: "Morph Button",
     videoSrc: "demo/buttons/morph_button_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/buttons/morph_button_arunabh_verma.jpg",
+    thumbnailSrc: "thumbnails/buttons/morph_button_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/rn-text-edit-menu-ui",
     twitterId: "iamarunabh",
@@ -89,7 +89,7 @@ export const buttons: ItemType[] = [
     caption: "react-native-cyberpunk-button",
     videoSrc: "demo/buttons/react-native-cyberpunk-button_epicode.mp4",
     thumbnailSrc:
-      "thumbnails/buttons/react-native-cyberpunk-button_epicode.jpg",
+      "thumbnails/buttons/react-native-cyberpunk-button_epicode.avif",
     author: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-cyberpunk-button",
     twitterId: "epicode_",
@@ -101,7 +101,7 @@ export const buttons: ItemType[] = [
     id: "01JFP08R4FPAVE4VVE8YTQ8EKE",
     caption: "Jelly button",
     videoSrc: "demo/buttons/jelly_button_kacper_kapuściak.mp4",
-    thumbnailSrc: "thumbnails/buttons/jelly_button_kacper_kapuściak.jpg",
+    thumbnailSrc: "thumbnails/buttons/jelly_button_kacper_kapuściak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-squishy-button",
     twitterId: "kacperkapusciak",
@@ -114,7 +114,7 @@ export const buttons: ItemType[] = [
     id: "01F8MECHZX3TBDSZ7XRADM79XK",
     caption: "Dial Button",
     videoSrc: "demo/buttons/dial_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/dial_button_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/buttons/dial_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dial-button",
@@ -128,7 +128,7 @@ export const buttons: ItemType[] = [
     id: "01JFP0972CSDATE80KRQS20SAV",
     caption: "Floating Button",
     videoSrc: "demo/buttons/floating_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/floating_button_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/buttons/floating_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/floating-button",
@@ -142,7 +142,7 @@ export const buttons: ItemType[] = [
     id: "01JFP09GA5K0SWQS2WYFZ0XJ54",
     caption: "Runny Border",
     videoSrc: "demo/buttons/runny_border_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/runny_border_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/buttons/runny_border_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/runny-border",
@@ -156,7 +156,7 @@ export const buttons: ItemType[] = [
     id: "01JFP09R97BKN4XC8EJRNK55C2",
     caption: "Neumorphic Button",
     videoSrc: "demo/buttons/neumorphic_button_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/buttons/neumorphic_button_david_friyia.jpg",
+    thumbnailSrc: "thumbnails/buttons/neumorphic_button_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/NeumorphicButton",
@@ -170,7 +170,7 @@ export const buttons: ItemType[] = [
     id: "01JFP09ZJJ3BZ6Z7WDGFFB0SVM",
     caption: "Micro Interactoins",
     videoSrc: "demo/buttons/micro_interactions_alek_mikucki.mp4",
-    thumbnailSrc: "thumbnails/buttons/micro_interactions_alek_mikucki.jpg",
+    thumbnailSrc: "thumbnails/buttons/micro_interactions_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://x.com/aleqsio/status/1701164940629815741/photo/1",
     twitterId: "aleqsio",

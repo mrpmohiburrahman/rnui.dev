@@ -5,7 +5,7 @@ export const arcsliders: ItemType[] = [
     id: "01JFFA7GMFB1HNDK0JH0ZEZHTW",
     caption: "Animated Gauge",
     videoSrc: "demo/arcsliders/animated_gauge_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/arcsliders/animated_gauge_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/arcsliders/animated_gauge_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-gauge",
@@ -19,7 +19,7 @@ export const arcsliders: ItemType[] = [
     id: "01JFFA8ZJ8NHHNFJDMHN49TS23",
     caption: "Arc Slider",
     videoSrc: "demo/arcsliders/arc_slider_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/arcsliders/arc_slider_david_friyia.jpg",
+    thumbnailSrc: "thumbnails/arcsliders/arc_slider_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ArcSlider",

@@ -5,7 +5,7 @@ export const charts: ItemType[] = [
     id: "01JXY8F2ZVEBM7NDAKKR7YJARE",
     caption: "Chart Counter",
     videoSrc: "demo/charts/chart_counter_thomino.mp4",
-    thumbnailSrc: "thumbnails/charts/chart_counter_thomino.jpg",
+    thumbnailSrc: "thumbnails/charts/chart_counter_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/chart.tsx",
@@ -18,7 +18,7 @@ export const charts: ItemType[] = [
     id: "01JHD2J4P1QNVS869F9CAWMFDB",
     caption: "Coinbase Charts",
     videoSrc: "demo/charts/coinbase_charts_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/charts/coinbase_charts_william_candillon.jpg",
+    thumbnailSrc: "thumbnails/charts/coinbase_charts_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Coinbase",
@@ -32,7 +32,7 @@ export const charts: ItemType[] = [
     id: "01JFP0C5HYKWQK77P4C2MTS3ZB",
     caption: "Group Stack Charts",
     videoSrc: "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/charts/group_chart_konstantinos_efkarpidis.jpg",
+    thumbnailSrc: "thumbnails/charts/group_chart_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupStackCharts.tsx",
@@ -46,7 +46,7 @@ export const charts: ItemType[] = [
     id: "01JFP0Q202TQ812BQA445RKFSA",
     caption: "Pie Chart",
     videoSrc: "demo/charts/pie_chart_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/charts/pie_chart_hewad_mubariz.jpg",
+    thumbnailSrc: "thumbnails/charts/pie_chart_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/piechart",
@@ -60,7 +60,7 @@ export const charts: ItemType[] = [
     id: "01JFP0SFFTG4C5RRDZWHQ42CC6",
     caption: "Line Chart",
     videoSrc: "demo/charts/lineChart_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/charts/lineChart_david_friyia.jpg",
+    thumbnailSrc: "thumbnails/charts/lineChart_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/LineChart",
@@ -74,7 +74,7 @@ export const charts: ItemType[] = [
     id: "01JFP0SN7BRNV4W6MKR78P3VGC",
     caption: "Bar Chart",
     videoSrc: "demo/charts/barchart_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/charts/barchart_david_friyia.jpg",
+    thumbnailSrc: "thumbnails/charts/barchart_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/BarChart",
