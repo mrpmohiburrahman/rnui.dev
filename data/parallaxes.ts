@@ -40,4 +40,18 @@ export const parallaxes: ItemType[] = [
     category: "Parallaxes",
     created_at: "2024-12-23T06:01:10.142Z",
   },
+{
+    id: "01KAY9APXG1CVZ7QR9VR4PQ9G3",
+    caption: "Animated 3d Parallax",
+    videoSrc: "demo/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc: "thumbnails/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.avif",
+    author: "Enzo Manuel Mangano ( Reactiive )",
+    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-3d-parallax",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Parallaxes",
+    created_at: "2025-11-25T19:54:03.000Z",
+  },
+
 ]
