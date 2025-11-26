@@ -27,6 +27,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className={`${fontSans.variable} font-sans`}>
+      <head>
+        {/* Resource hints for ImageKit.io - reduces latency for video/image requests */}
+        <link rel="preconnect" href="https://ik.imagekit.io" />
+        <link rel="dns-prefetch" href="https://ik.imagekit.io" />
+      </head>
       <PostHogProvider>
         <body className="flex flex-col min-h-screen">
           <ThemeProvider
