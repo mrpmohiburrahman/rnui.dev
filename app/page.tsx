@@ -11,8 +11,9 @@ import { getProducts } from "./actions/get-products"
 
 const FEATURED_IDS: string[] = []
 
-async function Page({ searchParams }: { searchParams: { search?: string } }) {
-  const data = await getProducts(searchParams.search)
+async function Page({ searchParams }: { searchParams: Promise<{ search?: string }> }) {
+  const params = await searchParams
+  const data = await getProducts(params.search)
   const filteredFeaturedData = data.filter((d: ItemType) =>
     FEATURED_IDS.includes(d.id)
   )
@@ -20,7 +21,7 @@ async function Page({ searchParams }: { searchParams: { search?: string } }) {
   return (
     <div
       className="max-w-full px-2 md:pl-4 md:pr-0 pt-2"
-      // style={{ borderWidth: 1, borderColor: "purple" }}
+    // style={{ borderWidth: 1, borderColor: "purple" }}
     >
       <FadeIn>
         <DirectoryPageClient
@@ -29,7 +30,7 @@ async function Page({ searchParams }: { searchParams: { search?: string } }) {
         >
           <div
             className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative"
-            // style={{ borderWidth: 1, borderColor: "purple" }}
+          // style={{ borderWidth: 1, borderColor: "purple" }}
           >
             {/* First Column */}
             <div className="col-span-1 md:col-span-2 z-10">

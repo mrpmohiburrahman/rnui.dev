@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { PauseIcon, PlayIcon } from "lucide-react"
+import { getImageKitVideoUrl } from "@/lib/imagekit"
 
 interface InteractiveVideoProps {
   src: string
@@ -59,13 +60,14 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   }
 
   const posterImage = poster && poster.trim() !== "" ? poster : "/logo.png"
+  const videoUrl = getImageKitVideoUrl(src)
 
   return (
     <div className={`relative ${className}`}>
       {isPlaying ? (
         <video
           ref={videoRef}
-          src={src}
+          src={videoUrl}
           className="w-full h-full object-contain"
           controls={controls}
           loop={loop}
