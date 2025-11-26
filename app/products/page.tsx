@@ -8,19 +8,21 @@ import ProductsPageClient from "@/components/products-page-client"
 import { getProducts } from "../actions/get-products"
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     search?: string
     category?: string
     label?: string
     tag?: string
     author?: string
-  }
+  }>
 }
 
 const ProductsPage = async ({
   searchParams,
 }: PageProps): Promise<ReactElement> => {
-  const { search, category, label, tag, author } = searchParams
+  // Next.js 15 requires awaiting searchParams
+  const params = await searchParams
+  const { search, category, label, tag, author } = params
   const data = await getProducts(search, category, label, tag, author)
 
   return (
