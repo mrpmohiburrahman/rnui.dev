@@ -43,6 +43,7 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
+    "@tanstack/react-virtual": "^3.13.12",
     "@vercel/analytics": "^1.4.1",
     "ai": "^4.0.20",
     "autoprefixer": "10.4.20",

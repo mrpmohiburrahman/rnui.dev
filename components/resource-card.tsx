@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { memo, useCallback, useState } from "react"
 import Link from "next/link"
 import type { ItemType } from "@/data/items"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
@@ -32,7 +32,7 @@ interface ResourceCardProps {
   toggleVote: (id: string) => void
 }
 
-export const ResourceCard: React.FC<ResourceCardProps> = ({
+const ResourceCardComponent: React.FC<ResourceCardProps> = ({
   trim,
   data,
   order,
@@ -45,44 +45,44 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const [voteCount, setVoteCount] = useState<number>(data.vote_count || 0)
   const [viewCount, setViewCount] = useState<number>(data.view_count || 0)
 
-  const incrementViewCountLocal = async () => {
+  const incrementViewCountLocal = useCallback(async () => {
     try {
       await incrementViewCount(data.id)
       setViewCount((prev) => prev + 1)
     } catch (error) {
       console.error("Error incrementing view count:", error)
     }
-  }
+  }, [data.id])
 
-  const decrementVoteCountLocal = async () => {
+  const decrementVoteCountLocal = useCallback(async () => {
     try {
       await decrementVoteCount(data.id)
       setVoteCount((prev) => Math.max(prev - 1, 0))
     } catch (error) {
       console.error("Error decrementing vote count:", error)
     }
-  }
+  }, [data.id])
 
-  const incrementVoteCountLocal = async () => {
+  const incrementVoteCountLocal = useCallback(async () => {
     try {
       await incrementVoteCount(data.id)
       setVoteCount((prev) => prev + 1)
     } catch (error) {
       console.error("Error incrementing vote count:", error)
     }
-  }
+  }, [data.id])
 
-  const handleClick = async (e: React.MouseEvent) => {
+  const handleClick = useCallback(async (e: React.MouseEvent) => {
     onClick(data)
     await incrementViewCountLocal()
-  }
+  }, [onClick, data, incrementViewCountLocal])
 
-  const handleBookmarkClick = (e: React.MouseEvent) => {
+  const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     toggleBookmark(data.id)
-  }
+  }, [toggleBookmark, data.id])
 
-  const handleVoteClick = async (e: React.MouseEvent) => {
+  const handleVoteClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
     await incrementViewCountLocal()
     toggleVote(data.id)
@@ -91,13 +91,13 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
     } else {
       await incrementVoteCountLocal()
     }
-  }
+  }, [data.id, isVoted, toggleVote, incrementViewCountLocal, decrementVoteCountLocal, incrementVoteCountLocal])
 
-  const handleLinkClick = async (e: React.MouseEvent) => {
+  const handleLinkClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
     await incrementViewCountLocal()
     // Allow the default link behavior
-  }
+  }, [incrementViewCountLocal])
 
   return (
     <motion.div
@@ -250,3 +250,18 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
     </motion.div>
   )
 }
+
+// Memoize component to prevent unnecessary re-renders
+// Only re-render if props actually change
+export const ResourceCard = memo(ResourceCardComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.data.id === nextProps.data.id &&
+    prevProps.isBookmarked === nextProps.isBookmarked &&
+    prevProps.isVoted === nextProps.isVoted &&
+    prevProps.data.vote_count === nextProps.data.vote_count &&
+    prevProps.data.view_count === nextProps.data.view_count
+  )
+})
+
+ResourceCard.displayName = 'ResourceCard'
+

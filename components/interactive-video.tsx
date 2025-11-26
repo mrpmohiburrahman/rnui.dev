@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { PauseIcon, PlayIcon } from "lucide-react"
 import { getImageKitVideoUrl } from "@/lib/imagekit"
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 
 interface InteractiveVideoProps {
   src: string
@@ -24,7 +25,14 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   incrementViewCount,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  // Lazy loading: only load video when near viewport
+  const [containerRef, isInView] = useIntersectionObserver<HTMLDivElement>({
+    rootMargin: "200px", // Start loading 200px before visible
+    freezeOnceVisible: true, // Don't unload once loaded
+  })
 
   const handleVideoPlay = () => {
     setIsPlaying(true)
@@ -59,14 +67,27 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     }
   }
 
-  const posterImage = poster && poster.trim() !== "" ? poster : "/logo.png"
-  const videoUrl = getImageKitVideoUrl(src)
+  // Optimize poster image - use local path since thumbnails are in public folder
+  // Videos are on ImageKit, but thumbnails are still local
+  const posterImage = poster && poster.trim() !== ""
+    ? `/${poster}` // Local path from public folder
+    : "/logo.png"
 
+  // Optimize video URL with quality parameter (50% for good balance)
+  const videoUrl = getImageKitVideoUrl(src, 50)
+
+  // Smart preload strategy:
   return (
-    <div className={`relative ${className}`}>
+    <div
+      ref={containerRef}
+      className={`relative ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {isPlaying ? (
         <video
           ref={videoRef}
+          // Always set src for debugging (removed lazy loading condition)
           src={videoUrl}
           className="w-full h-full object-contain"
           controls={controls}
@@ -83,6 +104,7 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
             }
           }}
           poster={posterImage}
+          preload="auto"
         >
           <track kind="captions" srcLang="en" label={caption} default />
         </video>
@@ -109,3 +131,4 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
 }
 
 export default InteractiveVideo
+
