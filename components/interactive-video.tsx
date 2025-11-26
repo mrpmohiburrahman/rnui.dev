@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { PauseIcon, PlayIcon } from "lucide-react"
 import { getImageKitVideoUrl } from "@/lib/imagekit"
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
@@ -26,12 +26,14 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [videoSource, setVideoSource] = useState<string>("")
+  const [useLocalFallback, setUseLocalFallback] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   // Lazy loading: only load video when near viewport
   const [containerRef, isInView] = useIntersectionObserver<HTMLDivElement>({
-    rootMargin: "200px", // Start loading 200px before visible
-    freezeOnceVisible: true, // Don't unload once loaded
+    rootMargin: "200px",
+    freezeOnceVisible: true,
   })
 
   const handleVideoPlay = () => {
@@ -52,6 +54,28 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     setIsPlaying(true)
   }
 
+  // Handle video load errors - fallback to local if ImageKit fails
+  const handleVideoError = useCallback(() => {
+    if (!useLocalFallback) {
+      console.log(`ImageKit failed for ${src}, falling back to local video`)
+      setUseLocalFallback(true)
+      setVideoSource(`/${src}`) // Use local path
+    } else {
+      console.error(`Both ImageKit and local failed for ${src}`)
+    }
+  }, [src, useLocalFallback])
+
+  // Set video source based on fallback state
+  useEffect(() => {
+    if (useLocalFallback) {
+      // Use local video from public folder
+      setVideoSource(`/${src}`)
+    } else {
+      // Try ImageKit first (no transformations to avoid account limits)
+      setVideoSource(getImageKitVideoUrl(src))
+    }
+  }, [src, useLocalFallback])
+
   useEffect(() => {
     if (isPlaying) {
       videoRef.current?.play()
@@ -67,16 +91,11 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     }
   }
 
-  // Optimize poster image - use local path since thumbnails are in public folder
-  // Videos are on ImageKit, but thumbnails are still local
+  // Optimize poster image - use local path
   const posterImage = poster && poster.trim() !== ""
-    ? `/${poster}` // Local path from public folder
+    ? `/${poster}`
     : "/logo.png"
 
-  // Optimize video URL with quality parameter (50% for good balance)
-  const videoUrl = getImageKitVideoUrl(src, 50)
-
-  // Smart preload strategy:
   return (
     <div
       ref={containerRef}
@@ -87,14 +106,14 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
       {isPlaying ? (
         <video
           ref={videoRef}
-          // Always set src for debugging (removed lazy loading condition)
-          src={videoUrl}
+          src={videoSource}
           className="w-full h-full object-contain"
           controls={controls}
           loop={loop}
           onPlay={handleVideoPlay}
           onPause={handleVideoPause}
           onEnded={handleVideoEnded}
+          onError={handleVideoError}
           tabIndex={0}
           aria-label="Pause video"
           onClick={handleVideoAreaClick}
@@ -131,4 +150,3 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
 }
 
 export default InteractiveVideo
-
