@@ -4,11 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
 
   webpack: (config) => {
-    // Prevent webpack from processing video files in public/demo
-    // Files in public are static assets and don't need webpack processing anyway
+    // Allow watching public/demo for local video fallback
     config.watchOptions = {
       ...config.watchOptions,
-      ignored: ['**/public/demo/**', '**/node_modules/**'],
+      ignored: ['**/node_modules/**'], // Only ignore node_modules
     };
 
     return config;
