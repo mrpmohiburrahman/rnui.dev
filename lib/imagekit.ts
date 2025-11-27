@@ -1,6 +1,10 @@
 // lib/imagekit.ts
 
-const IMAGEKIT_URL_ENDPOINT = 'https://ik.imagekit.io/knjhgwi8d';
+const IMAGEKIT_URL_ENDPOINT = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || '';
+
+if (!IMAGEKIT_URL_ENDPOINT) {
+    console.warn('NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT is not defined in .env');
+}
 
 interface ThumbnailOptions {
     width?: number;
