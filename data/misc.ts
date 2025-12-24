@@ -235,7 +235,7 @@ export const misc: ItemType[] = [
     thumbnailSrc: "thumbnails/misc/spin_wheel_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
-      "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/LotteryScreen.tsx",
+      "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/Lottery/LotteryScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
     githubId: "kostas64",
     category: "Misc",
@@ -954,7 +954,8 @@ export const misc: ItemType[] = [
     id: "01JFP13PQTQSKBV2H60MXNEEBG",
     caption: "View Transition using Skia",
     videoSrc: "demo/misc/view_transition_using_skia_alek_mikucki.mp4",
-    thumbnailSrc: "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
+    thumbnailSrc:
+      "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://gist.github.com/aleqsio/754b3a2b664b928f5c65d715b9452d77",
     twitterId: "aleqsio",
@@ -1268,13 +1269,15 @@ export const misc: ItemType[] = [
     category: "Misc",
     created_at: "2024-12-23T05:59:57.874Z",
   },
-{
+  {
     id: "01KAY9AP7662K677DZSF9DT4JR",
     caption: "Action Tray",
     videoSrc: "demo/misc/action-tray_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/action-tray_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/action-tray_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/action-tray",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/action-tray",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1286,9 +1289,11 @@ export const misc: ItemType[] = [
     id: "01KAY9APA89P6SJSXP65Q2QVV8",
     caption: "Add To Cart",
     videoSrc: "demo/misc/add-to-cart_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/add-to-cart",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/add-to-cart",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1299,10 +1304,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9APPR3CS4MEJRADYCBYBA",
     caption: "Airbnb Flip Interaction",
-    videoSrc: "demo/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-flip-interaction",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-flip-interaction",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1314,9 +1322,11 @@ export const misc: ItemType[] = [
     id: "01KAY9APZBJZSW3C57QXA2B0SE",
     caption: "Animated Clip Box",
     videoSrc: "demo/misc/animated-clip-box_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/animated-clip-box_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/animated-clip-box_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-clip-box",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-clip-box",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1328,9 +1338,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AQ20P99XHDGPWET18AMH",
     caption: "Animated Count Text",
     videoSrc: "demo/misc/animated-count-text_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-count-text",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-count-text",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1342,9 +1354,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AQEAEKYQR720F2VYMDZN",
     caption: "Audio Player",
     videoSrc: "demo/misc/audio-player_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/audio-player",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/audio-player",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1355,10 +1369,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AQHKW3DVW2R4PK6A4WEV",
     caption: "Bezier Curve Outline",
-    videoSrc: "demo/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bezier-curve-outline",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bezier-curve-outline",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1370,9 +1387,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AQKDVN3R4EFSDYPMJ9J0",
     caption: "Blur Circles",
     videoSrc: "demo/misc/blur-circles_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/blur-circles_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/blur-circles_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-circles",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-circles",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1383,10 +1402,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ARBPT5F07KMVGY0JG1ND",
     caption: "Card Shader Reflections",
-    videoSrc: "demo/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/card-shader-reflections",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/card-shader-reflections",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1397,10 +1419,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AREEMAEPYCGCNZHVS88K",
     caption: "Checkbox Interactions",
-    videoSrc: "demo/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/checkbox-interactions",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/checkbox-interactions",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1412,9 +1437,11 @@ export const misc: ItemType[] = [
     id: "01KAY9ARK6R1JSS4S1Z61KBEF6",
     caption: "Clerk Toast",
     videoSrc: "demo/misc/clerk-toast_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clerk-toast",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clerk-toast",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1426,9 +1453,11 @@ export const misc: ItemType[] = [
     id: "01KAY9ART81BT8BC8Y8EVR0E6C",
     caption: "Composable Text",
     videoSrc: "demo/misc/composable-text_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/composable-text",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/composable-text",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1440,9 +1469,11 @@ export const misc: ItemType[] = [
     id: "01KAY9ASBMKWPTZ7KKXHY31JCA",
     caption: "Draggable Panel",
     videoSrc: "demo/misc/draggable-panel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/draggable-panel",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/draggable-panel",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1454,9 +1485,11 @@ export const misc: ItemType[] = [
     id: "01KAY9ASZKWK834XDS9CA3D74E",
     caption: "Email Demo",
     videoSrc: "demo/misc/email-demo_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1468,9 +1501,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AT32JJ2S1FXB1D8EGGH5",
     caption: "Empty Qr Code",
     videoSrc: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1482,9 +1517,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AT50H2WQQKZM33P6VH4D",
     caption: "Everybody Can Cook",
     videoSrc: "demo/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/everybody-can-cook",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/everybody-can-cook",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1495,10 +1532,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AT7V61JVGP4ME17AD515",
     caption: "Expandable Mini Player",
-    videoSrc: "demo/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/expandable-mini-player",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/expandable-mini-player",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1510,9 +1550,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AT9XTHQ1CW9G9A3KWRHS",
     caption: "Family Number Input",
     videoSrc: "demo/misc/family-number-input_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/family-number-input",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/family-number-input",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1524,9 +1566,11 @@ export const misc: ItemType[] = [
     id: "01KAY9ATB4THE4TAHX9NRKNHCZ",
     caption: "Fibonacci Shader",
     videoSrc: "demo/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1537,10 +1581,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ATMTM1BWZC7A3YTAV8WC",
     caption: "Fibonacci Shader Grid",
-    videoSrc: "demo/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader-grid",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader-grid",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1552,9 +1599,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AV2086JCY0CCDD3G5N37",
     caption: "Fourier Visualizer",
     videoSrc: "demo/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fourier-visualizer",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fourier-visualizer",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1566,9 +1615,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AV34FK5X3FC44TB902XB",
     caption: "Fractal Glass",
     videoSrc: "demo/misc/fractal-glass_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/fractal-glass_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/fractal-glass_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fractal-glass",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fractal-glass",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1579,10 +1630,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AV7J1VH90D76HB3QWV0J",
     caption: "Github Contributions",
-    videoSrc: "demo/misc/github-contributions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/github-contributions_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/github-contributions_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/github-contributions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-contributions",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-contributions",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1594,9 +1648,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AVKY0VXNNQ6R0MEQHTBF",
     caption: "Gl Transitions",
     videoSrc: "demo/misc/gl-transitions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/gl-transitions",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/gl-transitions",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1608,9 +1664,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AVT2T3NF10KYYE431ZH8",
     caption: "Grid Visualizer",
     videoSrc: "demo/misc/grid-visualizer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/grid-visualizer",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/grid-visualizer",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1622,9 +1680,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AW00B2T0BM1SRK0TPZ2B",
     caption: "Image Cropper",
     videoSrc: "demo/misc/image-cropper_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/image-cropper_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/image-cropper_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/image-cropper",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/image-cropper",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1635,10 +1695,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWDGN852MADDQRSTZE6F",
     caption: "Inner Shared Transition",
-    videoSrc: "demo/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/inner-shared-transition",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/inner-shared-transition",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1649,10 +1712,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWGXS2F13Z8Y6A71GEGW",
     caption: "Instagram Shared Transition",
-    videoSrc: "demo/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/instagram-shared-transition",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/instagram-shared-transition",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1663,10 +1729,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWSBAQ64XM4QCHGTDBPB",
     caption: "Interaction Appearance",
-    videoSrc: "demo/misc/interaction-appearance_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/interaction-appearance_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/interaction-appearance_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/interaction-appearance_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/interaction-appearance",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/interaction-appearance",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1678,9 +1747,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AX2T9W70C74T9DSCDQTM",
     caption: "Ios Home Bouncy",
     videoSrc: "demo/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-bouncy",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-bouncy",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1692,9 +1763,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AX4MFA8BQTN9C3FABGZN",
     caption: "Ios Home Grid",
     videoSrc: "demo/misc/ios-home-grid_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-grid",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-grid",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1706,9 +1779,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXBCZRPK91QFT0RWDPG2",
     caption: "Mobile Input",
     videoSrc: "demo/misc/mobile-input_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/mobile-input_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/mobile-input_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/mobile-input",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/mobile-input",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1720,9 +1795,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXEZD4VJ8H127VSJ68SF",
     caption: "Motion Blur",
     videoSrc: "demo/misc/motion-blur_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/motion-blur",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/motion-blur",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1734,9 +1811,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXGFATXGQG7RYNQZ0FW4",
     caption: "Online Offline",
     videoSrc: "demo/misc/online-offline_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/online-offline",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/online-offline",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1748,9 +1827,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXHXSGRY304WZND73TJA",
     caption: "Paper Folding",
     videoSrc: "demo/misc/paper-folding_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/paper-folding",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/paper-folding",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1762,9 +1843,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXP95T9JS9QJ6KNCBEKK",
     caption: "Pomodoro Timer",
     videoSrc: "demo/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/pomodoro-timer",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/pomodoro-timer",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1776,9 +1859,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AXQV3FFMB33XXM22ADAJ",
     caption: "Popup Handler",
     videoSrc: "demo/misc/popup-handler_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/popup-handler_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/popup-handler_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/popup-handler",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/popup-handler",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1790,9 +1875,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AY42DFE1M9NFCHKXEGC0",
     caption: "Qr Code Generator",
     videoSrc: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1804,9 +1891,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AYZ0SY7QBV3270NDCMXX",
     caption: "Shake To Delete",
     videoSrc: "demo/misc/shake-to-delete_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shake-to-delete",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shake-to-delete",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1818,9 +1907,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AZ48VZ54S9BT05WG48XJ",
     caption: "Shared Transitions",
     videoSrc: "demo/misc/shared-transitions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/shared-transitions_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/shared-transitions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shared-transitions",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shared-transitions",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1832,9 +1923,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AZMQEZKSG66W9SJ5RDQ1",
     caption: "Slide To Reveal",
     videoSrc: "demo/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/slide-to-reveal",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/slide-to-reveal",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1846,9 +1939,11 @@ export const misc: ItemType[] = [
     id: "01KAY9AZP1EM0NHZPBKV85N732",
     caption: "Smooth Dropdown",
     videoSrc: "demo/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/smooth-dropdown",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/smooth-dropdown",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1862,7 +1957,8 @@ export const misc: ItemType[] = [
     videoSrc: "demo/misc/snake_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc: "thumbnails/misc/snake_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1876,7 +1972,8 @@ export const misc: ItemType[] = [
     videoSrc: "demo/misc/spiral_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc: "thumbnails/misc/spiral_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1887,10 +1984,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B0W1KC9VRR4151A9880T",
     caption: "Staggered Card Number",
-    videoSrc: "demo/misc/staggered-card-number_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/staggered-card-number_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/staggered-card-number",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/staggered-card-number",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1904,7 +2004,8 @@ export const misc: ItemType[] = [
     videoSrc: "demo/misc/steps_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc: "thumbnails/misc/steps_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1918,7 +2019,8 @@ export const misc: ItemType[] = [
     videoSrc: "demo/misc/sudoku_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc: "thumbnails/misc/sudoku_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1930,9 +2032,11 @@ export const misc: ItemType[] = [
     id: "01KAY9B18XF0P9VG2BA71VJAG3",
     caption: "Swipe Cards",
     videoSrc: "demo/misc/swipe-cards_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/swipe-cards_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/swipe-cards_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/swipe-cards",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/swipe-cards",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1943,10 +2047,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1GN5TXBETT64YP2KTTT",
     caption: "Telegram Theme Switch",
-    videoSrc: "demo/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/telegram-theme-switch",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/telegram-theme-switch",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1957,10 +2064,13 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1JN5CXN5ZC603MN5G6G",
     caption: "Theme Canvas Animation",
-    videoSrc: "demo/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/theme-canvas-animation",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/theme-canvas-animation",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1972,9 +2082,11 @@ export const misc: ItemType[] = [
     id: "01KAY9B1MMRYWSEQ0YR96ES7YZ",
     caption: "Threads Holo Ticket",
     videoSrc: "demo/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/threads-holo-ticket",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/threads-holo-ticket",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -1986,9 +2098,11 @@ export const misc: ItemType[] = [
     id: "01KAY9B1TMPZE25ZXFSP0P0EQ8",
     caption: "Time Machine",
     videoSrc: "demo/misc/time-machine_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/time-machine",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/time-machine",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2002,7 +2116,8 @@ export const misc: ItemType[] = [
     videoSrc: "demo/misc/toast_enzo_manuel_mangano_reactiive.mp4",
     thumbnailSrc: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2014,9 +2129,11 @@ export const misc: ItemType[] = [
     id: "01KAY9B249WQR1DJC9N0RXN5PQ",
     caption: "Twodos Slide",
     videoSrc: "demo/misc/twodos-slide_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/twodos-slide_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/twodos-slide_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twodos-slide",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twodos-slide",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2028,9 +2145,11 @@ export const misc: ItemType[] = [
     id: "01KAY9B26VEPM9Q7G610DYB83R",
     caption: "Verification Code",
     videoSrc: "demo/misc/verification-code_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
+    thumbnailSrc:
+      "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2041,15 +2160,17 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B28MXYXYM43QHAPNPFBR",
     caption: "Verification Code Face",
-    videoSrc: "demo/misc/verification-code-face_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
+    videoSrc:
+      "demo/misc/verification-code-face_enzo_manuel_mangano_reactiive.mp4",
+    thumbnailSrc:
+      "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code-face",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code-face",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
     category: "Misc",
     created_at: "2025-11-25T19:55:44.000Z",
   },
-
 ]
