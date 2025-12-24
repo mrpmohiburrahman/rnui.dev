@@ -26,33 +26,31 @@ export function TopNavBar() {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/bookmarks" legacyBehavior passHref>
-                <NavigationMenuLink
+              <NavigationMenuLink asChild>
+                <Link
+                  href="/bookmarks"
                   className={clsx(
                     navigationMenuTriggerStyle()
                     // " border dark:border-gray-500 border-gray-100"
                   )}
                 >
                   Bookmarks
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/subscribe" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild>
+                <Link href="/subscribe" className={navigationMenuTriggerStyle()}>
                   Subscribe
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link
-                href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
-                legacyBehavior
-                passHref
-              >
-                <NavigationMenuLink
-                  target="_blank" // Opens the link in a new tab
-                  rel="noopener noreferrer" // Security best practices
+              <NavigationMenuLink asChild>
+                <Link
+                  href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={clsx(
                     navigationMenuTriggerStyle(),
                     "border dark:border-gray-500 border-gray-100",
@@ -61,8 +59,8 @@ export function TopNavBar() {
                 >
                   <GitHubLogoIcon className="w-5 h-5" />
                   Star us on GitHub
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
