@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image, { ImageProps } from "next/image"
-import placeholderImg from "@/assets/placeholder.png"
+const placeholderImg = "/assets/placeholder.png"
 
 interface ImageWithFallbackProps extends Omit<ImageProps, "src"> {
   fallback?: string
