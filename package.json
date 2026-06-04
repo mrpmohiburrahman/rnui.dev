@@ -18,6 +18,7 @@
     "codex:ingest": "tsx scripts/codex-ingest.ts",
     "codex:review-pr": "tsx scripts/codex-review-pr.ts",
     "codex:index": "tsx scripts/codex-search-index.ts",
+    "metrics:update": "tsx scripts/metrics-update.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
