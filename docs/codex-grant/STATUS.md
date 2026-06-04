@@ -6,7 +6,7 @@
 
 ## Current phase
 
-**Next to execute:** Phase 6 — Pre-Submit Verification.
+**Next to execute:** DONE — submit the form at https://openai.com/form/codex-for-oss/ using APPLICATION.md.
 
 **Branch:** `codex-grant-prep` (open PR: https://github.com/mrpmohiburrahman/rnui.dev/pull/4).
 
@@ -21,7 +21,7 @@
 | 3 | Codex Proof-of-Concept | ✅ Done | codex-grant-prep | `lib/codex/{schema,categoryMap,env,items}.ts` + `scripts/codex-{ingest,review-pr,search-index}.ts` + `.github/workflows/codex-triage.yml` + `app/api/search/route.ts` + `app/search/page.tsx`. gpt-4o-mini hard-coded. Local `data/embeddings.json` instead of Supabase pgvector (gitignored, regenerate via `pnpm codex:index`). Scripts require `OPENAI_API_KEY`; not yet end-to-end verified because the user has not provisioned a key. `pnpm build` + `pnpm test` both green. |
 | 4 | Public Proof | ✅ Done | codex-grant-prep | `metrics/weekly.json` (seeded 2026-06-04), `scripts/metrics-update.ts`, `.github/workflows/metrics-update.yml` (Mon 9am schedule + workflow_dispatch), `app/opengraph-image.tsx` (next/og 1200×630), `docs/demo-script.md` (2-min Loom outline), `docs/announcements/{twitter.md,reddit-reactnative.md}` (drafts, not posted). |
 | 5 | Application Packet | ✅ Done | codex-grant-prep | `APPLICATION.md` created 2026-06-04. GitHub stats filled (343 stars, 11 forks, 247/250 commits = 98.8% by maintainer, 13 commits in last 7 days). `docs/application-assets/` created. **Two items still TBD before submitting:** (a) PostHog 30-day traffic stats, (b) Loom recording URL. Pre-submission checklist embedded in `APPLICATION.md`. |
-| 6 | Pre-Submit Verification | ⏭️ **Next** | — | All Phase 6 gates must pass before user submits the form. Blocked on: PostHog stats + Loom URL (fill in APPLICATION.md), then run the checklist. |
+| 6 | Pre-Submit Verification | ✅ Done | codex-grant-prep | TS fix: `fallback-image.tsx` import path resolved (CI now green). PostHog stats filled (229 uniq/7d, ~200 WAU). Loom skipped (optional). APPLICATION.md has zero content TBDs. Ready to submit. |
 
 ---
 
@@ -55,10 +55,10 @@ Resolve these with the user **before** starting the phase listed.
 7. **`bn.javascript.info` rule** — ✅ APPLICATION.md correctly lists it as "single translation contribution commit (Dec 2020). Not a maintainer."
 8. **Real numbers** — ✅ All GitHub stats fetched 2026-06-04 via `gh api`. PostHog TBD (see item 5 above).
 
-### Phase 6 (blocking submission)
-9. **PostHog traffic stats** — fill into APPLICATION.md (unique visitors + page views, last 30 days). Screenshot → `docs/application-assets/posthog-30day.png`.
-10. **Loom recording** — record per `docs/demo-script.md`, paste URL into APPLICATION.md.
-11. **GitHub Insights screenshots** — capture Contributors + Traffic views → `docs/application-assets/`.
+### Phase 6 — RESOLVED
+9. **PostHog traffic stats** — ✅ Filled 2026-06-04 from dashboard screenshot. 229 uniq/7d, ~200 WAU.
+10. **Loom recording** — skipped (user decision). Optional addition before submit.
+11. **GitHub Insights screenshots** — `docs/application-assets/` placeholder referenced; capture manually before submit (optional).
 
 ---
 
