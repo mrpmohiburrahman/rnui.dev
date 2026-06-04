@@ -6,7 +6,7 @@
 
 ## Current phase
 
-**Next to execute:** Phase 4 — Public Proof.
+**Next to execute:** Phase 5 — Application Packet.
 
 **Branch:** `codex-grant-prep` (open PR: https://github.com/mrpmohiburrahman/rnui.dev/pull/4).
 
@@ -19,8 +19,8 @@
 | 1 | Revive + Hygiene | ✅ Done | PR #4 | License, README, CONTRIBUTING, SECURITY, CoC, ROADMAP, CHANGELOG, .github templates, dependabot, package.json cleanup, repo metadata. |
 | 2 | Quality Gates | ✅ Done | codex-grant-prep | `vitest.config.ts`, `tests/data-integrity.test.ts` (5 tests pass), `tests/e2e/home.spec.ts`, `playwright.config.ts`, `.github/workflows/ci.yml`. Known issue: `pnpm lint` broken pre-existing (eslint-plugin-react-hooks@7 + pnpm vstore path conflict) — lint excluded from CI until resolved. |
 | 3 | Codex Proof-of-Concept | ✅ Done | codex-grant-prep | `lib/codex/{schema,categoryMap,env,items}.ts` + `scripts/codex-{ingest,review-pr,search-index}.ts` + `.github/workflows/codex-triage.yml` + `app/api/search/route.ts` + `app/search/page.tsx`. gpt-4o-mini hard-coded. Local `data/embeddings.json` instead of Supabase pgvector (gitignored, regenerate via `pnpm codex:index`). Scripts require `OPENAI_API_KEY`; not yet end-to-end verified because the user has not provisioned a key. `pnpm build` + `pnpm test` both green. |
-| 4 | Public Proof | ⏭️ **Next** | — | Weekly metrics action, OG image, demo script, launch copy. |
-| 5 | Application Packet | ⏸️ Blocked on Phase 3 | — | `APPLICATION.md` with real numbers fetched at submission time. |
+| 4 | Public Proof | ✅ Done | codex-grant-prep | `metrics/weekly.json` (seeded 2026-06-04), `scripts/metrics-update.ts`, `.github/workflows/metrics-update.yml` (Mon 9am schedule + workflow_dispatch), `app/opengraph-image.tsx` (next/og 1200×630), `docs/demo-script.md` (2-min Loom outline), `docs/announcements/{twitter.md,reddit-reactnative.md}` (drafts, not posted). |
+| 5 | Application Packet | ⏭️ **Next** | — | `APPLICATION.md` with real numbers fetched at submission time. Needs: PostHog 30-day stats, Loom URL after recording. |
 | 6 | Pre-Submit Verification | ⏸️ Final | — | All Phase 6 gates must pass before user submits the form. |
 
 ---
