@@ -37,7 +37,7 @@ jobs:
         with:
           version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         if: steps.keycheck.outputs.has_key == 'true'
         with:
           node-version: 20
