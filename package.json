@@ -15,7 +15,9 @@
     "add-created-at": "ts-node scripts/add-created-at.ts",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "update:updateChangedItems": "node scripts/updateChangedItems.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.5",
@@ -76,10 +78,12 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
+    "@playwright/test": "^1.60.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "child_process": "^1.0.2",
     "encoding": "^0.1.13",
     "eslint": "^9.17.0",
@@ -94,6 +98,7 @@
     "ts-morph": "^24.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "vitest": "^4.1.8"
   }
 }
