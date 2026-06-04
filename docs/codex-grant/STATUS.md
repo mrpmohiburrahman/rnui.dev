@@ -6,7 +6,7 @@
 
 ## Current phase
 
-**Next to execute:** Phase 2 — Quality Gates.
+**Next to execute:** Phase 3 — Codex Proof-of-Concept.
 
 **Branch:** `codex-grant-prep` (open PR: https://github.com/mrpmohiburrahman/rnui.dev/pull/4).
 
@@ -17,8 +17,8 @@
 | # | Phase | State | PR / Commit | Notes |
 |---|-------|-------|-------------|-------|
 | 1 | Revive + Hygiene | ✅ Done | PR #4 | License, README, CONTRIBUTING, SECURITY, CoC, ROADMAP, CHANGELOG, .github templates, dependabot, package.json cleanup, repo metadata. |
-| 2 | Quality Gates | ⏭️ **Next** | — | Vitest data-integrity, Playwright smoke, `.github/workflows/ci.yml`, coverage. |
-| 3 | Codex Proof-of-Concept | ⏸️ Blocked on Phase 2 + secrets | — | Needs `OPENAI_API_KEY` GitHub secret + Supabase pgvector setup decision (see Open Questions). |
+| 2 | Quality Gates | ✅ Done | codex-grant-prep | `vitest.config.ts`, `tests/data-integrity.test.ts` (5 tests pass), `tests/e2e/home.spec.ts`, `playwright.config.ts`, `.github/workflows/ci.yml`. Known issue: `pnpm lint` broken pre-existing (eslint-plugin-react-hooks@7 + pnpm vstore path conflict) — lint excluded from CI until resolved. |
+| 3 | Codex Proof-of-Concept | ⏭️ **Next** | — | Needs `OPENAI_API_KEY` GitHub secret + Supabase pgvector setup decision (see Open Questions). |
 | 4 | Public Proof | ⏸️ Blocked on Phase 3 | — | Weekly metrics action, OG image, demo script, launch copy. |
 | 5 | Application Packet | ⏸️ Blocked on Phase 3 | — | `APPLICATION.md` with real numbers fetched at submission time. |
 | 6 | Pre-Submit Verification | ⏸️ Final | — | All Phase 6 gates must pass before user submits the form. |
