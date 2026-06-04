@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a bug on rnui.dev.
+title: "[bug] "
+labels: [bug, needs-triage]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser / device
+      placeholder: Chrome 130 on macOS 15
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      placeholder: https://rnui.dev/...
