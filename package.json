@@ -8,11 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit",
-    "seed:products": "tsx supabase/seed/seed-products.ts",
-    "normalize:data": "tsx supabase/seed/normalize.ts",
-    "bulk:enrich": "tsx supabase/seed/bulk-enrich.ts",
-    "enrich": "tsx supabase/seed/src/main.ts",
-    "fetch:og": "tsx supabase/seed/fetch-og-data.ts",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "postbuild": "next-sitemap",
@@ -20,7 +15,13 @@
     "add-created-at": "ts-node scripts/add-created-at.ts",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "update:updateChangedItems": "node scripts/updateChangedItems.js",
-    "prepare": "husky"
+    "codex:ingest": "tsx scripts/codex-ingest.ts",
+    "codex:review-pr": "tsx scripts/codex-review-pr.ts",
+    "codex:index": "tsx scripts/codex-search-index.ts",
+    "metrics:update": "tsx scripts/metrics-update.ts",
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.5",
@@ -74,6 +75,7 @@
     "tailwindcss-animate": "^1.0.7",
     "timeago.js": "^4.0.2",
     "typescript": "5.7.2",
+    "ulid": "^3.0.2",
     "vaul": "^1.1.2",
     "zod": "^3.24.1",
     "zod-validation-error": "^3.4.0"
@@ -81,10 +83,12 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
+    "@playwright/test": "^1.60.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@vitest/coverage-v8": "^4.1.8",
     "child_process": "^1.0.2",
     "encoding": "^0.1.13",
     "eslint": "^9.17.0",
@@ -98,7 +102,9 @@
     "tailwindcss": "^3.4.1",
     "ts-morph": "^24.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.22.4",
     "typescript": "^5",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "vitest": "^4.1.8"
   }
 }
