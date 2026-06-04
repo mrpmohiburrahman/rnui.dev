@@ -1,0 +1,58 @@
+name: Animation / UI submission
+description: Suggest a React Native UI component, animation, or demo for the rnui.dev catalog.
+title: "[submission] <author>/<repo>"
+labels: [submission, needs-triage]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Source URL
+      description: GitHub repo, Expo Snack, or gist.
+      placeholder: https://github.com/software-mansion/react-native-reanimated
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - accordions
+        - arcsliders
+        - bottomsheets
+        - buttons
+        - carousels
+        - charts
+        - circular-progress-bars
+        - dropdowns
+        - fullapps
+        - headers
+        - lists
+        - loaders
+        - misc
+        - onboardings
+        - parallaxes
+        - pickers
+        - sliders
+        - tabbars
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Original author
+      description: Twitter / GitHub handle of the person who built it.
+      placeholder: "@handle or github-username"
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes for the maintainer
+      description: Anything we should know? (License caveats, original credit, etc.)
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmations
+      options:
+        - label: I have permission to suggest this, or it is publicly published under a permissive license.
+          required: true
+        - label: I have searched existing entries and this is not a duplicate.
+          required: true

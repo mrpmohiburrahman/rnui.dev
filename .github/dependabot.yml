@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      next:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      ai:
+        patterns:
+          - "ai"
+          - "@ai-sdk/*"
+          - "openai"
+      radix:
+        patterns:
+          - "@radix-ui/*"
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
