@@ -15,6 +15,9 @@
     "add-created-at": "ts-node scripts/add-created-at.ts",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "update:updateChangedItems": "node scripts/updateChangedItems.js",
+    "codex:ingest": "tsx scripts/codex-ingest.ts",
+    "codex:review-pr": "tsx scripts/codex-review-pr.ts",
+    "codex:index": "tsx scripts/codex-search-index.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
@@ -71,6 +74,7 @@
     "tailwindcss-animate": "^1.0.7",
     "timeago.js": "^4.0.2",
     "typescript": "5.7.2",
+    "ulid": "^3.0.2",
     "vaul": "^1.1.2",
     "zod": "^3.24.1",
     "zod-validation-error": "^3.4.0"
@@ -97,6 +101,7 @@
     "tailwindcss": "^3.4.1",
     "ts-morph": "^24.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.22.4",
     "typescript": "^5",
     "util": "^0.12.5",
     "vitest": "^4.1.8"
