@@ -1,0 +1,75 @@
+# Codex-for-OSS Grant Prep — Live Status
+
+> **For the next Claude session:** read this file first. It tells you exactly what is done, what is in flight, what is blocked, and what to do next. The master plan lives in `CODEX-GRANT-PROMPT.md` at the repo root.
+
+---
+
+## Current phase
+
+**Next to execute:** Phase 2 — Quality Gates.
+
+**Branch:** `codex-grant-prep` (open PR: https://github.com/mrpmohiburrahman/rnui.dev/pull/4).
+
+---
+
+## Phase status
+
+| # | Phase | State | PR / Commit | Notes |
+|---|-------|-------|-------------|-------|
+| 1 | Revive + Hygiene | ✅ Done | PR #4 | License, README, CONTRIBUTING, SECURITY, CoC, ROADMAP, CHANGELOG, .github templates, dependabot, package.json cleanup, repo metadata. |
+| 2 | Quality Gates | ⏭️ **Next** | — | Vitest data-integrity, Playwright smoke, `.github/workflows/ci.yml`, coverage. |
+| 3 | Codex Proof-of-Concept | ⏸️ Blocked on Phase 2 + secrets | — | Needs `OPENAI_API_KEY` GitHub secret + Supabase pgvector setup decision (see Open Questions). |
+| 4 | Public Proof | ⏸️ Blocked on Phase 3 | — | Weekly metrics action, OG image, demo script, launch copy. |
+| 5 | Application Packet | ⏸️ Blocked on Phase 3 | — | `APPLICATION.md` with real numbers fetched at submission time. |
+| 6 | Pre-Submit Verification | ⏸️ Final | — | All Phase 6 gates must pass before user submits the form. |
+
+---
+
+## Decisions already made (do not re-ask)
+
+- **License:** keep MIT `LICENSE`, EULA `LICENSE.md` deleted in commit `bca2281`.
+- **Branch base:** `main` (not `master` as the original prompt assumed).
+- **Package manager:** `pnpm` (lockfile is pnpm-lock.yaml). All docs/CI/scripts must use `pnpm`, not `npm`.
+- **Doc filenames:** standard caps — `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, etc. Lowercase originals removed.
+- **CoC strategy:** pointer-style file linking Contributor Covenant 2.1 canonical URL. Do NOT paste the full verbatim 2.1 text — it tripped the Anthropic output content filter in the last session.
+- **Broken supabase/seed scripts:** removed from `package.json` (commit `3dfa09c`). Do not restore unless `supabase/seed/` is also restored.
+- **Real catalog categories** (use these in issue templates / Zod enums, NOT the reanimated/skia/moti list from the original prompt): `accordions, arcsliders, bottomsheets, buttons, carousels, charts, circular-progress-bars, dropdowns, fullapps, headers, items, lists, loaders, misc, onboardings, parallaxes, pickers, sliders, tabbars`.
+
+---
+
+## Open questions blocking later phases
+
+Resolve these with the user **before** starting the phase listed.
+
+### Phase 3 (Codex PoC)
+1. **`OPENAI_API_KEY`** — does the user have a key with `gpt-4o-mini` and `text-embedding-3-small` access? Where is it stored (local `.env.local`, GitHub Actions secret, or both)?
+2. **Supabase pgvector** — current `@supabase/supabase-js` is wired but no `supabase/` directory exists. Is there a live Supabase project? Should we create one, or scope down search to a local SQLite/JSON fallback?
+3. **Thumbnail pipeline** — `scripts/generateThumbnails.ts` exists. Confirm the `--only <id>` flag (the original prompt assumed it). If absent, codex-ingest cannot delegate to it.
+4. **Model choice** — original prompt suggests `gpt-5-codex` with `gpt-4o-mini` fallback. If user has only `gpt-4o-mini` access, hard-code that and drop the fallback comment.
+
+### Phase 4
+5. **PostHog access** — needs PostHog API key or dashboard screenshots for traffic numbers.
+6. **Loom recording** — user must record the 2-minute demo themselves.
+
+### Phase 5
+7. **`bn.javascript.info` rule** — under no circumstances should the application claim maintainership. Single translation commit only. (Hard rule from `CODEX-GRANT-PROMPT.md` §2.1.)
+8. **Real numbers must be fetched at submission time** via `gh api` + PostHog (see §5 Phase 5 of CODEX-GRANT-PROMPT.md).
+
+---
+
+## How a fresh Claude session resumes work
+
+Paste this into a new session whose working directory is the repo root:
+
+> Read `CODEX-GRANT-PROMPT.md` and `docs/codex-grant/STATUS.md`. The latter is authoritative for current state and decisions already made — do not re-ask anything in the "Decisions already made" section. Identify the next pending phase from the status table, surface any unresolved Open Questions for that phase with `AskUserQuestion`, then execute it. Use `pnpm`, not `npm`. Update `docs/codex-grant/STATUS.md` as you go and commit changes to it as part of the phase commit series.
+
+That's the entire bootstrap. Keep this file as the single source of truth — every phase commit must update the table above and add/clear Open Questions as they are resolved.
+
+---
+
+## Conventions
+
+- **One logical unit per commit.** Conventional Commits.
+- **Push every phase to `codex-grant-prep`.** Do not merge to `main` without the user's explicit go.
+- **Update this file in the same commit series as the phase work** so resumption is always honest.
+- **Re-read the hard rules in `CODEX-GRANT-PROMPT.md` §2 before any Phase 5 work.**
