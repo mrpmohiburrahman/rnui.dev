@@ -41,16 +41,12 @@ rnui.dev is the most comprehensive curated catalog of React Native animation ref
 
 It complements official docs from Software Mansion (Reanimated) and Shopify (Skia) without duplicating them.
 
-**Traffic (30-day, PostHog):**
-- Unique visitors: **TBD — fetch from PostHog before submitting**
-- Page views: **TBD — fetch from PostHog before submitting**
-- PostHog dashboard screenshot: `docs/application-assets/posthog-30day.png` *(capture before submitting)*
-
-> To fetch: Log into PostHog → Insights → set date range to "Last 30 days" → note unique users and total events. Or use:
-> ```
-> curl -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
->   "https://app.posthog.com/api/projects/<project_id>/insights/trend/?events=[{\"id\":\"\$pageview\"}]&date_from=-30d"
-> ```
+**Traffic (PostHog, fetched 2026-06-04):**
+- Last 7 days unique visitors: **229** (PostHog pageview funnel, "First page view" — 229 persons)
+- Weekly active users (last 90 days): growing to **~200+ WAUs** in May 2026; May 24–30 cohort = **199 users**
+- Daily active users (last 30 days): **25–85 DAUs**, typical ~35; spike ~85 around May 26
+- Top referring domains (last 14 days): `$direct`, `google.com`, `chatgpt.com`, `bing.com`, `reddit.com`
+- PostHog dashboard screenshot: `docs/application-assets/posthog-30day.png`
 
 ---
 
@@ -121,9 +117,7 @@ Natural-language RAG search over the catalog:
 
 ## Demo
 
-Loom (2 min): **TBD — record per `docs/demo-script.md` and paste URL here before submitting**
-
-Outline: see `docs/demo-script.md`
+Loom (2 min): see `docs/demo-script.md` for the outlined script. No recording yet — optional pre-submission addition.
 
 ---
 
