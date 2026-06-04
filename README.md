@@ -23,11 +23,13 @@ Each entry links to the original repo or Snack with author attribution.
 
 ## Powered by Codex
 
-This project is integrating OpenAI Codex into the maintenance workflow (in progress on the `codex-grant-prep` branch — see [ROADMAP.md](./ROADMAP.md)):
+OpenAI Codex (currently `gpt-4o-mini` + `text-embedding-3-small` via the Vercel AI SDK) is wired into three parts of the workflow:
 
-1. `scripts/codex-ingest.ts` — turn a GitHub/Snack/gist URL into a schema-valid catalog entry + PR.
-2. `.github/workflows/codex-triage.yml` — automated Codex review on every submission PR.
-3. `scripts/codex-search-index.ts` + `/api/search` + `/search` — natural-language RAG search over the catalog.
+1. **`pnpm codex:ingest -- <github-url>`** (`scripts/codex-ingest.ts`) — fetches repo metadata + README, asks Codex for a structured catalog entry that matches `ItemType` in `data/items.ts`, validates it with Zod, `ts-morph`-appends it to the right `data/<category>.ts`, then opens a `submission/<slug>` PR. Demo-video upload stays manual; the script prints the expected path.
+2. **`.github/workflows/codex-triage.yml`** (`scripts/codex-review-pr.ts`) — runs on every PR open/sync, asks Codex to score the diff against a fixed rubric (schema, ID uniqueness, asset paths, category match, source URL), and posts the review as a PR comment. The workflow is gated on the `OPENAI_API_KEY` secret so it stays quiet on forks or before the key is configured.
+3. **`pnpm codex:index`** (`scripts/codex-search-index.ts`) + **`/api/search`** + **`/search`** — embeds every catalog entry with `text-embedding-3-small`, writes `data/embeddings.json` (gitignored, regenerated locally), and serves natural-language search via cosine similarity. Migrate to Supabase pgvector when the catalog outgrows JSON.
+
+All Codex-calling commands require `OPENAI_API_KEY` in the environment and fail loudly when it is missing.
 
 ## Run locally
 

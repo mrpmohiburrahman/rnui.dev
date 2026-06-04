@@ -6,7 +6,7 @@
 
 ## Current phase
 
-**Next to execute:** Phase 3 — Codex Proof-of-Concept.
+**Next to execute:** Phase 4 — Public Proof.
 
 **Branch:** `codex-grant-prep` (open PR: https://github.com/mrpmohiburrahman/rnui.dev/pull/4).
 
@@ -18,8 +18,8 @@
 |---|-------|-------|-------------|-------|
 | 1 | Revive + Hygiene | ✅ Done | PR #4 | License, README, CONTRIBUTING, SECURITY, CoC, ROADMAP, CHANGELOG, .github templates, dependabot, package.json cleanup, repo metadata. |
 | 2 | Quality Gates | ✅ Done | codex-grant-prep | `vitest.config.ts`, `tests/data-integrity.test.ts` (5 tests pass), `tests/e2e/home.spec.ts`, `playwright.config.ts`, `.github/workflows/ci.yml`. Known issue: `pnpm lint` broken pre-existing (eslint-plugin-react-hooks@7 + pnpm vstore path conflict) — lint excluded from CI until resolved. |
-| 3 | Codex Proof-of-Concept | ⏭️ **Next** | — | Needs `OPENAI_API_KEY` GitHub secret + Supabase pgvector setup decision (see Open Questions). |
-| 4 | Public Proof | ⏸️ Blocked on Phase 3 | — | Weekly metrics action, OG image, demo script, launch copy. |
+| 3 | Codex Proof-of-Concept | ✅ Done | codex-grant-prep | `lib/codex/{schema,categoryMap,env,items}.ts` + `scripts/codex-{ingest,review-pr,search-index}.ts` + `.github/workflows/codex-triage.yml` + `app/api/search/route.ts` + `app/search/page.tsx`. gpt-4o-mini hard-coded. Local `data/embeddings.json` instead of Supabase pgvector (gitignored, regenerate via `pnpm codex:index`). Scripts require `OPENAI_API_KEY`; not yet end-to-end verified because the user has not provisioned a key. `pnpm build` + `pnpm test` both green. |
+| 4 | Public Proof | ⏭️ **Next** | — | Weekly metrics action, OG image, demo script, launch copy. |
 | 5 | Application Packet | ⏸️ Blocked on Phase 3 | — | `APPLICATION.md` with real numbers fetched at submission time. |
 | 6 | Pre-Submit Verification | ⏸️ Final | — | All Phase 6 gates must pass before user submits the form. |
 
@@ -41,11 +41,11 @@
 
 Resolve these with the user **before** starting the phase listed.
 
-### Phase 3 (Codex PoC)
-1. **`OPENAI_API_KEY`** — does the user have a key with `gpt-4o-mini` and `text-embedding-3-small` access? Where is it stored (local `.env.local`, GitHub Actions secret, or both)?
-2. **Supabase pgvector** — current `@supabase/supabase-js` is wired but no `supabase/` directory exists. Is there a live Supabase project? Should we create one, or scope down search to a local SQLite/JSON fallback?
-3. **Thumbnail pipeline** — `scripts/generateThumbnails.ts` exists. Confirm the `--only <id>` flag (the original prompt assumed it). If absent, codex-ingest cannot delegate to it.
-4. **Model choice** — original prompt suggests `gpt-5-codex` with `gpt-4o-mini` fallback. If user has only `gpt-4o-mini` access, hard-code that and drop the fallback comment.
+### Phase 3 (Codex PoC) — RESOLVED
+1. **`OPENAI_API_KEY`** — user does not yet have a key. Scripts/route fail loudly with an actionable error until one is provisioned. End-to-end verification (`pnpm codex:ingest` against a real URL, `/api/search` returning ranked results) is **deferred to Phase 6**.
+2. **Supabase pgvector** — skipped. Local fallback `data/embeddings.json` (gitignored) consumed by `/api/search` via cosine similarity. Sufficient at current catalog size.
+3. **Thumbnail pipeline** — confirmed `scripts/generateThumbnails.ts` walks `public/demo/` recursively and has **no `--only` flag**. `codex-ingest` does not delegate; it prints a TODO block telling the maintainer where to drop the video and to run `pnpm generate-thumbnails`.
+4. **Model choice** — `gpt-4o-mini` hard-coded in `lib/codex/env.ts`. No fallback comment.
 
 ### Phase 4
 5. **PostHog access** — needs PostHog API key or dashboard screenshots for traffic numbers.
