@@ -27,7 +27,7 @@ jobs:
             echo "has_key=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.keycheck.outputs.has_key == 'true'
         with:
           fetch-depth: 0
