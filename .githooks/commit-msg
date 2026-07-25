@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# commit-msg — REJECT AI co-author / attribution trailers + AI author identity.
+# Covers Claude, Copilot, Cursor, Aider, Codex, Windsurf, Codeium, Devin, Jules, Gemini,
+# CommandCode (commandcode.ai), and Hermes agent.
+# Correct stage: commit-msg sees the finalized message ($1) and can abort with exit 1.
+# Bypass (discouraged, and CI still catches it): git commit --no-verify
+set -euo pipefail
+
+msg_file="${1:?commit-msg hook: missing message-file argument}"
+
+# Agent product names — matched ONLY in the trailer's NAME position (right after the colon),
+# so an agent name can never match inside a human's email/domain (e.g. "amp" in "example.com").
+name_agents='claude|copilot|cursor|aider|codex|windsurf|codeium|devin|jules|gemini|commandcode|hermes'
+# Known agent bot emails — precise, matched anywhere in a trailer/identity line.
+emails='noreply@anthropic\.com|cursoragent@cursor\.com|aider@aider\.chat|codex@openai\.com|[0-9]*\+?copilot@users\.noreply\.github\.com|copilot@github\.com|noreply@commandcode\.ai|hermes@|noreply@hermes-agent\.local'
+
+# Message body minus git's own comment lines (so commented diffs never trip it).
+body="$(grep -v '^#' "$msg_file" || true)"
+
+reason=""
+# (a) agent as the coauthor NAME, or (b) a known bot email anywhere in the trailer line.
+if printf '%s\n' "$body" | grep -qiE "^[[:space:]]*Co-authored-by:([[:space:]]*(${name_agents})|.*(${emails}))"; then
+  reason="a Co-authored-by trailer attributing an AI coding agent"
+elif printf '%s\n' "$body" | grep -qiE '(🤖[[:space:]]*)?Generated with (\[)?(Claude Code|Cursor|[Aa]ider|Codex|Copilot|CommandCode|Hermes)'; then
+  reason='an AI attribution line ("Generated with ...")'
+elif printf '%s\n' "$body" | grep -qiE '^[[:space:]]*Made-with:[[:space:]]*Cursor'; then
+  reason='a "Made-with: Cursor" trailer'
+fi
+
+# Also reject an AI agent set as the commit author/committer (aider/cursor/etc. rewrite these).
+if [ -z "$reason" ]; then
+  ident="$(git var GIT_AUTHOR_IDENT 2>/dev/null || true) $(git var GIT_COMMITTER_IDENT 2>/dev/null || true)"
+  if printf '%s' "$ident" | grep -qiE "(${emails})|\((aider|cursor|codex)\)[[:space:]]*<"; then
+    reason="an AI coding-agent set as commit author/committer"
+  fi
+fi
+
+if [ -n "$reason" ]; then
+  printf '\033[31m\342\234\227 commit blocked:\033[0m message/identity contains %s.\n' "$reason" >&2
+  printf '  Remove the AI attribution, then commit again.\n' >&2
+  printf '  Fix it at the source too (agent settings) so it never reaches here.\n' >&2
+  printf '  Emergency bypass (discouraged; CI still catches it): git commit --no-verify\n' >&2
+  exit 1
+fi
+exit 0

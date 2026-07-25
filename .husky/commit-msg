@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+# husky runs this under `sh -e`; the real hook is bash.
+exec bash .githooks/commit-msg "$@"
