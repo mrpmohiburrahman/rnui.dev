@@ -1,3 +1,9 @@
+# Not a monorepo - this file exists only to carry allowBuilds. pnpm 9 (which
+# Vercel pins for this project) treats a missing `packages` field as fatal:
+# "ERROR packages field missing or empty". Declaring the root keeps it happy.
+packages:
+  - "."
+
 allowBuilds:
   core-js: false         # postinstall only prints a funding notice
   esbuild: true          # unpacks a platform binary; vitest and tsx need it
