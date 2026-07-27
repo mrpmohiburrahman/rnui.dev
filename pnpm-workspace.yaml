@@ -1,0 +1,6 @@
+allowBuilds:
+  core-js: false         # postinstall only prints a funding notice
+  esbuild: true          # unpacks a platform binary; vitest and tsx need it
+  protobufjs: false      # postinstall only rebuilds for git installs; arrives via @grpc/proto-loader
+  sharp: true            # native image pipeline used by next/image
+  unrs-resolver: true    # native resolver behind the eslint import rules
