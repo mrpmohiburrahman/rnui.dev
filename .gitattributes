@@ -1,2 +1,8 @@
 * text=auto
 readme.md merge=union
+
+# Shell scripts and git hooks must keep LF endings. With core.autocrlf=true a CRLF
+# checkout makes bash read `pipefail\r` and every hook dies with "invalid option name".
+*.sh          text eol=lf
+.githooks/**  text eol=lf
+.husky/**     text eol=lf
