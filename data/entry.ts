@@ -64,7 +64,6 @@ export type Entry = {
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 
 export async function getEntriesWithCounts(): Promise<Entry[]> {
-  console.log("🚀 ~ COLLECTION_NAME:", COLLECTION_NAME)
   const countsCollection = collection(db, COLLECTION_NAME)
   const countsSnapshot = await getDocs(countsCollection)
 

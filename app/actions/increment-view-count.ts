@@ -9,8 +9,6 @@ import { db } from "@/lib/firebase"
 // Determine the collection name based on the environment
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 export const incrementViewCount = async (entryId: string) => {
-  console.log("🚀 ~ incrementViewCount ~ incrementViewCount")
-  console.log("🚀 ~ COLLECTION_NAME:", COLLECTION_NAME)
   const viewCountRef = doc(db, COLLECTION_NAME, entryId)
   try {
     await updateDoc(viewCountRef, {

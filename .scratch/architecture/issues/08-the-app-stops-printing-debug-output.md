@@ -25,13 +25,50 @@ bookmarks were silently reset, and they are the opposite of noise.
 **Blocked by:** 06. Three of the twenty-four lines live inside a module 06 deletes
 outright, and this ticket's last criterion cannot be met while that module exists.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] No debug log fires on a catalogue render, a navigation render, a vote, a bookmark toggle, a view increment or a newsletter signup
-- [ ] No log serialises the catalogue, the author list, or a visitor's stored id list
-- [ ] Every catch still reports its error, and the corrupt-stored-state warnings are untouched
-- [ ] A search of the application tree finds only error and warning reporting left
-- [ ] Type check, test suite, build and end-to-end tests all pass
+- [x] No debug log fires on a catalogue render, a navigation render, a vote, a bookmark toggle, a view increment or a newsletter signup
+- [x] No log serialises the catalogue, the author list, or a visitor's stored id list
+- [x] Every catch still reports its error, and the corrupt-stored-state warnings are untouched
+- [x] A search of the application tree finds only error and warning reporting left
+- [x] Type check, test suite, build and end-to-end tests all pass
 
 No rule is added to keep them out. Nothing in this repository executes a linter
 yet, so a rule would be decoration. Ticket 11 adds it once there is something to run.
+
+## Comments
+
+**Implemented 2026-07-30.**
+
+Twenty-two lines gone across ten files — nineteen live `console.log` calls plus
+three already commented out. The three commented ones counted because of the
+fourth criterion: a `grep` for `console.` in the application tree has to come back
+holding only error and warning reporting, and a commented-out log still answers
+that search. They were `components/nav/catalogue-nav.tsx` (the author-list dump)
+and two lines in `app/actions/get-entries.ts`, one of which serialised the whole
+filtered catalogue.
+
+Where they were: `hooks/use-bookmarks.ts` 6, `hooks/use-votes.ts` 6,
+`app/actions/increment-view-count.ts` 2, `app/actions/get-entries.ts` 2, and one
+each in `app/actions/increment-vote-count.ts`,
+`app/actions/decrement-vote-count.ts`, `data/entry.ts`,
+`components/newsletter-form.ts`, `app/subscribe/page.tsx` and
+`components/nav/catalogue-nav.tsx`.
+
+The ticket's count was twenty-four minus the three inside the module 06 deleted,
+so twenty-one expected against twenty-two found. The survey counted live calls
+only; the extra one is a commented line it did not tally.
+
+Two `const updated = …` bindings in each stored-set hook went with them. They
+existed only to be passed to the log — once the log is gone the reducer returns the
+new array directly. That is the whole reason the deletion had to precede ticket 13
+rather than follow it: the merged hook would otherwise have inherited the binding
+and the reader would have had to work out why it was there.
+
+Kept, deliberately: all twenty-seven `console.error` and `console.warn` calls,
+including the two "Stored bookmarks are not an array" / "Stored voted items are not
+an array" warnings. Those fire only when a visitor's stored state fails to parse
+and are the only signal that somebody's bookmarks were silently reset.
+
+Verified: `pnpm check-types`, `pnpm test` (74 passed), `pnpm build`,
+`pnpm exec playwright test` (3 passed).

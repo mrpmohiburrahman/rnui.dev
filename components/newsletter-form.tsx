@@ -52,7 +52,6 @@ const NewsletterForm: React.FC = () => {
       setEmail("")
       setIsSubscribed(true)
       localStorage.setItem("newsletterSubscribed", "true")
-      console.log("Form submitted and email stored in Firebase")
     } catch (err: any) {
       console.error("Error storing email:", err)
       setError(err.message || "An unexpected error occurred")

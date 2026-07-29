@@ -40,7 +40,6 @@ export default function Page() {
 
       setSuccess(true)
       setEmail("")
-      console.log("Form submitted and email stored in Firebase")
     } catch (err) {
       console.error("Error storing email:", err)
       setError("An unexpected error occurred. Please, try again later.")
