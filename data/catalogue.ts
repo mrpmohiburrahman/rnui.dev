@@ -7,6 +7,10 @@
 //
 // `Entry` is imported as a type only, deliberately: data/entry.ts imports
 // this module back, and a value import would make that cycle real.
+//
+// A nineteenth Category needs a line here *and* in lib/codex/entries.ts, which
+// holds the same merge for search. Its header says why the two still exist
+// separately; tests/data-integrity.test.ts fails if they drift.
 
 import type { Entry } from "./entry"
 

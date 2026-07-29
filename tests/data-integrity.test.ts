@@ -5,6 +5,7 @@ import { CATEGORIES, CATEGORY_NAMES, LEGACY_REDIRECTS } from "../data/categories
 import { allEntries } from "../data/catalogue"
 import type { Entry } from "../data/entry"
 import { demoPathFor, narrow, posterPathFor } from "../lib/asset-path"
+import { ALL_ENTRIES } from "../lib/codex/entries"
 
 // The category directory is lowercase with no spaces, and basenames avoid
 // anything needing percent-encoding. A space survives the local filesystem
@@ -199,6 +200,25 @@ describe("catalogue wiring", () => {
     expect(
       missing,
       `${name}: ${missing.length} Entries in data/${row.file}.ts never reached data/catalogue.ts — ${missing.join(", ")}`
+    ).toHaveLength(0)
+  })
+
+  // The same eighteen-way merge exists a second time in lib/codex/entries.ts.
+  // A Category added to one and not the other is the same silent failure as
+  // forgetting a merge line: the whole suite passes while that Category's
+  // Entries are unreachable from search. Why the two are pinned rather than
+  // collapsed is in the header of lib/codex/entries.ts.
+  it("the search merge holds exactly the Entries the catalogue does", () => {
+    const inSearchMerge = new Set(ALL_ENTRIES.map((entry) => entry.id))
+    const missingFromSearch = [...merged].filter((id) => !inSearchMerge.has(id))
+    const missingFromCatalogue = [...inSearchMerge].filter((id) => !merged.has(id))
+    const bad = [...missingFromSearch, ...missingFromCatalogue]
+    expect(
+      bad,
+      [
+        `${missingFromSearch.length} Entries in data/catalogue.ts never reached lib/codex/entries.ts — ${missingFromSearch.join(", ")}`,
+        `${missingFromCatalogue.length} Entries in lib/codex/entries.ts never reached data/catalogue.ts — ${missingFromCatalogue.join(", ")}`,
+      ].join("; ")
     ).toHaveLength(0)
   })
 

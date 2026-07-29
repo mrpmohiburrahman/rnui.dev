@@ -12,6 +12,8 @@ Because this repo uses the **local markdown** tracker, a "label" is the value of
 | `ready-for-human`          | `ready-for-human`    | Requires human implementation            |
 | `wontfix`                  | `wontfix`            | Will not be actioned                     |
 
+The five roles are all pre-implementation. A closed issue is `resolved` — the terminal state this repo's own issue files use, with no counterpart in the table above.
+
 When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
 
 Edit the right-hand column to match whatever vocabulary you actually use.

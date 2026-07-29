@@ -34,7 +34,7 @@ stops checking out branches.
 
 **Blocked by:** None — can start immediately.
 
-**Status:** done
+**Status:** resolved
 
 - [x] A full commit produces no checkout entries in the reflog, where the current tree produces several
 - [x] The changed-Entries script, its committed empty output file and its package command are gone, and nothing anywhere read that output
