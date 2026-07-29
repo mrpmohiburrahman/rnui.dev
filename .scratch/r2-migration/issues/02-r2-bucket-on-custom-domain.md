@@ -6,10 +6,20 @@
 
 **Status:** ready-for-agent
 
-**⚠ Requires credentials that do not currently exist.** The account's existing token (`CLOUDFLARE_API_TOKEN_WORKER_AI`) verifies as active and can read the DNS zone, but returns `403 Authentication error` on the R2 API — it has no R2 permission. Before this ticket can run, the account needs:
+**⚠ Blocked on one human action. Verified 2026-07-29.**
 
-1. **R2 enabled** on the Cloudflare account. One-time activation; the free tier still requires a payment method on file.
-2. **A Cloudflare API token** with `Account → Workers R2 Storage → Edit` and `Zone → DNS → Edit` on rnui.dev. With both scopes, the bucket, the S3 credentials, and the custom-domain binding can all be created through the API — no dashboard work.
+Findings from probing the account:
+
+- Cloudflare account `b3a4cec2f17469072a5e97c44424ae14`, logged in, zone rnui.dev present.
+- The existing token `CLOUDFLARE_API_TOKEN_WORKER_AI` verifies as active and **can** read the DNS zone, but returns `403 Authentication error` on the R2 API. It has no R2 scope.
+- **R2 is not yet enabled on the account.** The R2 page shows an "Add R2 subscription to my account" gate reading *Total Due Now $0.00 · Due Monthly $0.00 + additional usage*, with free-tier limits of 10 GB storage, 1M Class A and 10M Class B operations per month. The 554 referenced Assets total roughly 77 MB.
+
+Clicking that gate accepts Cloudflare's Terms and starts a usage-billed subscription against the payment method on file. That is a legal and financial commitment, so it is left to the maintainer.
+
+**Unblock in two steps:**
+
+1. Click **Add R2 subscription to my account** on the R2 page.
+2. Create a Cloudflare API token scoped `Account → Workers R2 Storage → Edit` **and** `Zone → DNS → Edit` on rnui.dev. With both scopes, the bucket, the S3 credentials and the custom-domain binding can all be created through the API — no further dashboard work.
 
 Everything downstream of this ticket is gated on it.
 
