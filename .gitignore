@@ -1,6 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .env
-.env
+
+# Staging copies of Assets. Demos and Posters are served from Cloudflare R2 and
+# are never committed — see docs/adr/0001-assets-served-from-object-storage-not-the-repo.md.
+# They stay at these paths so the catalogue's 554 Asset paths are unchanged and
+# local development still serves media offline. Publish with `pnpm assets:publish`.
+/public/demo/
+/public/thumbnails/
+
 # dependencies
 /node_modules
 /.pnp
@@ -9,6 +16,8 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
 
 # next.js
 /.next/

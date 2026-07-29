@@ -30,15 +30,43 @@ This pipeline (planned, see [ROADMAP.md](./ROADMAP.md)):
 4. Run `pnpm check-types` and `pnpm lint`.
 5. Open a PR. The Codex triage workflow (coming soon) will leave an automated review within a minute.
 
+## Never commit binary Assets
+
+Demos (`.mp4`) and Posters (`.avif`) are **not** in this repo. They live in a
+Cloudflare R2 bucket served from `cdn.rnui.dev`, and `public/demo/` and
+`public/thumbnails/` are gitignored. A PR that adds a video or an image to those
+directories will be rejected — not as a style preference, but because a repo
+that grows by a video per entry makes every future clone slower, permanently.
+
+So: **your PR changes `data/*.ts` and nothing binary.** Reference the Asset
+paths your Demo and Poster will have, and a maintainer publishes the files.
+
+A maintainer publishes them with:
+
+```bash
+pnpm assets:publish     # checks every Demo is H.264, then uploads what is missing
+```
+
+That command refuses to overwrite an Asset path that is already published,
+because Published Assets are cached as immutable for a year and cannot be
+corrected after the fact. Re-recording a Demo means a **new** Asset path, never
+a reused one. See [docs/r2-setup.md](./docs/r2-setup.md) and
+[ADR-0003](./docs/adr/0003-asset-paths-are-immutable.md).
+
 ## Local development
 
 ```bash
 pnpm install
+cp .env.example .env.local   # NEXT_PUBLIC_CDN_URL is all you need for media
 pnpm dev            # Next.js dev server (turbopack)
 pnpm check-types    # tsc --noEmit
 pnpm lint
 pnpm build
 ```
+
+A fresh clone has no Assets on disk and renders correctly anyway — every Demo
+and Poster is fetched from the CDN. You do not need to download 77 MB of media,
+and you do not need any Cloudflare credentials.
 
 ## Code style
 
