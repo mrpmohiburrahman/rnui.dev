@@ -45,8 +45,8 @@ export const sliders: ItemType[] = [
   {
     id: "01JFP1AQFST1QYWFB59DNN55F7",
     caption: "Sensor Based Slider",
-    videoSrc: "demo/sliders/sensor_based_slider_kacper_kapuściak.mp4",
-    thumbnailSrc: "thumbnails/sliders/sensor_based_slider_kacper_kapuściak.avif",
+    videoSrc: "demo/sliders/sensor_based_slider_kacper_kapusciak.mp4",
+    thumbnailSrc: "thumbnails/sliders/sensor_based_slider_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion/react-native-reanimated/pull/4330/files",

@@ -895,9 +895,9 @@ export const misc: ItemType[] = [
     id: "01JFP12SAX07YSNT7TFC71EWDX",
     caption: "Shared Element Transitions Example",
     videoSrc:
-      "demo/misc/shared_element_transitions_example_kacper_kapuściak.mp4",
+      "demo/misc/shared_element_transitions_example_kacper_kapusciak.mp4",
     thumbnailSrc:
-      "thumbnails/misc/shared_element_transitions_example_kacper_kapuściak.avif",
+      "thumbnails/misc/shared_element_transitions_example_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion/react-native-reanimated/blob/4fcda2939cf70c9bb83efe08b8814e48653b1fa3/app/src/examples/SharedElementTransitions/Profiles.tsx",
@@ -910,9 +910,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12ZHWT6XDX5DJENXS0PKG",
     caption: "Gradient Shared Transition",
-    videoSrc: "demo/misc/gradient_shared_transition_kacper_kapuściak.mp4",
+    videoSrc: "demo/misc/gradient_shared_transition_kacper_kapusciak.mp4",
     thumbnailSrc:
-      "thumbnails/misc/gradient_shared_transition_kacper_kapuściak.avif",
+      "thumbnails/misc/gradient_shared_transition_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/gradient-shared-transitions-example",
@@ -925,8 +925,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP13DEFBDW6TBNFC06QTD38",
     caption: "Magic Curtain Effect",
-    videoSrc: "demo/misc/magic_curtain_effect_kacper_kapuściak.mp4",
-    thumbnailSrc: "thumbnails/misc/magic_curtain_effect_kacper_kapuściak.avif",
+    videoSrc: "demo/misc/magic_curtain_effect_kacper_kapusciak.mp4",
+    thumbnailSrc: "thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/expo-magic-curtain",
     twitterId: "kacperkapusciak",

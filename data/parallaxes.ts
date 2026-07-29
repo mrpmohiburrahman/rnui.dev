@@ -30,8 +30,8 @@ export const parallaxes: ItemType[] = [
   {
     id: "01GZ4Z9V0P7K8JY8H1QX9T3B1M",
     caption: "Parallax Effect",
-    videoSrc: "demo/parallaxes/parallax_effect_kacper_kapuściak.mp4",
-    thumbnailSrc: "thumbnails/parallaxes/parallax_effect_kacper_kapuściak.avif",
+    videoSrc: "demo/parallaxes/parallax_effect_kacper_kapusciak.mp4",
+    thumbnailSrc: "thumbnails/parallaxes/parallax_effect_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/software-mansion-labs/reanimated-parallax",
     twitterId: "kacperkapusciak",
