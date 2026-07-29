@@ -25,9 +25,6 @@ const useBookmarks = () => {
             setBookmarks([])
           }
         } else {
-          console.log(
-            "📄 No bookmarks found in localStorage. Initializing with empty array."
-          )
           setBookmarks([])
         }
       } catch (error) {
@@ -46,7 +43,6 @@ const useBookmarks = () => {
     }
     try {
       localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks))
-      console.log("📁 ~ Bookmarks updated in localStorage:", bookmarks)
     } catch (error) {
       console.error("❌ Failed to update bookmarks in localStorage:", error)
     }
@@ -56,11 +52,8 @@ const useBookmarks = () => {
   const addBookmark = (id: string) => {
     setBookmarks((prev) => {
       if (prev && !prev.includes(id)) {
-        const updated = [...prev, id]
-        console.log(`✅ Bookmark added: ${id}`, updated)
-        return updated
+        return [...prev, id]
       }
-      console.log(`ℹ️ Bookmark already exists or bookmarks not loaded: ${id}`)
       return prev || []
     })
   }
@@ -68,11 +61,8 @@ const useBookmarks = () => {
   const removeBookmark = (id: string) => {
     setBookmarks((prev) => {
       if (prev?.includes(id)) {
-        const updated = prev.filter((bookmarkId) => bookmarkId !== id)
-        console.log(`❌ Bookmark removed: ${id}`, updated)
-        return updated
+        return prev.filter((bookmarkId) => bookmarkId !== id)
       }
-      console.log(`ℹ️ Bookmark not found or bookmarks not loaded: ${id}`)
       return prev || []
     })
   }

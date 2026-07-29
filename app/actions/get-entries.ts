@@ -40,12 +40,10 @@ export const getEntries = cache(
     // const { data, error } = await query
 
     // if (error) {
-    //   console.error("Error searching resources:", error)
     //   return []
     // }
     try {
       let filteredEntries = await getEntriesWithCounts()
-      // console.log("🚀 ~ filteredEntries:", JSON.stringify(filteredEntries))
 
       // Apply search term filter
       if (searchTerm) {

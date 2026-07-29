@@ -29,7 +29,6 @@ export function CatalogueNav({
   searchParams,
   children,
 }: CatalogueNavProps) {
-  // console.log("🚀 ~ authors -  CatalogueNav:", authors)
   return (
     <div className="">
       {/* <Logo /> */}

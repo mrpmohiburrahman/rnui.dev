@@ -9,7 +9,6 @@ import { db } from "@/lib/firebase"
 // Determine the collection name based on the environment
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 export const decrementVoteCount = async (entryId: string) => {
-  console.log("🚀 ~ decrementVoteCount ~ decrementVoteCount")
   const voteCountRef = doc(db, COLLECTION_NAME, entryId)
   try {
     await updateDoc(voteCountRef, {

@@ -30,9 +30,6 @@ const useVotes = () => {
             setVotedEntryIds([])
           }
         } else {
-          console.log(
-            "📄 No voted items found in localStorage. Initializing with empty array."
-          )
           setVotedEntryIds([])
         }
       } catch (error) {
@@ -51,7 +48,6 @@ const useVotes = () => {
     }
     try {
       localStorage.setItem(VOTED_ITEMS_KEY, JSON.stringify(votedEntryIds))
-      console.log("📁 ~ Voted items updated in localStorage:", votedEntryIds)
     } catch (error) {
       console.error("❌ Failed to update voted items in localStorage:", error)
     }
@@ -61,11 +57,8 @@ const useVotes = () => {
   const addVote = (id: string) => {
     setVotedEntryIds((prev) => {
       if (prev && !prev.includes(id)) {
-        const updated = [...prev, id]
-        console.log(`✅ Vote added: ${id}`, updated)
-        return updated
+        return [...prev, id]
       }
-      console.log(`ℹ️ Vote already exists or votes not loaded: ${id}`)
       return prev || []
     })
   }
@@ -73,11 +66,8 @@ const useVotes = () => {
   const removeVote = (id: string) => {
     setVotedEntryIds((prev) => {
       if (prev?.includes(id)) {
-        const updated = prev.filter((voteId) => voteId !== id)
-        console.log(`❌ Vote removed: ${id}`, updated)
-        return updated
+        return prev.filter((voteId) => voteId !== id)
       }
-      console.log(`ℹ️ Vote not found or votes not loaded: ${id}`)
       return prev || []
     })
   }
