@@ -146,13 +146,13 @@ Commit `30aa29b` "chore: block AI attribution trailers in commits" is the per-re
 
 The commit body records the reasoning: repointing `core.hooksPath` at `.githooks` would have disabled the existing husky `pre-commit` script, so a shim was used instead. The CI workflow's own comment notes it should be made a **required status check** on the default branch — worth confirming that was done in repo settings.
 
-Note the repo `pre-commit` (`…/rnui.dev/.husky/pre-commit`) is project-specific bookkeeping, not quality gating: `pnpm run update:lastcommit` + `pnpm run update:updateChangedItems`, each followed by a `git add` of the generated JSON. **There is no lint/typecheck/test gate on commit in this repo.**
+Note the repo `pre-commit` (`…/rnui.dev/.husky/pre-commit`) is project-specific bookkeeping, not quality gating: `pnpm run update:lastcommit`, followed by a `git add` of the generated JSON. **There is no lint/typecheck/test gate on commit in this repo.**
 
 ### B4. `setup-pre-commit` — installed, not applied here
 
 - `/Users/mrp/.claude/skills/setup-pre-commit/SKILL.md` (91 lines).
 - Detects the package manager from the lockfile (`package-lock.json`/`pnpm-lock.yaml`/`yarn.lock`/`bun.lockb`), installs `husky lint-staged prettier`, runs `npx husky init`, writes `.husky/pre-commit` with `npx lint-staged` + `npm run typecheck` + `npm run test`, writes `.lintstagedrc` (`{"*": "prettier --ignore-unknown --write"}`) and a `.prettierrc` if missing. Omits typecheck/test lines if the scripts don't exist.
-- **Overlap warning:** this repo already has husky and a `.husky/pre-commit` doing something else. Running this skill as-is would overwrite that file and drop the `lastcommit`/`changedItems` generation. If you want lint-staged here, merge by hand.
+- **Overlap warning:** this repo already has husky and a `.husky/pre-commit` doing something else. Running this skill as-is would overwrite that file and drop the `lastcommit` generation. If you want lint-staged here, merge by hand.
 
 ### B5. `git-guardrails-claude-code` — installed skill, adjacent not overlapping
 

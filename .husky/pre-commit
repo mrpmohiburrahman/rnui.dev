@@ -1,1 +1,5 @@
-pnpm run update:lastcommit && git add scripts/lastCommitDate.json && pnpm run update:updateChangedItems && git add data/changedItems.json
+# Stamps the current time into scripts/lastCommitDate.json and stages it. Despite
+# the name, the script reads the clock, not the git log. This half stays because
+# components/last-updated.tsx renders that stamp as "Updated: …" in the catalogue
+# header, so dropping it changes what visitors see — a product decision, not cleanup.
+pnpm run update:lastcommit && git add scripts/lastCommitDate.json
