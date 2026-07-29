@@ -4,7 +4,7 @@
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
 **⚠ Blocked on one human action. Verified 2026-07-29.**
 
@@ -23,10 +23,33 @@ Clicking that gate accepts Cloudflare's Terms and starts a usage-billed subscrip
 
 Everything downstream of this ticket is gated on it.
 
-- [ ] R2 bucket created. Name recorded in the repo's example env file.
-- [ ] Custom domain `cdn.rnui.dev` bound to the bucket and resolving. The rate-limited `r2.dev` development subdomain is explicitly not used — Cloudflare documents it as unsuitable for production.
-- [ ] A test object uploaded by hand returns 200 over the custom domain with the correct content type and `Cache-Control: public, max-age=31536000, immutable`.
-- [ ] S3-compatible credentials (access key id and secret) minted and stored in local env, never committed.
-- [ ] Env variable for the CDN base URL added to the example env file with no secret value.
-- [ ] The setup steps are written down so the configuration can be reproduced or handed over.
-- [ ] Test object deleted once verified.
+- [x] R2 bucket created. Name recorded in the repo's example env file.
+- [x] Custom domain `cdn.rnui.dev` bound to the bucket and resolving. The rate-limited `r2.dev` development subdomain is explicitly not used — Cloudflare documents it as unsuitable for production.
+- [x] A test object uploaded by hand returns 200 over the custom domain with the correct content type and `Cache-Control: public, max-age=31536000, immutable`.
+- [x] S3-compatible credentials (access key id and secret) minted and stored in local env, never committed.
+- [x] Env variable for the CDN base URL added to the example env file with no secret value.
+- [x] The setup steps are written down so the configuration can be reproduced or handed over.
+- [x] Test object deleted once verified.
+
+## Outcome
+
+The human blocker cleared: R2 is enabled on the account and a token scoped
+`Workers R2 Storage: Edit` exists as `CLOUDFLARE_R2_TOKEN`.
+
+- Bucket `rnui-assets` created (WEUR, Standard).
+- `cdn.rnui.dev` bound as an R2 **custom domain** on zone `b8902b2df1b2f88edbc54ac0618387fe`. SSL went pending -> active in about two minutes. `r2.dev` not used.
+- Smoke object returned `HTTP 200`, `content-type: text/plain`, `cache-control: public, max-age=31536000, immutable`; a missing key returned 404. Object deleted after verification.
+- Setup written up at `docs/r2-setup.md`; `NEXT_PUBLIC_CDN_URL` and the maintainer-only credentials documented in `.env.example`.
+
+The token has no Zone scope, so it could not read the zone id — that came from
+the wrangler OAuth session. The custom-domain call itself needed only the R2
+scope, so no DNS-scoped token was required after all.
+
+S3-compatible credentials (`R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`) exist in
+the local environment and are uncommitted, but nothing uses them: the publish
+tool talks to the Cloudflare REST API with the Bearer token, which needs no
+SigV4 and therefore no S3 SDK.
+
+**Still a maintainer action:** `NEXT_PUBLIC_CDN_URL=https://cdn.rnui.dev` must be
+added to the Vercel project settings, and the ImageKit variables removed there.
+No Vercel CLI or project link exists in this checkout.
