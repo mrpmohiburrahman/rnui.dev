@@ -32,6 +32,13 @@ in their heading and where their Entries come from. It never fetches; it is hand
 the Entries it renders.
 _Avoid_: directory, listing, index, feed, results
 
+**Remembered set**:
+Entry ids held in one visitor's own browser — the Entries they bookmarked, or the
+ones they voted on. Two exist, one per stored key. The key is a record in somebody's
+browser rather than an identifier, so it is never renamed: renaming it discards what
+they saved. Nothing on the server can read a Remembered set.
+_Avoid_: favourites, likes, saved items, selection, local state
+
 ### Media
 
 **Asset**:

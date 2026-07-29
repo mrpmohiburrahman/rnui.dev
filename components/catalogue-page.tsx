@@ -13,10 +13,13 @@
 import { useMemo, type ReactNode } from "react"
 import type { Entry } from "@/data/entry"
 
-import useBookmarks from "@/hooks/use-bookmarks"
 import useModal from "@/hooks/use-modal"
+import {
+  BOOKMARKS_KEY,
+  useRememberedSet,
+  VOTED_ITEMS_KEY,
+} from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
-import useVotes from "@/hooks/use-votes"
 import CardModal from "@/components/card-modal"
 import { EntryCardGrid, type GridTreatment } from "@/components/entry-card-grid"
 
@@ -41,8 +44,10 @@ export function CataloguePage({
   bookmarkedOnly = false,
   children,
 }: CataloguePageProps) {
-  const { bookmarks, toggleBookmark } = useBookmarks()
-  const { votedEntryIds, toggleVote } = useVotes()
+  const { ids: bookmarks, toggle: toggleBookmark } =
+    useRememberedSet(BOOKMARKS_KEY)
+  const { ids: votedEntryIds, toggle: toggleVote } =
+    useRememberedSet(VOTED_ITEMS_KEY)
   const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
 
   const visible = useMemo(
