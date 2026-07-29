@@ -1,6 +1,6 @@
 # Spec: Serve Assets from Cloudflare R2
 
-Status: tickets 01–08 resolved; 09 (history rewrite) not started — it is irreversible and outward-facing and needs the maintainer's explicit go-ahead
+Status: complete — tickets 01-09 all resolved, deployed and verified in production on 2026-07-29
 
 Related: [CONTEXT.md](../../CONTEXT.md), [ADR-0001](../../docs/adr/0001-assets-served-from-object-storage-not-the-repo.md), [ADR-0002](../../docs/adr/0002-rewrite-git-history-to-drop-asset-blobs.md), [ADR-0003](../../docs/adr/0003-asset-paths-are-immutable.md)
 
