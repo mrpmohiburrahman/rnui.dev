@@ -82,6 +82,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     toggleBookmark(entry.id)
   }, [toggleBookmark, entry.id])
 
+  // The only view increment in the vote path. The stored-set toggle used to fire
+  // one of its own and two of the three page modules wrapped it to fire a third,
+  // so a single click billed two views on the home page and three on the Category
+  // listing while the number on screen moved by one.
   const handleVoteClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
     await incrementViewCountLocal()

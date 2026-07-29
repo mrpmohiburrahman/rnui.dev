@@ -3,8 +3,11 @@
 
 import { useEffect, useRef, useState } from "react"
 
-import { incrementViewCount } from "@/app/actions/increment-view-count" // Adjust the import path as needed
-
+// This hook is a set of remembered ids and nothing else. It deliberately makes
+// no network call: recording a view is the card's job, and while this file also
+// did it one vote click billed two views on the home page and three on the
+// Category listing.
+//
 // The stored key keeps its old spelling for the same reason the Firestore field
 // names do: it is a record in someone's browser, not an identifier. Renaming it
 // would silently discard every vote a visitor has already cast.
@@ -73,7 +76,6 @@ const useVotes = () => {
   }
 
   const toggleVote = (id: string) => {
-    incrementViewCount(id) // Increment view count when voting
     if (isVoted(id)) {
       removeVote(id)
     } else {

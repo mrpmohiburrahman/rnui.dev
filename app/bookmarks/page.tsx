@@ -13,7 +13,6 @@ import { EntryCardGrid } from "@/components/entry-card-grid"
 import { Hero } from "@/components/hero"
 
 import { getEntries } from "../actions/get-entries"
-import { incrementViewCount } from "../actions/increment-view-count"
 
 const BookmarksPage = () => {
   // Use custom hooks
@@ -46,12 +45,6 @@ const BookmarksPage = () => {
     })()
   }, [bookmarks])
 
-  // Vote handler integration
-  const handleToggleVote = (id: string) => {
-    incrementViewCount(id)
-    toggleVote(id)
-  }
-
   // Ensure bookmarks and votedEntryIds are loaded before rendering
   if (bookmarks === null || votedEntryIds === null) {
     return <div /> // Replace with a loader if desired
@@ -65,7 +58,7 @@ const BookmarksPage = () => {
         bookmarks={bookmarks}
         toggleBookmark={toggleBookmark}
         votedEntryIds={votedEntryIds}
-        toggleVote={handleToggleVote}
+        toggleVote={toggleVote}
         setSort={setSort}
         currentSort={sort}
       >
