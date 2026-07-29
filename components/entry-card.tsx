@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useCallback, useEffect, useState } from "react"
+import { memo, useCallback, useState } from "react"
 import Link from "next/link"
 import type { Entry } from "@/data/entry"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
@@ -44,15 +44,21 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // mount with.
   const [viewsClicked, setViewsClicked] = useState(0)
   const [votesClicked, setVotesClicked] = useState(0)
-  const viewCount = (entry.view_count ?? 0) + viewsClicked
-  const voteCount = Math.max((entry.vote_count ?? 0) + votesClicked, 0)
 
   // Counts arriving from the server already include this visitor's clicks, so the
-  // local additions reset rather than stacking on top of them.
-  useEffect(() => {
+  // additions reset rather than stacking on top of them. Adjusted during render
+  // rather than from an effect: an effect paints the stale sum and corrects it on
+  // the next tick, and react-hooks/set-state-in-effect rejects it outright.
+  const serverCounts = `${entry.view_count ?? 0}/${entry.vote_count ?? 0}`
+  const [countsSeen, setCountsSeen] = useState(serverCounts)
+  if (countsSeen !== serverCounts) {
+    setCountsSeen(serverCounts)
     setViewsClicked(0)
     setVotesClicked(0)
-  }, [entry.view_count, entry.vote_count])
+  }
+
+  const viewCount = (entry.view_count ?? 0) + viewsClicked
+  const voteCount = Math.max((entry.vote_count ?? 0) + votesClicked, 0)
 
   const incrementViewCountLocal = useCallback(async () => {
     try {

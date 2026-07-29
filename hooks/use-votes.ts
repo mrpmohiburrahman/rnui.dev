@@ -25,6 +25,11 @@ const useVotes = () => {
         if (storedVotedEntryIds) {
           const parsedVotedEntryIds = JSON.parse(storedVotedEntryIds)
           if (Array.isArray(parsedVotedEntryIds)) {
+            // Reading localStorage on mount is the only SSR-safe way to hydrate
+            // this. A lazy useState initialiser runs on the server too, where
+            // there is no localStorage, so the server would render an empty set
+            // and the client a full one — a hydration mismatch.
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setVotedEntryIds(parsedVotedEntryIds)
           } else {
             console.warn(

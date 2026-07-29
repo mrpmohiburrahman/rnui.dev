@@ -4,6 +4,21 @@
 packages:
   - "."
 
+# eslint-plugin-react-hooks@7 (a transitive dependency of eslint-config-next)
+# imports `zod-validation-error/v4`, but accepts `^3.5.0 || ^4.0.0`. pnpm resolved
+# the 3.x branch, and 3.5.4 declares only `"."` in its exports map — so the import
+# fails with ERR_PACKAGE_PATH_NOT_EXPORTED and the whole shared config refuses to
+# load. Every lint run in this repository failed here, which is why nothing ever
+# executed the rules. Pinning the major is the fix; drop it when
+# eslint-config-next ships a plugin that no longer reaches for the v4 subpath.
+#
+# It lives here and not in package.json because pnpm 10 stopped reading the
+# `pnpm` field there: "The 'pnpm' field in package.json is no longer read by
+# pnpm." Vercel pins pnpm 9, which cannot read overrides from this file — it
+# installs from the frozen lockfile, which already records the resolution.
+overrides:
+  zod-validation-error: "^4.0.0"
+
 allowBuilds:
   core-js: false         # postinstall only prints a funding notice
   esbuild: true          # unpacks a platform binary; vitest and tsx need it
