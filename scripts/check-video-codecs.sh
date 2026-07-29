@@ -10,7 +10,16 @@
 #
 #   ./scripts/check-video-codecs.sh                     Staging copies (offline; the pre-upload gate)
 #   ./scripts/check-video-codecs.sh --production        what the CDN actually delivers (CI)
-#   ./scripts/check-video-codecs.sh demo/buttons        only Asset paths under those prefixes
+#   ./scripts/check-video-codecs.sh demo/buttons        only Asset paths containing those fragments
+#   ./scripts/check-video-codecs.sh --paths-from FILE   exactly the Asset paths listed in FILE
+#
+# --paths-from is how publish-assets.ts calls this: it resolves the list it is
+# about to upload and hands that list over, so the gate inspects precisely what
+# will be published. It used to pass its fragments instead and this script
+# re-derived the selection, which is a disagreement waiting to happen — and one
+# that fails silently in the dangerous direction, because a checker selecting
+# fewer paths than the publisher still exits 0. The self-deriving modes above
+# are untouched; the CI job runs --production with no list at all.
 #
 # The Asset list comes from the catalogue, never from the filesystem: once
 # Staging copies leave the repo, CI has no Assets on disk, and a check that
@@ -20,51 +29,111 @@
 # immutable cache header. Requires ffprobe (brew install ffmpeg).
 
 set -uo pipefail
-cd "$(dirname "$0")/.."
+CALLER_PWD=$PWD
+cd "$(dirname "$0")/.." || exit 1
 
 CACHE_CONTROL="public, max-age=31536000, immutable"
 PROD=0
 PREFIXES=()
-for arg in "$@"; do
-  if [ "$arg" = "--production" ]; then PROD=1; else PREFIXES+=("$arg"); fi
+PATHS_FILE=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --production) PROD=1 ;;
+    --paths-from)
+      shift
+      # A missing value must not read as a missing flag. Defaulting to the empty
+      # string here would silently widen the run to the whole catalogue and exit
+      # 0 over a set nobody asked for — the failure this flag exists to prevent.
+      if [ $# -eq 0 ]; then
+        echo "--paths-from needs a FILE" >&2
+        exit 1
+      fi
+      PATHS_FILE="$1"
+      ;;
+    *) PREFIXES+=("$1") ;;
+  esac
+  shift
 done
+
+if [ -n "$PATHS_FILE" ]; then
+  # Arguments are parsed after the cd above, so resolve a relative path against
+  # the directory the caller actually stood in rather than the repo root.
+  case "$PATHS_FILE" in /*) ;; *) PATHS_FILE="$CALLER_PWD/$PATHS_FILE" ;; esac
+  if [ ! -f "$PATHS_FILE" ]; then
+    echo "--paths-from: no such file: $PATHS_FILE" >&2
+    exit 1
+  fi
+  if [ ${#PREFIXES[@]} -gt 0 ]; then
+    echo "--paths-from is a resolved list; it cannot be narrowed further by ${PREFIXES[*]}" >&2
+    exit 1
+  fi
+fi
 
 if ! command -v ffprobe >/dev/null 2>&1; then
   echo "ffprobe not found — install ffmpeg (brew install ffmpeg)" >&2
   exit 1
 fi
 
-# Keep only Asset paths containing one of the requested fragments; no fragment
-# means all. Substring, not prefix, so `misc` selects both demo/misc and
-# thumbnails/misc — and so this matches publish-assets.ts exactly. The two must
-# agree, or the gate would demand Staging copies the publish never touches.
+# Narrow the catalogue's Asset paths to the ones this run is about to inspect.
+#
+# With --paths-from, the selection was already made by the caller and this is a
+# whole-line intersection, not a rule — which is the point: there is no second
+# derivation here that could disagree with the publisher's. The kind split still
+# comes from asset-paths.ts, so this script never restates the demo/ and
+# thumbnails/ prefixes.
+#
+# Without it, fragments are matched as substrings, so `misc` selects both
+# demo/misc and thumbnails/misc. That mode is for a human at a terminal; the
+# publish gate no longer uses it.
 select_paths() {
+  if [ -n "$PATHS_FILE" ]; then grep -Fx -f "$PATHS_FILE" || true; return; fi
   if [ ${#PREFIXES[@]} -eq 0 ]; then cat; return; fi
   local args=()
   for p in "${PREFIXES[@]}"; do args+=(-e "$p"); done
   grep -F "${args[@]}" || true
 }
 
-demos=$(pnpm exec tsx scripts/asset-paths.ts demo | select_paths) || exit 1
-posters=$(pnpm exec tsx scripts/asset-paths.ts posters | select_paths) || exit 1
+all_demos=$(pnpm exec tsx scripts/asset-paths.ts demo) || exit 1
+all_posters=$(pnpm exec tsx scripts/asset-paths.ts posters) || exit 1
+
+# The catalogue must list both kinds of Asset. That is a fact about the
+# catalogue rather than about this run, so it is asserted before any narrowing:
+# a catalogue that stopped listing Posters is exactly what nobody would notice,
+# and it would otherwise be checkable only on the one run that narrows nothing —
+# which, now that the publish tool always supplies a list, no publish ever is.
+if [ -z "$all_demos" ] || [ -z "$all_posters" ]; then
+  echo "The catalogue lists no Demos or no Posters — refusing to report success over an empty set." >&2
+  exit 1
+fi
+
+demos=$(printf '%s\n' "$all_demos" | select_paths)
+posters=$(printf '%s\n' "$all_posters" | select_paths)
 n_demos=$(printf '%s' "$demos" | grep -c . || true)
 n_posters=$(printf '%s' "$posters" | grep -c . || true)
 
-# An empty Asset set is a failure, not a success. Silence here would mean the
-# catalogue stopped listing Assets, which is exactly what nobody would notice.
-#
-# With no prefix this is the whole catalogue, so both kinds must be present —
-# that is the CI case, and a missing kind is the vacuous green. With a prefix
-# the caller has deliberately narrowed the set, and one kind alone is normal, so
-# only a total of zero is a failure.
-if [ ${#PREFIXES[@]} -eq 0 ]; then
-  empty=$([ "$n_demos" = 0 ] || [ "$n_posters" = 0 ] && echo 1 || echo 0)
-else
-  empty=$([ $((n_demos + n_posters)) = 0 ] && echo 1 || echo 0)
+# "Exactly those, no more and no fewer." The intersection above can only lose
+# paths, never invent them, so the one failure left to rule out is a supplied
+# path the catalogue does not list — which would mean the caller and this script
+# are reading different data, and the gate would quietly skip whatever it could
+# not match.
+if [ -n "$PATHS_FILE" ]; then
+  unmatched=$(printf '%s\n%s\n' "$demos" "$posters" | grep . \
+    | grep -Fxv -f - "$PATHS_FILE" || true)
+  if [ -n "$unmatched" ]; then
+    echo "Asset paths supplied by the caller that the catalogue does not list:" >&2
+    echo "$unmatched" | sed 's/^/  /' >&2
+    echo "Refusing to check a set that differs from the one being published." >&2
+    exit 1
+  fi
 fi
-if [ "$empty" = 1 ]; then
-  echo "No Assets found in the catalogue ($n_demos Demos, $n_posters Posters)." >&2
-  [ ${#PREFIXES[@]} -gt 0 ] && echo "Prefixes: ${PREFIXES[*]}" >&2
+
+# This run's own selection must be non-empty too. Here it is the total that
+# matters and not each kind: a narrowed run is deliberately a subset, and one
+# kind alone is normal when a Category gains a Demo but no new Poster.
+if [ $((n_demos + n_posters)) -eq 0 ]; then
+  echo "No Assets in the catalogue match this run ($n_demos Demos, $n_posters Posters)." >&2
+  [ ${#PREFIXES[@]} -gt 0 ] && echo "Fragments: ${PREFIXES[*]}" >&2
+  [ -n "$PATHS_FILE" ] && echo "Supplied list: $PATHS_FILE" >&2
   echo "Refusing to report success over an empty set." >&2
   exit 1
 fi
@@ -104,8 +173,18 @@ if [ "$PROD" = 0 ]; then
   # Filenames must be pure ASCII. macOS stores them decomposed (NFD) while the
   # data/*.ts strings are composed (NFC); byte-exact object storage 404s on the
   # mismatch, and macOS itself is normalization-insensitive so `[ -f ]` above
-  # cannot see it. LC_ALL=C + a printable-ASCII class, because BSD grep has no -P.
-  bad_name=$(find public -type f \( -name '*.mp4' -o -name '*.avif' \) | LC_ALL=C grep '[^ -~]' || true)
+  # cannot see it. So this is the one check that reads the filesystem instead of
+  # the catalogue, deliberately — the catalogue's own strings are already
+  # asserted printable-ASCII by the data suite, and re-reading them here would
+  # inspect the wrong bytes entirely and see nothing.
+  #
+  # Walked per Category directory of the selected Assets rather than over all of
+  # public/, so that a stray file somewhere else cannot abort a narrowed publish.
+  # LC_ALL=C + a printable-ASCII class, because BSD grep has no -P.
+  bad_name=$(printf '%s\n%s\n' "$demos" "$posters" | grep . | sed 's|/[^/]*$||' | sort -u \
+    | while read -r d; do
+        find "public/$d" -type f \( -name '*.mp4' -o -name '*.avif' \) 2>/dev/null
+      done | LC_ALL=C grep '[^ -~]' || true)
   if [ -n "$bad_name" ]; then
     echo "Asset filenames with non-ASCII characters — these 404 on byte-exact hosts:"
     echo "$bad_name" | sed 's/^/  /'
