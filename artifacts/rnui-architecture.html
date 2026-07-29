@@ -1,0 +1,2248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>How rnui.dev Actually Works</title>
+<style>
+/* =========================================================
+   Anthropic HTML Effectiveness — Shared Design System
+   Dark default (Anthropic brand-grounded); print forces light;
+   [data-theme=light] opt-in.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. DESIGN TOKENS
+   --------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  /* Brand palette (raw — unchanged) */
+  --ivory:     #FAF9F5;
+  --slate:     #141413;
+  --clay:      #D97757;
+  --oat:       #E3DACC;
+  --olive:     #788C5D;
+  --rust:      #B04A3F;
+  --white:     #FFFFFF;
+
+  /* Gray scale */
+  --gray-100:  #F0EEE6;
+  --gray-200:  #E8E5DA;
+  --gray-300:  #D1CFC5;
+  --gray-400:  #B8B5AA;
+  --gray-500:  #87867F;
+  --gray-600:  #5A5954;
+  --gray-700:  #3D3D3A;
+
+  /* Dark semantic aliases */
+  --bg:           #1A1917;
+  --surface-1:    #232220;
+  --surface-2:    #2C2A27;
+  --fg:           #E8E6DC;
+  --fg-strong:    #FAF9F5;
+  --accent:       #D97757;
+  --accent-hover: #E59072;
+  --muted:        #B0AEA5;
+  --border:       rgba(255,255,255,0.11);
+  --ok:           #93A874;
+  --warn:         #E2A93B;
+  --danger:       #D2685C;
+  --code-bg:      #121110;
+
+  /* --border-rule used throughout */
+  --border-rule: 1.5px solid var(--border);
+
+  /* Typography */
+  --serif: ui-serif, Georgia, 'Times New Roman', serif;
+  --sans:  system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono:  ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+
+  /* Fluid type scale (clamp: min, fluid, max) */
+  --text-xs:   clamp(0.688rem, 0.65rem + 0.19vw, 0.75rem);
+  --text-sm:   clamp(0.813rem, 0.77rem + 0.21vw, 0.875rem);
+  --text-base: clamp(0.938rem, 0.9rem + 0.19vw, 1rem);
+  --text-md:   clamp(1.063rem, 1rem + 0.31vw, 1.125rem);
+  --text-lg:   clamp(1.188rem, 1.1rem + 0.44vw, 1.313rem);
+  --text-xl:   clamp(1.375rem, 1.25rem + 0.63vw, 1.563rem);
+  --text-2xl:  clamp(1.625rem, 1.45rem + 0.88vw, 1.938rem);
+  --text-3xl:  clamp(2rem, 1.75rem + 1.25vw, 2.5rem);
+
+  /* Spacing scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.5rem;
+  --space-6:  2rem;
+  --space-7:  3rem;
+  --space-8:  4.5rem;
+
+  /* Shape & shadow — softened for dark surfaces */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --border-width: 1.5px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(0,0,0,0.15);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.30), 0 2px 4px rgba(0,0,0,0.18);
+}
+
+/* ---------------------------------------------------------
+   Light opt-in: restore warm-ivory palette
+   --------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg:           #FAF9F5;
+  --surface-1:    #FFFFFF;
+  --surface-2:    #F0EEE6;
+  --fg:           #3D3D3A;
+  --fg-strong:    #141413;
+  --accent:       #D97757;
+  --accent-hover: #B04A3F;
+  --muted:        #87867F;
+  --border:       #D1CFC5;
+  --ok:           #788C5D;
+  --warn:         #C98A2A;
+  --danger:       #B04A3F;
+  --code-bg:      #141413;
+
+  --border-rule: 1.5px solid var(--border);
+
+  --shadow-sm: 0 1px 3px rgba(20,20,19,0.07), 0 1px 2px rgba(20,20,19,0.04);
+  --shadow-md: 0 4px 12px rgba(20,20,19,0.09), 0 2px 4px rgba(20,20,19,0.05);
+}
+
+/* ---------------------------------------------------------
+   2. RESET & BASE
+   --------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: var(--space-7) var(--space-5);
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+img, svg {
+  max-width: 100%;
+  display: block;
+}
+
+/* ---------------------------------------------------------
+   3. TYPOGRAPHY
+   --------------------------------------------------------- */
+
+/* Display headings — serif, tight */
+h1, h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  color: var(--fg-strong);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h1 { font-size: var(--text-3xl); margin-bottom: var(--space-3); }
+h2 { font-size: var(--text-2xl); margin-top: var(--space-7); margin-bottom: var(--space-3); }
+
+/* Section headings — sans */
+h3, h4 {
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--fg-strong);
+  line-height: 1.3;
+}
+
+h3 { font-size: var(--text-xl); margin-top: var(--space-6); margin-bottom: var(--space-2); }
+h4 { font-size: var(--text-md); margin-top: var(--space-5); margin-bottom: var(--space-2); }
+
+h5, h6 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+
+p {
+  font-size: var(--text-base);
+  margin-bottom: var(--space-4);
+  max-width: 68ch;
+}
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: var(--space-3);
+}
+
+.lede {
+  font-size: var(--text-lg);
+  color: var(--fg-strong);
+  line-height: 1.5;
+  max-width: 60ch;
+  margin-bottom: var(--space-5);
+}
+
+strong { font-weight: 600; color: var(--fg-strong); }
+em     { font-style: italic; }
+
+small  { font-size: var(--text-xs); color: var(--muted); }
+
+/* Links */
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 2px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+a:hover {
+  color: var(--accent-hover);
+  text-decoration-color: currentColor;
+}
+
+blockquote {
+  border-left: 3px solid var(--border);
+  padding: var(--space-3) var(--space-5);
+  color: var(--muted);
+  font-style: italic;
+  margin: var(--space-5) 0;
+  background: var(--surface-1);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+ul, ol {
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+li { margin-bottom: var(--space-1); }
+
+hr, .divider {
+  border: none;
+  border-top: var(--border-rule);
+  margin: var(--space-7) 0;
+}
+
+/* ---------------------------------------------------------
+   4. CODE & MONO
+   --------------------------------------------------------- */
+
+code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--surface-1);
+  color: var(--fg);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+  border: var(--border-rule);
+}
+
+pre {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  background: var(--code-bg);
+  color: var(--fg);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: var(--space-5) 0;
+  line-height: 1.55;
+  tab-size: 2;
+  border: var(--border-rule);
+}
+
+pre code {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+kbd {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  background: var(--surface-1);
+  border: var(--border-rule);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 0.15em 0.45em;
+  color: var(--fg);
+}
+
+/* ---------------------------------------------------------
+   5. CALLOUTS / ADMONITIONS
+   --------------------------------------------------------- */
+
+.callout,
+.note, .warn, .danger, .ok {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  border-left: 3px solid;
+  margin: var(--space-5) 0;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.note {
+  border-color: var(--muted);
+  background: rgba(255,255,255,0.05);
+  color: var(--fg);
+}
+
+.warn {
+  border-color: var(--warn);
+  background: rgba(226,169,59,0.13);
+  color: #E8C26A;
+}
+
+.danger {
+  border-color: var(--danger);
+  background: rgba(210,104,92,0.13);
+  color: #E89A90;
+}
+
+.ok {
+  border-color: var(--ok);
+  background: rgba(147,168,116,0.14);
+  color: #B6CB95;
+}
+
+.callout-icon {
+  flex-shrink: 0;
+  width: 1.25em;
+  height: 1.25em;
+  margin-top: 0.1em;
+  opacity: 0.75;
+}
+
+/* ---------------------------------------------------------
+   6. TABLES
+   --------------------------------------------------------- */
+
+.table-wrap {
+  overflow-x: auto;
+  margin: var(--space-5) 0;
+  border-radius: var(--radius-md);
+  border: var(--border-rule);
+  box-shadow: var(--shadow-sm);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+thead th {
+  background: var(--surface-1);
+  color: var(--fg-strong);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: var(--border-rule);
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  transition: background 0.1s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+
+tbody tr:nth-child(even) {
+  background: rgba(255,255,255,0.025);
+}
+
+tbody tr:hover { background: rgba(217,119,87,0.07); }
+
+td {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: top;
+  color: var(--fg);
+}
+
+td.num, th.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------
+   7. BADGES & PILLS
+   --------------------------------------------------------- */
+
+.badge, .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.25em 0.6em;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.pill { border-radius: 100px; }
+
+/* Neutral */
+.badge, .pill              { background: rgba(255,255,255,0.07); color: var(--fg); border: var(--border-rule); }
+
+/* Status — dark tints with light text */
+.badge.ok, .pill.ok        { background: rgba(147,168,116,0.20); color: #B6CB95; border-color: rgba(147,168,116,0.35); }
+.badge.warn, .pill.warn    { background: rgba(226,169,59,0.18);  color: #E8C26A; border-color: rgba(226,169,59,0.35); }
+.badge.danger, .pill.danger{ background: rgba(210,104,92,0.18);  color: #E89A90; border-color: rgba(210,104,92,0.35); }
+.badge.info, .pill.info    { background: rgba(100,140,210,0.18); color: #94B8E8; border-color: rgba(100,140,210,0.35); }
+
+/* Severity — saturated colored bg + white text */
+.badge.crit  { background: var(--rust);  color: var(--white); border-color: transparent; }
+.badge.high  { background: #E8712A;      color: var(--white); border-color: transparent; }
+.badge.med   { background: var(--warn);  color: var(--slate); border-color: transparent; }
+.badge.low   { background: var(--muted); color: var(--white); border-color: transparent; }
+
+/* Accent */
+.badge.accent, .pill.accent { background: var(--accent); color: var(--white); border-color: transparent; }
+
+/* ---------------------------------------------------------
+   8. CARDS & GRID
+   --------------------------------------------------------- */
+
+.card {
+  background: var(--surface-1);
+  border: var(--border-rule);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  break-inside: avoid;
+}
+
+.card + .card { margin-top: var(--space-4); }
+
+.card-title {
+  font-family: var(--sans);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--fg-strong);
+  margin-bottom: var(--space-2);
+}
+
+.card-meta {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  margin-bottom: var(--space-3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+/* ---------------------------------------------------------
+   9. TIMELINE
+   --------------------------------------------------------- */
+
+.timeline {
+  position: relative;
+  padding-left: var(--space-6);
+  margin: var(--space-5) 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 6px;
+  bottom: 6px;
+  width: 1.5px;
+  background: var(--border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-6) + 5px);
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1.5px var(--border);
+}
+
+.timeline-item.ok::before    { background: var(--ok);     box-shadow: 0 0 0 1.5px var(--ok); }
+.timeline-item.warn::before  { background: var(--warn);   box-shadow: 0 0 0 1.5px var(--warn); }
+.timeline-item.danger::before{ background: var(--danger); box-shadow: 0 0 0 1.5px var(--danger); }
+
+.timeline-time {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+  margin-bottom: var(--space-1);
+}
+
+.timeline-body { font-size: var(--text-sm); }
+
+/* ---------------------------------------------------------
+   10. INVERT — contrasting LIGHT panel (page is now dark)
+   --------------------------------------------------------- */
+
+.invert {
+  background: #FAF9F5;
+  color: #141413;
+  padding: var(--space-8) var(--space-6);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-7);
+}
+
+.invert h1,
+.invert h2,
+.invert h3 {
+  color: #141413;
+}
+
+.invert .eyebrow {
+  color: #D97757;
+  opacity: 1;
+}
+
+.invert .lede {
+  color: #3D3D3A;
+}
+
+.invert a {
+  color: #D97757;
+  text-decoration-color: #D97757;
+}
+
+.invert hr,
+.invert .divider {
+  border-color: rgba(20,20,19,0.15);
+}
+
+/* ---------------------------------------------------------
+   11. SLIDE DECK (scroll-snap)
+   --------------------------------------------------------- */
+
+.deck {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: thin;
+}
+
+.slide {
+  height: 100vh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-7);
+  position: relative;
+}
+
+.slide-inner {
+  max-width: 760px;
+  width: 100%;
+}
+
+.slide.invert { background: #FAF9F5; }
+.slide.invert .slide-inner { color: #141413; }
+.slide.invert h1,
+.slide.invert h2 { color: #141413; }
+
+.slide-num {
+  position: absolute;
+  bottom: var(--space-5);
+  right: var(--space-6);
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* Progress bar */
+.deck-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  transition: width 0.2s ease;
+  z-index: 100;
+}
+
+/* ---------------------------------------------------------
+   12. LAYOUT HELPERS
+   --------------------------------------------------------- */
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  margin: var(--space-5) 0;
+}
+
+.layout-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: var(--space-5);
+  font-size: var(--text-sm);
+}
+
+.toc-title {
+  font-weight: 600;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: var(--space-3);
+}
+
+.toc a {
+  display: block;
+  color: var(--muted);
+  text-decoration: none;
+  padding: var(--space-1) 0;
+  border-left: 2px solid var(--border);
+  padding-left: var(--space-3);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.toc a:hover,
+.toc a.active {
+  color: var(--fg-strong);
+  border-color: var(--accent);
+}
+
+/* Section header band */
+.section-head {
+  border-top: var(--border-rule);
+  padding-top: var(--space-5);
+  margin-top: var(--space-7);
+  margin-bottom: var(--space-5);
+}
+
+/* Stat / KPI row */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin: var(--space-5) 0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-family: var(--serif);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  color: var(--fg-strong);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: var(--space-1);
+}
+
+/* Meta row (pills/badges inline) */
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 var(--space-5);
+}
+
+/* Progress / phase strip */
+.phase-strip {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  flex-wrap: wrap;
+}
+
+.phase {
+  flex: 1;
+  min-width: 80px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: var(--border-rule);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-align: center;
+  background: var(--surface-1);
+  color: var(--muted);
+}
+
+.phase.active { background: var(--accent); color: var(--white); border-color: transparent; }
+.phase.done   { background: var(--ok);     color: #141413;      border-color: transparent; }
+
+/* ---------------------------------------------------------
+   13. DETAILS / DISCLOSURE
+   --------------------------------------------------------- */
+
+details {
+  border: var(--border-rule);
+  border-radius: var(--radius-md);
+  margin: var(--space-3) 0;
+  overflow: hidden;
+}
+
+details > summary {
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  background: var(--surface-1);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  user-select: none;
+}
+
+details > summary::-webkit-details-marker { display: none; }
+
+details > summary::after {
+  content: '›';
+  margin-left: auto;
+  transform: rotate(90deg);
+  transition: transform 0.2s;
+  color: var(--muted);
+}
+
+details[open] > summary::after { transform: rotate(270deg); }
+
+details > *:not(summary) {
+  padding: var(--space-4);
+}
+
+/* ---------------------------------------------------------
+   14. BUTTONS
+   --------------------------------------------------------- */
+
+.btn, button.primary, button.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: 0.5em 1.1em;
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-decoration: none;
+  line-height: 1.4;
+}
+
+.btn-primary, button.primary {
+  background: var(--fg-strong);
+  color: var(--bg);
+  border-color: var(--fg-strong);
+}
+
+.btn-primary:hover, button.primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--white);
+}
+
+.btn-secondary, button.secondary {
+  background: transparent;
+  color: var(--fg-strong);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover, button.secondary:hover {
+  background: var(--surface-2);
+  border-color: var(--muted);
+}
+
+/* ---------------------------------------------------------
+   15. ACCESSIBILITY
+   --------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   16. RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  body { padding: var(--space-5) var(--space-4); }
+
+  .grid,
+  .grid-2,
+  .grid-3  { grid-template-columns: 1fr; }
+
+  .split,
+  .layout-sidebar { grid-template-columns: 1fr; }
+
+  .toc { display: none; }
+
+  .stats { gap: var(--space-4); }
+
+  .slide { padding: var(--space-6) var(--space-4); }
+
+  h1 { font-size: var(--text-2xl); }
+  h2 { font-size: var(--text-xl); }
+}
+
+/* ---------------------------------------------------------
+   17. PRINT — force light for paper readability
+   --------------------------------------------------------- */
+
+@media print {
+  :root {
+    color-scheme: light;
+    --bg:        #FFFFFF;
+    --surface-1: #FFFFFF;
+    --surface-2: #F4F4F4;
+    --fg:        #141413;
+    --fg-strong: #141413;
+    --muted:     #5A5954;
+    --border:    #D1CFC5;
+    --border-rule: 1px solid #D1CFC5;
+    --accent:    #D97757;
+    --ok:        #788C5D;
+    --warn:      #C98A2A;
+    --danger:    #B04A3F;
+    --code-bg:   #F4F4F4;
+  }
+
+  body {
+    background: white;
+    color: #141413;
+    padding: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .page { max-width: 100%; }
+
+  h1, h2, h3, h4, h5, h6 { color: #141413; page-break-after: avoid; }
+
+  .card, table, pre, blockquote, .callout, .note, .warn, .danger, .ok {
+    break-inside: avoid;
+  }
+
+  thead { display: table-header-group; }
+
+  thead th { background: #F0EEE6; color: #141413; border-bottom: 1px solid #D1CFC5; }
+
+  tbody tr { border-bottom: 1px solid #E8E5DA; }
+  tbody tr:nth-child(even) { background: #F9F8F4; }
+
+  pre {
+    background: #F4F4F4;
+    color: #141413;
+    border: 1px solid #D1CFC5;
+  }
+
+  code {
+    background: #F0EEE6;
+    color: #141413;
+    border: 1px solid #D1CFC5;
+  }
+
+  .note   { background: #F0EEE6; color: #3D3D3A; border-color: #B8B5AA; }
+  .warn   { background: #FEF7E6; color: #6B4706; border-color: #C98A2A; }
+  .danger { background: #FCF0EE; color: #6B1F1A; border-color: #B04A3F; }
+  .ok     { background: #EEF2E8; color: #3B4F28; border-color: #788C5D; }
+
+  .badge, .pill              { background: #F0EEE6; color: #3D3D3A; border-color: #D1CFC5; }
+  .badge.ok, .pill.ok        { background: #EEF2E8; color: #3B4F28; border-color: #C6D5B0; }
+  .badge.warn, .pill.warn    { background: #FEF7E6; color: #6B4706; border-color: #F0D090; }
+  .badge.danger, .pill.danger{ background: #FCF0EE; color: #6B1F1A; border-color: #E8B0AA; }
+  .badge.info, .pill.info    { background: #E8EEF8; color: #1E3A6B; border-color: #AABCE0; }
+
+  /* Expand link URLs (skip in-page anchors) */
+  a[href]:not([href^="#"])::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+  }
+
+  .no-print,
+  .deck-progress,
+  .slide-nav,
+  .toc { display: none !important; }
+
+  .invert {
+    background: #F4F4F4 !important;
+    color: #141413 !important;
+    border: 1px solid #D1CFC5;
+  }
+
+  .invert h1,
+  .invert h2,
+  .invert h3,
+  .invert .lede,
+  .invert .eyebrow { color: #141413 !important; }
+}
+
+/* =====  18. DECISION REPORT (cv-2 command-strip) — scoped under .decision  ===== */
+
+/* Wrapper: vars + base typography (replaces :root + html + body from cv-2) */
+.decision {
+  --head:       #FAF9F5;
+  --body:       #E8E6DC;
+  --clay:       #D97757;
+  --clay-hover: #E59072;
+  --muted:      #B0AEA5;
+  --olive:      #93A874;
+  --amber:      #E2A93B;
+  --rust:       #D2685C;
+  --elim:       #6B6862;
+  --code-bg:    #121110;
+  --border:     rgba(255,255,255,0.11);
+  --c-win:      #D97757;
+  --c-run:      #E2A93B;
+  --c-ok:       #93A874;
+  --c-bad:      #D2685C;
+  --c-mute:     #6B6862;
+  --bar-track:  #2C2A27;
+  --axis:       #3A3835;
+  --label:      #B0AEA5;
+  --value:      #E8E6DC;
+  --accordion:  #1F1E1C;
+  --surface-1:  #232220;
+  --surface-2:  #2C2A27;
+  /* --bg intentionally omitted; outer page sets background */
+
+  zoom: 1.18;
+  font-size: 16px;
+  line-height: 1.55;
+  font-family: system-ui,-apple-system,"Segoe UI",sans-serif;
+  color: var(--body);
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+.decision * { box-sizing: border-box; }
+
+/* Wrapper geometry */
+.decision.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 40px 80px; }
+
+/* Typography helpers */
+.decision .serif { font-family: Georgia,ui-serif,serif; font-weight: 500; letter-spacing: -0.02em; }
+.decision .mono  { font-family: ui-monospace,Menlo,Consolas,monospace; }
+.decision code   { font-family: ui-monospace,Menlo,Consolas,monospace; font-size: 0.86em; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; color: #E8B79E; }
+.decision em     { font-style: italic; color: var(--head); }
+
+/* Focus / selection */
+.decision :focus-visible { outline: 2px solid var(--clay); outline-offset: 3px; border-radius: 2px; }
+.decision ::selection    { background: rgba(217,119,87,0.30); }
+
+/* Reduced-motion */
+@media (prefers-reduced-motion:reduce) {
+  .decision * { transition: none !important; animation: none !important; }
+  .decision details.acc > summary::before { transition: none; }
+}
+
+/* Eyebrow label */
+.decision .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* Command column */
+.decision .command { display: flex; flex-direction: column; gap: 18px; }
+
+/* Page title */
+.decision h1.title { font-family: Georgia,ui-serif,serif; font-weight: 500; letter-spacing: -0.02em; font-size: 40px; line-height: 1.1; color: var(--head); margin: 0; max-width: 24ch; }
+.decision .dintro { font-size: 16px; line-height: 1.55; color: var(--body); max-width: 70ch; margin: 14px 0 0; }
+
+/* Verdict banner */
+.decision .verdict { position: relative; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; background: var(--surface-1); border: 1.5px solid var(--clay); border-radius: 12px; padding: 16px 24px; box-shadow: 0 0 26px 1px rgba(217,119,87,0.20); }
+.decision .verdict .pick { font-family: Georgia,ui-serif,serif; font-weight: 500; font-size: 26px; color: var(--head); letter-spacing: -0.02em; white-space: nowrap; }
+.decision .verdict .pick b { color: var(--clay); }
+.decision .verdict .score { font-family: Georgia,ui-serif,serif; font-weight: 500; font-size: 30px; color: var(--clay); line-height: 1; white-space: nowrap; }
+.decision .verdict .score small { font-size: 14px; color: var(--muted); font-family: system-ui,sans-serif; }
+.decision .verdict .reason { font-size: 15px; color: var(--body); flex: 1; min-width: 240px; border-left: 1px solid var(--border); padding-left: 24px; }
+.decision .verdict .runners { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Chips */
+.decision .chip       { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 5px 11px; border-radius: 999px; white-space: nowrap; }
+.decision .chip.run   { background: rgba(226,169,59,0.14); color: var(--amber); border: 1px solid rgba(226,169,59,0.30); }
+.decision .chip.heavy { background: rgba(255,255,255,0.05); color: #8d8a82; border: 1px solid rgba(255,255,255,0.10); }
+
+/* Scope strip */
+.decision .scope { display: flex; flex-wrap: wrap; align-items: center; margin: 24px 0 0; padding: 11px 20px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; }
+.decision .scope .s { display: inline-flex; align-items: baseline; gap: 8px; }
+.decision .scope .s + .s::before { content: ''; width: 1px; height: 22px; background: var(--border); margin: 0 20px; align-self: center; }
+.decision .scope .s b { font-family: Georgia,ui-serif,serif; font-weight: 500; font-size: 25px; color: var(--head); line-height: 1; letter-spacing: -0.02em; }
+.decision .scope .s.key b { color: var(--clay); }
+.decision .scope .s b small { font-size: 13px; color: var(--muted); font-weight: 400; font-family: system-ui,sans-serif; margin-left: 1px; }
+.decision .scope .s span { font-size: 13px; color: var(--muted); }
+
+/* Command strip (3-panel grid) */
+.decision .strip { display: grid; grid-template-columns: 1.2fr 1px 1fr 1px 0.9fr; align-items: stretch; gap: 0; background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.decision .panel { padding: 12px 20px; }
+.decision .vrule { background: var(--border); }
+.decision .panel .plabel { font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.decision .panel .psub   { font-size: 11.5px; color: #6f6c64; margin-bottom: 8px; }
+
+/* Accordion (details/summary) */
+.decision details.acc { border: 1px solid var(--border); border-radius: 12px; margin: 12px 0 0; background: var(--accordion); overflow: hidden; }
+.decision details.acc > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 16px 22px; }
+.decision details.acc > summary::-webkit-details-marker { display: none; }
+.decision details.acc > summary::after { content: none; display: none; }  /* suppress base design-system chevron */
+.decision details.acc > summary::before { content: '\25B6'; color: var(--clay); font-size: 11px; transition: transform .15s; flex: none; }
+.decision details.acc[open] > summary::before { transform: rotate(90deg); }
+.decision details.acc > summary .t { font-family: Georgia,ui-serif,serif; font-weight: 500; font-size: 21px; color: var(--head); letter-spacing: -0.01em; }
+.decision details.acc > summary .meta { margin-left: auto; color: var(--muted); font-size: 13px; white-space: nowrap; }
+.decision details.acc > .body { padding: 4px 22px 24px; }
+
+/* Keys legend */
+.decision .keys { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 8px 0 16px; font-size: 13px; color: var(--muted); }
+.decision .keys .grp { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.decision .keys b { color: var(--body); font-weight: 600; }
+.decision .sym-ok  { color: var(--olive); font-weight: 700; }
+.decision .sym-mid { color: var(--amber); font-weight: 700; }
+.decision .sym-no  { color: var(--rust);  font-weight: 700; }
+
+/* Comparison table */
+.decision table.cmp                        { width: 100%; border-collapse: collapse; font-size: 15px; }
+.decision table.cmp th,
+.decision table.cmp td                     { padding: 12px 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+.decision table.cmp thead th               { border-top: none; background: var(--surface-2); text-align: left; cursor: pointer; user-select: none; white-space: nowrap; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); position: relative; }
+.decision table.cmp thead th::after        { content: ' \21C5'; opacity: .32; font-size: 10px; }
+.decision table.cmp thead th[data-dir="asc"]::after  { content: ' \2191'; opacity: 1; color: var(--clay); }
+.decision table.cmp thead th[data-dir="desc"]::after { content: ' \2193'; opacity: 1; color: var(--clay); }
+.decision table.cmp th.num,
+.decision table.cmp td.num                 { text-align: right; font-variant-numeric: tabular-nums; }
+.decision table.cmp th.ctr,
+.decision table.cmp td.ctr                 { text-align: center; }
+.decision table.cmp tbody tr:hover td      { background: rgba(255,255,255,0.035); }
+.decision table.cmp td.name               { font-weight: 600; color: var(--head); }
+.decision .pill                            { font-size: 10.5px; font-weight: 600; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.decision tr.winner                        { background: rgba(217,119,87,0.07); }
+.decision tr.recede                        { opacity: .6; }
+.decision tr.recede td.name               { text-decoration: line-through; color: #9d9a91; }
+.decision td.bar                           { position: relative; }
+.decision td.bar > .fill                   { position: absolute; inset: 5px auto 5px 0; border-radius: 2px; z-index: 0; }
+.decision td.bar.kb > .fill               { background: var(--c-mute); opacity: .40; }
+.decision td.bar.score > .fill            { background: var(--c-win); opacity: .28; }
+.decision tr.winner td.bar.score > .fill  { opacity: .5; }
+.decision td.bar > .num                   { position: relative; z-index: 1; font-variant-numeric: tabular-nums; }
+
+/* Rubric grid */
+.decision .rubric         { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; margin: 0 0 22px; list-style: none; padding: 0; }
+.decision .rubric li      { display: flex; gap: 10px; font-size: 14.5px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.decision .rubric li b    { color: var(--head); font-weight: 600; white-space: nowrap; }
+.decision .rubric li span { color: var(--muted); }
+
+/* Reasons grid */
+.decision .reasons   { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 6px; }
+.decision .reason    { background: var(--surface-1); border: 1px solid var(--border); border-left: 3px solid var(--clay); border-radius: 8px; padding: 14px 16px; }
+.decision .reason h4 { margin: 0 0 5px; font-size: 13.5px; color: var(--head); font-weight: 600; }
+.decision .reason p  { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* How-to box */
+.decision .howto   { margin-top: 16px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 14px; color: var(--muted); line-height: 1.6; }
+.decision .howto b { color: var(--body); }
+
+/* Elimination grid */
+.decision .elim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.decision .elim      { background: var(--surface-1); border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid #56524b; border-radius: 8px; padding: 11px 16px; opacity: .66; }
+.decision .elim b    { color: #cfccc3; font-weight: 600; }
+.decision .elim span { color: #8d8a82; font-size: 13.5px; }
+
+/* Footer */
+.decision .foot { margin-top: 28px; font-size: 12.5px; color: #6f6c64; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* =====  19. RUNBOOK (install / step-by-step guide) — scoped under .runbook  ===== */
+
+/* Grid frame */
+.runbook {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-7);
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  align-items: start;
+}
+
+.runbook * { box-sizing: border-box; }
+
+/* Responsive: collapse sidebar below 860px */
+@media (max-width: 860px) {
+  .runbook { grid-template-columns: 1fr; }
+  .runbook .rb-toc { display: none; }
+}
+
+/* ---- Sticky TOC (left column) ---- */
+.runbook .rb-toc {
+  position: sticky;
+  top: var(--space-5);
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.runbook .rb-toc-title {
+  font-size: 12px;
+  font-family: var(--sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.runbook .rb-toc a {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.4;
+  font-family: var(--sans);
+  color: var(--muted);
+  padding: 5px 0 5px 12px;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+
+.runbook .rb-toc a.is-active {
+  color: var(--fg-strong);
+  border-left-color: var(--accent);
+}
+
+.runbook .rb-toc a.is-done {
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.runbook .rb-toc-n {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-right: 8px;
+}
+
+/* ---- Main content column ---- */
+.runbook .rb-main { min-width: 0; font-size: 15.5px; }
+.runbook .rb-main > p,
+.runbook .rb-step > p { font-size: 15.5px; line-height: 1.62; }
+.runbook .rb-main ul,
+.runbook .rb-main ol { font-size: 15.5px; line-height: 1.6; }
+.runbook table { font-size: 14.5px; }
+
+/* Callouts in a runbook are PROSE with inline <code> + <span class="badge"> —
+   NOT the [icon][text] flex model the base sheet assumes. Without this override
+   each inline run becomes its own flex item and text shatters into one-word
+   columns. Force normal block flow. */
+.runbook .note,
+.runbook .warn,
+.runbook .danger,
+.runbook .ok {
+  display: block;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 80ch;
+  padding: 12px 18px;
+}
+.runbook .note > strong:first-child,
+.runbook .warn > strong:first-child,
+.runbook .danger > strong:first-child,
+.runbook .ok > strong:first-child { color: var(--fg-strong); }
+.runbook .badge { white-space: nowrap; }
+
+/* ---- Header ---- */
+.runbook .rb-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 14.5px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 0;
+  margin: 16px 0 0;
+}
+
+.runbook .rb-meta b { color: var(--fg-strong); }
+
+/* ---- Steps (collapsible <details>, collapsed by default) ---- */
+/* Reset the base details-card chrome — steps are a flat ruled list, not cards. */
+.runbook details.rb-step {
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  margin: 0;
+  padding: 0 18px;                       /* one gutter for the whole step */
+  scroll-margin-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+.runbook details.rb-step:last-of-type { border-bottom: 1px solid var(--border); }
+
+/* Neutralize base `details > *` 16px padding + margins; children sit full-bleed
+   inside the step gutter and get spacing from the flow rule below. Box children
+   (.rb-cmd/.rb-out/callouts) re-assert their own padding at higher specificity. */
+.runbook details.rb-step > *:not(summary) { padding: 0; margin: 0; }
+.runbook details.rb-step > * + *:not(summary) { margin-top: 18px; }   /* flow gap */
+.runbook details.rb-step > .rb-out          { margin-top: 6px; }      /* hug its command */
+.runbook details.rb-step > .rb-sub          { margin-top: 34px; }     /* air above substeps */
+.runbook details.rb-step > *:last-child     { margin-bottom: 26px; }
+
+/* re-assert internal padding on the boxed children (beats the reset above) */
+.runbook details.rb-step > .rb-cmd  { padding: 14px 18px; }
+.runbook details.rb-step > .rb-out  { padding: 12px 18px; }
+.runbook details.rb-step > .note,
+.runbook details.rb-step > .warn,
+.runbook details.rb-step > .danger,
+.runbook details.rb-step > .ok      { padding: 13px 18px; }
+
+.runbook summary.rb-step-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 -18px;                       /* span the gutter so hover is full-width */
+  padding: 16px 18px;
+  background: none;                      /* kill base surface-1 summary fill */
+  font-weight: 400;
+  cursor: pointer;
+  list-style: none;
+}
+.runbook summary.rb-step-head::-webkit-details-marker { display: none; }
+.runbook summary.rb-step-head:hover { background: rgba(255, 255, 255, 0.025); }
+
+/* disclosure caret, pushed to the far right of the header */
+.runbook summary.rb-step-head::after {
+  content: '';
+  margin-left: auto;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg);            /* points right = collapsed */
+  transition: transform 0.15s ease;
+}
+.runbook details.rb-step[open] > summary.rb-step-head::after {
+  transform: rotate(45deg);             /* points down = open */
+}
+.runbook summary.rb-step-head:hover::after { border-color: var(--accent); }
+.runbook details.rb-step[open] > summary.rb-step-head { margin-bottom: 8px; }
+
+/* Expand / collapse-all control bar (injected by runbook.js) */
+.runbook .rb-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin: 20px 0 0;
+}
+.runbook .rb-controls button {
+  font: 600 11.5px var(--sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 2px;
+}
+.runbook .rb-controls button:hover { color: var(--accent); }
+
+.runbook .rb-num {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.runbook .rb-step-head h2 {
+  margin: 0;
+}
+
+.runbook .rb-check {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Done state: subtle strikethrough */
+.runbook .rb-step.is-done .rb-step-head .rb-num,
+.runbook .rb-step.is-done .rb-step-head h2 {
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+/* ---- Step body ---- */
+.runbook .rb-what {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 15px;
+  margin: 0 0 12px;
+  max-width: 74ch;
+}
+
+.runbook .rb-sub {
+  font-family: var(--sans);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 24px 0 8px;
+}
+
+/* ---- Command blocks ---- */
+.runbook .rb-cmd {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 14.5px;
+  line-height: 1.7;
+  background: var(--code-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
+  padding: 14px 18px;
+  margin: 8px 0;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--fg-strong);
+}
+
+.runbook .rb-cmd + .rb-cmd { margin-top: 12px; }
+
+.runbook .rb-prompt {
+  color: var(--accent);
+  opacity: 0.6;
+  user-select: none;
+  margin-right: 8px;
+}
+
+/* Light syntax HL for .env / config blocks (applied by runbook.js) */
+.runbook .rb-cmd .rb-c {            /* comment line */
+  color: var(--gray-500);
+  font-style: italic;
+}
+.runbook .rb-cmd .rb-k {            /* env KEY before = */
+  color: var(--accent);
+}
+
+/* ---- Output blocks ---- */
+.runbook .rb-out {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--code-bg);
+  border-radius: 2px;
+  padding: 12px 18px;
+  color: var(--muted);
+  margin: 4px 0 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.runbook .rb-out-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* ---- File blocks ---- */
+.runbook .rb-file {
+  margin: 8px 0;
+}
+
+.runbook .rb-file-name {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  background: var(--surface-1);
+  border-left: 3px solid var(--accent);
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.runbook .rb-file .rb-cmd {
+  margin-top: 0;
+  border-radius: 0 0 2px 2px;
+}
+
+/* ---- Copy button (injected by JS) ---- */
+.runbook .rb-copy {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  font: 600 10.5px var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.12s;
+}
+
+.runbook .rb-cmd:hover .rb-copy,
+.runbook .rb-copy:focus-visible { opacity: 1; }
+
+.runbook .rb-copy.copied {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+/* ---- Cheatsheet (fast-path details) ---- */
+.runbook .rb-cheats {
+  margin-bottom: var(--space-6);
+}
+
+.runbook .rb-cheats > summary {
+  font-family: var(--mono);
+  font-size: 13.5px;
+  color: var(--accent);
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 0;
+  border-top: 1px solid rgba(217, 119, 87, 0.25);
+  border-bottom: 1px solid rgba(217, 119, 87, 0.25);
+}
+
+.runbook .rb-cheats > summary::-webkit-details-marker { display: none; }
+
+.runbook .rb-cheats .rb-cmd {
+  padding: 8px 14px;
+}
+
+/* ---- Print ---- */
+@media print {
+  .runbook .rb-toc { display: none; }
+  .runbook { grid-template-columns: 1fr; }
+  .runbook .rb-copy { display: none; }
+}
+
+</style>
+</head>
+<body>
+<style>
+/* ═══════════════════════════════════════════════════════
+   CONCEPT-EXPLAINER — page-scoped styles
+   Mirrors 02-mindset-final.html body <style> block.
+═══════════════════════════════════════════════════════ */
+
+/* 125% zoom wrapper */
+.page-wrap {
+  zoom: 1.25;
+  max-width: 1020px;
+  margin: 0 auto;
+}
+
+/* ── hero ── */
+.mag-hero {
+  padding: 1rem 2rem 0.6rem;
+  border-bottom: 3px solid #D97757;
+  margin-bottom: 0;
+}
+.hero-inner { max-width: 960px; margin: 0 auto; }
+.mag-hero .eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent, #D97757); margin-bottom: 0.4rem;
+  font-family: sans-serif; font-weight: 600;
+}
+.mag-hero h1 {
+  font-family: Georgia,'Times New Roman',serif;
+  font-size: clamp(1.65rem,3.5vw,2.75rem); font-weight: 500;
+  line-height: 1.05; letter-spacing: -0.02em;
+  color: var(--fg-strong, #FAF9F5); margin: 0 0 0.4rem;
+}
+.mag-hero .throughline {
+  font-size: 1rem; font-style: italic; color: var(--muted, #888);
+  max-width: 600px; margin-bottom: 0.75rem; line-height: 1.45;
+}
+
+/* ── minimap ── */
+.v1-minimap-section {
+  background: #232220; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.25rem;
+}
+.v1-minimap-section .mm-title {
+  font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #888; font-family: sans-serif; font-weight: 600; margin-bottom: 0.6rem;
+}
+.v1-minimap { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.v1-minimap-thumb {
+  background: #2C2A27; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px; padding: 0.35rem 0.45rem;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; cursor: pointer; transition: border-color 0.2s; text-decoration: none;
+}
+.v1-minimap-thumb:hover { border-color: #D97757; }
+.v1-minimap-thumb span {
+  font-size: 0.6rem; color: #aaa9a0; text-align: center;
+  font-family: sans-serif; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* ── phase strip ── */
+.phase-strip-hero {
+  display: flex; gap: 0.5rem; margin-bottom: 0.75rem;
+  flex-wrap: wrap; align-items: center;
+}
+.phase-chip {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: #232220; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 0.4rem 0.9rem;
+  font-size: 0.78rem; font-weight: 600; color: #E8E6DC; letter-spacing: 0.04em;
+}
+.phase-chip .chip-num {
+  background: #D97757; color: #fff; border-radius: 50%;
+  width: 1.3rem; height: 1.3rem; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 800; flex-shrink: 0;
+}
+.phase-arrow { color: #b0aaa4; font-size: 1rem; align-self: center; }
+
+/* ── meta row ── */
+.meta-row {
+  display: flex; gap: 0.9rem; align-items: center; flex-wrap: wrap;
+  padding: 0.4rem 0; border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.78rem; color: #888; font-family: sans-serif;
+}
+.meta-row .meta-sep { color: #D97757; }
+.meta-row a {
+  color: #D97757; text-decoration: none; font-weight: 600;
+  border: 1px solid #D97757; border-radius: 4px; padding: 2px 8px;
+  transition: background 0.15s, color 0.15s;
+}
+.meta-row a:hover { background: #D97757; color: #fff; }
+
+/* ── BLUF ── */
+.bluf-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  gap: 0.5rem; margin-top: 0.6rem;
+}
+.bluf-item {
+  display: flex; gap: 0.5rem; align-items: flex-start;
+  border-left: 3px solid #D97757; padding-left: 0.75rem;
+}
+.bluf-num {
+  font-family: Georgia,serif; font-size: 1.5rem; font-weight: 500;
+  color: #D97757; line-height: 1; flex-shrink: 0;
+}
+.bluf-text { font-size: 0.8rem; color: #aaa9a0; line-height: 1.45; }
+
+/* ── stat row ── */
+.stat-row {
+  display: flex; gap: 0; flex-wrap: wrap;
+  background: #232220; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07); overflow: hidden;
+  margin-bottom: 1.1rem;
+}
+.stat-item {
+  display: flex; flex-direction: column; gap: 0.1rem;
+  padding: 0.45rem 0.8rem; align-items: flex-start;
+}
+.stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.07); }
+.stat-num {
+  font-family: Georgia,serif; font-size: 1.35rem;
+  color: #D97757; font-weight: 500; line-height: 1;
+}
+.stat-label {
+  font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.09em;
+  color: #888; font-family: sans-serif;
+}
+
+/* ── sidebar TOC ── */
+.layout-sidebar {
+  display: grid; grid-template-columns: 190px 1fr;
+  gap: 0; align-items: start;
+}
+.sidebar-toc {
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto; padding: 1.5rem 0.75rem 2rem 1.25rem;
+  background: #232220; border-right: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.72rem;
+}
+.sidebar-toc h2 {
+  font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #666; margin: 0 0 0.75rem; font-family: sans-serif; font-weight: 600;
+}
+.sidebar-toc a {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.28rem 0.4rem; border-radius: 4px;
+  color: #999; text-decoration: none; font-family: sans-serif;
+  margin-bottom: 1px; transition: background 0.15s, color 0.15s; line-height: 1.3;
+}
+.sidebar-toc a:hover { background: rgba(217,119,87,0.10); color: #e8e6dc; }
+.sidebar-toc a.active {
+  background: rgba(217,119,87,0.16); color: #D97757; font-weight: 600;
+}
+.toc-pill {
+  font-size: 0.55rem; background: rgba(217,119,87,0.18); color: #D97757;
+  border-radius: 20px; padding: 1px 5px; white-space: nowrap;
+  flex-shrink: 0; margin-left: auto;
+}
+
+/* ── main content ── */
+.main-content { padding: 1.25rem 2rem 2.5rem; max-width: 840px; }
+.main-col-wrap { min-width: 0; overflow: hidden; }
+
+/* ── section header ── */
+.sec-divider {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin: 2rem 0 0.75rem; padding-top: 0.75rem;
+  border-top: 2px solid #2C2A27;
+}
+.sec-icon { font-size: 1.2rem; line-height: 1; flex-shrink: 0; display: flex; align-items: center; }
+.sec-label { display: flex; flex-direction: column; gap: 0.1rem; }
+.sec-label .eyebrow-sm {
+  font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #888; font-family: sans-serif; font-weight: 600;
+}
+.sec-label h2 {
+  font-family: Georgia,serif; font-size: 1.45rem; font-weight: 500;
+  color: var(--fg-strong, #FAF9F5); margin: 0; line-height: 1.15; letter-spacing: -0.02em;
+}
+thead th { display: revert; }
+.th-inner { display: flex; align-items: center; gap: 0.4em; }
+
+/* ── pull quotes ── */
+.pull-quote {
+  margin: 1rem 0; padding: 0 0 0 1rem; border-left: 4px solid #D97757;
+}
+.pull-quote blockquote {
+  font-family: Georgia,serif; font-size: 1.1rem; font-weight: 500;
+  font-style: italic; color: #FAF9F5; line-height: 1.3; margin: 0 0 0.3rem;
+}
+.pull-quote cite {
+  font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: #D97757;
+}
+
+/* ── asymmetric grid ── */
+.asym-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; align-items: start; }
+.asym-grid.flip { grid-template-columns: 2fr 3fr; }
+
+/* ── concept cards ── */
+.mag-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 0.5rem; margin: 0.6rem 0; }
+.mag-card { background: #232220; border: 1px solid #2C2A27; border-radius: 4px; padding: 0.55rem 0.7rem; }
+.mag-card .card-eyebrow { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: #D97757; margin-bottom: 0.2rem; font-family: sans-serif; }
+.mag-card h4 { font-family: Georgia,serif; font-size: 0.88rem; font-weight: 500; margin: 0 0 0.2rem; color: #FAF9F5; }
+.mag-card p { font-size: 0.79rem; color: #aaa9a0; margin: 0; line-height: 1.4; }
+
+/* ── SVG figures ── */
+.mag-svg { width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto; }
+figure { margin: 0.75rem 0; text-align: center; }
+figcaption { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7a7670; margin-top: 0.25rem; }
+
+/* ── playbook list ── */
+.playbook-ol { list-style: none; padding: 0; margin: 0.5rem 0; counter-reset: pb; }
+.playbook-ol li {
+  counter-increment: pb; display: flex; gap: 0.75rem; align-items: baseline;
+  padding: 0.35rem 0; border-bottom: 1px solid #2C2A27;
+  font-size: 0.85rem; color: #aaa9a0;
+}
+.playbook-ol li::before {
+  content: counter(pb, decimal-leading-zero);
+  font-family: Georgia,serif; font-size: 0.95rem; font-weight: 500;
+  color: #D97757; flex-shrink: 0; min-width: 2rem;
+}
+
+/* ── matrix table ── */
+.matrix-wrap { overflow-x: auto; margin: 0.6rem 0 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); }
+.matrix-table { width: 100%; border-collapse: collapse; font-size: 0.77rem; font-family: sans-serif; }
+.matrix-table thead th {
+  position: sticky; top: 0; background: #2C2A27; color: #999;
+  font-size: 0.62rem; letter-spacing: 0.09em; text-transform: uppercase;
+  padding: 0.4rem 0.65rem; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1); white-space: nowrap;
+}
+.matrix-table tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.1s; }
+.matrix-table tbody tr:hover { background: rgba(255,255,255,0.025); }
+.matrix-table tbody tr:last-child { border-bottom: none; }
+.matrix-table td { padding: 0.38rem 0.65rem; color: #c8c5bc; vertical-align: top; line-height: 1.4; }
+.matrix-table td:first-child { color: #FAF9F5; font-weight: 500; }
+.cell-yes  { color: #4ade80; }
+.cell-part { color: #fbbf24; }
+.cell-no   { color: #f87171; }
+.badge-lesson { background: rgba(217,119,87,0.15); color: #D97757; border: 1px solid rgba(217,119,87,0.3); border-radius: 20px; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 2px 7px; white-space: nowrap; }
+
+/* ── tools/cases mag-table ── */
+.mag-table-wrap { overflow-x: auto; margin: 0.6rem 0; }
+.mag-table { width: 100%; border-collapse: collapse; font-size: 0.79rem; }
+.mag-table thead { position: sticky; top: 0; background: #232220; }
+.mag-table th { padding: 0.4rem 0.65rem; text-align: left; font-size: 0.65rem; letter-spacing: 0.09em; text-transform: uppercase; color: #D97757; border-bottom: 2px solid #D97757; white-space: nowrap; }
+.mag-table td { padding: 0.38rem 0.65rem; border-bottom: 1px solid #2C2A27; color: #aaa9a0; vertical-align: top; }
+.mag-table tr:hover td { background: #232220; }
+
+/* ── eyebrow colors ── */
+.eyebrow-concept { color: #7ec8c8; }
+.eyebrow-example { color: #c8b97e; }
+.eyebrow-playbook { color: #a3c87e; }
+.eyebrow-case    { color: #c87ea3; }
+.eyebrow-tool    { color: #8fa8d4; }
+
+/* ── details/disclosure (checklist) ── */
+details {
+  border: 1px solid rgba(255,255,255,0.09); border-radius: 6px;
+  margin: 0.35rem 0; overflow: hidden; background: #232220;
+}
+details > summary {
+  padding: 0.5rem 0.85rem; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+  background: #232220; list-style: none; display: flex; align-items: center;
+  gap: 0.5rem; user-select: none; color: #E8E6DC;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::after {
+  content: '›'; margin-left: auto; transform: rotate(90deg);
+  transition: transform 0.2s; color: #888;
+}
+details[open] > summary::after { transform: rotate(270deg); }
+details > .details-inner { padding: 0.5rem 0.85rem 0.65rem; border-top: 1px solid rgba(255,255,255,0.07); }
+details > .details-inner ul { padding-left: 1.25rem; margin: 0; line-height: 1.75; font-size: 0.85rem; color: #aaa9a0; }
+details > .details-inner li { margin-bottom: 0.05rem; }
+
+/* ── footer ── */
+.mag-footer { margin-top: 1.5rem; padding-top: 0.75rem; border-top: 2px solid #2C2A27; font-size: 0.75rem; color: #7a7670; opacity: 0.55; }
+
+/* ── print ── */
+@media print {
+  .sidebar-toc { display: none !important; }
+  .layout-sidebar { display: block; }
+  .main-content { padding: 1rem; max-width: 100%; }
+  .asym-grid, .asym-grid.flip { grid-template-columns: 1fr; }
+  details { display: block; }
+  details > summary { display: none; }
+  details > .details-inner { display: block !important; padding: 0; }
+  .matrix-wrap { overflow: visible; }
+  .matrix-table thead th { position: static; }
+  .pull-quote, .mag-card { page-break-inside: avoid; }
+  .mag-svg { max-width: 240px; }
+  body { background: #fff !important; color: #000 !important; }
+  .page-wrap { zoom: 1; }
+}
+
+/* ── responsive ── */
+@media (max-width: 720px) {
+  .layout-sidebar { grid-template-columns: 1fr; }
+  .sidebar-toc { display: none; }
+  .asym-grid, .asym-grid.flip { grid-template-columns: 1fr; }
+  .bluf-row { grid-template-columns: 1fr 1fr; }
+  .page-wrap { zoom: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+
+<main class="page-wrap">
+
+<div class="layout-sidebar">
+
+  <!-- sidebar TOC -->
+  <nav class="sidebar-toc" aria-label="Page sections">
+    <h2>Contents</h2>
+    <a href="#overview" id="toc-overview"><span>Overview</span><span class="toc-pill">TL;DR</span></a>
+    <a href="#s-l1" id="toc-s-l1"><span>L1 — Content Is Code</span><span class="toc-pill">4 concepts</span></a>
+    <a href="#s-l2" id="toc-s-l2"><span>L2 — The Request Path</span><span class="toc-pill">4 concepts</span></a>
+    <a href="#s-l3" id="toc-s-l3"><span>L3 — The State Split</span><span class="toc-pill">4 concepts</span></a>
+    <a href="#s-l4" id="toc-s-l4"><span>L4 — Media Pipeline</span><span class="toc-pill">4 concepts</span></a>
+    <a href="#s-l5" id="toc-s-l5"><span>L5 — The Codex AI Layer</span><span class="toc-pill">4 concepts</span></a>
+    <a href="#s-l6" id="toc-s-l6"><span>L6 — Automation & Gates</span><span class="toc-pill">6 concepts</span></a>
+    <a href="#s-l7" id="toc-s-l7"><span>L7 — Vestigial Wiring</span><span class="toc-pill">5 concepts</span></a>
+    <a href="#s-matrix" id="toc-s-matrix"><span>Framework Matrix</span><span class="toc-pill">9 rows</span></a>
+    <a href="#s-cases" id="toc-s-cases"><span>Case Studies</span><span class="toc-pill">5</span></a>
+    <a href="#s-tools" id="toc-s-tools"><span>Tools &amp; Resources</span></a>
+    <a href="#s-checklist" id="toc-s-checklist"><span>Action Checklist</span></a>
+  </nav>
+
+  <!-- main column -->
+  <div class="main-col-wrap">
+
+    <!-- hero -->
+    <header class="mag-hero" id="s-hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Architecture · rnui.dev · awesome-react-native-ui</p>
+        <h1>How rnui.dev Actually Works</h1>
+        <p class="throughline">A directory site where the catalog is source code, the database holds two integers, and the videos never touch your server.</p>
+        <div class="meta-row"><span>~12 min read</span><span class="meta-sep">·</span><span>7 sections</span><span class="meta-sep">·</span><span>6 inline diagrams</span><span class="meta-sep">·</span><a href="#s-l1">↓ Start reading</a></div>
+      </div>
+    </header>
+
+    <!-- overview -->
+    <section id="overview" style="padding:0.9rem 2rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.07); max-width:960px; margin:0 auto;">
+      <div class="sec-divider" style="margin-top:0; padding-top:0; border-top:none;">
+        <span class="sec-icon" aria-hidden="true">🗺</span>
+        <div class="sec-label">
+          <span class="eyebrow-sm">Overview · TL;DR</span>
+          <h2>Overview</h2>
+        </div>
+      </div>
+      <div class="v1-minimap-section" aria-label="Framework minimap" style="margin-bottom:0.6rem;"><p class="mm-title">Framework Minimap</p><div class="v1-minimap"><a href="#s-l1" class="v1-minimap-thumb" aria-label="Catalog assembly diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Funnel diagram thumbnail"><rect x="8"  y="4"  width="56" height="12" rx="3" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1"/><rect x="14" y="20" width="44" height="10" rx="3" fill="rgba(217,119,87,0.2)" stroke="#D97757" stroke-width="1"/><rect x="20" y="34" width="32" height="10" rx="3" fill="rgba(217,119,87,0.12)" stroke="#D97757" stroke-width="1"/><rect x="26" y="48" width="20" height="10" rx="3" fill="rgba(217,119,87,0.06)" stroke="#D97757" stroke-width="1"/><line x1="36" y1="16" x2="36" y2="20" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="30" x2="36" y2="34" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="44" x2="36" y2="48" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/></svg><span>Catalog assembly</span></a><a href="#s-l2" class="v1-minimap-thumb" aria-label="Request → pixels diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Funnel diagram thumbnail"><rect x="8"  y="4"  width="56" height="12" rx="3" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1"/><rect x="14" y="20" width="44" height="10" rx="3" fill="rgba(217,119,87,0.2)" stroke="#D97757" stroke-width="1"/><rect x="20" y="34" width="32" height="10" rx="3" fill="rgba(217,119,87,0.12)" stroke="#D97757" stroke-width="1"/><rect x="26" y="48" width="20" height="10" rx="3" fill="rgba(217,119,87,0.06)" stroke="#D97757" stroke-width="1"/><line x1="36" y1="16" x2="36" y2="20" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="30" x2="36" y2="34" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="44" x2="36" y2="48" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/></svg><span>Request → pixels</span></a><a href="#s-l2" class="v1-minimap-thumb" aria-label="Client hooks diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Wheel diagram thumbnail"><circle cx="36" cy="32" r="8" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="8" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="40" x2="36" y2="56" stroke="#D97757" stroke-width="1.5"/><line x1="24.1" y1="25.1" x2="12.2" y2="18.1" stroke="#8BC98B" stroke-width="1.5"/><line x1="47.9" y1="38.9" x2="59.8" y2="45.9" stroke="#8BC98B" stroke-width="1.5"/><line x1="24.1" y1="38.9" x2="12.2" y2="45.9" stroke="#7BB3D4" stroke-width="1.5"/><line x1="47.9" y1="25.1" x2="59.8" y2="18.1" stroke="#7BB3D4" stroke-width="1.5"/><circle cx="36" cy="8" r="4" fill="#D97757"/><circle cx="36" cy="56" r="4" fill="#D97757"/><circle cx="12.2" cy="18.1" r="4" fill="#8BC98B"/><circle cx="59.8" cy="45.9" r="4" fill="#8BC98B"/><circle cx="12.2" cy="45.9" r="4" fill="#7BB3D4"/><circle cx="59.8" cy="18.1" r="4" fill="#7BB3D4"/></svg><span>Client hooks</span></a><a href="#s-l3" class="v1-minimap-thumb" aria-label="Where each fact lives diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="3-circle Venn thumbnail"><circle cx="36" cy="20" r="14" fill="rgba(139,201,139,0.15)" stroke="#8BC98B" stroke-width="1"/><circle cx="22" cy="46" r="14" fill="rgba(123,179,212,0.15)" stroke="#7BB3D4" stroke-width="1"/><circle cx="50" cy="46" r="14" fill="rgba(201,168,76,0.15)" stroke="#C9A84C" stroke-width="1"/><circle cx="36" cy="38" r="5" fill="rgba(217,119,87,0.4)" stroke="#D97757" stroke-width="1.5"/></svg><span>Where each fact lives</span></a><a href="#s-l4" class="v1-minimap-thumb" aria-label="Asset pipeline diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Funnel diagram thumbnail"><rect x="8"  y="4"  width="56" height="12" rx="3" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1"/><rect x="14" y="20" width="44" height="10" rx="3" fill="rgba(217,119,87,0.2)" stroke="#D97757" stroke-width="1"/><rect x="20" y="34" width="32" height="10" rx="3" fill="rgba(217,119,87,0.12)" stroke="#D97757" stroke-width="1"/><rect x="26" y="48" width="20" height="10" rx="3" fill="rgba(217,119,87,0.06)" stroke="#D97757" stroke-width="1"/><line x1="36" y1="16" x2="36" y2="20" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="30" x2="36" y2="34" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/><line x1="36" y1="44" x2="36" y2="48" stroke="#D97757" stroke-width="1" stroke-dasharray="2,1"/></svg><span>Asset pipeline</span></a><a href="#s-l5" class="v1-minimap-thumb" aria-label="Codex loop diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Wheel diagram thumbnail"><circle cx="36" cy="32" r="8" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="8" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="40" x2="36" y2="56" stroke="#D97757" stroke-width="1.5"/><line x1="24.1" y1="25.1" x2="12.2" y2="18.1" stroke="#8BC98B" stroke-width="1.5"/><line x1="47.9" y1="38.9" x2="59.8" y2="45.9" stroke="#8BC98B" stroke-width="1.5"/><line x1="24.1" y1="38.9" x2="12.2" y2="45.9" stroke="#7BB3D4" stroke-width="1.5"/><line x1="47.9" y1="25.1" x2="59.8" y2="18.1" stroke="#7BB3D4" stroke-width="1.5"/><circle cx="36" cy="8" r="4" fill="#D97757"/><circle cx="36" cy="56" r="4" fill="#D97757"/><circle cx="12.2" cy="18.1" r="4" fill="#8BC98B"/><circle cx="59.8" cy="45.9" r="4" fill="#8BC98B"/><circle cx="12.2" cy="45.9" r="4" fill="#7BB3D4"/><circle cx="59.8" cy="18.1" r="4" fill="#7BB3D4"/></svg><span>Codex loop</span></a><a href="#s-l6" class="v1-minimap-thumb" aria-label="CI gates diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="Wheel diagram thumbnail"><circle cx="36" cy="32" r="8" fill="rgba(217,119,87,0.3)" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="24" x2="36" y2="8" stroke="#D97757" stroke-width="1.5"/><line x1="36" y1="40" x2="36" y2="56" stroke="#D97757" stroke-width="1.5"/><line x1="24.1" y1="25.1" x2="12.2" y2="18.1" stroke="#8BC98B" stroke-width="1.5"/><line x1="47.9" y1="38.9" x2="59.8" y2="45.9" stroke="#8BC98B" stroke-width="1.5"/><line x1="24.1" y1="38.9" x2="12.2" y2="45.9" stroke="#7BB3D4" stroke-width="1.5"/><line x1="47.9" y1="25.1" x2="59.8" y2="18.1" stroke="#7BB3D4" stroke-width="1.5"/><circle cx="36" cy="8" r="4" fill="#D97757"/><circle cx="36" cy="56" r="4" fill="#D97757"/><circle cx="12.2" cy="18.1" r="4" fill="#8BC98B"/><circle cx="59.8" cy="45.9" r="4" fill="#8BC98B"/><circle cx="12.2" cy="45.9" r="4" fill="#7BB3D4"/><circle cx="59.8" cy="18.1" r="4" fill="#7BB3D4"/></svg><span>CI gates</span></a><a href="#s-l7" class="v1-minimap-thumb" aria-label="Live vs dormant diagram"><svg width="42" height="36" viewBox="0 0 72 64" role="img" aria-label="3-circle Venn thumbnail"><circle cx="36" cy="20" r="14" fill="rgba(139,201,139,0.15)" stroke="#8BC98B" stroke-width="1"/><circle cx="22" cy="46" r="14" fill="rgba(123,179,212,0.15)" stroke="#7BB3D4" stroke-width="1"/><circle cx="50" cy="46" r="14" fill="rgba(201,168,76,0.15)" stroke="#C9A84C" stroke-width="1"/><circle cx="36" cy="38" r="5" fill="rgba(217,119,87,0.4)" stroke="#D97757" stroke-width="1.5"/></svg><span>Live vs dormant</span></a></div></div>
+      <div class="phase-strip-hero" role="navigation" aria-label="Module phases" style="margin-bottom:0.6rem;"><div class="phase-chip"><span class="chip-num">01</span>Content as Code</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">02</span>Request Path</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">03</span>State Split</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">04</span>Media Pipeline</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">05</span>Codex AI Layer</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">06</span>Automation Gates</div><span class="phase-arrow" aria-hidden="true">→</span><div class="phase-chip"><span class="chip-num">07</span>Vestigial Wiring</div></div>
+      <div class="bluf-row" role="list" aria-label="Key takeaways"><div class="bluf-item" role="listitem"><span class="bluf-num">1</span><span class="bluf-text">The catalog is not in a database. 277 entries live in 18 hand-edited TypeScript files under data/ and get compiled into the bundle.</span></div>
+<div class="bluf-item" role="listitem"><span class="bluf-num">2</span><span class="bluf-text">Firestore stores exactly two numbers per item — view_count and vote_count. Nothing else. There is no products table anywhere in the live path.</span></div>
+<div class="bluf-item" role="listitem"><span class="bluf-num">3</span><span class="bluf-text">State is split three ways: Firestore is global and shared, localStorage is per-device and private, React state is per-render. There is no auth, so 'have I voted' can only ever be a device fact.</span></div>
+<div class="bluf-item" role="listitem"><span class="bluf-num">4</span><span class="bluf-text">All video and thumbnail bytes are served by ImageKit's CDN. data/*.ts stores relative paths; lib/imagekit.ts prefixes the endpoint and appends transform params at render time.</span></div>
+<div class="bluf-item" role="listitem"><span class="bluf-num">5</span><span class="bluf-text">A separate AI layer (codex:*) automates contribution — GitHub URL in, validated data/ entry and a PR out — plus embedding-based search over a JSON file.</span></div>
+<div class="bluf-item" role="listitem"><span class="bluf-num">6</span><span class="bluf-text">Supabase is wired up but dormant. Its client, server, and middleware helpers exist; every call site that used it is commented out.</span></div></div>
+    </section>
+
+    <!-- body content -->
+    <div class="main-content">
+      <div class="stat-row" aria-label="Module statistics"><div class="stat-item"><span class="stat-num">7</span><span class="stat-label">Lessons</span></div>
+<div class="stat-item"><span class="stat-num">9</span><span class="stat-label">Frameworks</span></div>
+<div class="stat-item"><span class="stat-num">5</span><span class="stat-label">Case Studies</span></div>
+<div class="stat-item"><span class="stat-num">13</span><span class="stat-label">Tools</span></div>
+<div class="stat-item"><span class="stat-num">7</span><span class="stat-label">Playbooks</span></div></div>
+      
+    <div class="sec-divider" id="s-l1">
+      <span class="sec-icon" aria-hidden="true">📦</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 01</span>
+        <h2>Content Is Code</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">The single most important thing to internalise: adding an animation to this site means editing a TypeScript file and shipping a deploy, not writing a row.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>18 files, one array each</h4><p>data/accordions.ts, data/buttons.ts, data/misc.ts … each exports a typed <code>ItemType[]</code>. <code>misc.ts</code> alone holds 148 of the 277 entries — it is the catch-all and by far the largest file at ~77 KB.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>ItemType is the schema</h4><p><code>id</code> (ULID), <code>caption</code>, <code>videoSrc</code>, <code>thumbnailSrc</code>, <code>author</code>, <code>source</code>, optional <code>twitterId</code>/<code>linkedInId</code>/<code>githubId</code>, and <code>category</code> — a hardcoded 18-member string union, not a lookup table.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Aggregated twice</h4><p><code>data/items.ts</code> spreads all 18 arrays into <code>localItems</code>. <code>lib/codex/items.ts</code> spreads the exact same 18 into <code>ALL_ITEMS</code>. Two aggregators, two import lists to keep in sync when a category is added.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Categories declared three times</h4><p>As the union on <code>ItemType.category</code>, as <code>CATEGORY_VALUES</code> in <code>lib/codex/schema.ts</code>, and as the redirect map in <code>middleware.ts</code>. Nothing enforces agreement between them.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 320 318" width="100%" height="318" role="img" aria-label="Funnel: 18 category files → localItems → + Firestore counts → sort + isNew">
+<rect width="320" height="318" fill="#1A1917" rx="6"/>
+<text x="160" y="22" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">FUNNEL</text>
+<defs><marker id="arr-f" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D97757"/></marker></defs>
+<rect x="20.0" y="38.0" width="280.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="59.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">18 category files</text>
+<text x="160" y="73.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">data/*.ts — hand-edited arrays</text>
+<line x1="160" y1="88" x2="160" y2="108" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="50.0" y="108.0" width="220.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="129.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">localItems</text>
+<text x="160" y="143.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">277 entries, spread in data/items.ts</text>
+<line x1="160" y1="158" x2="160" y2="178" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="80.0" y="178.0" width="160.0" height="50" rx="4" fill="#D97757" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="199.0" text-anchor="middle" fill="#fff" font-size="12" font-family="Georgia,serif" font-weight="500">+ Firestore counts</text>
+<text x="160" y="213.0" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="sans-serif" font-weight="500">getDocs() whole collection, merged by id</text>
+<line x1="160" y1="228" x2="160" y2="248" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="110.0" y="248.0" width="100.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="269.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">sort + isNew</text>
+<text x="160" y="283.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">created_at desc; newest date flagged</text>
+</svg><figcaption>18 category files → localItems → + Firestore counts → sort + isNew (highlight: + Firestore counts)</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: Content Is Code</summary><div class="details-inner"><ol class="playbook-ol"><li>Pick the right data/<category>.ts file — or misc.ts if nothing fits.</li>
+<li>Generate a ULID for id (the codex ingest script uses the ulid package).</li>
+<li>Set videoSrc/thumbnailSrc to relative paths — no domain, imagekit.ts adds it.</li>
+<li>If you add a whole new category, update the union in items.ts, CATEGORY_VALUES in codex/schema.ts, the spread in data/items.ts, AND the spread in lib/codex/items.ts.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l2">
+      <span class="sec-icon" aria-hidden="true">🛤️</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 02</span>
+        <h2>The Request Path</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">One request touches the local arrays, one Firestore round-trip, and then hands a fully-materialised list to the client. Nothing is paginated.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>layout.tsx runs sync</h4><p><code>getUniqueCategories()</code> and <code>getUniqueAuthors()</code> are plain array ops over <code>localItems</code> — no await, no fetch. The sidebar is free because the catalog is already in memory.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>getProducts is the only read</h4><p>A <code>"use server"</code> + <code>server-only</code> action wrapped in React <code>cache()</code>. It calls <code>getItemsWithCounts()</code>, then filters by search / category / author entirely in JS.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Whole-collection read</h4><p><code>getItemsWithCounts()</code> issues <code>getDocs(collection(db, COLLECTION_NAME))</code> — no <code>where</code>, no limit. It pulls every counts doc and builds a lookup map. Fine at 277; it is a linear cost, not a constant one.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Client takes over at the boundary</h4><p><code>DirectoryPageClient</code> is the <code>"use client"</code> seam. It owns four hooks — bookmarks, votes, modal, sorting — and renders the card grid. The virtualized grid uses <code>@tanstack/react-virtual</code> for long category lists.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 320 388" width="100%" height="388" role="img" aria-label="Funnel: Request → RootLayout → getProducts() → DirectoryPageClient → ResourceCardGrid">
+<rect width="320" height="388" fill="#1A1917" rx="6"/>
+<text x="160" y="22" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">FUNNEL</text>
+<defs><marker id="arr-f" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D97757"/></marker></defs>
+<rect x="20.0" y="38.0" width="280.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="59.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">Request</text>
+<text x="160" y="73.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">/ or /products?category=…</text>
+<line x1="160" y1="88" x2="160" y2="108" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="42.5" y="108.0" width="235.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="129.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">RootLayout</text>
+<text x="160" y="143.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">sync category + author lists → NavSidebar</text>
+<line x1="160" y1="158" x2="160" y2="178" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="65.0" y="178.0" width="190.0" height="50" rx="4" fill="#D97757" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="199.0" text-anchor="middle" fill="#fff" font-size="12" font-family="Georgia,serif" font-weight="500">getProducts()</text>
+<text x="160" y="213.0" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="sans-serif" font-weight="500">server action, React cache()</text>
+<line x1="160" y1="228" x2="160" y2="248" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="87.5" y="248.0" width="145.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="269.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">DirectoryPageClient</text>
+<text x="160" y="283.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">"use client" seam — 4 hooks</text>
+<line x1="160" y1="298" x2="160" y2="318" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="110.0" y="318.0" width="100.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="339.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">ResourceCardGrid</text>
+<text x="160" y="353.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">virtualized cards + InteractiveVideo</text>
+</svg><figcaption>Request → RootLayout → getProducts() → DirectoryPageClient → ResourceCardGrid (highlight: getProducts())</figcaption></figure><div style="margin-top:1.25rem;"><figure><svg class="mag-svg" viewBox="0 0 300 300" width="100%" height="300" role="img" aria-label="Wheel diagram: useBookmarks, useVotes, useModal, useSortedData">
+<rect width="300" height="300" fill="#1A1917" rx="6"/>
+<circle cx="150" cy="150" r="35" fill="#232220" stroke="#D97757" stroke-width="2"/>
+<text x="150" y="146" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Signal</text>
+<text x="150" y="158" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Wheel</text>
+<line x1="150.0" y1="115.0" x2="150.0" y2="30.0" stroke="#D97757" stroke-width="1.5"/>
+<circle cx="150.0" cy="30.0" r="28" fill="#232220" stroke="#D97757" stroke-width="1.5"/>
+<text x="150" y="33" text-anchor="middle" fill="#D97757" font-size="9" font-family="Georgia,serif" font-weight="500">useBookmarks</text>
+<line x1="185.0" y1="150.0" x2="270.0" y2="150.0" stroke="#7ec8c8" stroke-width="1.5"/>
+<circle cx="270.0" cy="150.0" r="28" fill="#232220" stroke="#7ec8c8" stroke-width="1.5"/>
+<text x="270" y="153" text-anchor="middle" fill="#7ec8c8" font-size="9" font-family="Georgia,serif" font-weight="500">useVotes</text>
+<line x1="150.0" y1="185.0" x2="150.0" y2="270.0" stroke="#a3c87e" stroke-width="1.5"/>
+<circle cx="150.0" cy="270.0" r="28" fill="#232220" stroke="#a3c87e" stroke-width="1.5"/>
+<text x="150" y="273" text-anchor="middle" fill="#a3c87e" font-size="9" font-family="Georgia,serif" font-weight="500">useModal</text>
+<line x1="115.0" y1="150.0" x2="30.0" y2="150.0" stroke="#c8b97e" stroke-width="1.5"/>
+<circle cx="30.0" cy="150.0" r="28" fill="#232220" stroke="#c8b97e" stroke-width="1.5"/>
+<text x="30" y="153" text-anchor="middle" fill="#c8b97e" font-size="9" font-family="Georgia,serif" font-weight="500">useSortedData</text>
+</svg><figcaption>Signal Wheel · useBookmarks, useVotes, useModal, useSortedData</figcaption></figure></div></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: The Request Path</summary><div class="details-inner"><ol class="playbook-ol"><li>middleware.ts only handles 18 legacy category URLs (/buttons → /products?category=Buttons). It runs on nothing else.</li>
+<li>app/page.tsx is the home grid; app/products/page.tsx is the filtered grid; both call the same getProducts().</li>
+<li>FEATURED_IDS on the homepage is an empty array, so the featured grid always renders empty.</li>
+<li>label and tag are still threaded through getProducts as parameters but every filter body using them is commented out.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l3">
+      <span class="sec-icon" aria-hidden="true">🧠</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 03</span>
+        <h2>The State Split</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">Three stores, three lifetimes, no auth to reconcile them. Understanding which fact lives where explains most of the site's behaviour — and its quirks.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Firestore — global, shared</h4><p>One doc per item id, holding <code>view_count</code> and <code>vote_count</code>. Writes use <code>increment(1)</code>; a <code>not-found</code> FirebaseError triggers a <code>setDoc</code> that creates the doc. Collection name comes from <code>NEXT_PUBLIC_FIRESTORE_COLLECTION</code>, defaulting to <code>rnui</code>.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>localStorage — per device</h4><p><code>votedItems</code> and <code>bookmarkedItems</code> are string-id arrays. This is the <em>only</em> record of who voted for what. Clear it and you can vote again; bookmarks never sync anywhere.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>React state — per render</h4><p><code>ResourceCard</code> keeps local <code>voteCount</code>/<code>viewCount</code> and bumps them optimistically alongside the server action, so the number moves before Firestore confirms.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>⚠ Views double-count on vote</h4><p><code>handleVoteClick</code> in resource-card.tsx awaits <code>incrementViewCountLocal()</code>, then calls <code>toggleVote(id)</code> — and <code>toggleVote</code> in use-votes.ts <em>also</em> calls <code>incrementViewCount(id)</code>. One vote click writes two view increments to Firestore.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 320 280" width="100%" height="280" role="img" aria-label="Venn diagram: Firestore, localStorage, React state">
+<rect width="320" height="280" fill="#1A1917" rx="6"/>
+<text x="160" y="20" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">VENN</text>
+<circle cx="160" cy="55" r="75" fill="#7ec8c8" fill-opacity="0.08" stroke="#7ec8c8" stroke-width="1.5" opacity="0.8"/>
+<circle cx="75" cy="200" r="75" fill="#a3c87e" fill-opacity="0.08" stroke="#a3c87e" stroke-width="1.5" opacity="0.8"/>
+<circle cx="245" cy="200" r="75" fill="#c8b97e" fill-opacity="0.08" stroke="#c8b97e" stroke-width="1.5" opacity="0.8"/>
+<text x="160" y="14" text-anchor="middle" fill="#7ec8c8" font-size="10" font-family="Georgia,serif" font-weight="500">Firestore</text>
+<text x="39" y="220" text-anchor="middle" fill="#a3c87e" font-size="10" font-family="Georgia,serif" font-weight="500">localStorage</text>
+<text x="281" y="215" text-anchor="middle" fill="#c8b97e" font-size="10" font-family="Georgia,serif" font-weight="500">React</text>
+<text x="281" y="228" text-anchor="middle" fill="#c8b97e" font-size="10" font-family="Georgia,serif" font-weight="500">state</text>
+</svg><figcaption>Firestore · localStorage · React state</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: The State Split</summary><div class="details-inner"><ol class="playbook-ol"><li>Vote click → incrementViewCount, then toggleVote (which fires incrementViewCount again), then increment or decrement vote_count.</li>
+<li>Card click / link click → incrementViewCount only.</li>
+<li>Un-voting calls decrementVoteCount and clamps the optimistic local number at 0 — Firestore itself is not clamped.</li>
+<li>Because identity is localStorage-only, vote_count is a popularity signal, not a unique-voter count.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l4">
+      <span class="sec-icon" aria-hidden="true">🎞️</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 04</span>
+        <h2>Media Pipeline</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">Two pipelines that never meet at runtime: an offline one that produces and uploads assets, and a runtime one that only builds URLs.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Offline: encode → thumbnail → upload</h4><p><code>convert-to-h265.js</code> and <code>convert-to-avif.js</code> compress, <code>generateThumbnails.ts</code> shells out to ffmpeg over <code>public/demo</code> writing into <code>public/thumbnails</code>, and <code>upload-to-imagekit.js</code> pushes the result to the CDN.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Runtime: string concatenation only</h4><p><code>lib/imagekit.ts</code> has no SDK calls in the request path — it strips a leading slash and prepends <code>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT</code>. That is the entire runtime cost.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Transforms are query params</h4><p>Thumbnails default to <code>tr=w-221,h-393,q-70,f-auto</code>. LQIP blur-up uses <code>tr=w-20,q-10,bl-20</code> for a ~1–2 KB instant placeholder. Video URLs currently ship <em>without</em> transforms — the quality argument is accepted and ignored.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Playback is viewport-gated</h4><p><code>InteractiveVideo</code> uses <code>useIntersectionObserver</code> so only visible clips play. <code>layout.tsx</code> emits <code>preconnect</code> and <code>dns-prefetch</code> for <code>ik.imagekit.io</code> to hide the handshake.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 320 388" width="100%" height="388" role="img" aria-label="Funnel: public/demo/*.mp4 → convert-to-h265 / avif → generateThumbnails.ts → upload-to-imagekit.js → ik.imagekit.io/…?tr=…">
+<rect width="320" height="388" fill="#1A1917" rx="6"/>
+<text x="160" y="22" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">FUNNEL</text>
+<defs><marker id="arr-f" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#D97757"/></marker></defs>
+<rect x="20.0" y="38.0" width="280.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="59.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">public/demo/*.mp4</text>
+<text x="160" y="73.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">raw contributor clip</text>
+<line x1="160" y1="88" x2="160" y2="108" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="42.5" y="108.0" width="235.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="129.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">convert-to-h265 / avif</text>
+<text x="160" y="143.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">compress</text>
+<line x1="160" y1="158" x2="160" y2="178" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="65.0" y="178.0" width="190.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="199.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">generateThumbnails.ts</text>
+<text x="160" y="213.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">ffmpeg → public/thumbnails/*.avif</text>
+<line x1="160" y1="228" x2="160" y2="248" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="87.5" y="248.0" width="145.0" height="50" rx="4" fill="#2C2A27" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="269.0" text-anchor="middle" fill="#FAF9F5" font-size="12" font-family="Georgia,serif" font-weight="500">upload-to-imagekit.js</text>
+<text x="160" y="283.0" text-anchor="middle" fill="#aaa9a0" font-size="9" font-family="sans-serif" font-weight="500">push to CDN</text>
+<line x1="160" y1="298" x2="160" y2="318" stroke="#D97757" stroke-width="2" marker-end="url(#arr-f)"/>
+<rect x="110.0" y="318.0" width="100.0" height="50" rx="4" fill="#D97757" stroke="#D97757" stroke-width="1"/>
+<text x="160" y="339.0" text-anchor="middle" fill="#fff" font-size="12" font-family="Georgia,serif" font-weight="500">ik.imagekit.io/…?tr=…</text>
+<text x="160" y="353.0" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9" font-family="sans-serif" font-weight="500">runtime URL, built by lib/imagekit.ts</text>
+</svg><figcaption>public/demo/*.mp4 → convert-to-h265 / avif → generateThumbnails.ts → upload-to-imagekit.js → ik.imagekit.io/…?tr=… (highlight: ik.imagekit.io/…?tr=…)</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: Media Pipeline</summary><div class="details-inner"><ol class="playbook-ol"><li>Set IMAGEKIT_PUBLIC_KEY / IMAGEKIT_PRIVATE_KEY / IMAGEKIT_URL_ENDPOINT before running the upload script.</li>
+<li>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT is the client-visible one — imagekit.ts warns to console if it is missing and silently emits broken URLs.</li>
+<li>next.config.ts deliberately narrows webpack watchOptions.ignored to node_modules only, so public/demo stays watchable in dev.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l5">
+      <span class="sec-icon" aria-hidden="true">🤖</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 05</span>
+        <h2>The Codex AI Layer</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">A bolt-on automation loop around contribution. It writes source code into data/ and answers search queries — but it is optional; the site runs fine with no OpenAI key.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>codex:ingest — URL in, PR out</h4><p><code>gh api</code> fetches repo metadata and README → gpt-4o-mini emits structured output → Zod validates against <code>ExtractedEntrySchema</code> → <strong>ts-morph appends the entry into data/&lt;file&gt;.ts</strong> preserving formatting → branch <code>submission/&lt;slug&gt;</code>, commit, push, PR.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>codex:index — embed the catalog</h4><p><code>embedMany</code> with <code>text-embedding-3-small</code> over every item, written to <code>data/embeddings.json</code> as <code>{ model, generatedAt, vectors[] }</code>.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>/api/search — cosine over JSON</h4><p>Reads the index once into a module-level cache, embeds the query, scores every vector with a hand-rolled cosine loop, returns top 20. Explicitly a stand-in for Supabase pgvector — the script comment says swap when the catalog outgrows JSON.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>codex:review-pr — rubric triage</h4><p><code>gh pr diff</code> → gpt-4o-mini scored against a fixed rubric (schema compliance, duplicate ids, sensible category, video asset present, description quality) → posted back with <code>gh pr comment</code>.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 300 300" width="100%" height="300" role="img" aria-label="Wheel diagram: ingest, review-pr, index, search">
+<rect width="300" height="300" fill="#1A1917" rx="6"/>
+<circle cx="150" cy="150" r="35" fill="#232220" stroke="#D97757" stroke-width="2"/>
+<text x="150" y="146" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Signal</text>
+<text x="150" y="158" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Wheel</text>
+<line x1="150.0" y1="115.0" x2="150.0" y2="30.0" stroke="#D97757" stroke-width="1.5"/>
+<circle cx="150.0" cy="30.0" r="28" fill="#232220" stroke="#D97757" stroke-width="1.5"/>
+<text x="150" y="33" text-anchor="middle" fill="#D97757" font-size="9" font-family="Georgia,serif" font-weight="500">ingest</text>
+<line x1="185.0" y1="150.0" x2="270.0" y2="150.0" stroke="#7ec8c8" stroke-width="1.5"/>
+<circle cx="270.0" cy="150.0" r="28" fill="#232220" stroke="#7ec8c8" stroke-width="1.5"/>
+<text x="270" y="153" text-anchor="middle" fill="#7ec8c8" font-size="9" font-family="Georgia,serif" font-weight="500">review-pr</text>
+<line x1="150.0" y1="185.0" x2="150.0" y2="270.0" stroke="#a3c87e" stroke-width="1.5"/>
+<circle cx="150.0" cy="270.0" r="28" fill="#232220" stroke="#a3c87e" stroke-width="1.5"/>
+<text x="150" y="273" text-anchor="middle" fill="#a3c87e" font-size="9" font-family="Georgia,serif" font-weight="500">index</text>
+<line x1="115.0" y1="150.0" x2="30.0" y2="150.0" stroke="#c8b97e" stroke-width="1.5"/>
+<circle cx="30.0" cy="150.0" r="28" fill="#232220" stroke="#c8b97e" stroke-width="1.5"/>
+<text x="30" y="153" text-anchor="middle" fill="#c8b97e" font-size="9" font-family="Georgia,serif" font-weight="500">search</text>
+</svg><figcaption>Signal Wheel · ingest, review-pr, index, search</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: The Codex AI Layer</summary><div class="details-inner"><ol class="playbook-ol"><li>Everything AI-shaped needs OPENAI_API_KEY; requireOpenAIKey() in lib/codex/env.ts hard-exits the process when it is absent.</li>
+<li>/api/search degrades rather than crashes: 503 + 'Run pnpm codex:index' if embeddings.json is missing, 503 if the key is unset.</li>
+<li>Models are pinned in one place — CODEX_MODEL = gpt-4o-mini, CODEX_EMBED_MODEL = text-embedding-3-small.</li>
+<li>Re-run pnpm codex:index after adding items or the new entries are invisible to semantic search.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l6">
+      <span class="sec-icon" aria-hidden="true">🚦</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 06</span>
+        <h2>Automation & Gates</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">Four GitHub workflows and a husky hook chain. One of them is deliberately the only un-bypassable layer.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>ci.yml — quality</h4><p>Runs on push to main / codex-grant-prep and on PRs to main. pnpm + the lint / type-check / test scripts.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>codex-triage.yml — AI review</h4><p>Fires on PR opened / synchronize / reopened with <code>pull-requests: write</code>. Skips itself when <code>OPENAI_API_KEY</code> is unset so fork PRs don't produce red checks.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>no-ai-attribution.yml — the hard gate</h4><p>Its own comment states the intent: <em>local hooks die to <code>git commit --no-verify</code>, this does not.</em> Runs on every push to every branch and is meant to be a required status check on main.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>metrics-update.yml — weekly cron</h4><p>Mondays 09:00 UTC, <code>contents: write</code>, runs <code>metrics-update.ts</code> which shells to <code>gh</code> and rewrites <code>metrics/weekly.json</code>.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>⚠ The pre-commit tax</h4><p><code>.husky/pre-commit</code> chains <code>update:lastcommit</code> and <code>update:updateChangedItems</code>, auto-staging both outputs. Every single commit therefore churns <code>scripts/lastCommitDate.json</code> by a few milliseconds.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>⚠ changedItems silently stalls</h4><p><code>updateChangedItems.js</code> checks out <code>origin/main</code> to diff against remote. When local main is ahead, the checkout aborts on the dirty lastCommitDate.json. The script catches the error, logs it, and exits 0 — so the hook passes while <code>data/changedItems.json</code> stops updating.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 300 300" width="100%" height="300" role="img" aria-label="Wheel diagram: ci, codex-triage, no-ai-attribution, metrics-update">
+<rect width="300" height="300" fill="#1A1917" rx="6"/>
+<circle cx="150" cy="150" r="35" fill="#232220" stroke="#D97757" stroke-width="2"/>
+<text x="150" y="146" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Signal</text>
+<text x="150" y="158" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">Wheel</text>
+<line x1="150.0" y1="115.0" x2="150.0" y2="30.0" stroke="#D97757" stroke-width="1.5"/>
+<circle cx="150.0" cy="30.0" r="28" fill="#232220" stroke="#D97757" stroke-width="1.5"/>
+<text x="150" y="33" text-anchor="middle" fill="#D97757" font-size="9" font-family="Georgia,serif" font-weight="500">ci</text>
+<line x1="185.0" y1="150.0" x2="270.0" y2="150.0" stroke="#7ec8c8" stroke-width="1.5"/>
+<circle cx="270.0" cy="150.0" r="28" fill="#232220" stroke="#7ec8c8" stroke-width="1.5"/>
+<text x="270" y="153" text-anchor="middle" fill="#7ec8c8" font-size="9" font-family="Georgia,serif" font-weight="500">codex-triage</text>
+<line x1="150.0" y1="185.0" x2="150.0" y2="270.0" stroke="#a3c87e" stroke-width="1.5"/>
+<circle cx="150.0" cy="270.0" r="28" fill="#232220" stroke="#a3c87e" stroke-width="1.5"/>
+<text x="150" y="273" text-anchor="middle" fill="#a3c87e" font-size="9" font-family="Georgia,serif" font-weight="500">no-ai-attribution</text>
+<line x1="115.0" y1="150.0" x2="30.0" y2="150.0" stroke="#c8b97e" stroke-width="1.5"/>
+<circle cx="30.0" cy="150.0" r="28" fill="#232220" stroke="#c8b97e" stroke-width="1.5"/>
+<text x="30" y="153" text-anchor="middle" fill="#c8b97e" font-size="9" font-family="Georgia,serif" font-weight="500">metrics-update</text>
+</svg><figcaption>Signal Wheel · ci, codex-triage, no-ai-attribution, metrics-update</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: Automation & Gates</summary><div class="details-inner"><ol class="playbook-ol"><li>data/changedItems.json is currently 3 bytes — consistent with the stalled updater described above.</li>
+<li>If a commit hangs or dirties lastCommitDate.json unexpectedly, the pre-commit chain is the cause, not your change.</li>
+<li>Fixing the stall means having updateChangedItems.js read origin/main via `git show origin/main:<file>` instead of checking the branch out.</li></ol></div></details>
+
+    <div class="sec-divider" id="s-l7">
+      <span class="sec-icon" aria-hidden="true">🦴</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Layer 07</span>
+        <h2>Vestigial Wiring</h2>
+      </div>
+    </div>
+    <p style="font-size:1rem;color:#aaa9a0;margin-bottom:0.7rem;max-width:580px;line-height:1.5;">A meaningful share of the repo is a previous architecture left in place. Knowing what is dead is as load-bearing as knowing what is live.</p>
+    <div class="asym-grid"><div><p class="eyebrow-concept" style="font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem;font-family:sans-serif;">⬡ Key Concepts</p><div class="mag-cards"><div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Supabase is dormant</h4><p><code>db/supabase/</code> ships client.ts, server.ts, middleware.ts and mockSupabase.ts. The only two files that reference it — <code>get-product-by-id.ts</code> and <code>get-filters.ts</code> — have their entire bodies commented out. <code>getProductById</code> currently returns <code>undefined</code>.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>getProducts kept its old body</h4><p>The original Supabase query — <code>.from("products").select("*")</code> with ilike search and <code>contains</code> on labels/tags — is preserved as a comment block above the in-memory implementation that replaced it.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>getCachedFilters is a stub with a side effect</h4><p>It returns <code>{ categories: [], labels: [], tags: [] }</code> through <code>unstable_cache</code> (revalidate 9000). Worse, <code>displayFilters()</code> is <em>invoked at module top level</em>, so importing the file console-logs three empty arrays.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Two analytics stacks</h4><p>Vercel <code>&lt;Analytics /&gt;</code> and a PostHog provider both mount in the root layout. A recent commit switched PostHog to send events directly rather than through an <code>/ingest</code> proxy.</p></div>
+<div class="mag-card"><div class="card-eyebrow">Concept</div><h4>Theme provider, one theme</h4><p><code>next-themes</code> is configured with <code>enableSystem</code>, but <code>defaultTheme="system"</code> is commented out and hardcoded to <code>"light"</code>.</p></div></div></div><div><figure><svg class="mag-svg" viewBox="0 0 320 280" width="100%" height="280" role="img" aria-label="Venn diagram: Firestore, Supabase, Local arrays; highlight: Local arrays">
+<rect width="320" height="280" fill="#1A1917" rx="6"/>
+<text x="160" y="20" text-anchor="middle" fill="#D97757" font-size="10" font-family="Georgia,serif" font-weight="500">VENN</text>
+<circle cx="160" cy="55" r="75" fill="#7ec8c8" fill-opacity="0.08" stroke="#7ec8c8" stroke-width="1.5" opacity="0.8"/>
+<circle cx="75" cy="200" r="75" fill="#a3c87e" fill-opacity="0.08" stroke="#a3c87e" stroke-width="1.5" opacity="0.8"/>
+<circle cx="245" cy="200" r="75" fill="#c8b97e" fill-opacity="0.08" stroke="#c8b97e" stroke-width="1.5" opacity="0.8"/>
+<circle cx="160" cy="152" r="16" fill="#D97757" fill-opacity="0.3" stroke="#D97757" stroke-width="1.5"/>
+<text x="160" y="152" text-anchor="middle" fill="#FAF9F5" font-size="8" font-family="Georgia,serif" font-weight="500">Local ar</text>
+<text x="160" y="14" text-anchor="middle" fill="#7ec8c8" font-size="10" font-family="Georgia,serif" font-weight="500">Firestore</text>
+<text x="39" y="220" text-anchor="middle" fill="#a3c87e" font-size="10" font-family="Georgia,serif" font-weight="500">Supabase</text>
+<text x="281" y="215" text-anchor="middle" fill="#c8b97e" font-size="10" font-family="Georgia,serif" font-weight="500">Local</text>
+<text x="281" y="228" text-anchor="middle" fill="#c8b97e" font-size="10" font-family="Georgia,serif" font-weight="500">arrays</text>
+</svg><figcaption>Firestore · Supabase · Local arrays — Local arrays at centre</figcaption></figure></div></div>
+    
+    <details style="margin:0.9rem 0;"><summary>▸ Playbook: Vestigial Wiring</summary><div class="details-inner"><ol class="playbook-ol"><li>Before wiring anything to Supabase, decide whether it is being revived or removed — right now it is neither.</li>
+<li>Deleting cached_actions.ts removes a top-level side effect for free; nothing consumes getCachedFilters.</li>
+<li>If pgvector search ever lands, get-filters.ts and the commented getProducts query are the intended shape to restore.</li></ol></div></details>
+      
+    <div class="sec-divider" id="s-matrix">
+      <span class="sec-icon" aria-hidden="true">📐</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Reference</span>
+        <h2>Framework Matrix</h2>
+      </div>
+    </div>
+    <p style="font-size:0.82rem;color:#888;font-family:sans-serif;margin-bottom:1rem;">
+      All 9 frameworks × 3 attributes. Color-coded cells indicate applicability.</p>
+    <div class="matrix-wrap"><table class="matrix-table" aria-label="Framework matrix"><thead><tr><th><span class="th-inner">📐 Framework</span></th><th><span class="th-inner">Lesson</span></th><th><span class="th-inner">What It Is</span></th><th><span class="th-inner">When to Use</span></th><th><span class="th-inner">On request path?</span></th><th><span class="th-inner">3rd-party service?</span></th><th><span class="th-inner">Live today?</span></th><th><span class="th-inner">Example</span></th></tr></thead><tbody><tr><td>data/*.ts local arrays</td><td><span class="badge-lesson">L1</span></td><td>277 entries in 18 files, compiled into the bundle</td><td>Every render — it is the catalog</td><td><span class="cell-yes">✓</span></td><td><span class="cell-no">✗</span></td><td><span class="cell-yes">✓</span></td><td>data/misc.ts holds 148 of the 277</td></tr><tr><td>Firebase Firestore</td><td><span class="badge-lesson">L2+L3</span></td><td>One doc per item: view_count, vote_count</td><td>Read once per uncached getProducts; written on view/vote</td><td><span class="cell-yes">✓</span></td><td><span class="cell-yes">✓</span></td><td><span class="cell-yes">✓</span></td><td>getDocs() pulls the whole collection, no query</td></tr><tr><td>localStorage</td><td><span class="badge-lesson">L3</span></td><td>votedItems + bookmarkedItems id arrays</td><td>Client mount and every toggle</td><td><span class="cell-no">✗</span></td><td><span class="cell-no">✗</span></td><td><span class="cell-yes">✓</span></td><td>Only record of who voted — no auth exists</td></tr><tr><td>ImageKit CDN</td><td><span class="badge-lesson">L4</span></td><td>Serves all video + thumbnail bytes</td><td>Every card that scrolls into view</td><td><span class="cell-yes">✓</span></td><td><span class="cell-yes">✓</span></td><td><span class="cell-yes">✓</span></td><td>tr=w-221,h-393,q-70,f-auto</td></tr><tr><td>OpenAI (codex layer)</td><td><span class="badge-lesson">L5</span></td><td>gpt-4o-mini extraction/review + embeddings</td><td>Ingest scripts, PR triage, /api/search</td><td><span class="cell-part">≈</span></td><td><span class="cell-yes">✓</span></td><td><span class="cell-yes">✓</span></td><td>Search 503s cleanly with no key set</td></tr><tr><td>embeddings.json</td><td><span class="badge-lesson">L5</span></td><td>Flat vector index, cosine-scanned in-process</td><td>POST /api/search only</td><td><span class="cell-part">≈</span></td><td><span class="cell-no">✗</span></td><td><span class="cell-yes">✓</span></td><td>Placeholder for Supabase pgvector</td></tr><tr><td>middleware.ts</td><td><span class="badge-lesson">L2</span></td><td>18 legacy category URL redirects</td><td>Only on those 18 exact paths (matcher-scoped)</td><td><span class="cell-part">≈</span></td><td><span class="cell-no">✗</span></td><td><span class="cell-yes">✓</span></td><td>/buttons → /products?category=Buttons</td></tr><tr><td>Supabase</td><td><span class="badge-lesson">L7</span></td><td>client/server/middleware helpers, no call sites</td><td>—</td><td><span class="cell-no">✗</span></td><td><span class="cell-yes">✓</span></td><td><span class="cell-no">✗</span></td><td>get-product-by-id.ts returns undefined</td></tr><tr><td>getCachedFilters</td><td><span class="badge-lesson">L7</span></td><td>unstable_cache stub returning empty arrays</td><td>Never consumed; logs on import</td><td><span class="cell-no">✗</span></td><td><span class="cell-no">✗</span></td><td><span class="cell-no">✗</span></td><td>displayFilters() called at module scope</td></tr></tbody></table></div>
+      
+    <div class="sec-divider" id="s-cases">
+      <span class="sec-icon" aria-hidden="true">◆</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">All Examples</span>
+        <h2>Case Studies</h2>
+      </div>
+    </div>
+    <div class="matrix-wrap"><table class="matrix-table" aria-label="Case studies"><thead><tr><th><span class="th-inner">◆ Person / Example</span></th><th><span class="th-inner">Lesson</span></th><th><span class="th-inner">Context &amp; Numbers</span></th><th><span class="th-inner">Key Insight</span></th></tr></thead><tbody><tr><td>Trace: loading the homepage</td><td><span class="badge-lesson">L1+L2</span></td><td>RootLayout derives categories and authors synchronously from localItems. app/page.tsx awaits getProducts(search), which merges Firestore counts onto all 277 entries, sorts by created_at desc, and flags isNew on everything sharing the newest date.</td><td>One Firestore round-trip serves the entire page. All filtering is in-memory JS.</td></tr><tr><td>Trace: clicking the vote button</td><td><span class="badge-lesson">L3</span></td><td>handleVoteClick awaits incrementViewCountLocal(), calls toggleVote(id) — which itself calls incrementViewCount(id) — then increments or decrements vote_count based on isVoted, bumping React state optimistically in each case.</td><td>Two view writes per vote click. The duplicate lives in use-votes.ts toggleVote.</td></tr><tr><td>Trace: adding an entry via codex</td><td><span class="badge-lesson">L5</span></td><td>pnpm codex:ingest <github-url> → gh api → gpt-4o-mini structured extraction → Zod → ts-morph writes into data/<category>.ts → branch submission/<slug> → PR. The script then prints a TODO reminding the maintainer to upload the demo video.</td><td>The AI writes source code, not database rows — the video upload stays a manual step.</td></tr><tr><td>Trace: semantic search</td><td><span class="badge-lesson">L5</span></td><td>POST /api/search { q } → module-cached embeddings.json → embed the query with text-embedding-3-small → cosine against every vector → sort → slice(0, 20) → join back to ALL_ITEMS by id.</td><td>A linear scan of a JSON file. Correct and cheap now; the known upgrade path is pgvector.</td></tr><tr><td>Repo health at last metrics run</td><td><span class="badge-lesson">L6</span></td><td>metrics/weekly.json, generated 2026-06-04: 343 stars, 11 forks, 2 open issues, 237 total commits, 234 by the maintainer (98.7%). Other contributors: lklima (2), enzomanuelmangano (1). codex_triaged_prs: 0.</td><td>Effectively a single-maintainer project — which is why so much of the tooling automates contribution intake.</td></tr></tbody></table></div>
+      
+    <div class="sec-divider" id="s-tools">
+      <span class="sec-icon" aria-hidden="true">🔧</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Reference</span>
+        <h2>Tools &amp; Resources</h2>
+      </div>
+    </div>
+    <div class="mag-table-wrap"><table class="mag-table" aria-label="Tools reference"><thead><tr><th><span style="display:flex;align-items:center;gap:.4em;">🔧 Tool</span></th><th>URL / Source</th><th>Purpose</th><th>Lesson</th></tr></thead><tbody><tr><td><strong>Next.js 16 (App Router, Turbopack)</strong></td><td>—</td><td>Framework — server components, server actions, middleware</td><td><span style="color:#c87ea3;">02</span></td></tr><tr><td><strong>React 19</strong></td><td>—</td><td>cache() for request memoisation; client seam components</td><td><span style="color:#c87ea3;">02</span></td></tr><tr><td><strong>Firebase Firestore</strong></td><td>—</td><td>view_count / vote_count per item — the only live datastore</td><td><span style="color:#a3c87e;">03</span></td></tr><tr><td><strong>ImageKit</strong></td><td>—</td><td>Video + thumbnail CDN with URL-param transforms and LQIP</td><td><span style="color:#D97757;">04</span></td></tr><tr><td><strong>OpenAI via Vercel AI SDK</strong></td><td>—</td><td>gpt-4o-mini extraction + review, text-embedding-3-small index</td><td><span style="color:#D97757;">05</span></td></tr><tr><td><strong>Zod</strong></td><td>—</td><td>ExtractedEntrySchema — validates AI output before it becomes source</td><td><span style="color:#D97757;">05</span></td></tr><tr><td><strong>ts-morph</strong></td><td>—</td><td>Programmatically appends entries into data/*.ts, preserving format</td><td><span style="color:#D97757;">05</span></td></tr><tr><td><strong>@tanstack/react-virtual</strong></td><td>—</td><td>Virtualizes long card grids</td><td><span style="color:#c87ea3;">02</span></td></tr><tr><td><strong>Radix UI + Tailwind + shadcn-style ui/</strong></td><td>—</td><td>Component primitives and styling</td><td><span style="color:#c87ea3;">02</span></td></tr><tr><td><strong>PostHog + Vercel Analytics</strong></td><td>—</td><td>Two parallel analytics stacks in the root layout</td><td><span style="color:#D97757;">07</span></td></tr><tr><td><strong>Supabase (@supabase/ssr)</strong></td><td>—</td><td>Installed, wired, dormant — every call site commented out</td><td><span style="color:#D97757;">07</span></td></tr><tr><td><strong>Vitest + Playwright</strong></td><td>—</td><td>tests/data-integrity.test.ts and tests/e2e/home.spec.ts</td><td><span style="color:#D97757;">06</span></td></tr><tr><td><strong>Husky</strong></td><td>—</td><td>pre-commit chain that regenerates lastCommitDate + changedItems</td><td><span style="color:#D97757;">06</span></td></tr></tbody></table></div>
+    <ul style="list-style:none;padding:0;margin:1rem 0 1.5rem;color:#aaa9a0;font-size:.88rem;line-height:1.9;"><li>↗ CODEX-GRANT-PROMPT.md — the design intent behind the codex layer</li><li>↗ CONTRIBUTING.md — contributor-facing version of the add-an-item flow</li><li>↗ ROADMAP.md</li><li>↗ metrics/weekly.json — regenerated Mondays 09:00 UTC by metrics-update.yml</li></ul>
+      
+    <div class="sec-divider" id="s-checklist">
+      <span class="sec-icon" aria-hidden="true">✓</span>
+      <div class="sec-label">
+        <span class="eyebrow-sm">Action Items</span>
+        <h2>Checklist</h2>
+      </div>
+    </div>
+    <details open><summary>🧭 Onboarding — read in this order</summary><div class="details-inner"><ul><li>data/items.ts — ItemType, the 18-way spread, getItemsWithCounts()</li>
+<li>app/actions/get-products.ts — the single read path (ignore the commented Supabase block)</li>
+<li>app/layout.tsx then app/page.tsx — where server ends and client begins</li>
+<li>components/directory-page-client.tsx — the four hooks that own all client state</li>
+<li>lib/imagekit.ts — why no media is served from your own origin</li></ul></div></details>
+<details><summary>➕ Adding an animation</summary><div class="details-inner"><ul><li>Drop the clip in public/demo/<category>/</li>
+<li>pnpm generate-thumbnails (needs ffmpeg on PATH)</li>
+<li>node scripts/upload-to-imagekit.js with the three IMAGEKIT_* vars set</li>
+<li>Append the ItemType entry with a fresh ULID to data/<category>.ts</li>
+<li>pnpm codex:index to refresh embeddings.json, or the item won't be searchable</li>
+<li>pnpm test — tests/data-integrity.test.ts is the guard for malformed entries</li></ul></div></details>
+<details><summary>🐞 Known rough edges, in severity order</summary><div class="details-inner"><ul><li>Voting writes incrementViewCount twice (resource-card.tsx handleVoteClick + use-votes.ts toggleVote)</li>
+<li>updateChangedItems.js silently stops updating data/changedItems.json whenever local main is ahead of origin/main</li>
+<li>cached_actions.ts invokes displayFilters() at module scope — a side effect on import, returning empty arrays</li>
+<li>getProductById returns undefined; anything calling it gets nothing rather than an error</li>
+<li>Category list is declared in three places with nothing enforcing agreement</li>
+<li>getItemsWithCounts reads the entire Firestore collection per uncached request</li></ul></div></details>
+<details><summary>🔑 Environment variables that matter</summary><div class="details-inner"><ul><li>NEXT_PUBLIC_FIRESTORE_COLLECTION — defaults to "rnui"; how prod and dev counts stay separate</li>
+<li>NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT — missing means every media URL is silently broken</li>
+<li>IMAGEKIT_PUBLIC_KEY / IMAGEKIT_PRIVATE_KEY — upload script only</li>
+<li>OPENAI_API_KEY — all codex:* scripts and /api/search; absent is handled, not fatal to the site</li></ul></div></details>
+    <details><summary>📚 Resources &amp; Further Reading</summary><div class="details-inner"><ul style="list-style:none;padding:0;margin:.5rem 0 0;color:#aaa9a0;font-size:.88rem;line-height:1.9;"><li>↗ CODEX-GRANT-PROMPT.md — the design intent behind the codex layer</li><li>↗ CONTRIBUTING.md — contributor-facing version of the add-an-item flow</li><li>↗ ROADMAP.md</li><li>↗ metrics/weekly.json — regenerated Mondays 09:00 UTC by metrics-update.yml</li></ul></div></details>
+      <footer class="mag-footer" aria-label="Provenance"><p>Read directly from the working tree at /Users/mrp/Documents/1-Projects/OpenSource/awesome-react-native-ui/rnui.dev, branch main @ 6a8aed5, on 2026-07-29. Counts (277 entries, 18 category files) come from grepping data/*.ts; repo stats are quoted from metrics/weekly.json generated 2026-06-04, not re-fetched.</p></footer>
+    </div>
+
+  </div><!-- /main-col-wrap -->
+</div><!-- /layout-sidebar -->
+</main>
+<script>
+/* concept-nav.js — IntersectionObserver that active-highlights the
+   sidebar TOC link matching the currently visible section.
+   Reads section ids from data-toc-id attributes on sidebar <a> elements,
+   so it works for any concept doc without hard-coded pairs. */
+(function () {
+  'use strict';
+
+  /* Build section→tocLink pairs from the rendered sidebar */
+  var links = document.querySelectorAll('.sidebar-toc a[href^="#"]');
+  var pairs = [];
+  links.forEach(function (a) {
+    var id = a.getAttribute('href').slice(1); /* strip leading # */
+    var el = document.getElementById(id);
+    if (el) pairs.push({ id: id, a: a, el: el });
+  });
+  if (!pairs.length) return;
+
+  function setActive(id) {
+    links.forEach(function (a) { a.classList.remove('active'); });
+    pairs.forEach(function (p) {
+      if (p.id === id) p.a.classList.add('active');
+    });
+  }
+
+  /* rootMargin: top -15% (skip the hero overlap), bottom -70% so the
+     active section is the one in the upper ~30% of the viewport. */
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  pairs.forEach(function (p) { observer.observe(p.el); });
+}());
+
+</script>
+
+</body>
+</html>
