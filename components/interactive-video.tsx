@@ -64,10 +64,15 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     setIsPlaying(false)
   }
 
-  const handlePlayClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
+  // Playback starts first and the view counter follows, rather than the click
+  // awaiting a round trip to Firestore before anything happens. A counter must
+  // never sit between a user and the thing they clicked: on a slow connection
+  // that is a stall, and when the counter backend is unreachable it never
+  // resolves at all, so the Demo simply never starts.
+  const handlePlayClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation()
-    await incrementViewCount()
     setIsPlaying(true)
+    void incrementViewCount().catch(() => {})
   }
 
   // A failed Demo is terminal and says so. There is deliberately no fallback
