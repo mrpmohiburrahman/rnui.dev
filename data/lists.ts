@@ -1,6 +1,6 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const list: ItemType[] = [
+export const list: Entry[] = [
   {
     category: "List",
     id: "01JGQT8YXKFFHVEC0GT4841HJ5",
@@ -10,15 +10,15 @@ export const list: ItemType[] = [
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
     githubId: "arunabhverma",
-    videoSrc: "demo/lists/activities_list_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/lists/activities_list_arunabh_verma.avif",
+    demoPath: "demo/lists/activities_list_arunabh_verma.mp4",
+    posterPath: "thumbnails/lists/activities_list_arunabh_verma.avif",
     source: "https://github.com/arunabhverma/expo-activities-list-animation",
   },
   {
     id: "01JFP0DCTR1MFQF9BM7YJVKFVA",
     caption: "Samsung scroll indicator",
-    videoSrc: "demo/lists/samsung_scroll_indicator.mp4",
-    thumbnailSrc: "thumbnails/lists/samsung_scroll_indicator.avif",
+    demoPath: "demo/lists/samsung_scroll_indicator.mp4",
+    posterPath: "thumbnails/lists/samsung_scroll_indicator.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-anim-scroll-indicator",
     twitterId: "iamarunabh",
@@ -30,8 +30,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0QKJNFQ7SHFTRET7HSB97",
     caption: "Stack List",
-    videoSrc: "demo/lists/stack_list_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/lists/stack_list_arunabh_verma.avif",
+    demoPath: "demo/lists/stack_list_arunabh_verma.mp4",
+    posterPath: "thumbnails/lists/stack_list_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-stack-list",
     twitterId: "iamarunabh",
@@ -43,8 +43,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0TC92HS1A1GA210J3ZFXY",
     caption: "Double List",
-    videoSrc: "demo/lists/double_list_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/lists/double_list_konstantinos_efkarpidis.avif",
+    demoPath: "demo/lists/double_list_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/lists/double_list_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b3563eca0c68b34ace412dec30b7f63d8a7e4aef/src/screens/DoubleListScreen.tsx",
@@ -56,8 +56,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0TKAG1YX6VC3V7ZA26914",
     caption: "Swipable List",
-    videoSrc: "demo/lists/swipable_list_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/lists/swipable_list_arunabh_verma.avif",
+    demoPath: "demo/lists/swipable_list_arunabh_verma.mp4",
+    posterPath: "thumbnails/lists/swipable_list_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-swipable-list-item",
     twitterId: "iamarunabh",
@@ -69,8 +69,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0TQSM9K06885NAP77XNPH",
     caption: "Animated FlatList",
-    videoSrc: "demo/lists/animated_flatList_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/lists/animated_flatList_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/lists/animated_flatList_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -84,8 +84,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0TW27ZNH8GN2T8AFPSV4F",
     caption: "Swipeable Rows",
-    videoSrc: "demo/lists/swipeable_rows_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/lists/swipeable_rows_hewad_mubariz.avif",
+    demoPath: "demo/lists/swipeable_rows_hewad_mubariz.mp4",
+    posterPath: "thumbnails/lists/swipeable_rows_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/swipeable-rows",
@@ -98,8 +98,8 @@ export const list: ItemType[] = [
   {
     id: "01JFP0V1J75Z0F7R9ZGCRJFHTG",
     caption: "Expandable List",
-    videoSrc: "demo/lists/expandable_list_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/lists/expandable_list_hewad_mubariz.avif",
+    demoPath: "demo/lists/expandable_list_hewad_mubariz.mp4",
+    posterPath: "thumbnails/lists/expandable_list_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expanding-list",
@@ -112,8 +112,8 @@ export const list: ItemType[] = [
 {
     id: "01KAY9AQ32PQDME1DHGRZ3WACW",
     caption: "Animated Grid List",
-    videoSrc: "demo/lists/animated-grid-list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/animated-grid-list_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/animated-grid-list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/animated-grid-list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-grid-list",
     twitterId: "reactiive_",
@@ -126,8 +126,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9AQ9QQ7CWJ82JZKH7E3CG",
     caption: "Animated Indicator List",
-    videoSrc: "demo/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-indicator-list",
     twitterId: "reactiive_",
@@ -140,8 +140,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9AS5BC7RD5Y4RBZK50ZFG",
     caption: "Drag To Sort",
-    videoSrc: "demo/lists/drag-to-sort_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/drag-to-sort_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/drag-to-sort_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/drag-to-sort_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/drag-to-sort",
     twitterId: "reactiive_",
@@ -154,8 +154,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9AW61SRS7XV7YJ0VT2WBD",
     caption: "Imessage Stack",
-    videoSrc: "demo/lists/imessage-stack_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/imessage-stack_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/imessage-stack_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/imessage-stack_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/imessage-stack",
     twitterId: "reactiive_",
@@ -168,8 +168,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9AYPXB5A229Z1VP4DJEFF",
     caption: "Selectable Grid List",
-    videoSrc: "demo/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/selectable-grid-list",
     twitterId: "reactiive_",
@@ -182,8 +182,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9B0A43NFXW3MNYDNQ0ATF",
     caption: "Stacked Bottom Sheet",
-    videoSrc: "demo/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-bottom-sheet",
     twitterId: "reactiive_",
@@ -196,8 +196,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9B0G9KP7F9Y0RHSNENQ06",
     caption: "Stacked List",
-    videoSrc: "demo/lists/stacked-list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/stacked-list_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/stacked-list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/stacked-list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-list",
     twitterId: "reactiive_",
@@ -210,8 +210,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9B0T5CRYHR6V8KX1HK430",
     caption: "Stacked Modals",
-    videoSrc: "demo/lists/stacked-modals_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/stacked-modals_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/stacked-modals_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/stacked-modals_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-modals",
     twitterId: "reactiive_",
@@ -224,8 +224,8 @@ export const list: ItemType[] = [
   {
     id: "01KAY9B11P71X2CDHBK2GNW83B",
     caption: "Story List",
-    videoSrc: "demo/lists/story-list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/lists/story-list_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/lists/story-list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/lists/story-list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/story-list",
     twitterId: "reactiive_",

@@ -240,7 +240,7 @@ LAYOUT — BUILD THESE 5 SECTIONS
    - Row 2: Segmented control on the right — three options "Recent · Viewed · Voted" — bg-surface pill, active option has bg-elevated + text-primary, inactive text-secondary
 
 4) CARD GRID (5 cols desktop, gap-5)
-   Each card uses these data fields: caption, videoSrc, thumbnailSrc, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew
+   Each card uses these data fields: caption, demoPath, posterPath, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew
 
    Card structure (aspect-ratio 9/16):
    - Outer wrapper: bg-surface, 14px radius, 1px border-subtle, card shadow
@@ -373,7 +373,7 @@ LAYOUT — BUILD THESE 5 SECTIONS
        - Right: "{view_count} views · {vote_count} votes" 11px ink-soft
    - On hover, three social glyphs (X, in, gh) appear as tiny serif-styled letters in the top-right of the text block
 
-Use data fields: id, caption, videoSrc, thumbnailSrc, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew
+Use data fields: id, caption, demoPath, posterPath, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew
 
 5) FOOTER (large, calm)
    - Max-width 1280px, mx-auto, padding-y 96px, hairline top border-sand
@@ -481,7 +481,7 @@ LAYOUT — BUILD THESE 5 SECTIONS
    - Right-aligned: a "Random" button (lime bg, 4px 4px 0 ink shadow) with dice icon
 
 4) CARD GRID (5 cols desktop, gap 24px)
-   Card structure (uses fields: caption, videoSrc, thumbnailSrc, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew):
+   Card structure (uses fields: caption, demoPath, posterPath, author, source, category, twitterId, linkedInId, githubId, view_count, vote_count, isNew):
    - Outer wrapper: bg-surface-white, 12px radius, 1.5px solid ink border, 6px 6px 0 0 {tangerine|cobalt|lime} (rotate by index)
    - Inside, 8px padding (creates the "Polaroid" white frame around video)
    - Media: aspect 9/16, 10px inner radius, autoplay-on-hover muted video

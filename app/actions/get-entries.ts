@@ -1,20 +1,20 @@
-// app/actions/get-products.ts
+// app/actions/get-entries.ts
 
 "use server"
 
 import "server-only"
 
 import { cache } from "react"
-import { getItemsWithCounts, type ItemType } from "@/data/items"
+import { getEntriesWithCounts, type Entry } from "@/data/entry"
 
-export const getProducts = cache(
+export const getEntries = cache(
   async (
     searchTerm?: string,
     category?: string,
     label?: string,
     tag?: string,
     author?: string
-  ): Promise<ItemType[]> => {
+  ): Promise<Entry[]> => {
     // previous implementation
     // const db = createClient()
     // let query = db.from("products").select("*")
@@ -44,49 +44,49 @@ export const getProducts = cache(
     //   return []
     // }
     try {
-      let filteredItems = await getItemsWithCounts()
-      // console.log("🚀 ~ filteredItems:", JSON.stringify(filteredItems))
+      let filteredEntries = await getEntriesWithCounts()
+      // console.log("🚀 ~ filteredEntries:", JSON.stringify(filteredEntries))
 
       // Apply search term filter
       if (searchTerm) {
         const lowerSearchTerm = searchTerm.toLowerCase()
-        filteredItems = filteredItems.filter(
-          (item) => item.caption.toLowerCase().includes(lowerSearchTerm)
-          //  ||  item.description.toLowerCase().includes(lowerSearchTerm)
+        filteredEntries = filteredEntries.filter(
+          (entry) => entry.caption.toLowerCase().includes(lowerSearchTerm)
+          //  ||  entry.description.toLowerCase().includes(lowerSearchTerm)
           // Removed punchline filter
         )
       }
 
       // Apply category filter
       if (category) {
-        filteredItems = filteredItems.filter(
-          (item) => item.category.toLowerCase() === category.toLowerCase()
+        filteredEntries = filteredEntries.filter(
+          (entry) => entry.category.toLowerCase() === category.toLowerCase()
         )
       }
 
       // Apply category filter
       if (author) {
-        filteredItems = filteredItems.filter(
-          (item) => item.author.toLowerCase() === author.toLowerCase()
+        filteredEntries = filteredEntries.filter(
+          (entry) => entry.author.toLowerCase() === author.toLowerCase()
         )
       }
       // Apply label filter
       // if (label) {
-      //   filteredItems = filteredItems.filter((item) =>
-      //     item.labels.map((l) => l.toLowerCase()).includes(label.toLowerCase())
+      //   filteredEntries = filteredEntries.filter((entry) =>
+      //     entry.labels.map((l) => l.toLowerCase()).includes(label.toLowerCase())
       //   )
       // }
 
       // Apply tag filter
       // if (tag) {
-      //   filteredItems = filteredItems.filter((item) =>
-      //     item.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
+      //   filteredEntries = filteredEntries.filter((entry) =>
+      //     entry.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
       //   )
       // }
 
-      return filteredItems
+      return filteredEntries
     } catch (error) {
-      console.error("Error filtering products:", error)
+      console.error("Error filtering Entries:", error)
       return []
     }
   }

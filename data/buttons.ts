@@ -1,6 +1,6 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const buttons: ItemType[] = [
+export const buttons: Entry[] = [
   {
     category: "Buttons",
     id: "01JGQQT7EZ1MGV46PFRZCQJ0NY",
@@ -10,16 +10,16 @@ export const buttons: ItemType[] = [
     twitterId: "tandonpushkar0",
     linkedInId: "tandonpushkar",
     githubId: "tandonpushkar",
-    videoSrc: "demo/buttons/add_to_cart_pushkar_tandon.mp4",
-    thumbnailSrc: "thumbnails/buttons/add_to_cart_pushkar_tandon.avif",
+    demoPath: "demo/buttons/add_to_cart_pushkar_tandon.mp4",
+    posterPath: "thumbnails/buttons/add_to_cart_pushkar_tandon.avif",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/add-to-cart-animation",
   },
   {
     id: "01JFP077G0WYPAVXD4K0DMKHRR",
     caption: "Radial FAB",
-    videoSrc: "demo/buttons/radial_fab_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/radial_fab_hewad_mubariz.avif",
+    demoPath: "demo/buttons/radial_fab_hewad_mubariz.mp4",
+    posterPath: "thumbnails/buttons/radial_fab_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/radial-fab",
@@ -32,8 +32,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP07GAHFRT6GRYFVM7YT67R",
     caption: "Split Button",
-    videoSrc: "demo/buttons/split_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/split_button_hewad_mubariz.avif",
+    demoPath: "demo/buttons/split_button_hewad_mubariz.mp4",
+    posterPath: "thumbnails/buttons/split_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/split-button",
@@ -46,9 +46,9 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP07S1DSHY1PKBQ98HHN3KZ",
     caption: "Animated Split Button",
-    videoSrc:
+    demoPath:
       "demo/buttons/animated_split_button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/buttons/animated_split_button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -62,8 +62,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP07Z65VG20VZXVTH31EJ4G",
     caption: "Interpolation Button",
-    videoSrc: "demo/buttons/interpolation_button_andreev_danila.mp4",
-    thumbnailSrc: "thumbnails/buttons/interpolation_button_andreev_danila.avif",
+    demoPath: "demo/buttons/interpolation_button_andreev_danila.mp4",
+    posterPath: "thumbnails/buttons/interpolation_button_andreev_danila.avif",
     author: "Andreev Danila",
     source: "https://github.com/andreev-danila/interpolation-button",
     twitterId: "dan_w1d1",
@@ -74,8 +74,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP087EPFZFXC64CPAEXPJWS",
     caption: "Morph Button",
-    videoSrc: "demo/buttons/morph_button_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/buttons/morph_button_arunabh_verma.avif",
+    demoPath: "demo/buttons/morph_button_arunabh_verma.mp4",
+    posterPath: "thumbnails/buttons/morph_button_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/rn-text-edit-menu-ui",
     twitterId: "iamarunabh",
@@ -87,8 +87,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP08FS88CCJM1JRKHY9ZKDP",
     caption: "react-native-cyberpunk-button",
-    videoSrc: "demo/buttons/react-native-cyberpunk-button_epicode.mp4",
-    thumbnailSrc:
+    demoPath: "demo/buttons/react-native-cyberpunk-button_epicode.mp4",
+    posterPath:
       "thumbnails/buttons/react-native-cyberpunk-button_epicode.avif",
     author: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-cyberpunk-button",
@@ -100,8 +100,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP08R4FPAVE4VVE8YTQ8EKE",
     caption: "Jelly button",
-    videoSrc: "demo/buttons/jelly_button_kacper_kapusciak.mp4",
-    thumbnailSrc: "thumbnails/buttons/jelly_button_kacper_kapusciak.avif",
+    demoPath: "demo/buttons/jelly_button_kacper_kapusciak.mp4",
+    posterPath: "thumbnails/buttons/jelly_button_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-squishy-button",
     twitterId: "kacperkapusciak",
@@ -113,8 +113,8 @@ export const buttons: ItemType[] = [
   {
     id: "01F8MECHZX3TBDSZ7XRADM79XK",
     caption: "Dial Button",
-    videoSrc: "demo/buttons/dial_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/dial_button_hewad_mubariz.avif",
+    demoPath: "demo/buttons/dial_button_hewad_mubariz.mp4",
+    posterPath: "thumbnails/buttons/dial_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dial-button",
@@ -127,8 +127,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP0972CSDATE80KRQS20SAV",
     caption: "Floating Button",
-    videoSrc: "demo/buttons/floating_button_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/floating_button_hewad_mubariz.avif",
+    demoPath: "demo/buttons/floating_button_hewad_mubariz.mp4",
+    posterPath: "thumbnails/buttons/floating_button_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/floating-button",
@@ -141,8 +141,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP09GA5K0SWQS2WYFZ0XJ54",
     caption: "Runny Border",
-    videoSrc: "demo/buttons/runny_border_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/buttons/runny_border_hewad_mubariz.avif",
+    demoPath: "demo/buttons/runny_border_hewad_mubariz.mp4",
+    posterPath: "thumbnails/buttons/runny_border_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/runny-border",
@@ -155,8 +155,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP09R97BKN4XC8EJRNK55C2",
     caption: "Neumorphic Button",
-    videoSrc: "demo/buttons/neumorphic_button_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/buttons/neumorphic_button_david_friyia.avif",
+    demoPath: "demo/buttons/neumorphic_button_david_friyia.mp4",
+    posterPath: "thumbnails/buttons/neumorphic_button_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/NeumorphicButton",
@@ -169,8 +169,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP09ZJJ3BZ6Z7WDGFFB0SVM",
     caption: "Micro Interactoins",
-    videoSrc: "demo/buttons/micro_interactions_alek_mikucki.mp4",
-    thumbnailSrc: "thumbnails/buttons/micro_interactions_alek_mikucki.avif",
+    demoPath: "demo/buttons/micro_interactions_alek_mikucki.mp4",
+    posterPath: "thumbnails/buttons/micro_interactions_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://x.com/aleqsio/status/1701164940629815741/photo/1",
     twitterId: "aleqsio",
@@ -182,8 +182,8 @@ export const buttons: ItemType[] = [
 {
     id: "01KAY9AQBJJHBJP7NBGSV4359F",
     caption: "Atlas Button",
-    videoSrc: "demo/buttons/atlas-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/atlas-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/atlas-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/atlas-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/atlas-button",
     twitterId: "reactiive_",
@@ -196,8 +196,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9ARZCHW973JM5RQSWBB9J",
     caption: "Delete Button",
-    videoSrc: "demo/buttons/delete-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/delete-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/delete-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/delete-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/delete-button",
     twitterId: "reactiive_",
@@ -210,8 +210,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9AV61B25B3XNZ0E33MNC1",
     caption: "Geometry Button",
-    videoSrc: "demo/buttons/geometry-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/geometry-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/geometry-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/geometry-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/geometry-button",
     twitterId: "reactiive_",
@@ -224,8 +224,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9AX6J57RVZFW1DJ8YEC8X",
     caption: "Loading Button",
-    videoSrc: "demo/buttons/loading-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/loading-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/loading-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/loading-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/loading-button",
     twitterId: "reactiive_",
@@ -238,8 +238,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9AXNCF4BXJZNPERVQVJB1",
     caption: "Particles Button",
-    videoSrc: "demo/buttons/particles-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/particles-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/particles-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/particles-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/particles-button",
     twitterId: "reactiive_",
@@ -252,8 +252,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9AYGTNH3RJXPN3K3ZW23Y",
     caption: "Record Button",
-    videoSrc: "demo/buttons/record-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/record-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/record-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/record-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/record-button",
     twitterId: "reactiive_",
@@ -266,8 +266,8 @@ export const buttons: ItemType[] = [
   {
     id: "01KAY9B0142RTK4VJ3BXE0JRJE",
     caption: "Split Button",
-    videoSrc: "demo/buttons/split-button_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/buttons/split-button_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/buttons/split-button_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/buttons/split-button_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/split-button",
     twitterId: "reactiive_",

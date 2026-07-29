@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const onboarding: ItemType[] = [
+export const onboarding: Entry[] = [
   {
     id: "01JXY799CJQYANP6NGEGZ734NE",
     caption: "Onboarding by Thomino",
-    videoSrc: "demo/onboardings/onboarding_thomino.mp4",
-    thumbnailSrc: "thumbnails/onboardings/onboarding_thomino.avif",
+    demoPath: "demo/onboardings/onboarding_thomino.mp4",
+    posterPath: "thumbnails/onboardings/onboarding_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/onboarding.tsx",
@@ -17,8 +17,8 @@ export const onboarding: ItemType[] = [
   {
     id: "01JFP0EJCVNRH11VP1HD9524XW",
     caption: "Onboarding Steps",
-    videoSrc: "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/onboardings/onboarding_steps_hewad_mubariz.avif",
+    demoPath: "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
+    posterPath: "thumbnails/onboardings/onboarding_steps_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/onboarding-steps",
@@ -31,8 +31,8 @@ export const onboarding: ItemType[] = [
   {
     id: "01JFP0N3B97VWS398W1REXSSKB",
     caption: "Onboarding Animation",
-    videoSrc: "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
-    thumbnailSrc:
+    demoPath: "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
+    posterPath:
       "thumbnails/onboardings/onboarding_animation_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://github.com/aleqsio/onboarding-animation-example",
@@ -45,8 +45,8 @@ export const onboarding: ItemType[] = [
   {
     id: "01JFP1AFJX1C08GVVJ59CJTCHG",
     caption: "Bouncy Onboarding",
-    videoSrc: "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/onboardings/bouncy_onboarding_hewad_mubariz.avif",
+    demoPath: "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
+    posterPath: "thumbnails/onboardings/bouncy_onboarding_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/BouncyOnboarding",
@@ -59,8 +59,8 @@ export const onboarding: ItemType[] = [
   {
     id: "01JFP1C18WHQXTA557XRPXWWMR",
     caption: "Circular Onboarding",
-    videoSrc: "demo/onboardings/circular_onboarding_hewad_mubariz.mp4",
-    thumbnailSrc:
+    demoPath: "demo/onboardings/circular_onboarding_hewad_mubariz.mp4",
+    posterPath:
       "thumbnails/onboardings/circular_onboarding_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
@@ -74,8 +74,8 @@ export const onboarding: ItemType[] = [
 {
     id: "01KAY9AVAA84ZF3TYZZH7ZBB3N",
     caption: "Github Onboarding",
-    videoSrc: "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
     twitterId: "reactiive_",

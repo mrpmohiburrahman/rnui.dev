@@ -4,8 +4,8 @@ import { Suspense } from "react"
 
 import "./globals.css"
 
+import { getUniqueAuthors, getUniqueCategories } from "@/data/entry"
 import { fontSans } from "@/data/font-sans"
-import { getUniqueAuthors, getUniqueCategories } from "@/data/items"
 import { metadata } from "@/data/meta-data"
 import { Analytics } from "@vercel/analytics/next"
 

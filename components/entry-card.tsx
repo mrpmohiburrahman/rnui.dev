@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useState } from "react"
 import Link from "next/link"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
 import { motion } from "framer-motion"
 import { Bookmark, Linkedin, Star } from "lucide-react"
@@ -21,20 +21,20 @@ import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 
 import InteractiveVideo from "./interactive-video"
 
-interface ResourceCardProps {
+interface EntryCardProps {
   trim?: boolean
-  data: ItemType
+  entry: Entry
   order: number
-  onClick: (product: ItemType) => void
+  onClick: (entry: Entry) => void
   isBookmarked: boolean
   toggleBookmark: (id: string) => void
   isVoted: boolean
   toggleVote: (id: string) => void
 }
 
-const ResourceCardComponent: React.FC<ResourceCardProps> = ({
+const EntryCardComponent: React.FC<EntryCardProps> = ({
   trim,
-  data,
+  entry,
   order,
   onClick,
   isBookmarked,
@@ -42,56 +42,56 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
   isVoted,
   toggleVote,
 }) => {
-  const [voteCount, setVoteCount] = useState<number>(data.vote_count || 0)
-  const [viewCount, setViewCount] = useState<number>(data.view_count || 0)
+  const [voteCount, setVoteCount] = useState<number>(entry.vote_count || 0)
+  const [viewCount, setViewCount] = useState<number>(entry.view_count || 0)
 
   const incrementViewCountLocal = useCallback(async () => {
     try {
-      await incrementViewCount(data.id)
+      await incrementViewCount(entry.id)
       setViewCount((prev) => prev + 1)
     } catch (error) {
       console.error("Error incrementing view count:", error)
     }
-  }, [data.id])
+  }, [entry.id])
 
   const decrementVoteCountLocal = useCallback(async () => {
     try {
-      await decrementVoteCount(data.id)
+      await decrementVoteCount(entry.id)
       setVoteCount((prev) => Math.max(prev - 1, 0))
     } catch (error) {
       console.error("Error decrementing vote count:", error)
     }
-  }, [data.id])
+  }, [entry.id])
 
   const incrementVoteCountLocal = useCallback(async () => {
     try {
-      await incrementVoteCount(data.id)
+      await incrementVoteCount(entry.id)
       setVoteCount((prev) => prev + 1)
     } catch (error) {
       console.error("Error incrementing vote count:", error)
     }
-  }, [data.id])
+  }, [entry.id])
 
   const handleClick = useCallback(async (e: React.MouseEvent) => {
-    onClick(data)
+    onClick(entry)
     await incrementViewCountLocal()
-  }, [onClick, data, incrementViewCountLocal])
+  }, [onClick, entry, incrementViewCountLocal])
 
   const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    toggleBookmark(data.id)
-  }, [toggleBookmark, data.id])
+    toggleBookmark(entry.id)
+  }, [toggleBookmark, entry.id])
 
   const handleVoteClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
     await incrementViewCountLocal()
-    toggleVote(data.id)
+    toggleVote(entry.id)
     if (isVoted) {
       await decrementVoteCountLocal()
     } else {
       await incrementVoteCountLocal()
     }
-  }, [data.id, isVoted, toggleVote, incrementViewCountLocal, decrementVoteCountLocal, incrementVoteCountLocal])
+  }, [entry.id, isVoted, toggleVote, incrementViewCountLocal, decrementVoteCountLocal, incrementVoteCountLocal])
 
   const handleLinkClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -101,7 +101,7 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
 
   return (
     <motion.div
-      key={`resource-card-${data.id}-${order}`}
+      key={`entry-card-${entry.id}-${order}`}
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
           </button>
 
           {/* "New" Badge */}
-          {data.isNew && (
+          {entry.isNew && (
             <Badge variant="success" className="absolute top-4 left-4 z-10">
               New
             </Badge>
@@ -144,9 +144,9 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
           {/* Video */}
           <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
             <InteractiveVideo
-              src={data.videoSrc}
-              caption={`video demo of ${data.caption}`}
-              poster={data.thumbnailSrc}
+              src={entry.demoPath}
+              caption={`video demo of ${entry.caption}`}
+              poster={entry.posterPath}
               className="w-full h-full object-contain"
               controls
               loop
@@ -158,10 +158,10 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
           <div className="flex flex-col flex-grow justify-between p-4">
             <div>
               <MinimalCardTitle className="font-semibold mb-1 text-neutral-800 dark:text-neutral-200 text-sm">
-                {data.author.substring(0, 30)}
+                {entry.author.substring(0, 30)}
               </MinimalCardTitle>
               <MinimalCardDescription className="text-sm text-neutral-700 dark:text-neutral-300 mb-2">
-                {trim ? `${data.caption.slice(0, 82)}...` : data.caption}
+                {trim ? `${entry.caption.slice(0, 82)}...` : entry.caption}
               </MinimalCardDescription>
               <MinimalCardContent />
             </div>
@@ -169,9 +169,9 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
               <div className="flex justify-between items-center w-full text-neutral-800 dark:text-neutral-200">
                 {/* Left Side: Social Icons */}
                 <div className="flex items-center gap-3">
-                  {data.twitterId && (
+                  {entry.twitterId && (
                     <Link
-                      href={`https://twitter.com/${data.twitterId}`}
+                      href={`https://twitter.com/${entry.twitterId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-blue-700 transition-colors"
@@ -182,9 +182,9 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
                     </Link>
                   )}
 
-                  {data.linkedInId && (
+                  {entry.linkedInId && (
                     <Link
-                      href={`https://linkedin.com/in/${data.linkedInId}`}
+                      href={`https://linkedin.com/in/${entry.linkedInId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-blue-900 transition-colors"
@@ -194,9 +194,9 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
                       <Linkedin size={20} />
                     </Link>
                   )}
-                  {data.githubId && (
+                  {entry.githubId && (
                     <Link
-                      href={`https://github.com/${data.githubId}`}
+                      href={`https://github.com/${entry.githubId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-800 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
@@ -211,7 +211,7 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
                 {/* Right Side: Source Link */}
                 <div className="flex items-center gap-2">
                   <Link
-                    href={data.source}
+                    href={entry.source}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline flex items-center gap-1 tracking-tight text-sm font-semibold"
@@ -253,15 +253,15 @@ const ResourceCardComponent: React.FC<ResourceCardProps> = ({
 
 // Memoize component to prevent unnecessary re-renders
 // Only re-render if props actually change
-export const ResourceCard = memo(ResourceCardComponent, (prevProps, nextProps) => {
+export const EntryCard = memo(EntryCardComponent, (prevProps, nextProps) => {
   return (
-    prevProps.data.id === nextProps.data.id &&
+    prevProps.entry.id === nextProps.entry.id &&
     prevProps.isBookmarked === nextProps.isBookmarked &&
     prevProps.isVoted === nextProps.isVoted &&
-    prevProps.data.vote_count === nextProps.data.vote_count &&
-    prevProps.data.view_count === nextProps.data.view_count
+    prevProps.entry.vote_count === nextProps.entry.vote_count &&
+    prevProps.entry.view_count === nextProps.entry.view_count
   )
 })
 
-ResourceCard.displayName = 'ResourceCard'
+EntryCard.displayName = 'EntryCard'
 

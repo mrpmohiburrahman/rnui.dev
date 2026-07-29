@@ -1,12 +1,12 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const circular_progress_bars: ItemType[] = [
+export const circular_progress_bars: Entry[] = [
   {
     id: "01H8J4Z9F7QY8KX1M5N3T6L2V0",
     caption: "Heart Progress Circle",
-    videoSrc:
+    demoPath:
       "demo/circular-progress-bars/heart_progress_circle_hewad_mubariz.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/circular-progress-bars/heart_progress_circle_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
@@ -20,9 +20,9 @@ export const circular_progress_bars: ItemType[] = [
   {
     id: "01H8J4Z9F7QY8KX1M5N3T6L2V1",
     caption: "Circular Progress Bar",
-    videoSrc:
+    demoPath:
       "demo/circular-progress-bars/circular_progress_bars_hewad_mubariz.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/circular-progress-bars/circular_progress_bars_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
@@ -36,8 +36,8 @@ export const circular_progress_bars: ItemType[] = [
   {
     id: "01H8J4Z9F7QY8KX1M5N3T6L2V2",
     caption: "Donut Chart",
-    videoSrc: "demo/circular-progress-bars/donut_chart_david_friyia.mp4",
-    thumbnailSrc:
+    demoPath: "demo/circular-progress-bars/donut_chart_david_friyia.mp4",
+    posterPath:
       "thumbnails/circular-progress-bars/donut_chart_david_friyia.avif",
     author: "Daniel Friyia",
     source:

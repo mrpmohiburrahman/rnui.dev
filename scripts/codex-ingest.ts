@@ -5,7 +5,7 @@
  * Pipeline:
  *   1. Fetch GitHub repo metadata + README via `gh api`.
  *   2. Call OpenAI gpt-4o-mini with structured output to extract a catalog entry
- *      that conforms to the existing ItemType schema in data/items.ts.
+ *      that conforms to the existing Entry schema in data/entry.ts.
  *   3. Validate via Zod.
  *   4. Append the entry to data/<file>.ts using ts-morph (preserves existing formatting).
  *   5. Print a TODO block reminding the maintainer to upload the demo video so the
@@ -26,7 +26,7 @@ import { ulid } from "ulid"
 import { CATEGORY_META, slugify } from "@/lib/codex/categoryMap"
 import { CODEX_MODEL, requireOpenAIKey } from "@/lib/codex/env"
 import { ExtractedEntrySchema } from "@/lib/codex/schema"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 const args = process.argv.slice(2)
 const rawUrl = args.find((a) => !a.startsWith("--"))
@@ -59,7 +59,7 @@ function fetchGitHub(repoUrl: string): { readme: string; meta: Record<string, un
   return { readme, meta }
 }
 
-function appendEntry(entry: ItemType, file: string, exportName: string): void {
+function appendEntry(entry: Entry, file: string, exportName: string): void {
   const project = new Project({ tsConfigFilePath: "tsconfig.json" })
   const sourceFile = project.addSourceFileAtPath(`data/${file}.ts`)
   const decl = sourceFile.getVariableDeclarationOrThrow(exportName)
@@ -69,8 +69,8 @@ function appendEntry(entry: ItemType, file: string, exportName: string): void {
     "{",
     `  id: ${JSON.stringify(entry.id)},`,
     `  caption: ${JSON.stringify(entry.caption)},`,
-    `  videoSrc: ${JSON.stringify(entry.videoSrc)},`,
-    `  thumbnailSrc: ${JSON.stringify(entry.thumbnailSrc)},`,
+    `  demoPath: ${JSON.stringify(entry.demoPath)},`,
+    `  posterPath: ${JSON.stringify(entry.posterPath)},`,
     `  author: ${JSON.stringify(entry.author)},`,
     `  source: ${JSON.stringify(entry.source)},`,
     entry.twitterId ? `  twitterId: ${JSON.stringify(entry.twitterId)},` : null,
@@ -114,11 +114,11 @@ async function main() {
   const meta_cat = CATEGORY_META[extracted.category]
   const slug = `${slugify(extracted.caption)}_${slugify(extracted.author)}`
 
-  const entry: ItemType = {
+  const entry: Entry = {
     id: ulid(),
     caption: extracted.caption,
-    videoSrc: `demo/${meta_cat.assetSlug}/${slug}.mp4`,
-    thumbnailSrc: `thumbnails/${meta_cat.assetSlug}/${slug}.avif`,
+    demoPath: `demo/${meta_cat.assetSlug}/${slug}.mp4`,
+    posterPath: `thumbnails/${meta_cat.assetSlug}/${slug}.avif`,
     author: extracted.author,
     source: url,
     ...(extracted.twitterId ? { twitterId: extracted.twitterId } : {}),
@@ -134,7 +134,7 @@ async function main() {
     [
       "",
       "ASSET TODO — the maintainer must drop the demo video here before merge:",
-      `  public/${entry.videoSrc}`,
+      `  public/${entry.demoPath}`,
       "Then run:  pnpm generate-thumbnails",
       "",
     ].join("\n")
@@ -164,7 +164,7 @@ async function main() {
     `**Category:** ${entry.category}`,
     "",
     "### Maintainer checklist before merge",
-    `- [ ] Upload demo video to \`public/${entry.videoSrc}\``,
+    `- [ ] Upload demo video to \`public/${entry.demoPath}\``,
     "- [ ] Run `pnpm generate-thumbnails`",
     "- [ ] Verify thumbnail at the expected path",
     "- [ ] `pnpm test` passes",

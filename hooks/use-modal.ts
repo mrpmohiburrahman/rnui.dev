@@ -1,24 +1,24 @@
 // hooks/useModal.ts
 import { useState } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 const useModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<ItemType | null>(null)
+  const [selectedEntry, setSelectedEntry] = useState<Entry | null>(null)
 
-  const openModal = (product: ItemType) => {
-    setSelectedProduct(product)
+  const openModal = (entry: Entry) => {
+    setSelectedEntry(entry)
     setIsModalOpen(true)
   }
 
   const closeModal = () => {
     setIsModalOpen(false)
-    setSelectedProduct(null)
+    setSelectedEntry(null)
   }
 
   return {
     isModalOpen,
-    selectedProduct,
+    selectedEntry,
     openModal,
     closeModal,
   }

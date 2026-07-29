@@ -8,9 +8,9 @@ import { db } from "@/lib/firebase"
 
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 
-export const incrementVoteCount = async (itemId: string) => {
-  console.log("🚀 ~ incrementVoteCount ~ itemId:", itemId)
-  const voteCountRef = doc(db, COLLECTION_NAME, itemId)
+export const incrementVoteCount = async (entryId: string) => {
+  console.log("🚀 ~ incrementVoteCount ~ entryId:", entryId)
+  const voteCountRef = doc(db, COLLECTION_NAME, entryId)
   try {
     await updateDoc(voteCountRef, {
       vote_count: increment(1),

@@ -1,6 +1,6 @@
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
-type Category = ItemType["category"]
+type Category = Entry["category"]
 
 type CategoryMeta = {
   /** filename under data/<file>.ts (without extension) */

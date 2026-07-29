@@ -2,7 +2,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 import useBookmarks from "@/hooks/use-bookmarks"
 import useModal from "@/hooks/use-modal"
@@ -10,11 +10,11 @@ import useSortedData from "@/hooks/use-sorted-data"
 import useVotes from "@/hooks/use-votes"
 
 import CardModal from "./card-modal"
-import { ResourceCardGrid } from "./resource-card-grid"
+import { EntryCardGrid } from "./entry-card-grid"
 
 interface DirectoryPageClientProps {
-  sortedData: ItemType[]
-  filteredFeaturedData: ItemType[] | null
+  sortedData: Entry[]
+  filteredFeaturedData: Entry[] | null
   children?: ReactNode
 }
 
@@ -26,12 +26,12 @@ const DirectoryPageClient: React.FC<DirectoryPageClientProps> = ({
   // Use the separate hooks
   const { bookmarks, toggleBookmark } = useBookmarks()
 
-  const { votedItems, toggleVote } = useVotes()
-  const { isModalOpen, selectedProduct, openModal, closeModal } = useModal()
+  const { votedEntryIds, toggleVote } = useVotes()
+  const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
   const { sortedData, sort, setSort } = useSortedData(initialData)
 
-  // Ensure bookmarks and votedItems are loaded before rendering
-  if (bookmarks === null || votedItems === null) {
+  // Ensure bookmarks and votedEntryIds are loaded before rendering
+  if (bookmarks === null || votedEntryIds === null) {
     return <div /> // Optionally, replace with a loader
   }
 
@@ -40,23 +40,23 @@ const DirectoryPageClient: React.FC<DirectoryPageClientProps> = ({
     // style={{ borderWidth: 1, borderColor: "purple" }}
     //
     >
-      <ResourceCardGrid
+      <EntryCardGrid
         sortedData={sortedData}
         filteredFeaturedData={filteredFeaturedData}
         openModal={openModal}
         bookmarks={bookmarks}
         toggleBookmark={toggleBookmark}
-        votedItems={votedItems}
+        votedEntryIds={votedEntryIds}
         toggleVote={toggleVote}
         setSort={setSort} // Pass setSort to handle sorting
         currentSort={sort} // Pass current sort state
       >
         {children}
-      </ResourceCardGrid>
+      </EntryCardGrid>
 
       {/* Modal */}
       <CardModal
-        selectedProduct={selectedProduct}
+        selectedEntry={selectedEntry}
         isModalOpen={isModalOpen}
         closeModal={closeModal}
       />

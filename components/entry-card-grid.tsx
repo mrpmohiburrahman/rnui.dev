@@ -1,35 +1,35 @@
-// components/resource-card-grid.tsx
+// components/entry-card-grid.tsx
 "use client"
 
 import { Suspense, useState } from "react"
 import { usePathname } from "next/navigation"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 import { cn } from "@/lib/utils"
 
+import { EntryCard } from "./entry-card"
 import LastUpdated from "./last-updated"
-import { ResourceCard } from "./resource-card"
 
-export interface ResourceCardGridProps {
-  sortedData?: ItemType[]
-  filteredFeaturedData?: ItemType[] | null
+export interface EntryCardGridProps {
+  sortedData?: Entry[]
+  filteredFeaturedData?: Entry[] | null
   children?: React.ReactNode
-  openModal: (product: ItemType) => void
+  openModal: (entry: Entry) => void
   bookmarks: string[]
   toggleBookmark: (id: string) => void
-  votedItems: string[]
+  votedEntryIds: string[]
   toggleVote: (id: string) => void
   setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void // New prop
   currentSort?: "recent" | "top-voted" | "top-viewed" // New prop
 }
 
-export const ResourceCardGrid: React.FC<ResourceCardGridProps> = ({
+export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   sortedData,
   children,
   openModal,
   bookmarks,
   toggleBookmark,
-  votedItems,
+  votedEntryIds,
   toggleVote,
   setSort, // Destructure new prop
   currentSort, // Destructure new prop
@@ -187,15 +187,15 @@ export const ResourceCardGrid: React.FC<ResourceCardGridProps> = ({
           <div className="relative">
             {/* Adjusted Grid Columns for Smaller Portrait Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {sortedData?.map((data, index) => (
-                <ResourceCard
-                  key={`${index}-${data.id}`}
-                  data={data}
+              {sortedData?.map((entry, index) => (
+                <EntryCard
+                  key={`${index}-${entry.id}`}
+                  entry={entry}
                   order={index}
                   onClick={openModal}
-                  isBookmarked={bookmarks.includes(data.id)}
+                  isBookmarked={bookmarks.includes(entry.id)}
                   toggleBookmark={toggleBookmark}
-                  isVoted={votedItems.includes(data.id)}
+                  isVoted={votedEntryIds.includes(entry.id)}
                   toggleVote={toggleVote}
                 />
               ))}

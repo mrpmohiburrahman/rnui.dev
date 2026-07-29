@@ -8,7 +8,7 @@ describe("catalog data integrity", () => {
   })
 
   it("no duplicate IDs", () => {
-    const ids = allEntries.map((item) => item.id)
+    const ids = allEntries.map((entry) => entry.id)
     const unique = new Set(ids)
     const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i)
     expect(duplicates, `duplicate IDs: ${duplicates.join(", ")}`).toHaveLength(0)
@@ -16,21 +16,21 @@ describe("catalog data integrity", () => {
   })
 
   it("all entries have required fields", () => {
-    const required = ["id", "caption", "videoSrc", "thumbnailSrc", "author", "source", "category"] as const
-    for (const item of allEntries) {
+    const required = ["id", "caption", "demoPath", "posterPath", "author", "source", "category"] as const
+    for (const entry of allEntries) {
       for (const field of required) {
-        expect(item[field], `${item.id} missing field "${field}"`).toBeTruthy()
+        expect(entry[field], `${entry.id} missing field "${field}"`).toBeTruthy()
       }
     }
   })
 
   it("all source URLs match https?://", () => {
-    const bad = allEntries.filter((item) => !item.source.match(/^https?:\/\//))
+    const bad = allEntries.filter((entry) => !entry.source.match(/^https?:\/\//))
     expect(bad.map((b) => `${b.id}: ${b.source}`)).toHaveLength(0)
   })
 
   it("all IDs are non-empty strings", () => {
-    const bad = allEntries.filter((item) => typeof item.id !== "string" || item.id.trim() === "")
+    const bad = allEntries.filter((entry) => typeof entry.id !== "string" || entry.id.trim() === "")
     expect(bad).toHaveLength(0)
   })
 })
@@ -40,12 +40,12 @@ describe("catalog data integrity", () => {
 // once, cached for a year and never overwritten, so a duplicated or
 // mis-encoded path cannot be corrected after upload — it has to be caught here.
 describe("asset paths", () => {
-  const duplicatesBy = (field: "videoSrc" | "thumbnailSrc") => {
+  const duplicatesBy = (field: "demoPath" | "posterPath") => {
     const seen = new Map<string, string[]>()
-    for (const item of allEntries) {
-      const path = item[field]
+    for (const entry of allEntries) {
+      const path = entry[field]
       if (!path) continue
-      seen.set(path, [...(seen.get(path) ?? []), item.id])
+      seen.set(path, [...(seen.get(path) ?? []), entry.id])
     }
     return [...seen.entries()]
       .filter(([, ids]) => ids.length > 1)
@@ -53,12 +53,12 @@ describe("asset paths", () => {
   }
 
   it("no two entries share a Demo path", () => {
-    const dupes = duplicatesBy("videoSrc")
+    const dupes = duplicatesBy("demoPath")
     expect(dupes, `duplicate Demo paths:\n${dupes.join("\n")}`).toHaveLength(0)
   })
 
   it("no two entries share a Poster path", () => {
-    const dupes = duplicatesBy("thumbnailSrc")
+    const dupes = duplicatesBy("posterPath")
     expect(dupes, `duplicate Poster paths:\n${dupes.join("\n")}`).toHaveLength(0)
   })
 
@@ -67,10 +67,10 @@ describe("asset paths", () => {
   // locally, but byte-exact object storage 404s on it. This previously broke
   // 16 assets whose author's name contained "ś".
   it("all asset paths are printable ASCII", () => {
-    const bad = allEntries.flatMap((item) =>
-      [item.videoSrc, item.thumbnailSrc]
+    const bad = allEntries.flatMap((entry) =>
+      [entry.demoPath, entry.posterPath]
         .filter((path) => path && !/^[\x20-\x7E]+$/.test(path))
-        .map((path) => `${item.id}: ${path}`)
+        .map((path) => `${entry.id}: ${path}`)
     )
     expect(bad, `non-ASCII asset paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
@@ -84,15 +84,15 @@ describe("asset paths", () => {
 
   it("all Demo paths are well-formed", () => {
     const bad = allEntries
-      .filter((item) => item.videoSrc && !DEMO_PATH.test(item.videoSrc))
-      .map((item) => `${item.id}: ${item.videoSrc}`)
+      .filter((entry) => entry.demoPath && !DEMO_PATH.test(entry.demoPath))
+      .map((entry) => `${entry.id}: ${entry.demoPath}`)
     expect(bad, `malformed Demo paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 
   it("all Poster paths are well-formed", () => {
     const bad = allEntries
-      .filter((item) => item.thumbnailSrc && !POSTER_PATH.test(item.thumbnailSrc))
-      .map((item) => `${item.id}: ${item.thumbnailSrc}`)
+      .filter((entry) => entry.posterPath && !POSTER_PATH.test(entry.posterPath))
+      .map((entry) => `${entry.id}: ${entry.posterPath}`)
     expect(bad, `malformed Poster paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 })

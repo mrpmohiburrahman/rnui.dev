@@ -1,12 +1,12 @@
 // hooks/useSortedData.ts
 import { useEffect, useState } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 type SortType = "recent" | "top-voted" | "top-viewed"
 
-const useSortedData = (initialData: ItemType[]) => {
+const useSortedData = (initialData: Entry[]) => {
   const [sort, setSort] = useState<SortType>("recent")
-  const [sortedData, setSortedData] = useState<ItemType[]>(initialData)
+  const [sortedData, setSortedData] = useState<Entry[]>(initialData)
 
   useEffect(() => {
     const sorted = [...initialData]

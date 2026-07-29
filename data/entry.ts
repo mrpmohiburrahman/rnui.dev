@@ -1,40 +1,27 @@
-// data/items.ts
+// data/entry.ts
 import { collection, getDocs } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
 
-import { allEntries as localItems } from "./catalogue"
-
-// Existing data types
-export type CategoryData = {
-  name: string
-}
-
-export type LabelData = {
-  name: string
-}
-
-export type TagData = {
-  name: string
-}
+import { allEntries } from "./catalogue"
 
 // Return the unique categories sorted alphabetically
 export function getUniqueCategories(): string[] {
-  const categories = localItems.map((item) => item.category)
+  const categories = allEntries.map((entry) => entry.category)
   return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b))
 }
 
 // Return the unique authors sorted alphabetically
 export function getUniqueAuthors(): string[] {
-  const authors = localItems.map((item) => item.author)
+  const authors = allEntries.map((entry) => entry.author)
   return Array.from(new Set(authors)).sort((a, b) => a.localeCompare(b))
 }
 
-export type ItemType = {
+export type Entry = {
   id: string
   caption: string
-  videoSrc: string
-  thumbnailSrc: string
+  demoPath: string
+  posterPath: string
   author: string
   source: string
   twitterId?: string
@@ -59,6 +46,8 @@ export type ItemType = {
     | "Pickers"
     | "Sliders"
     | "Tab bars"
+  // view_count, vote_count and created_at are field names inside live Firestore
+  // documents, so they keep their stored spelling rather than the glossary's.
   view_count?: number
   vote_count?: number
   created_at?: string
@@ -68,7 +57,7 @@ export type ItemType = {
 // Determine the collection name based on the environment
 const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 
-export async function getItemsWithCounts(): Promise<ItemType[]> {
+export async function getEntriesWithCounts(): Promise<Entry[]> {
   console.log("🚀 ~ COLLECTION_NAME:", COLLECTION_NAME)
   const countsCollection = collection(db, COLLECTION_NAME)
   const countsSnapshot = await getDocs(countsCollection)
@@ -81,15 +70,15 @@ export async function getItemsWithCounts(): Promise<ItemType[]> {
     countsMap[doc.id] = doc.data() as { view_count: number; vote_count: number }
   })
 
-  // Merge counts into local items
-  const itemsWithCounts: ItemType[] = localItems.map((item) => ({
-    ...item,
-    view_count: countsMap[item.id]?.view_count || 0,
-    vote_count: countsMap[item.id]?.vote_count || 0,
+  // Merge counts into the local Entries
+  const entriesWithCounts: Entry[] = allEntries.map((entry) => ({
+    ...entry,
+    view_count: countsMap[entry.id]?.view_count || 0,
+    vote_count: countsMap[entry.id]?.vote_count || 0,
   }))
 
-  // Sort items based on created_at in descending order (latest first)
-  itemsWithCounts.sort((a, b) => {
+  // Sort Entries based on created_at in descending order (latest first)
+  entriesWithCounts.sort((a, b) => {
     if (!a.created_at && !b.created_at) return 0
     if (!a.created_at) return 1 // a is older or missing, place after b
     if (!b.created_at) return -1 // b is older or missing, place after a
@@ -101,17 +90,17 @@ export async function getItemsWithCounts(): Promise<ItemType[]> {
   })
 
   // Find the latest date (YYYY-MM-DD)
-  const latestDate = itemsWithCounts[0]?.created_at
-    ? new Date(itemsWithCounts[0].created_at).toISOString().split("T")[0]
+  const latestDate = entriesWithCounts[0]?.created_at
+    ? new Date(entriesWithCounts[0].created_at).toISOString().split("T")[0]
     : ""
 
   // Add isNew property based on the latest date
-  const itemsWithIsNew: ItemType[] = itemsWithCounts.map((item) => ({
-    ...item,
-    isNew: item.created_at
-      ? new Date(item.created_at).toISOString().split("T")[0] === latestDate
+  const entriesWithIsNew: Entry[] = entriesWithCounts.map((entry) => ({
+    ...entry,
+    isNew: entry.created_at
+      ? new Date(entry.created_at).toISOString().split("T")[0] === latestDate
       : false,
   }))
 
-  return itemsWithIsNew
+  return entriesWithIsNew
 }

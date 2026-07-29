@@ -14,7 +14,7 @@ import { ModeToggle } from "@/app/providers"
 
 import { Logo } from "../logo"
 import { AdminNav } from "./admin-nav"
-import { ProductNav } from "./product-nav"
+import { CatalogueNav } from "./catalogue-nav"
 
 type NavSidebarProps = {
   categories: string[]
@@ -56,7 +56,7 @@ export function NavSidebar({
               <AdminNav pathname={pathname} />
             </>
           ) : (
-            <ProductNav
+            <CatalogueNav
               categories={categories}
               labels={labels}
               tags={tags}
@@ -124,7 +124,7 @@ export function NavSidebar({
                     </>
                   ) : (
                     <>
-                      <ProductNav
+                      <CatalogueNav
                         categories={categories}
                         labels={labels}
                         tags={tags}

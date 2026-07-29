@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const sliders: ItemType[] = [
+export const sliders: Entry[] = [
   {
     id: "01JGQM3VTD76MGKR01N04D8HNN",
     caption: "iOS shutdown slider",
-    videoSrc: "demo/sliders/skia_slider_aswin_c.mp4",
-    thumbnailSrc: "thumbnails/sliders/skia_slider_aswin_c.avif",
+    demoPath: "demo/sliders/skia_slider_aswin_c.mp4",
+    posterPath: "thumbnails/sliders/skia_slider_aswin_c.avif",
     author: "Aswin C",
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/SkiaSliderReanimated/index.js",
@@ -17,8 +17,8 @@ export const sliders: ItemType[] = [
   {
     id: "01JFP0FAB9E9H8V6FZZBBNSWBT",
     caption: "iOS shutdown slider",
-    videoSrc: "demo/sliders/ios_shutdown_sliders_konstantinos_efkarpidis.mp4",
-    thumbnailSrc:
+    demoPath: "demo/sliders/ios_shutdown_sliders_konstantinos_efkarpidis.mp4",
+    posterPath:
       "thumbnails/sliders/ios_shutdown_sliders_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
@@ -32,8 +32,8 @@ export const sliders: ItemType[] = [
   {
     id: "01JFP0R9ZDWVDJR4KPSDDQ63Q2",
     caption: "Fancy Slider",
-    videoSrc: "demo/sliders/fancy_slider_andreev_danila.mp4",
-    thumbnailSrc: "thumbnails/sliders/fancy_slider_andreev_danila.avif",
+    demoPath: "demo/sliders/fancy_slider_andreev_danila.mp4",
+    posterPath: "thumbnails/sliders/fancy_slider_andreev_danila.avif",
     author: "Andreev Danila",
     source: "https://github.com/andreev-danila/fancy-slider",
     twitterId: "dan_w1d1",
@@ -45,8 +45,8 @@ export const sliders: ItemType[] = [
   {
     id: "01JFP1AQFST1QYWFB59DNN55F7",
     caption: "Sensor Based Slider",
-    videoSrc: "demo/sliders/sensor_based_slider_kacper_kapusciak.mp4",
-    thumbnailSrc: "thumbnails/sliders/sensor_based_slider_kacper_kapusciak.avif",
+    demoPath: "demo/sliders/sensor_based_slider_kacper_kapusciak.mp4",
+    posterPath: "thumbnails/sliders/sensor_based_slider_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion/react-native-reanimated/pull/4330/files",
@@ -59,8 +59,8 @@ export const sliders: ItemType[] = [
 {
     id: "01KAY9AP339VMHHQ30SK5YXXH6",
     caption: "3d Scroll Transition",
-    videoSrc: "demo/sliders/3d-scroll-transition_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/3d-scroll-transition_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/3d-scroll-transition_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/3d-scroll-transition_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/3d-scroll-transition",
     twitterId: "reactiive_",
@@ -73,8 +73,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9APTS9MKHBM0D3S9HN24X",
     caption: "Airbnb Slider",
-    videoSrc: "demo/sliders/airbnb-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/airbnb-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/airbnb-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/airbnb-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-slider",
     twitterId: "reactiive_",
@@ -87,8 +87,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AQG4K5XG6B6CB7WR23TD",
     caption: "Balance Slider",
-    videoSrc: "demo/sliders/balance-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/balance-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/balance-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/balance-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/balance-slider",
     twitterId: "reactiive_",
@@ -101,8 +101,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AR6CSFK41Y8T54XA55EB",
     caption: "Blurred Scroll",
-    videoSrc: "demo/sliders/blurred-scroll_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/blurred-scroll_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/blurred-scroll_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/blurred-scroll_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-scroll",
     twitterId: "reactiive_",
@@ -115,8 +115,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9ARN6HP67BZ5T00R99MT9",
     caption: "Clock Time Picker",
-    videoSrc: "demo/sliders/clock-time-picker_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/clock-time-picker_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/clock-time-picker_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/clock-time-picker_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clock-time-picker",
     twitterId: "reactiive_",
@@ -129,8 +129,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9ARXZPTYWJRVZ1PVMN3PJ",
     caption: "Cuberto Slider",
-    videoSrc: "demo/sliders/cuberto-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/cuberto-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/cuberto-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/cuberto-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/cuberto-slider",
     twitterId: "reactiive_",
@@ -143,8 +143,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9ASDD995KYPKW9Z8N0HQN",
     caption: "Duration Slider",
-    videoSrc: "demo/sliders/duration-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/duration-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/duration-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/duration-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/duration-slider",
     twitterId: "reactiive_",
@@ -157,8 +157,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9ATZEET4P71MR6THA0MHF",
     caption: "Fluid Slider",
-    videoSrc: "demo/sliders/fluid-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/fluid-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/fluid-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/fluid-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-slider",
     twitterId: "reactiive_",
@@ -171,8 +171,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AXWQ4G1BEE7DPY4JGBY5",
     caption: "Prequel Slider",
-    videoSrc: "demo/sliders/prequel-slider_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/prequel-slider_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/prequel-slider_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/prequel-slider_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/prequel-slider",
     twitterId: "reactiive_",
@@ -185,8 +185,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AYJ1FWVDFDD6XJ50K39F",
     caption: "Scroll Progress",
-    videoSrc: "demo/sliders/scroll-progress_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/scroll-progress_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/scroll-progress_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/scroll-progress_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scroll-progress",
     twitterId: "reactiive_",
@@ -199,8 +199,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AYN7KABY2P2D2BZKF0K8",
     caption: "Scrollable Bottom Sheet",
-    videoSrc: "demo/sliders/scrollable-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/scrollable-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/scrollable-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/scrollable-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scrollable-bottom-sheet",
     twitterId: "reactiive_",
@@ -213,8 +213,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9AZGPFQZ8SX3XPQ8C5ZKB",
     caption: "Skia Color Picker",
-    videoSrc: "demo/sliders/skia-color-picker_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/skia-color-picker_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/skia-color-picker_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/skia-color-picker_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/skia-color-picker",
     twitterId: "reactiive_",
@@ -227,8 +227,8 @@ export const sliders: ItemType[] = [
   {
     id: "01KAY9B2AMN590C8YP5WTNDTHQ",
     caption: "Wheel Picker",
-    videoSrc: "demo/sliders/wheel-picker_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/sliders/wheel-picker_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/sliders/wheel-picker_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/sliders/wheel-picker_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/wheel-picker",
     twitterId: "reactiive_",

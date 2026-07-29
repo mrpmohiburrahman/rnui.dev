@@ -1,4 +1,4 @@
-// components/nav/product-nav.tsx
+// components/nav/catalogue-nav.tsx
 
 "use client"
 
@@ -10,7 +10,7 @@ import { cn, truncateString } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 
-type ProductNavProps = {
+type CatalogueNavProps = {
   authors?: string[]
   categories?: string[]
   tags?: string[]
@@ -20,7 +20,7 @@ type ProductNavProps = {
   children?: ReactNode
 }
 
-export function ProductNav({
+export function CatalogueNav({
   authors,
   categories,
   labels,
@@ -28,8 +28,8 @@ export function ProductNav({
   handleLinkClick,
   searchParams,
   children,
-}: ProductNavProps) {
-  // console.log("🚀 ~ authors -  ProductNav:", authors)
+}: CatalogueNavProps) {
+  // console.log("🚀 ~ authors -  CatalogueNav:", authors)
   return (
     <div className="">
       {/* <Logo /> */}

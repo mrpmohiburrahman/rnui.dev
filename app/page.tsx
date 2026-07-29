@@ -1,5 +1,5 @@
 // app/page.tsx
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 import { FadeIn } from "@/components/cult/fade-in"
 import DirectoryPageClient from "@/components/directory-page-client"
@@ -7,14 +7,14 @@ import { DirectorySearch } from "@/components/directory-search"
 import { Hero } from "@/components/hero"
 import NewsletterForm from "@/components/newsletter-form"
 
-import { getProducts } from "./actions/get-products"
+import { getEntries } from "./actions/get-entries"
 
 const FEATURED_IDS: string[] = []
 
 async function Page({ searchParams }: { searchParams: Promise<{ search?: string }> }) {
   const params = await searchParams
-  const data = await getProducts(params.search)
-  const filteredFeaturedData = data.filter((d: ItemType) =>
+  const data = await getEntries(params.search)
+  const filteredFeaturedData = data.filter((d: Entry) =>
     FEATURED_IDS.includes(d.id)
   )
 

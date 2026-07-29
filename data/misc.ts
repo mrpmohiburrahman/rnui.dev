@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const misc: ItemType[] = [
+export const misc: Entry[] = [
   {
     id: "01JXYAFB21MCEYBNSEGN4GB68A",
     caption: "Masonry Grid",
-    videoSrc: "demo/misc/masonry_grid_thomino.mp4",
-    thumbnailSrc: "thumbnails/misc/masonry_grid_thomino.avif",
+    demoPath: "demo/misc/masonry_grid_thomino.mp4",
+    posterPath: "thumbnails/misc/masonry_grid_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/masonry.tsx",
@@ -17,8 +17,8 @@ export const misc: ItemType[] = [
   {
     id: "01JXY8S0V9TQE2D53RJFHZXG4A",
     caption: "Journal Cards",
-    videoSrc: "demo/misc/journal_cards_thomino.mp4",
-    thumbnailSrc: "thumbnails/misc/journal_cards_thomino.avif",
+    demoPath: "demo/misc/journal_cards_thomino.mp4",
+    posterPath: "thumbnails/misc/journal_cards_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/journal-cards.tsx",
@@ -30,8 +30,8 @@ export const misc: ItemType[] = [
   {
     id: "01JXY8085GZA6K20CM9VXACYJY",
     caption: "Counter Card",
-    videoSrc: "demo/misc/counter_card_thomino.mp4",
-    thumbnailSrc: "thumbnails/misc/counter_card_thomino.avif",
+    demoPath: "demo/misc/counter_card_thomino.mp4",
+    posterPath: "thumbnails/misc/counter_card_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/card.tsx",
@@ -43,8 +43,8 @@ export const misc: ItemType[] = [
   {
     id: "01JXY7G7G3BMKF8R7ENWXSX541",
     caption: "Weather",
-    videoSrc: "demo/misc/weather_thomino.mp4",
-    thumbnailSrc: "thumbnails/misc/weather_thomino.avif",
+    demoPath: "demo/misc/weather_thomino.mp4",
+    posterPath: "thumbnails/misc/weather_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/weather.tsx",
@@ -56,8 +56,8 @@ export const misc: ItemType[] = [
   {
     id: "01JN3SHBDQDEEG7BZSQV0S3X53",
     caption: "Star Rating",
-    videoSrc: "demo/misc/star_rating_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/star_rating_hewad_mubariz.avif",
+    demoPath: "demo/misc/star_rating_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/star_rating_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/ratings",
@@ -70,8 +70,8 @@ export const misc: ItemType[] = [
   {
     id: "01JHD2522P2D74TYPHCW59P493",
     caption: "Transitions",
-    videoSrc: "demo/misc/transitions_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/misc/transitions_william_candillon.avif",
+    demoPath: "demo/misc/transitions_william_candillon.mp4",
+    posterPath: "thumbnails/misc/transitions_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Transitions",
@@ -84,8 +84,8 @@ export const misc: ItemType[] = [
   {
     id: "01JHD19XJ2FF8PDT18EXE6ZQ3F",
     caption: "Pizza Challenge",
-    videoSrc: "demo/misc/pizza_challenge_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/misc/pizza_challenge_william_candillon.avif",
+    demoPath: "demo/misc/pizza_challenge_william_candillon.mp4",
+    posterPath: "thumbnails/misc/pizza_challenge_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
@@ -98,8 +98,8 @@ export const misc: ItemType[] = [
   {
     id: "01JHCZ6AAYSW466TKHCHG8774W",
     caption: "Stroke Animation",
-    videoSrc: "demo/misc/stroke_animation_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/misc/stroke_animation_william_candillon.avif",
+    demoPath: "demo/misc/stroke_animation_william_candillon.mp4",
+    posterPath: "thumbnails/misc/stroke_animation_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/StrokeAnimation",
@@ -112,8 +112,8 @@ export const misc: ItemType[] = [
   {
     id: "01JHCYDFAR37TH8G9PQ3P734BD",
     caption: "Masked View",
-    videoSrc: "demo/misc/masked_view_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/misc/masked_view_william_candillon.avif",
+    demoPath: "demo/misc/masked_view_william_candillon.mp4",
+    posterPath: "thumbnails/misc/masked_view_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/MaskedView",
@@ -132,8 +132,8 @@ export const misc: ItemType[] = [
     twitterId: "tandonpushkar0",
     linkedInId: "tandonpushkar",
     githubId: "tandonpushkar",
-    videoSrc: "demo/misc/expanding_search_bar_pushkar_tandon.mp4",
-    thumbnailSrc: "thumbnails/misc/expanding_search_bar_pushkar_tandon.avif",
+    demoPath: "demo/misc/expanding_search_bar_pushkar_tandon.mp4",
+    posterPath: "thumbnails/misc/expanding_search_bar_pushkar_tandon.avif",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/commits/feature/expanding-search-bar/",
   },
@@ -145,8 +145,8 @@ export const misc: ItemType[] = [
     author: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
-    videoSrc: "demo/misc/animated_letter_text_aswin_c.mp4",
-    thumbnailSrc: "thumbnails/misc/animated_letter_text_aswin_c.avif",
+    demoPath: "demo/misc/animated_letter_text_aswin_c.mp4",
+    posterPath: "thumbnails/misc/animated_letter_text_aswin_c.avif",
     source:
       "https://github.com/aswincheriyala/react-native-animated-letter-text",
   },
@@ -158,8 +158,8 @@ export const misc: ItemType[] = [
     author: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
-    videoSrc: "demo/misc/app_walkthrough_aswin_c.mp4",
-    thumbnailSrc: "thumbnails/misc/app_walkthrough_aswin_c.avif",
+    demoPath: "demo/misc/app_walkthrough_aswin_c.mp4",
+    posterPath: "thumbnails/misc/app_walkthrough_aswin_c.avif",
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/AppWalkThrough/index.js",
   },
@@ -171,8 +171,8 @@ export const misc: ItemType[] = [
     author: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
-    videoSrc: "demo/misc/coons_patch_aswin_c.mp4",
-    thumbnailSrc: "thumbnails/misc/coons_patch_aswin_c.avif",
+    demoPath: "demo/misc/coons_patch_aswin_c.mp4",
+    posterPath: "thumbnails/misc/coons_patch_aswin_c.avif",
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/Particles/index.js",
   },
@@ -184,16 +184,16 @@ export const misc: ItemType[] = [
     author: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
-    videoSrc: "demo/misc/particles_aswin_c.mp4",
-    thumbnailSrc: "thumbnails/misc/particles_aswin_c.avif",
+    demoPath: "demo/misc/particles_aswin_c.mp4",
+    posterPath: "thumbnails/misc/particles_aswin_c.avif",
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/Particles/index.js",
   },
   {
     id: "01JGNNBVEMHYC54TPQ7Q7TBD6Z",
     caption: "Number Flow",
-    videoSrc: "demo/misc/number_flow_wahab_balogun.mp4",
-    thumbnailSrc: "thumbnails/misc/number_flow_wahab_balogun.avif",
+    demoPath: "demo/misc/number_flow_wahab_balogun.mp4",
+    posterPath: "thumbnails/misc/number_flow_wahab_balogun.avif",
     author: "Wahab Balogun",
     source: "https://github.com/03balogun/rn-number-flow",
     linkedInId: "03balogun",
@@ -204,8 +204,8 @@ export const misc: ItemType[] = [
   {
     id: "01JGKF92A010BBMHWYG4Z0ZDKY",
     caption: "Neural Network",
-    videoSrc: "demo/misc/neural_network_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/neural_network_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/neural_network_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/mnist-expo",
@@ -218,8 +218,8 @@ export const misc: ItemType[] = [
   {
     id: "01JGKA26N1F5T0F3B512KNDN1T",
     caption: "Task Calendar",
-    videoSrc: "demo/misc/task_calendar_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/misc/task_calendar_konstantinos_efkarpidis.avif",
+    demoPath: "demo/misc/task_calendar_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/misc/task_calendar_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/TaskCalendarScreen.tsx",
@@ -231,8 +231,8 @@ export const misc: ItemType[] = [
   {
     id: "01JGJBMNPEDHH29CFT9MX9XQ84",
     caption: "Spin Wheel",
-    videoSrc: "demo/misc/spin_wheel_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/misc/spin_wheel_konstantinos_efkarpidis.avif",
+    demoPath: "demo/misc/spin_wheel_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/misc/spin_wheel_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/Lottery/LotteryScreen.tsx",
@@ -244,8 +244,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0E4MBWGP66HH5ZATG7HN8",
     caption: "Action Menu",
-    videoSrc: "demo/misc/action_menu_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/misc/action_menu_arunabh_verma.avif",
+    demoPath: "demo/misc/action_menu_arunabh_verma.mp4",
+    posterPath: "thumbnails/misc/action_menu_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-action-menu",
     twitterId: "iamarunabh",
@@ -257,9 +257,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0R2H8XTV3MH0R373CNSAP",
     caption: "Circular Animated Text Screen",
-    videoSrc:
+    demoPath:
       "demo/misc/circular_animated_text_screen_konstantinos_efkarpidis.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/circular_animated_text_screen_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
@@ -272,8 +272,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0VRQR81Q11RCT3BDWDPGE",
     caption: "iOS Search Bar",
-    videoSrc: "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/misc/ios_search_bar_konstantinos_efkarpidis.avif",
+    demoPath: "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/misc/ios_search_bar_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b91bcc460cdccf1b7290bcacac8abb7606622494/src/screens/TranslateSearchIOSScreen.tsx",
@@ -285,8 +285,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0VXFK5GCD7MGK5PYF85K5",
     caption: "NFC Reader",
-    videoSrc: "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/misc/nfc_reader_konstantinos_efkarpidis.avif",
+    demoPath: "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/misc/nfc_reader_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/master/src/screens/NFCReaderScreen.tsx",
@@ -298,8 +298,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0W2911TT0BB557BFZHPF4",
     caption: "Airbnb's Search component",
-    videoSrc: "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
+    posterPath:
       "thumbnails/misc/airbnb_search_component_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
@@ -312,8 +312,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0W7BPJC5RNNM04798TGWP",
     caption: "Flash Cards",
-    videoSrc: "demo/misc/flash_cards_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/flash_cards_hewad_mubariz.avif",
+    demoPath: "demo/misc/flash_cards_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/flash_cards_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flash-cards",
@@ -326,9 +326,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0WBVAXDQ310MJW7TE1R6G",
     caption: "Animated Stacked Cards",
-    videoSrc:
+    demoPath:
       "demo/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -342,8 +342,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0WGDXNEG3SYYB111RR7RD",
     caption: "Transitions",
-    videoSrc: "demo/misc/rn_transitions_lucas_lima.mp4",
-    thumbnailSrc: "thumbnails/misc/rn_transitions_lucas_lima.avif",
+    demoPath: "demo/misc/rn_transitions_lucas_lima.mp4",
+    posterPath: "thumbnails/misc/rn_transitions_lucas_lima.avif",
     author: "Lucas Lima",
     source: "https://github.com/lklima/rn-transitions",
     twitterId: "lima_lucas3",
@@ -355,8 +355,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0WMC7ANW9T8B7N50EN0QD",
     caption: "Spinning Circle",
-    videoSrc: "demo/misc/spinning_circle_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/spinning_circle_hewad_mubariz.avif",
+    demoPath: "demo/misc/spinning_circle_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/spinning_circle_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/spinning-circle",
@@ -369,8 +369,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0WVN69K8GG2K5KD93RMRR",
     caption: "Flight Animation",
-    videoSrc: "demo/misc/flight_animation_lucas_lima.mp4",
-    thumbnailSrc: "thumbnails/misc/flight_animation_lucas_lima.avif",
+    demoPath: "demo/misc/flight_animation_lucas_lima.mp4",
+    posterPath: "thumbnails/misc/flight_animation_lucas_lima.avif",
     author: "Lucas Lima",
     source: "https://github.com/lklima/rn-flight-animation",
     twitterId: "lima_lucas3",
@@ -382,8 +382,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0X080KZF6VGXWJ6Y5KE5P",
     caption: "Heart Beat Animation",
-    videoSrc: "demo/misc/heart_beat_animation_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/misc/heart_beat_animation_william_candillon.avif",
+    demoPath: "demo/misc/heart_beat_animation_william_candillon.mp4",
+    posterPath: "thumbnails/misc/heart_beat_animation_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Heartrate",
@@ -396,8 +396,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0X4VDP4V78GHG50NDQF6B",
     caption: "iOS UI",
-    videoSrc: "demo/misc/ios_ui_enes_ozturk.mp4",
-    thumbnailSrc: "thumbnails/misc/ios_ui_enes_ozturk.avif",
+    demoPath: "demo/misc/ios_ui_enes_ozturk.mp4",
+    posterPath: "thumbnails/misc/ios_ui_enes_ozturk.avif",
     author: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-ios",
     twitterId: "enesozturkdev",
@@ -409,8 +409,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0X9S9KET2DH60XXHMAQQB",
     caption: "Instagram iOS Page Transitions",
-    videoSrc: "demo/misc/instagram_ios_page_transitions_enes.mp4",
-    thumbnailSrc: "thumbnails/misc/instagram_ios_page_transitions_enes.avif",
+    demoPath: "demo/misc/instagram_ios_page_transitions_enes.mp4",
+    posterPath: "thumbnails/misc/instagram_ios_page_transitions_enes.avif",
     author: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-instagram",
     twitterId: "enesozturkdev",
@@ -422,8 +422,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0XE1J7TC20GTHP9VE6NGF",
     caption: "Cards Swap",
-    videoSrc: "demo/misc/cards_swap_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/cards_swap_aashu_dubey.avif",
+    demoPath: "demo/misc/cards_swap_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/cards_swap_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/cards_swap/src/cards_swap",
@@ -435,8 +435,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0XPMJCQMTHC93VE66A2AA",
     caption: "Custom Cursor/Caret",
-    videoSrc: "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/custom_cursor_caret_aashu_dubey.avif",
+    demoPath: "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/custom_cursor_caret_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_caret",
@@ -448,8 +448,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0XTVW6Z6P85PCXQ7FKXKY",
     caption: "Rope Physics",
-    videoSrc: "demo/misc/rope_physics_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/rope_physics_aashu_dubey.avif",
+    demoPath: "demo/misc/rope_physics_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/rope_physics_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/rope_physics",
@@ -461,8 +461,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0XYETEGXCXN9006P2Q38B",
     caption: "Spread Cards Effect ( Color Swatch )",
-    videoSrc: "demo/misc/color_swatch_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/color_swatch_aashu_dubey.avif",
+    demoPath: "demo/misc/color_swatch_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/color_swatch_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/color_swatch",
@@ -474,8 +474,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0Y3XN5KWA7ENF4N0SP3SW",
     caption: "Animated Toolbar",
-    videoSrc: "demo/misc/animated_toolbar_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/animated_toolbar_aashu_dubey.avif",
+    demoPath: "demo/misc/animated_toolbar_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/animated_toolbar_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_toolbar",
@@ -487,8 +487,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0Y7VEGX8MQJQSW9G5XXYP",
     caption: "Sphere Animation",
-    videoSrc: "demo/misc/sphere_animation_andreev_danila.mp4",
-    thumbnailSrc: "thumbnails/misc/sphere_animation_andreev_danila.avif",
+    demoPath: "demo/misc/sphere_animation_andreev_danila.mp4",
+    posterPath: "thumbnails/misc/sphere_animation_andreev_danila.avif",
     author: "Andreev Danila",
     source: "https://github.com/andreev-danila/sphere-svg-animation",
     twitterId: "dan_w1d1",
@@ -499,8 +499,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0YCCKZ1TJ1PK9S66Q0RW6",
     caption: "Skia Gesture",
-    videoSrc: "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/skia_gesture_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -514,8 +514,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0YHPD5N7YVQYYBHK567WX",
     caption: "Skeleton",
-    videoSrc: "demo/misc/skeleton_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/skeleton_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/skeleton_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/skeleton_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/18-skeleton-animation",
@@ -528,8 +528,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0YNQJYTJF6CHWQC04R4DW",
     caption: "Shake Animation",
-    videoSrc: "demo/misc/shake_animation_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/shake_animation_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/shake_animation_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -543,8 +543,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0YV2N1HZ92V1NB20SBKBE",
     caption: "Grid Magnification",
-    videoSrc: "demo/misc/grid_magnification_aashu_dubey.mp4",
-    thumbnailSrc: "thumbnails/misc/grid_magnification_aashu_dubey.avif",
+    demoPath: "demo/misc/grid_magnification_aashu_dubey.mp4",
+    posterPath: "thumbnails/misc/grid_magnification_aashu_dubey.avif",
     author: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
@@ -556,8 +556,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0YZWMC117QY08QWHCSW75",
     caption: "Grid Magnification",
-    videoSrc: "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/grid_magnification_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -571,8 +571,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0Z3X61TPGVQVS9BGKW05Z",
     caption: "Metaball Animation",
-    videoSrc: "demo/misc/metaball_animation_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/metaball_animation_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/metaball_animation_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -586,8 +586,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0Z81Q70JC491EF0JJPKV2",
     caption: "Animated Gradient",
-    videoSrc: "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/animated_gradient_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -601,8 +601,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0ZD9A8T5SB3F9S4YTP7QP",
     caption: "Text Input Inspired By X (Twitter)",
-    videoSrc: "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
+    posterPath:
       "thumbnails/misc/text_input_inspired_by_x_twitter_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-x-input",
@@ -615,8 +615,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0ZJX7JWGPPVGV59SCAX2K",
     caption: "Mention Input",
-    videoSrc: "demo/misc/mention_input_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/misc/mention_input_arunabh_verma.avif",
+    demoPath: "demo/misc/mention_input_arunabh_verma.mp4",
+    posterPath: "thumbnails/misc/mention_input_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-mention",
     twitterId: "iamarunabh",
@@ -628,8 +628,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP0ZV08B8M5WJ6SRV1G88PP",
     caption: "Custom Menu",
-    videoSrc: "demo/misc/custom_menu_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/misc/custom_menu_arunabh_verma.avif",
+    demoPath: "demo/misc/custom_menu_arunabh_verma.mp4",
+    posterPath: "thumbnails/misc/custom_menu_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-menu",
     twitterId: "iamarunabh",
@@ -641,8 +641,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP102F7N72NXPVX65P6K5GY",
     caption: "Gallery Inspired Image Carousel",
-    videoSrc: "demo/misc/gallery_inspired_image_carousel_arunabh_verma.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/gallery_inspired_image_carousel_arunabh_verma.mp4",
+    posterPath:
       "thumbnails/misc/gallery_inspired_image_carousel_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-selection",
@@ -655,8 +655,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1077CHKV7G7C42B48P12M",
     caption: "Edge Panel",
-    videoSrc: "demo/misc/edge_panel_arunabh_verma.mp4",
-    thumbnailSrc: "thumbnails/misc/edge_panel_arunabh_verma.avif",
+    demoPath: "demo/misc/edge_panel_arunabh_verma.mp4",
+    posterPath: "thumbnails/misc/edge_panel_arunabh_verma.avif",
     author: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-edge-panel",
     twitterId: "iamarunabh",
@@ -668,8 +668,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP10CBHC93CRRXFDGJXSYV8",
     caption: "Masked Text",
-    videoSrc: "demo/misc/masked_text_yassire_mtioui.mp4",
-    thumbnailSrc: "thumbnails/misc/masked_text_yassire_mtioui.avif",
+    demoPath: "demo/misc/masked_text_yassire_mtioui.mp4",
+    posterPath: "thumbnails/misc/masked_text_yassire_mtioui.avif",
     author: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/MaskedText",
@@ -682,8 +682,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP10HVBJ8SXDSNCWYR41EZ4",
     caption: "Speech Visualization",
-    videoSrc: "demo/misc/speech_visualization_yassire_mtioui.mp4",
-    thumbnailSrc: "thumbnails/misc/speech_visualization_yassire_mtioui.avif",
+    demoPath: "demo/misc/speech_visualization_yassire_mtioui.mp4",
+    posterPath: "thumbnails/misc/speech_visualization_yassire_mtioui.avif",
     author: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/SpeechVisualization",
@@ -696,8 +696,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP10NHYN3CVCT1RFW2PWVJM",
     caption: "Rotary Phone",
-    videoSrc: "demo/misc/rotary_phone_rn_skia_yassire_mtioui.mp4",
-    thumbnailSrc: "thumbnails/misc/rotary_phone_rn_skia_yassire_mtioui.avif",
+    demoPath: "demo/misc/rotary_phone_rn_skia_yassire_mtioui.mp4",
+    posterPath: "thumbnails/misc/rotary_phone_rn_skia_yassire_mtioui.avif",
     author: "Yassire Mtioui",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
@@ -710,9 +710,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP10SG1C8V83WY6KPAPFQY4",
     caption: "Shared Elements Transition",
-    videoSrc:
+    demoPath:
       "demo/misc/shared_elements_transition_evening_kid_arnaud_dellinger.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/shared_elements_transition_evening_kid_arnaud_dellinger.avif",
     author: "Arnaud Dellinger ( evening kid )",
     source:
@@ -726,9 +726,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP10Y1XR01CWPYTXC7GC8RA",
     caption: "Animated Twitter Profile",
-    videoSrc:
+    demoPath:
       "demo/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.avif",
     author: "Arnaud Dellinger ( evening kid )",
     source:
@@ -742,8 +742,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP115F8A8P373ZE47Q2M0FB",
     caption: "react-native-snow-bg",
-    videoSrc: "demo/misc/react-native-snow-bg-epicode.mp4",
-    thumbnailSrc: "thumbnails/misc/react-native-snow-bg-epicode.avif",
+    demoPath: "demo/misc/react-native-snow-bg-epicode.mp4",
+    posterPath: "thumbnails/misc/react-native-snow-bg-epicode.avif",
     author: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-snow-bg",
     twitterId: "epicode_",
@@ -754,8 +754,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP11ABHSG86RQ0DCEHRFQSQ",
     caption: "Color Pixelated",
-    videoSrc: "demo/misc/color_pixelated_daehyeon_mun.mp4",
-    thumbnailSrc: "thumbnails/misc/color_pixelated_daehyeon_mun.avif",
+    demoPath: "demo/misc/color_pixelated_daehyeon_mun.mp4",
+    posterPath: "thumbnails/misc/color_pixelated_daehyeon_mun.avif",
     author: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/color-pixelated",
@@ -768,8 +768,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP11FS1BXAZ2EVPHH58RF2Z",
     caption: "Typography Metaball",
-    videoSrc: "demo/misc/typography_metaball_daehyeon_mun.mp4",
-    thumbnailSrc: "thumbnails/misc/typography_metaball_daehyeon_mun.avif",
+    demoPath: "demo/misc/typography_metaball_daehyeon_mun.mp4",
+    posterPath: "thumbnails/misc/typography_metaball_daehyeon_mun.avif",
     author: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/typography-metaball",
@@ -782,8 +782,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP11Q3BC1FGB4WBWA2XQX4Q",
     caption: "Pixelated Image",
-    videoSrc: "demo/misc/pixelated_image_daehyeon_mun.mp4",
-    thumbnailSrc: "thumbnails/misc/pixelated_image_daehyeon_mun.avif",
+    demoPath: "demo/misc/pixelated_image_daehyeon_mun.mp4",
+    posterPath: "thumbnails/misc/pixelated_image_daehyeon_mun.avif",
     author: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/pixelated-image",
@@ -796,8 +796,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP11V6M3EVQXDSXD75BPHF1",
     caption: "Ripple Effect With React Native Skia",
-    videoSrc: "demo/misc/ripple_effect_daehyeon_mun.mp4",
-    thumbnailSrc: "thumbnails/misc/ripple_effect_daehyeon_mun.avif",
+    demoPath: "demo/misc/ripple_effect_daehyeon_mun.mp4",
+    posterPath: "thumbnails/misc/ripple_effect_daehyeon_mun.avif",
     author: "Daehyeon Mun (문대현)",
     source:
       "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
@@ -810,8 +810,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP11ZVJ4DMYHJHAXW6NYNW7",
     caption: "Phyllotaxis Spiral",
-    videoSrc: "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/phyllotaxis_spiral_alireza_hadjar.avif",
+    demoPath: "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/phyllotaxis_spiral_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Phyllotaxis",
@@ -824,8 +824,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1251TPM2TF8GTC22KFSM6",
     caption: "Flappy Bird",
-    videoSrc: "demo/misc/flappy_bird_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/flappy_bird_alireza_hadjar.avif",
+    demoPath: "demo/misc/flappy_bird_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/flappy_bird_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FlappyBird",
@@ -838,8 +838,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP128XYCMRKHHVE5YDH8PAD",
     caption: "Firework",
-    videoSrc: "demo/misc/firework_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/firework_alireza_hadjar.avif",
+    demoPath: "demo/misc/firework_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/firework_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Firework",
@@ -852,8 +852,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12DB8T8AHZ2GZXWKX8F1Z",
     caption: "Fractal Tree",
-    videoSrc: "demo/misc/fractal_tree_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/fractal_tree_alireza_hadjar.avif",
+    demoPath: "demo/misc/fractal_tree_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/fractal_tree_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FractalTree",
@@ -866,8 +866,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12H7BVWVDCZP4Z8Z59Q5B",
     caption: "Starfield Simulation",
-    videoSrc: "demo/misc/starfield_simulation_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/starfield_simulation_alireza_hadjar.avif",
+    demoPath: "demo/misc/starfield_simulation_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/starfield_simulation_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Starfield",
@@ -880,8 +880,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12NA8PZMDX85X6D1X1Q3G",
     caption: "Double Pendulum",
-    videoSrc: "demo/misc/double_pendulum_alireza_hadjar.mp4",
-    thumbnailSrc: "thumbnails/misc/double_pendulum_alireza_hadjar.avif",
+    demoPath: "demo/misc/double_pendulum_alireza_hadjar.mp4",
+    posterPath: "thumbnails/misc/double_pendulum_alireza_hadjar.avif",
     author: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/DoublePendulum",
@@ -894,9 +894,9 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12SAX07YSNT7TFC71EWDX",
     caption: "Shared Element Transitions Example",
-    videoSrc:
+    demoPath:
       "demo/misc/shared_element_transitions_example_kacper_kapusciak.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/shared_element_transitions_example_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
@@ -910,8 +910,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP12ZHWT6XDX5DJENXS0PKG",
     caption: "Gradient Shared Transition",
-    videoSrc: "demo/misc/gradient_shared_transition_kacper_kapusciak.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/gradient_shared_transition_kacper_kapusciak.mp4",
+    posterPath:
       "thumbnails/misc/gradient_shared_transition_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
@@ -925,8 +925,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP13DEFBDW6TBNFC06QTD38",
     caption: "Magic Curtain Effect",
-    videoSrc: "demo/misc/magic_curtain_effect_kacper_kapusciak.mp4",
-    thumbnailSrc: "thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif",
+    demoPath: "demo/misc/magic_curtain_effect_kacper_kapusciak.mp4",
+    posterPath: "thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/expo-magic-curtain",
     twitterId: "kacperkapusciak",
@@ -938,8 +938,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP13JH50CNEW5JD5WZW1MPE",
     caption: "Fake Shared Element Transition",
-    videoSrc: "demo/misc/fake_shared_element_transition_alek_mikucki.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/fake_shared_element_transition_alek_mikucki.mp4",
+    posterPath:
       "thumbnails/misc/fake_shared_element_transition_alek_mikucki.avif",
     author: "Alek Mikucki",
     source:
@@ -953,9 +953,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP13PQTQSKBV2H60MXNEEBG",
     caption: "View Transition using Skia",
-    videoSrc: "demo/misc/view_transition_using_skia_alek_mikucki.mp4",
-    thumbnailSrc:
-      "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
+    demoPath: "demo/misc/view_transition_using_skia_alek_mikucki.mp4",
+    posterPath: "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://gist.github.com/aleqsio/754b3a2b664b928f5c65d715b9452d77",
     twitterId: "aleqsio",
@@ -967,8 +966,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP13VN019TX2Z66W4XMF201",
     caption: "Townscaper",
-    videoSrc: "demo/misc/townscaper_alek_mikucki.mp4",
-    thumbnailSrc: "thumbnails/misc/townscaper_alek_mikucki.avif",
+    demoPath: "demo/misc/townscaper_alek_mikucki.mp4",
+    posterPath: "thumbnails/misc/townscaper_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://github.com/aleqsio/expo-image-and-gesture-handler-demo",
     twitterId: "aleqsio",
@@ -980,8 +979,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1402NV9VJSVFC7M89QK0A",
     caption: "Gradient Picker",
-    videoSrc: "demo/misc/gradient_picker_alek_mikucki.mp4",
-    thumbnailSrc: "thumbnails/misc/gradient_picker_alek_mikucki.avif",
+    demoPath: "demo/misc/gradient_picker_alek_mikucki.mp4",
+    posterPath: "thumbnails/misc/gradient_picker_alek_mikucki.avif",
     author: "Alek Mikucki",
     source: "https://github.com/aleqsio/gradient-picker-reanimated",
     twitterId: "aleqsio",
@@ -993,8 +992,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP145A199Z2W3NVA1SXWRHP",
     caption: "Animated Cards",
-    videoSrc: "demo/misc/animated_cards_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/animated_cards_hewad_mubariz.avif",
+    demoPath: "demo/misc/animated_cards_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/animated_cards_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-cards",
@@ -1007,8 +1006,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1494FNCY8MD0KTZG5TJXQ",
     caption: "Animated Shapes",
-    videoSrc: "demo/misc/animated_shapes_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/animated_shapes_hewad_mubariz.avif",
+    demoPath: "demo/misc/animated_shapes_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/animated_shapes_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-shapes",
@@ -1021,8 +1020,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP14E3CZ5HZZBG5KC9KF5RE",
     caption: "Audio Input Visualizer",
-    videoSrc: "demo/misc/audio_input_visualizer_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/audio_input_visualizer_hewad_mubariz.avif",
+    demoPath: "demo/misc/audio_input_visualizer_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/audio_input_visualizer_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/audio-input-visualizer",
@@ -1035,8 +1034,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP17XVW8RH5YREZD6SNBY0J",
     caption: "Flippy Card",
-    videoSrc: "demo/misc/flippy_card_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/flippy_card_hewad_mubariz.avif",
+    demoPath: "demo/misc/flippy_card_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/flippy_card_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flippy-card",
@@ -1049,8 +1048,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP182XQ5ZARBFDAF0EVT391",
     caption: "Playing Cards",
-    videoSrc: "demo/misc/playing_cards_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/playing_cards_hewad_mubariz.avif",
+    demoPath: "demo/misc/playing_cards_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/playing_cards_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
@@ -1063,8 +1062,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP186NRZWXGVWG59Z3SPGAF",
     caption: "Rating Wave",
-    videoSrc: "demo/misc/rating_wave_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/rating_wave_hewad_mubariz.avif",
+    demoPath: "demo/misc/rating_wave_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/rating_wave_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
@@ -1077,8 +1076,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18AG7W3ECB7ZV59PPH5AZ",
     caption: "Expandable FAB",
-    videoSrc: "demo/misc/expandable_fab_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/expandable_fab_hewad_mubariz.avif",
+    demoPath: "demo/misc/expandable_fab_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/expandable_fab_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expandable-fab",
@@ -1091,8 +1090,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18EVYRFSVJY7A40KYBM3Q",
     caption: "Micro Swipe Actions",
-    videoSrc: "demo/misc/micro_swipe_actions_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/misc/micro_swipe_actions_hewad_mubariz.avif",
+    demoPath: "demo/misc/micro_swipe_actions_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/micro_swipe_actions_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/micro-swipe-actions",
@@ -1105,8 +1104,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18KDPR7N9SPKHCVVA25GM",
     caption: "Genetic AI",
-    videoSrc: "demo/misc/geneticai_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/geneticai_david_friyia.avif",
+    demoPath: "demo/misc/geneticai_david_friyia.mp4",
+    posterPath: "thumbnails/misc/geneticai_david_friyia.avif",
     author: "Daniel Friyia",
     source: "https://github.com/friyiajr/GeneticAI",
     twitterId: "wa2goose",
@@ -1118,8 +1117,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18QVAW4XXYD4JEW08FTPC",
     caption: "Bending Circle",
-    videoSrc: "demo/misc/bending_circle_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/bending_circle_david_friyia.avif",
+    demoPath: "demo/misc/bending_circle_david_friyia.mp4",
+    posterPath: "thumbnails/misc/bending_circle_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
@@ -1132,8 +1131,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18VQ8NX7GYRBP1X02EZE6",
     caption: "Chasing Bubble",
-    videoSrc: "demo/misc/chasing_bubble_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/chasing_bubble_david_friyia.avif",
+    demoPath: "demo/misc/chasing_bubble_david_friyia.mp4",
+    posterPath: "thumbnails/misc/chasing_bubble_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
@@ -1146,8 +1145,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP18ZEECK6X0DB9TCKDXBTA",
     caption: "Expo Pulse",
-    videoSrc: "demo/misc/expo_pulse_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/expo_pulse_david_friyia.avif",
+    demoPath: "demo/misc/expo_pulse_david_friyia.mp4",
+    posterPath: "thumbnails/misc/expo_pulse_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ExpoPulse",
@@ -1160,8 +1159,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP193KSTE0CJY2WW9H53SY7",
     caption: "Morphing Circle",
-    videoSrc: "demo/misc/morphing_circle_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/morphing_circle_david_friyia.avif",
+    demoPath: "demo/misc/morphing_circle_david_friyia.mp4",
+    posterPath: "thumbnails/misc/morphing_circle_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/MorphingCircle",
@@ -1174,8 +1173,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP19AHKDGW7XFHZ2TS8V21Y",
     caption: "Vital Sign Monitor",
-    videoSrc: "demo/misc/vital_sign_monitor_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/vital_sign_monitor_david_friyia.avif",
+    demoPath: "demo/misc/vital_sign_monitor_david_friyia.mp4",
+    posterPath: "thumbnails/misc/vital_sign_monitor_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/VitalSignMonitor",
@@ -1188,8 +1187,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP19GP0ZEJDND2CK4ZVNJM3",
     caption: "Confetti",
-    videoSrc: "demo/misc/confetti_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/confetti_david_friyia.avif",
+    demoPath: "demo/misc/confetti_david_friyia.mp4",
+    posterPath: "thumbnails/misc/confetti_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
@@ -1202,8 +1201,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP19MPHCPQHVZ87D8G9F50P",
     caption: "Gran Turismo Countdown",
-    videoSrc: "demo/misc/gran_turismo_countdown_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/gran_turismo_countdown_david_friyia.avif",
+    demoPath: "demo/misc/gran_turismo_countdown_david_friyia.mp4",
+    posterPath: "thumbnails/misc/gran_turismo_countdown_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/GranTurismo",
@@ -1216,8 +1215,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP19SSTZZ9VTJ42H2CTS72B",
     caption: "Metaball Shader",
-    videoSrc: "demo/misc/metaball_shader_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/metaball_shader_david_friyia.avif",
+    demoPath: "demo/misc/metaball_shader_david_friyia.mp4",
+    posterPath: "thumbnails/misc/metaball_shader_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/MetaballShader",
@@ -1230,8 +1229,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP19X1YB3WX7CWQYQ1SZ753",
     caption: "Random Circle Shader",
-    videoSrc: "demo/misc/random_circle_shader_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/random_circle_shader_david_friyia.avif",
+    demoPath: "demo/misc/random_circle_shader_david_friyia.mp4",
+    posterPath: "thumbnails/misc/random_circle_shader_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/RandomCircles",
@@ -1244,8 +1243,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1A087SB3606FAWC64E98D",
     caption: "Focus Animation",
-    videoSrc: "demo/misc/focus_animation_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/focus_animation_david_friyia.avif",
+    demoPath: "demo/misc/focus_animation_david_friyia.mp4",
+    posterPath: "thumbnails/misc/focus_animation_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
@@ -1258,8 +1257,8 @@ export const misc: ItemType[] = [
   {
     id: "01JFP1A4GZ41YBFP1NKQDVR3AT",
     caption: "Gradient Clock",
-    videoSrc: "demo/misc/gradient_clock_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/misc/gradient_clock_david_friyia.avif",
+    demoPath: "demo/misc/gradient_clock_david_friyia.mp4",
+    posterPath: "thumbnails/misc/gradient_clock_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
@@ -1272,8 +1271,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AP7662K677DZSF9DT4JR",
     caption: "Action Tray",
-    videoSrc: "demo/misc/action-tray_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/action-tray_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/action-tray_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1288,8 +1287,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9APA89P6SJSXP65Q2QVV8",
     caption: "Add To Cart",
-    videoSrc: "demo/misc/add-to-cart_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/add-to-cart_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1304,9 +1303,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9APPR3CS4MEJRADYCBYBA",
     caption: "Airbnb Flip Interaction",
-    videoSrc:
+    demoPath:
       "demo/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1321,8 +1320,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9APZBJZSW3C57QXA2B0SE",
     caption: "Animated Clip Box",
-    videoSrc: "demo/misc/animated-clip-box_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/animated-clip-box_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/animated-clip-box_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1337,8 +1336,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AQ20P99XHDGPWET18AMH",
     caption: "Animated Count Text",
-    videoSrc: "demo/misc/animated-count-text_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/animated-count-text_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1353,8 +1352,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AQEAEKYQR720F2VYMDZN",
     caption: "Audio Player",
-    videoSrc: "demo/misc/audio-player_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/audio-player_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1369,9 +1368,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AQHKW3DVW2R4PK6A4WEV",
     caption: "Bezier Curve Outline",
-    videoSrc:
+    demoPath:
       "demo/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1386,8 +1385,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AQKDVN3R4EFSDYPMJ9J0",
     caption: "Blur Circles",
-    videoSrc: "demo/misc/blur-circles_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/blur-circles_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/blur-circles_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1402,9 +1401,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ARBPT5F07KMVGY0JG1ND",
     caption: "Card Shader Reflections",
-    videoSrc:
+    demoPath:
       "demo/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1419,9 +1418,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AREEMAEPYCGCNZHVS88K",
     caption: "Checkbox Interactions",
-    videoSrc:
+    demoPath:
       "demo/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1436,8 +1435,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ARK6R1JSS4S1Z61KBEF6",
     caption: "Clerk Toast",
-    videoSrc: "demo/misc/clerk-toast_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/clerk-toast_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1452,8 +1451,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ART81BT8BC8Y8EVR0E6C",
     caption: "Composable Text",
-    videoSrc: "demo/misc/composable-text_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/composable-text_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1468,8 +1467,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ASBMKWPTZ7KKXHY31JCA",
     caption: "Draggable Panel",
-    videoSrc: "demo/misc/draggable-panel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/draggable-panel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1484,9 +1483,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ASZKWK834XDS9CA3D74E",
     caption: "Email Demo",
-    videoSrc: "demo/misc/email-demo_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
-      "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/email-demo_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
@@ -1500,8 +1498,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AT32JJ2S1FXB1D8EGGH5",
     caption: "Empty Qr Code",
-    videoSrc: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1516,8 +1514,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AT50H2WQQKZM33P6VH4D",
     caption: "Everybody Can Cook",
-    videoSrc: "demo/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1532,9 +1530,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AT7V61JVGP4ME17AD515",
     caption: "Expandable Mini Player",
-    videoSrc:
+    demoPath:
       "demo/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1549,8 +1547,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AT9XTHQ1CW9G9A3KWRHS",
     caption: "Family Number Input",
-    videoSrc: "demo/misc/family-number-input_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/family-number-input_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1565,8 +1563,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ATB4THE4TAHX9NRKNHCZ",
     caption: "Fibonacci Shader",
-    videoSrc: "demo/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1581,9 +1579,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9ATMTM1BWZC7A3YTAV8WC",
     caption: "Fibonacci Shader Grid",
-    videoSrc:
+    demoPath:
       "demo/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1598,8 +1596,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AV2086JCY0CCDD3G5N37",
     caption: "Fourier Visualizer",
-    videoSrc: "demo/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1614,8 +1612,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AV34FK5X3FC44TB902XB",
     caption: "Fractal Glass",
-    videoSrc: "demo/misc/fractal-glass_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/fractal-glass_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/fractal-glass_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1630,9 +1628,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AV7J1VH90D76HB3QWV0J",
     caption: "Github Contributions",
-    videoSrc:
+    demoPath:
       "demo/misc/github-contributions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/github-contributions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1647,8 +1645,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AVKY0VXNNQ6R0MEQHTBF",
     caption: "Gl Transitions",
-    videoSrc: "demo/misc/gl-transitions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/gl-transitions_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1663,8 +1661,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AVT2T3NF10KYYE431ZH8",
     caption: "Grid Visualizer",
-    videoSrc: "demo/misc/grid-visualizer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/grid-visualizer_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1679,8 +1677,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AW00B2T0BM1SRK0TPZ2B",
     caption: "Image Cropper",
-    videoSrc: "demo/misc/image-cropper_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/image-cropper_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/image-cropper_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1695,9 +1693,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWDGN852MADDQRSTZE6F",
     caption: "Inner Shared Transition",
-    videoSrc:
+    demoPath:
       "demo/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1712,9 +1710,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWGXS2F13Z8Y6A71GEGW",
     caption: "Instagram Shared Transition",
-    videoSrc:
+    demoPath:
       "demo/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1729,9 +1727,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AWSBAQ64XM4QCHGTDBPB",
     caption: "Interaction Appearance",
-    videoSrc:
+    demoPath:
       "demo/misc/interaction-appearance_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/interaction-appearance_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1746,8 +1744,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AX2T9W70C74T9DSCDQTM",
     caption: "Ios Home Bouncy",
-    videoSrc: "demo/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1762,8 +1760,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AX4MFA8BQTN9C3FABGZN",
     caption: "Ios Home Grid",
-    videoSrc: "demo/misc/ios-home-grid_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/ios-home-grid_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1778,8 +1776,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXBCZRPK91QFT0RWDPG2",
     caption: "Mobile Input",
-    videoSrc: "demo/misc/mobile-input_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/mobile-input_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/mobile-input_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1794,8 +1792,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXEZD4VJ8H127VSJ68SF",
     caption: "Motion Blur",
-    videoSrc: "demo/misc/motion-blur_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/motion-blur_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1810,8 +1808,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXGFATXGQG7RYNQZ0FW4",
     caption: "Online Offline",
-    videoSrc: "demo/misc/online-offline_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/online-offline_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1826,8 +1824,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXHXSGRY304WZND73TJA",
     caption: "Paper Folding",
-    videoSrc: "demo/misc/paper-folding_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/paper-folding_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1842,8 +1840,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXP95T9JS9QJ6KNCBEKK",
     caption: "Pomodoro Timer",
-    videoSrc: "demo/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1858,8 +1856,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AXQV3FFMB33XXM22ADAJ",
     caption: "Popup Handler",
-    videoSrc: "demo/misc/popup-handler_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/popup-handler_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/popup-handler_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1874,8 +1872,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AY42DFE1M9NFCHKXEGC0",
     caption: "Qr Code Generator",
-    videoSrc: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1890,8 +1888,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AYZ0SY7QBV3270NDCMXX",
     caption: "Shake To Delete",
-    videoSrc: "demo/misc/shake-to-delete_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/shake-to-delete_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1906,8 +1904,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AZ48VZ54S9BT05WG48XJ",
     caption: "Shared Transitions",
-    videoSrc: "demo/misc/shared-transitions_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/shared-transitions_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/shared-transitions_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1922,8 +1920,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AZMQEZKSG66W9SJ5RDQ1",
     caption: "Slide To Reveal",
-    videoSrc: "demo/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1938,8 +1936,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AZP1EM0NHZPBKV85N732",
     caption: "Smooth Dropdown",
-    videoSrc: "demo/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -1954,8 +1952,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AZR7EBYZJS4J7TMZFZY6",
     caption: "Snake",
-    videoSrc: "demo/misc/snake_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/snake_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/snake_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/snake_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
@@ -1969,8 +1967,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9AZW3QT28DGESXHX2DK7Y",
     caption: "Spiral",
-    videoSrc: "demo/misc/spiral_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/spiral_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/spiral_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/spiral_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
@@ -1984,9 +1982,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B0W1KC9VRR4151A9880T",
     caption: "Staggered Card Number",
-    videoSrc:
+    demoPath:
       "demo/misc/staggered-card-number_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2001,8 +1999,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B0ZQ0XSQ8XGDG78BNRCF",
     caption: "Steps",
-    videoSrc: "demo/misc/steps_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/steps_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/steps_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/steps_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
@@ -2016,8 +2014,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B16K1M149E1YCKG2QK6Y",
     caption: "Sudoku",
-    videoSrc: "demo/misc/sudoku_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/sudoku_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/sudoku_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/sudoku_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
@@ -2031,8 +2029,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B18XF0P9VG2BA71VJAG3",
     caption: "Swipe Cards",
-    videoSrc: "demo/misc/swipe-cards_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/swipe-cards_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/swipe-cards_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2047,9 +2045,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1GN5TXBETT64YP2KTTT",
     caption: "Telegram Theme Switch",
-    videoSrc:
+    demoPath:
       "demo/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2064,9 +2062,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1JN5CXN5ZC603MN5G6G",
     caption: "Theme Canvas Animation",
-    videoSrc:
+    demoPath:
       "demo/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2081,8 +2079,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1MMRYWSEQ0YR96ES7YZ",
     caption: "Threads Holo Ticket",
-    videoSrc: "demo/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2097,8 +2095,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1TMPZE25ZXFSP0P0EQ8",
     caption: "Time Machine",
-    videoSrc: "demo/misc/time-machine_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/time-machine_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2113,8 +2111,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B1YTCC1KGFDN97424CY4",
     caption: "Toast",
-    videoSrc: "demo/misc/toast_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/misc/toast_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
@@ -2128,8 +2126,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B249WQR1DJC9N0RXN5PQ",
     caption: "Twodos Slide",
-    videoSrc: "demo/misc/twodos-slide_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/twodos-slide_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/twodos-slide_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2144,8 +2142,8 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B26VEPM9Q7G610DYB83R",
     caption: "Verification Code",
-    videoSrc: "demo/misc/verification-code_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/misc/verification-code_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -2160,9 +2158,9 @@ export const misc: ItemType[] = [
   {
     id: "01KAY9B28MXYXYM43QHAPNPFBR",
     caption: "Verification Code Face",
-    videoSrc:
+    demoPath:
       "demo/misc/verification-code-face_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
