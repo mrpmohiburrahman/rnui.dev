@@ -39,7 +39,7 @@ This project uses **pnpm**.
 git clone https://github.com/mrpmohiburrahman/rnui.dev
 cd rnui.dev
 pnpm install
-cp .env.example .env.local  # fill in Supabase, Firebase, OpenAI, ImageKit keys
+cp .env.example .env.local  # fill in Supabase, Firebase and OpenAI keys
 pnpm dev
 ```
 
