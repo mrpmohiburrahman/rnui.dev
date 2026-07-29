@@ -38,6 +38,27 @@ is started by a real click but `play()` lands in an effect a tick later, outside
 Chrome's gesture window for unmuted audio. Without it the assertion is flaky
 rather than wrong.
 
+### Two defects CI found that local runs could not
+
+1. **Playback waited on the view counter.** `handlePlayClick` awaited a Firestore
+   write before setting `isPlaying`, so the Demo did not start until a round trip
+   to the counter returned. Locally, with real credentials, that is fast enough to
+   be invisible; in CI, which builds with dummy Firebase credentials, the write
+   retried against `PERMISSION_DENIED` and *both* new tests failed — no `<video>`
+   ever mounted. Fixed by starting playback first and letting the counter follow,
+   which is also simply the right order: a view count must never sit between a
+   user and the thing they clicked. Reproduced locally by rebuilding with CI's
+   exact dummy env, then confirmed fixed the same way.
+
+2. **The isolation assertion counted a virtualised grid.** "One failed Demo leaves
+   the rest of the grid working" was written as `toHaveCount(before - 1)`. The grid
+   is virtualised, so the mounted-card count moves on its own: CI saw 278 before
+   the click and 276 after, and failed for a reason unrelated to the claim. Now it
+   asserts the claim — one visible error state, and a grid that still renders and
+   still offers playback.
+
+Final CI on `1ca15ed`: `quality`, `assets`, `e2e` all green.
+
 **Gap, stated plainly:** the analytics event is *not* asserted by a test. The
 capture call was verified to execute against a live PostHog client, but the SDK
 batches and did not flush within a 12s window, and stubbing the ingest endpoint
