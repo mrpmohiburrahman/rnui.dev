@@ -23,10 +23,19 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { Project, SyntaxKind, type ArrayLiteralExpression } from "ts-morph"
 import { ulid } from "ulid"
 
-import { CATEGORY_META, slugify } from "@/lib/codex/categoryMap"
 import { CODEX_MODEL, requireOpenAIKey } from "@/lib/codex/env"
 import { ExtractedEntrySchema } from "@/lib/codex/schema"
+import { CATEGORIES } from "@/data/categories"
 import type { Entry } from "@/data/entry"
+
+// Produces the filename portion of an Asset path. Moves into the Asset path
+// module when that lands (ticket 04); it has nothing to do with Category.
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+}
 
 const args = process.argv.slice(2)
 const rawUrl = args.find((a) => !a.startsWith("--"))
@@ -111,14 +120,14 @@ async function main() {
   })
 
   const extracted = ExtractedEntrySchema.parse(object)
-  const meta_cat = CATEGORY_META[extracted.category]
+  const row = CATEGORIES[extracted.category]
   const slug = `${slugify(extracted.caption)}_${slugify(extracted.author)}`
 
   const entry: Entry = {
     id: ulid(),
     caption: extracted.caption,
-    demoPath: `demo/${meta_cat.assetSlug}/${slug}.mp4`,
-    posterPath: `thumbnails/${meta_cat.assetSlug}/${slug}.avif`,
+    demoPath: `demo/${row.assetSlug}/${slug}.mp4`,
+    posterPath: `thumbnails/${row.assetSlug}/${slug}.avif`,
     author: extracted.author,
     source: url,
     ...(extracted.twitterId ? { twitterId: extracted.twitterId } : {}),
@@ -145,12 +154,12 @@ async function main() {
     return
   }
 
-  appendEntry(entry, meta_cat.file, meta_cat.exportName)
-  console.log(`Appended to data/${meta_cat.file}.ts.`)
+  appendEntry(entry, row.file, row.exportName)
+  console.log(`Appended to data/${row.file}.ts.`)
 
   const branch = `submission/${slug}`
   execSync(`git checkout -b ${branch}`, { stdio: "inherit" })
-  execSync(`git add data/${meta_cat.file}.ts`, { stdio: "inherit" })
+  execSync(`git add data/${row.file}.ts`, { stdio: "inherit" })
   execSync(`git commit -m "feat(catalog): add ${entry.caption} by ${entry.author}"`, {
     stdio: "inherit",
   })

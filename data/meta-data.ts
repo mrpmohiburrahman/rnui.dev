@@ -1,11 +1,26 @@
+import { CATEGORY_NAMES } from "./categories"
 import { defaultUrl } from "./default-url"
+
+// Every Category's display name, so a Category is discoverable the day its row
+// lands rather than whenever someone remembers to edit a comma-separated string.
+const keywords = [
+  "React Native",
+  ...CATEGORY_NAMES,
+  "Design",
+  "Engineering",
+  "Web Development",
+  "JavaScript",
+  "Tailwind CSS",
+  "Supabase",
+  "Free Tools",
+  "Design Engineering",
+].join(", ")
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Awesome React Native UI - A list of community made animations",
   description: "A list of React Native animations made by the community",
-  keywords:
-    "React Native, Accordions, Arc Sliders, Bottom Sheets,Buttons,Carousels,Charts,Circular Progress Bars,Drop Down,Full Apps, Headers, List, Loaders, Misc, Onboarding,Parallaxes, Pickers,Sliders,Tab bars,Design, Engineering, Web Development, JavaScript, Tailwind CSS, Supabase, Free Tools, Design Engineering",
+  keywords,
   structuredData: {
     "@context": "http://schema.org",
     "@type": "WebSite",

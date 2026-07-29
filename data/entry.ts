@@ -5,7 +5,13 @@ import { db } from "@/lib/firebase"
 
 import { allEntries } from "./catalogue"
 
-// Return the unique categories sorted alphabetically
+// Return the unique categories sorted alphabetically.
+//
+// Derived from the Entries present, not from the Category table in
+// data/categories.ts, and deliberately so: a Category may have a row before it
+// has its first Entry. Reading the table here would put an empty Category in
+// the navigation and the search placeholder, sending visitors to a page with
+// nothing on it.
 export function getUniqueCategories(): string[] {
   const categories = allEntries.map((entry) => entry.category)
   return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b))

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 
+import { config as middlewareConfig } from "../middleware"
+import { CATEGORIES, CATEGORY_NAMES, LEGACY_REDIRECTS } from "../data/categories"
 import { allEntries } from "../data/catalogue"
+import type { Entry } from "../data/entry"
 
 describe("catalog data integrity", () => {
   it("has items", () => {
@@ -94,5 +97,35 @@ describe("asset paths", () => {
       .filter((entry) => entry.posterPath && !POSTER_PATH.test(entry.posterPath))
       .map((entry) => `${entry.id}: ${entry.posterPath}`)
     expect(bad, `malformed Poster paths:\n${bad.join("\n")}`).toHaveLength(0)
+  })
+})
+
+// The two lists a table cannot generate, because the framework requires both
+// be written out statically: the catalogue merge and the middleware matcher.
+// Forget the merge and the Category's Entries vanish from the site with no
+// error, no warning and nothing failing. These are the tests that make the
+// silent failure loud.
+describe("catalogue wiring", () => {
+  const merged = new Set(allEntries.map((entry) => entry.id))
+
+  it.each(CATEGORY_NAMES)("every Entry in %s reaches the merged catalogue", async (name) => {
+    const row = CATEGORIES[name]
+    const file = (await import(`../data/${row.file}.ts`)) as Record<string, Entry[] | undefined>
+    const entries = file[row.exportName]
+
+    expect(entries, `data/${row.file}.ts exports no "${row.exportName}"`).toBeDefined()
+
+    // An empty Category is legal: a row may exist before its first Entry does.
+    const missing = (entries ?? []).filter((entry) => !merged.has(entry.id)).map((entry) => entry.id)
+    expect(
+      missing,
+      `${name}: ${missing.length} Entries in data/${row.file}.ts never reached data/catalogue.ts — ${missing.join(", ")}`
+    ).toHaveLength(0)
+  })
+
+  // The redirect map is generated from the table; the matcher beside it cannot
+  // be, so it is checked here instead. See the comment in middleware.ts.
+  it("the middleware matcher lists exactly the table's legacy paths", () => {
+    expect([...middlewareConfig.matcher].sort()).toEqual(Object.keys(LEGACY_REDIRECTS).sort())
   })
 })
