@@ -3,24 +3,7 @@ import { collection, getDocs } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
 
-import { accordions } from "./accordions"
-import { arcsliders } from "./arcsliders"
-import { bottomsheets } from "./bottomsheets"
-import { buttons } from "./buttons"
-import { carousels } from "./carousels"
-import { charts } from "./charts"
-import { circular_progress_bars } from "./circular-progress-bars"
-import { drop_down } from "./dropdowns"
-import { full_apps } from "./fullapps"
-import { headers } from "./headers"
-import { list } from "./lists"
-import { loaders } from "./loaders"
-import { misc } from "./misc"
-import { onboarding } from "./onboardings"
-import { parallaxes } from "./parallaxes"
-import { pickers } from "./pickers"
-import { sliders } from "./sliders"
-import { tabbars } from "./tabbars"
+import { allEntries as localItems } from "./catalogue"
 
 // Existing data types
 export type CategoryData = {
@@ -34,28 +17,6 @@ export type LabelData = {
 export type TagData = {
   name: string
 }
-
-// Function to fetch items with counts from Firestore
-const localItems = [
-  ...accordions,
-  ...arcsliders,
-  ...bottomsheets,
-  ...buttons,
-  ...carousels,
-  ...charts,
-  ...circular_progress_bars,
-  ...drop_down,
-  ...full_apps,
-  ...headers,
-  ...list,
-  ...loaders,
-  ...misc,
-  ...onboarding,
-  ...parallaxes,
-  ...pickers,
-  ...sliders,
-  ...tabbars,
-]
 
 // Return the unique categories sorted alphabetically
 export function getUniqueCategories(): string[] {

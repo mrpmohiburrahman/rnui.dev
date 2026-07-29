@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
-import { getImageKitVideoUrl } from "@/lib/imagekit"
+import { getCdnUrl } from "@/lib/cdn"
 
 const MinimalCard = React.forwardRef<
   HTMLDivElement,
@@ -117,7 +117,7 @@ const MinimalCardVideo = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { src: string; alt?: string }
 >(({ className, src, alt = "Video", ...props }, ref) => {
-  const videoUrl = getImageKitVideoUrl(src)
+  const videoUrl = getCdnUrl(src)
 
   return (
     <div

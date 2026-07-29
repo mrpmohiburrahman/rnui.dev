@@ -1,8 +1,9 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { PauseIcon, PlayIcon } from "lucide-react"
-import { getImageKitVideoUrl } from "@/lib/imagekit"
+import { PlayIcon } from "lucide-react"
+import { usePostHog } from "posthog-js/react"
+import { getCdnUrl } from "@/lib/cdn"
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 
 interface InteractiveVideoProps {
@@ -13,6 +14,17 @@ interface InteractiveVideoProps {
   controls?: boolean
   loop?: boolean
   incrementViewCount: () => Promise<void>
+}
+
+// MediaError codes, so a failure is reported as "decode" or "network" rather
+// than as a number. The distinction is the whole point: "network" means the
+// Asset is missing, "decode" means it is the wrong codec — which is how 48
+// Demos shipped as unplayable HEVC and stayed that way for months.
+const FAILURE_REASONS: Record<number, string> = {
+  1: "aborted",
+  2: "network",
+  3: "decode",
+  4: "unsupported",
 }
 
 const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
@@ -26,15 +38,19 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [videoSource, setVideoSource] = useState<string>("")
-  const [useLocalFallback, setUseLocalFallback] = useState(false)
+  const [failureReason, setFailureReason] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const posthog = usePostHog()
 
   // Lazy loading: only load video when near viewport
   const [containerRef, isInView] = useIntersectionObserver<HTMLDivElement>({
     rootMargin: "200px",
     freezeOnceVisible: true,
   })
+
+  const videoSource = getCdnUrl(src)
+  const posterImage =
+    poster && poster.trim() !== "" ? getCdnUrl(poster) : "/logo.png"
 
   const handleVideoPlay = () => {
     setIsPlaying(true)
@@ -54,31 +70,32 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     setIsPlaying(true)
   }
 
-  // Handle video load errors - fallback to local if ImageKit fails
-  const handleVideoError = useCallback(() => {
-    if (!useLocalFallback) {
-      console.log(`ImageKit failed for ${src}, falling back to local video`)
-      setUseLocalFallback(true)
-      setVideoSource(`/${src}`) // Use local path
-    } else {
-      console.error(`Both ImageKit and local failed for ${src}`)
-    }
-  }, [src, useLocalFallback])
+  // A failed Demo is terminal and says so. There is deliberately no fallback
+  // source: Assets live only on the CDN, so the root-relative path this used to
+  // retry does not exist in production and retrying it guaranteed a second
+  // failure while still showing the user nothing.
+  const handleVideoError = useCallback(
+    (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      // Only the media element's own error counts — a childless <track> can
+      // raise an error event of its own that says nothing about the Demo.
+      const error = e.currentTarget.error
+      if (!error) return
+      const reason = FAILURE_REASONS[error.code] ?? "unknown"
+      setFailureReason(reason)
+      posthog?.capture("demo_load_failed", {
+        asset_path: src,
+        reason,
+        url: videoSource,
+      })
+    },
+    [posthog, src, videoSource]
+  )
 
-  // Set video source based on fallback state
-  useEffect(() => {
-    if (useLocalFallback) {
-      // Use local video from public folder
-      setVideoSource(`/${src}`)
-    } else {
-      // Try ImageKit first (no transformations to avoid account limits)
-      setVideoSource(getImageKitVideoUrl(src))
-    }
-  }, [src, useLocalFallback])
-
-  // videoSource is a dependency because the fallback swaps the src while
-  // isPlaying is already true — without it the new source loads but never plays,
-  // leaving a decoded first frame frozen at currentTime 0.
+  // videoSource is a dependency, not just isPlaying. The grid is virtualised, so
+  // a mounted card can be handed a different Entry while isPlaying is already
+  // true; without this the new source loads but never plays, leaving a decoded
+  // first frame frozen at currentTime 0. The e2e test asserts currentTime
+  // advances precisely because "a video element exists" would not have caught that.
   useEffect(() => {
     if (isPlaying) {
       videoRef.current?.play()?.catch(() => {})
@@ -94,11 +111,6 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     }
   }
 
-  // Optimize poster image - use local path
-  const posterImage = poster && poster.trim() !== ""
-    ? `/${poster}`
-    : "/logo.png"
-
   return (
     <div
       ref={containerRef}
@@ -106,7 +118,18 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {isPlaying ? (
+      {failureReason ? (
+        <div
+          role="alert"
+          data-testid="demo-error"
+          className="w-full h-full bg-neutral-900 text-neutral-200 flex flex-col items-center justify-center gap-1 p-4 text-center"
+        >
+          <span className="text-sm font-medium">This demo failed to load</span>
+          <span className="text-xs text-neutral-400">
+            {caption ?? src} ({failureReason})
+          </span>
+        </div>
+      ) : isPlaying ? (
         <video
           ref={videoRef}
           src={videoSource}

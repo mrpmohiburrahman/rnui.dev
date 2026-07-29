@@ -31,7 +31,28 @@ jobs:
           NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: dummy.appspot.com
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:dummy"
-          NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: https://ik.imagekit.io/dummy
+          NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
+
+  # Every Demo and Poster the catalogue references must be reachable, decodable
+  # and immutable at the CDN. Production mode, not local mode: CI has no Assets
+  # checked out, so a local run would find nothing and pass vacuously.
+  # Public reads only — no credentials, so this passes on a fork's PR.
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pnpm check:videos:production
+        env:
+          NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
 
   e2e:
     runs-on: ubuntu-latest
@@ -56,7 +77,7 @@ jobs:
           NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: dummy.appspot.com
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:dummy"
-          NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: https://ik.imagekit.io/dummy
+          NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
       - run: npx playwright install --with-deps chromium
       - run: pnpm exec playwright test
         env:
@@ -68,4 +89,4 @@ jobs:
           NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: dummy.appspot.com
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:dummy"
-          NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: https://ik.imagekit.io/dummy
+          NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
