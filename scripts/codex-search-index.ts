@@ -21,27 +21,27 @@ import { embedMany } from "ai"
 import { createOpenAI } from "@ai-sdk/openai"
 
 import { CODEX_EMBED_MODEL, requireOpenAIKey } from "@/lib/codex/env"
-import { ALL_ITEMS as ALL } from "@/lib/codex/items"
+import { ALL_ENTRIES as ALL } from "@/lib/codex/entries"
 
 const limitArg = process.argv.indexOf("--limit")
 const limit = limitArg !== -1 ? Number(process.argv[limitArg + 1]) : ALL.length
 
-function corpusText(item: (typeof ALL)[number]): string {
-  return [item.caption, item.category, item.author, item.source].filter(Boolean).join(" — ")
+function corpusText(entry: (typeof ALL)[number]): string {
+  return [entry.caption, entry.category, entry.author, entry.source].filter(Boolean).join(" — ")
 }
 
 async function main() {
   requireOpenAIKey()
   const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
-  const items = ALL.slice(0, limit)
-  console.log(`Embedding ${items.length} entries with ${CODEX_EMBED_MODEL}.`)
+  const entries = ALL.slice(0, limit)
+  console.log(`Embedding ${entries.length} entries with ${CODEX_EMBED_MODEL}.`)
 
   const BATCH = 100
   const vectors: { id: string; embedding: number[] }[] = []
 
-  for (let i = 0; i < items.length; i += BATCH) {
-    const batch = items.slice(i, i + BATCH)
+  for (let i = 0; i < entries.length; i += BATCH) {
+    const batch = entries.slice(i, i + BATCH)
     const { embeddings } = await embedMany({
       model: openai.embedding(CODEX_EMBED_MODEL),
       values: batch.map(corpusText),
@@ -49,7 +49,7 @@ async function main() {
     embeddings.forEach((embedding, j) => {
       vectors.push({ id: batch[j].id, embedding })
     })
-    console.log(`  ${Math.min(i + BATCH, items.length)} / ${items.length}`)
+    console.log(`  ${Math.min(i + BATCH, entries.length)} / ${entries.length}`)
   }
 
   const out = {

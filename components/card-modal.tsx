@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
 import { incrementViewCount } from "@/app/actions/increment-view-count"
 
@@ -7,21 +7,21 @@ import InteractiveVideo from "./interactive-video"
 import Modal from "./modal"
 
 export default function CardModal({
-  selectedProduct,
+  selectedEntry,
   isModalOpen,
   closeModal,
 }: {
-  selectedProduct: ItemType | null
+  selectedEntry: Entry | null
   isModalOpen: boolean
   closeModal: () => void
 }) {
   const [viewCount, setViewCount] = useState<number>(
-    selectedProduct?.view_count || 0
+    selectedEntry?.view_count || 0
   )
   const incrementViewCountLocal = async () => {
     try {
-      if (selectedProduct) {
-        await incrementViewCount(selectedProduct.id)
+      if (selectedEntry) {
+        await incrementViewCount(selectedEntry.id)
         setViewCount((prev) => prev + 1)
       }
     } catch (error) {
@@ -30,19 +30,19 @@ export default function CardModal({
   }
   return (
     <Modal isOpen={isModalOpen} onClose={closeModal}>
-      {selectedProduct && (
+      {selectedEntry && (
         <div className="flex flex-col md:flex-row md:h-[80vh] space-y-4 md:space-y-0 md:space-x-6 p-4">
           {/* Left Side: Video Demo */}
           <div className="w-full md:w-1/2 flex-shrink-0">
-            {selectedProduct.videoSrc ? (
+            {selectedEntry.demoPath ? (
               <div className="w-full h-full">
                 <InteractiveVideo
                   incrementViewCount={incrementViewCountLocal}
-                  src={selectedProduct.videoSrc}
+                  src={selectedEntry.demoPath}
                   className="w-full h-full object-contain rounded-lg shadow-md"
                   controls
-                  poster={selectedProduct.thumbnailSrc}
-                  caption={`video demo of ${selectedProduct.caption}`}
+                  poster={selectedEntry.posterPath}
+                  caption={`video demo of ${selectedEntry.caption}`}
                   loop
                 />
               </div>
@@ -53,24 +53,24 @@ export default function CardModal({
             )}
           </div>
 
-          {/* Right Side: Product Information */}
+          {/* Right Side: Entry Information */}
           <div className="w-full md:w-1/2 flex flex-col space-y-4 overflow-y-auto">
             <div>
               <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
-                {selectedProduct.author}
+                {selectedEntry.author}
               </h2>
-              {selectedProduct.twitterId && (
-                <p className="text-gray-500">@{selectedProduct.twitterId}</p>
+              {selectedEntry.twitterId && (
+                <p className="text-gray-500">@{selectedEntry.twitterId}</p>
               )}
             </div>
             <div>
               <p className="text-gray-700 dark:text-gray-300">
-                {selectedProduct.caption}
+                {selectedEntry.caption}
               </p>
             </div>
             <div>
               <a
-                href={selectedProduct.source}
+                href={selectedEntry.source}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline"

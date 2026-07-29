@@ -5,10 +5,10 @@
 // one-line change and so the publish tooling can read the catalogue without
 // pulling in Firebase.
 //
-// `ItemType` is imported as a type only, deliberately: data/items.ts imports
+// `Entry` is imported as a type only, deliberately: data/entry.ts imports
 // this module back, and a value import would make that cycle real.
 
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
 import { accordions } from "./accordions"
 import { arcsliders } from "./arcsliders"
@@ -29,7 +29,7 @@ import { pickers } from "./pickers"
 import { sliders } from "./sliders"
 import { tabbars } from "./tabbars"
 
-export const allEntries: ItemType[] = [
+export const allEntries: Entry[] = [
   ...accordions,
   ...arcsliders,
   ...bottomsheets,
@@ -58,5 +58,5 @@ export const allEntries: ItemType[] = [
  * object key.
  */
 export const allAssetPaths: string[] = allEntries.flatMap((entry) =>
-  [entry.videoSrc, entry.thumbnailSrc].filter(Boolean)
+  [entry.demoPath, entry.posterPath].filter(Boolean)
 )

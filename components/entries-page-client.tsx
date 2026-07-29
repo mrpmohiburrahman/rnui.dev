@@ -1,8 +1,8 @@
-// components/products-page-client.tsx
+// components/entries-page-client.tsx
 "use client"
 
 import type { ReactElement } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 import { BoxIcon, Hash, Search, TagIcon, User } from "lucide-react"
 
 import useBookmarks from "@/hooks/use-bookmarks"
@@ -11,14 +11,14 @@ import useSortedData from "@/hooks/use-sorted-data"
 import useVotes from "@/hooks/use-votes"
 import { FadeIn } from "@/components/cult/fade-in"
 import { GradientHeading } from "@/components/cult/gradient-heading"
-import { ResourceCardGrid } from "@/components/resource-card-grid"
+import { EntryCardGrid } from "@/components/entry-card-grid"
 import { incrementViewCount } from "@/app/actions/increment-view-count"
 
 import CardModal from "./card-modal"
 
-interface ProductsPageClientProps {
-  sortedData: ItemType[]
-  filteredFeaturedData: ItemType[] | null
+interface EntriesPageClientProps {
+  sortedData: Entry[]
+  filteredFeaturedData: Entry[] | null
   search?: string
   category?: string
   label?: string
@@ -26,7 +26,7 @@ interface ProductsPageClientProps {
   author?: string
 }
 
-const ProductsPageClient = ({
+const EntriesPageClient = ({
   sortedData: initialData,
   filteredFeaturedData,
   search,
@@ -34,12 +34,12 @@ const ProductsPageClient = ({
   label,
   tag,
   author,
-}: ProductsPageClientProps): ReactElement => {
+}: EntriesPageClientProps): ReactElement => {
   // Use the separate hooks
   const { bookmarks, toggleBookmark } = useBookmarks()
 
-  const { votedItems, toggleVote } = useVotes()
-  const { isModalOpen, selectedProduct, openModal, closeModal } = useModal()
+  const { votedEntryIds, toggleVote } = useVotes()
+  const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
   const { sortedData, sort, setSort } = useSortedData(initialData)
 
   // Vote handler integration
@@ -48,8 +48,8 @@ const ProductsPageClient = ({
     toggleVote(id)
   }
 
-  // Ensure bookmarks and votedItems are loaded before rendering
-  if (bookmarks === null || votedItems === null) {
+  // Ensure bookmarks and votedEntryIds are loaded before rendering
+  if (bookmarks === null || votedEntryIds === null) {
     return <div /> // Optionally, replace with a loader
   }
 
@@ -57,13 +57,13 @@ const ProductsPageClient = ({
     <>
       <div className=" max-w-full pt-4">
         <FadeIn>
-          <ResourceCardGrid
+          <EntryCardGrid
             sortedData={sortedData}
             filteredFeaturedData={filteredFeaturedData}
             openModal={openModal}
             bookmarks={bookmarks}
             toggleBookmark={toggleBookmark}
-            votedItems={votedItems}
+            votedEntryIds={votedEntryIds}
             toggleVote={handleToggleVote}
             setSort={setSort}
             currentSort={sort}
@@ -97,11 +97,11 @@ const ProductsPageClient = ({
                 </GradientHeading>
               </div>
             )}
-          </ResourceCardGrid>
+          </EntryCardGrid>
 
           {/* Modal */}
           <CardModal
-            selectedProduct={selectedProduct}
+            selectedEntry={selectedEntry}
             isModalOpen={isModalOpen}
             closeModal={closeModal}
           />
@@ -111,4 +111,4 @@ const ProductsPageClient = ({
   )
 }
 
-export default ProductsPageClient
+export default EntriesPageClient

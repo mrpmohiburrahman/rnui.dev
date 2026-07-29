@@ -26,9 +26,9 @@ Each PR typically adds a new entry to one of the data/<category>.ts files.
 
 Check, in order, and respond as short Markdown bullets:
 
-1. Schema: does the new entry have id, caption, videoSrc, thumbnailSrc, author, source, category, created_at?
+1. Schema: does the new entry have id, caption, demoPath, posterPath, author, source, category, created_at?
 2. ID: is the id a 26-char Crockford ULID? Does it look unique vs. typical existing IDs?
-3. Asset paths: do videoSrc and thumbnailSrc follow demo/<slug>/<file>.mp4 and thumbnails/<slug>/<file>.avif?
+3. Asset paths: do demoPath and posterPath follow demo/<slug>/<file>.mp4 and thumbnails/<slug>/<file>.avif?
 4. Category: does the category match the data file the entry lives in?
 5. Source URL: starts with https?:// and points to a real-looking repo/snack/gist?
 6. Caption + author: non-empty, sensible length, no obvious copy-paste cruft?

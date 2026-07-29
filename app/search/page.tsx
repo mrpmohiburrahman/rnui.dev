@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import type { ItemType } from "@/data/items"
+import type { Entry } from "@/data/entry"
 
-type Result = { score: number; item: ItemType }
+type Result = { score: number; entry: Entry }
 
 export default function SearchPage() {
   const [q, setQ] = useState("")
@@ -67,22 +67,22 @@ export default function SearchPage() {
       ) : null}
 
       <ul className="mt-8 space-y-4">
-        {results.map(({ score, item }) => (
-          <li key={item.id} className="rounded border p-4">
+        {results.map(({ score, entry }) => (
+          <li key={entry.id} className="rounded border p-4">
             <div className="flex items-center justify-between">
               <a
-                href={item.source}
+                href={entry.source}
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium hover:underline"
               >
-                {item.caption}
+                {entry.caption}
               </a>
               <span className="text-xs text-muted-foreground">
-                {score.toFixed(3)} · {item.category}
+                {score.toFixed(3)} · {entry.category}
               </span>
             </div>
-            <p className="mt-1 text-sm text-muted-foreground">by {item.author}</p>
+            <p className="mt-1 text-sm text-muted-foreground">by {entry.author}</p>
           </li>
         ))}
       </ul>

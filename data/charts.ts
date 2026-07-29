@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const charts: ItemType[] = [
+export const charts: Entry[] = [
   {
     id: "01JXY8F2ZVEBM7NDAKKR7YJARE",
     caption: "Chart Counter",
-    videoSrc: "demo/charts/chart_counter_thomino.mp4",
-    thumbnailSrc: "thumbnails/charts/chart_counter_thomino.avif",
+    demoPath: "demo/charts/chart_counter_thomino.mp4",
+    posterPath: "thumbnails/charts/chart_counter_thomino.avif",
     author: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/chart.tsx",
@@ -17,8 +17,8 @@ export const charts: ItemType[] = [
   {
     id: "01JHD2J4P1QNVS869F9CAWMFDB",
     caption: "Coinbase Charts",
-    videoSrc: "demo/charts/coinbase_charts_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/charts/coinbase_charts_william_candillon.avif",
+    demoPath: "demo/charts/coinbase_charts_william_candillon.mp4",
+    posterPath: "thumbnails/charts/coinbase_charts_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Coinbase",
@@ -31,8 +31,8 @@ export const charts: ItemType[] = [
   {
     id: "01JFP0C5HYKWQK77P4C2MTS3ZB",
     caption: "Group Stack Charts",
-    videoSrc: "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
-    thumbnailSrc: "thumbnails/charts/group_chart_konstantinos_efkarpidis.avif",
+    demoPath: "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
+    posterPath: "thumbnails/charts/group_chart_konstantinos_efkarpidis.avif",
     author: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupStackCharts.tsx",
@@ -45,8 +45,8 @@ export const charts: ItemType[] = [
   {
     id: "01JFP0Q202TQ812BQA445RKFSA",
     caption: "Pie Chart",
-    videoSrc: "demo/charts/pie_chart_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/charts/pie_chart_hewad_mubariz.avif",
+    demoPath: "demo/charts/pie_chart_hewad_mubariz.mp4",
+    posterPath: "thumbnails/charts/pie_chart_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/piechart",
@@ -59,8 +59,8 @@ export const charts: ItemType[] = [
   {
     id: "01JFP0SFFTG4C5RRDZWHQ42CC6",
     caption: "Line Chart",
-    videoSrc: "demo/charts/lineChart_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/charts/lineChart_david_friyia.avif",
+    demoPath: "demo/charts/lineChart_david_friyia.mp4",
+    posterPath: "thumbnails/charts/lineChart_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/LineChart",
@@ -73,8 +73,8 @@ export const charts: ItemType[] = [
   {
     id: "01JFP0SN7BRNV4W6MKR78P3VGC",
     caption: "Bar Chart",
-    videoSrc: "demo/charts/barchart_david_friyia.mp4",
-    thumbnailSrc: "thumbnails/charts/barchart_david_friyia.avif",
+    demoPath: "demo/charts/barchart_david_friyia.mp4",
+    posterPath: "thumbnails/charts/barchart_david_friyia.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/BarChart",
@@ -87,8 +87,8 @@ export const charts: ItemType[] = [
 {
     id: "01KAY9AX9VJSD0QWTECKCWYTEJ",
     caption: "Miles Bar Chart",
-    videoSrc: "demo/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/miles-bar-chart",
     twitterId: "reactiive_",
@@ -101,8 +101,8 @@ export const charts: ItemType[] = [
   {
     id: "01KAY9AYDGC0AK5W87JQM2SEV4",
     caption: "Radar Chart",
-    videoSrc: "demo/charts/radar-chart_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/charts/radar-chart_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/charts/radar-chart_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/charts/radar-chart_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/radar-chart",
     twitterId: "reactiive_",
@@ -115,8 +115,8 @@ export const charts: ItemType[] = [
   {
     id: "01KAY9B0XF09YCSF3FDXFP0ED4",
     caption: "Steddy Graph Interaction",
-    videoSrc: "demo/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steddy-graph-interaction",
     twitterId: "reactiive_",

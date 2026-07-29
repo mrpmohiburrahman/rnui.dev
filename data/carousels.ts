@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const carousels: ItemType[] = [
+export const carousels: Entry[] = [
   {
     id: "01JVM5M5W7AW6NH73T9N904827",
     caption: "Vertical Carousel",
-    videoSrc: "demo/carousels/vertical_carousel_zakaria_kerkeb.mp4",
-    thumbnailSrc: "thumbnails/carousels/vertical_carousel_zakaria_kerkeb.avif",
+    demoPath: "demo/carousels/vertical_carousel_zakaria_kerkeb.mp4",
+    posterPath: "thumbnails/carousels/vertical_carousel_zakaria_kerkeb.avif",
     author: "Zakaria Kerkeb",
     source: "https://github.com/zkerkeb/showcase-app",
     twitterId: "akhi_html5",
@@ -17,8 +17,8 @@ export const carousels: ItemType[] = [
   {
     id: "01JHD34DZZS0RHNSDBBXJ1RZ48",
     caption: "Fluid Carousels",
-    videoSrc: "demo/carousels/fluid_carousels_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/carousels/fluid_carousels_william_candillon.avif",
+    demoPath: "demo/carousels/fluid_carousels_william_candillon.mp4",
+    posterPath: "thumbnails/carousels/fluid_carousels_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Fluid",
@@ -31,8 +31,8 @@ export const carousels: ItemType[] = [
   {
     id: "01JFP0BT56X9X1M0EATC5WB5J2",
     caption: "Story List Ui",
-    videoSrc: "demo/carousels/story_list_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/carousels/story_list_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/carousels/story_list_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -46,8 +46,8 @@ export const carousels: ItemType[] = [
   {
     id: "01JFP0PAMXHVKB6G8AZC1113X9",
     caption: "Wiggling Cards",
-    videoSrc: "demo/carousels/wiggling_cards_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/carousels/wiggling_cards_hewad_mubariz.avif",
+    demoPath: "demo/carousels/wiggling_cards_hewad_mubariz.mp4",
+    posterPath: "thumbnails/carousels/wiggling_cards_hewad_mubariz.avif",
     author: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/wiggling-cards",
@@ -60,9 +60,9 @@ export const carousels: ItemType[] = [
   {
     id: "01JFP0S6WTYH73G1PDQBNBVDXP",
     caption: "Circular Carousel",
-    videoSrc:
+    demoPath:
       "demo/carousels/circular_carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/carousels/circular_carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -76,8 +76,8 @@ export const carousels: ItemType[] = [
 {
     id: "01KAY9ARHG1X7DQRCF8DXD7CS7",
     caption: "Circular Carousel",
-    videoSrc: "demo/carousels/circular-carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/carousels/circular-carousel_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/carousels/circular-carousel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/carousels/circular-carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/circular-carousel",
     twitterId: "reactiive_",
@@ -90,8 +90,8 @@ export const carousels: ItemType[] = [
   {
     id: "01KAY9ARPKHQWRG6SRX50NF45N",
     caption: "Color Carousel",
-    videoSrc: "demo/carousels/color-carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/carousels/color-carousel_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/carousels/color-carousel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/carousels/color-carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/color-carousel",
     twitterId: "reactiive_",
@@ -104,8 +104,8 @@ export const carousels: ItemType[] = [
   {
     id: "01KAY9ARV8B9X0VMWEP30BN5KE",
     caption: "Coverflow Carousel",
-    videoSrc: "demo/carousels/coverflow-carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/carousels/coverflow-carousel_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/carousels/coverflow-carousel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/carousels/coverflow-carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/coverflow-carousel",
     twitterId: "reactiive_",
@@ -118,8 +118,8 @@ export const carousels: ItemType[] = [
   {
     id: "01KAY9AW7H96MGX8X9PV0GQFMR",
     caption: "Infinite Carousel",
-    videoSrc: "demo/carousels/infinite-carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/carousels/infinite-carousel_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/carousels/infinite-carousel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/carousels/infinite-carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/infinite-carousel",
     twitterId: "reactiive_",
@@ -132,8 +132,8 @@ export const carousels: ItemType[] = [
   {
     id: "01KAY9B0D10C3STQN95S3VRE0G",
     caption: "Stacked Carousel",
-    videoSrc: "demo/carousels/stacked-carousel_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/carousels/stacked-carousel_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/carousels/stacked-carousel_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/carousels/stacked-carousel_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-carousel",
     twitterId: "reactiive_",

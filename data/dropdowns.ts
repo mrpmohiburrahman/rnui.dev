@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const drop_down: ItemType[] = [
+export const drop_down: Entry[] = [
   {
     id: "01ARZ3NDEKTSV4RRFFQ69G5FAV", // Replace with a unique ULID
     caption: "Dropdown Menu",
-    videoSrc: "demo/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    demoPath: "demo/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
       "thumbnails/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:

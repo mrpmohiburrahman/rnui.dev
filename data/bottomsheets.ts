@@ -1,12 +1,12 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const bottomsheets: ItemType[] = [
+export const bottomsheets: Entry[] = [
   {
     id: "01JFFAHZKJR3P3XAKMBYAW2DWF",
     caption: "Bottom Sheet",
-    videoSrc:
+    demoPath:
       "demo/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc:
+    posterPath:
       "thumbnails/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source:
@@ -20,8 +20,8 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01JFFAJGRAV9SPXX2WXEV14CE5",
     caption: "Reanimated Bottom Sheet",
-    videoSrc: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.mp4",
-    thumbnailSrc:
+    demoPath: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.mp4",
+    posterPath:
       "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
@@ -35,8 +35,8 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01KAY9APVXMC0XDFBWFWFEKDBC",
     caption: "Alert Drawer",
-    videoSrc: "demo/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/alert-drawer",
     twitterId: "reactiive_",
@@ -49,8 +49,8 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01KAY9AS0K0W5JZY100FNM2WDY",
     caption: "Dot Sheet",
-    videoSrc: "demo/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dot-sheet",
     twitterId: "reactiive_",
@@ -63,8 +63,8 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01KAY9ATYBK2KMTGAF6BMSN83F",
     caption: "Floating Modal",
-    videoSrc: "demo/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-modal",
     twitterId: "reactiive_",
@@ -77,8 +77,8 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01KAY9AZ8Y0WJRYSQGY2PG698P",
     caption: "Skia Bottom Sheet",
-    videoSrc: "demo/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
-    thumbnailSrc: "thumbnails/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
+    demoPath: "demo/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
     author: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/skia-bottom-sheet",
     twitterId: "reactiive_",

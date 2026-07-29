@@ -4,7 +4,7 @@ import path from "node:path"
 import { embed } from "ai"
 import { createOpenAI } from "@ai-sdk/openai"
 
-import { ALL_ITEMS } from "@/lib/codex/items"
+import { ALL_ENTRIES } from "@/lib/codex/entries"
 import { CODEX_EMBED_MODEL } from "@/lib/codex/env"
 
 type Vector = { id: string; embedding: number[] }
@@ -64,13 +64,13 @@ export async function POST(req: Request) {
     value: q,
   })
 
-  const byId = new Map(ALL_ITEMS.map((it) => [it.id, it]))
+  const byId = new Map(ALL_ENTRIES.map((entry) => [entry.id, entry]))
   const ranked = index.vectors
     .map((v) => ({ id: v.id, score: cosine(queryVec, v.embedding) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, 20)
-    .map(({ id, score }) => ({ score, item: byId.get(id) }))
-    .filter((r) => r.item)
+    .map(({ id, score }) => ({ score, entry: byId.get(id) }))
+    .filter((r) => r.entry)
 
   return NextResponse.json({ q, model: index.model, results: ranked })
 }

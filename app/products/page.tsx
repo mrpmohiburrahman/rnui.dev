@@ -2,10 +2,10 @@
 
 import type { ReactElement } from "react"
 
-import ProductsPageClient from "@/components/products-page-client"
+import EntriesPageClient from "@/components/entries-page-client"
 
 // Adjust the import path if necessary
-import { getProducts } from "../actions/get-products"
+import { getEntries } from "../actions/get-entries"
 
 interface PageProps {
   searchParams: Promise<{
@@ -17,17 +17,17 @@ interface PageProps {
   }>
 }
 
-const ProductsPage = async ({
+const EntriesPage = async ({
   searchParams,
 }: PageProps): Promise<ReactElement> => {
   // Next.js 15 requires awaiting searchParams
   const params = await searchParams
   const { search, category, label, tag, author } = params
-  const data = await getProducts(search, category, label, tag, author)
+  const data = await getEntries(search, category, label, tag, author)
 
   return (
     <div className="flex">
-      <ProductsPageClient
+      <EntriesPageClient
         sortedData={data}
         filteredFeaturedData={null}
         search={search}
@@ -40,4 +40,4 @@ const ProductsPage = async ({
   )
 }
 
-export default ProductsPage
+export default EntriesPage

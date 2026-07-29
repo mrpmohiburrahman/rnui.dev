@@ -1,11 +1,11 @@
-import type { ItemType } from "./items"
+import type { Entry } from "./entry"
 
-export const loaders: ItemType[] = [
+export const loaders: Entry[] = [
   {
     id: "01JVM0CEFWAZ7BMHPJYB7ZJQR5",
     caption: "Star Falling Loading Animation",
-    videoSrc: "demo/loaders/star_falling_loading_animation_zakaria_kerkeb.mp4",
-    thumbnailSrc:
+    demoPath: "demo/loaders/star_falling_loading_animation_zakaria_kerkeb.mp4",
+    posterPath:
       "thumbnails/loaders/star_falling_loading_animation_zakaria_kerkeb.avif",
     author: "Zakaria Kerkeb",
     source: "https://github.com/zkerkeb/showcase-app",
@@ -18,8 +18,8 @@ export const loaders: ItemType[] = [
   {
     id: "01JFP0DWPAN5CJE16DDRQNERJH",
     caption: "Generators",
-    videoSrc: "demo/loaders/generators_william_candillon.mp4",
-    thumbnailSrc: "thumbnails/loaders/generators_william_candillon.avif",
+    demoPath: "demo/loaders/generators_william_candillon.mp4",
+    posterPath: "thumbnails/loaders/generators_william_candillon.avif",
     author: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Generators",
@@ -32,8 +32,8 @@ export const loaders: ItemType[] = [
   {
     id: "01JFP0QTQRB667GKSA8A8VVDDP",
     caption: "Animated Loader",
-    videoSrc: "demo/loaders/animated_loader_hewad_mubariz.mp4",
-    thumbnailSrc: "thumbnails/loaders/animated_loader_hewad_mubariz.avif",
+    demoPath: "demo/loaders/animated_loader_hewad_mubariz.mp4",
+    posterPath: "thumbnails/loaders/animated_loader_hewad_mubariz.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-loader",
@@ -46,8 +46,8 @@ export const loaders: ItemType[] = [
   {
     id: "01JFP0VE8A5KT8R0QSBQFE34VR",
     caption: "Morphing Loader",
-    videoSrc: "demo/loaders/morphingLoader.mp4",
-    thumbnailSrc: "thumbnails/loaders/morphingLoader.avif",
+    demoPath: "demo/loaders/morphingLoader.mp4",
+    posterPath: "thumbnails/loaders/morphingLoader.avif",
     author: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",

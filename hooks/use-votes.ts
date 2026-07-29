@@ -5,58 +5,61 @@ import { useEffect, useRef, useState } from "react"
 
 import { incrementViewCount } from "@/app/actions/increment-view-count" // Adjust the import path as needed
 
+// The stored key keeps its old spelling for the same reason the Firestore field
+// names do: it is a record in someone's browser, not an identifier. Renaming it
+// would silently discard every vote a visitor has already cast.
 const VOTED_ITEMS_KEY = "votedItems"
 
 const useVotes = () => {
-  const [votedItems, setVotedItems] = useState<string[] | null>(null)
+  const [votedEntryIds, setVotedEntryIds] = useState<string[] | null>(null)
   const isInitialMount = useRef(true)
 
   // Load voted items from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const storedVotedItems = localStorage.getItem(VOTED_ITEMS_KEY)
-        if (storedVotedItems) {
-          const parsedVotedItems = JSON.parse(storedVotedItems)
-          if (Array.isArray(parsedVotedItems)) {
-            setVotedItems(parsedVotedItems)
+        const storedVotedEntryIds = localStorage.getItem(VOTED_ITEMS_KEY)
+        if (storedVotedEntryIds) {
+          const parsedVotedEntryIds = JSON.parse(storedVotedEntryIds)
+          if (Array.isArray(parsedVotedEntryIds)) {
+            setVotedEntryIds(parsedVotedEntryIds)
           } else {
             console.warn(
               "📄 Stored voted items are not an array. Resetting to empty array."
             )
-            setVotedItems([])
+            setVotedEntryIds([])
           }
         } else {
           console.log(
             "📄 No voted items found in localStorage. Initializing with empty array."
           )
-          setVotedItems([])
+          setVotedEntryIds([])
         }
       } catch (error) {
         console.error("❌ Error parsing voted items from localStorage:", error)
-        setVotedItems([])
+        setVotedEntryIds([])
       }
     }
   }, [])
 
-  // Update localStorage whenever votedItems change, skip initial mount
+  // Update localStorage whenever votedEntryIds change, skip initial mount
   useEffect(() => {
-    if (votedItems === null) return
+    if (votedEntryIds === null) return
     if (isInitialMount.current) {
       isInitialMount.current = false
       return
     }
     try {
-      localStorage.setItem(VOTED_ITEMS_KEY, JSON.stringify(votedItems))
-      console.log("📁 ~ Voted items updated in localStorage:", votedItems)
+      localStorage.setItem(VOTED_ITEMS_KEY, JSON.stringify(votedEntryIds))
+      console.log("📁 ~ Voted items updated in localStorage:", votedEntryIds)
     } catch (error) {
       console.error("❌ Failed to update voted items in localStorage:", error)
     }
-  }, [votedItems])
+  }, [votedEntryIds])
 
   // Vote functions
   const addVote = (id: string) => {
-    setVotedItems((prev) => {
+    setVotedEntryIds((prev) => {
       if (prev && !prev.includes(id)) {
         const updated = [...prev, id]
         console.log(`✅ Vote added: ${id}`, updated)
@@ -68,7 +71,7 @@ const useVotes = () => {
   }
 
   const removeVote = (id: string) => {
-    setVotedItems((prev) => {
+    setVotedEntryIds((prev) => {
       if (prev?.includes(id)) {
         const updated = prev.filter((voteId) => voteId !== id)
         console.log(`❌ Vote removed: ${id}`, updated)
@@ -88,10 +91,10 @@ const useVotes = () => {
     }
   }
 
-  const isVoted = (id: string) => votedItems?.includes(id) || false
+  const isVoted = (id: string) => votedEntryIds?.includes(id) || false
 
   return {
-    votedItems,
+    votedEntryIds,
     toggleVote,
     isVoted,
     addVote,

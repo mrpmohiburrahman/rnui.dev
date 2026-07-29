@@ -2,7 +2,7 @@
 
 import { useTransition } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { getUniqueCategories } from "@/data/items"
+import { getUniqueCategories } from "@/data/entry"
 import { AnimatePresence } from "framer-motion"
 
 import { cn } from "@/lib/utils"

@@ -13,9 +13,9 @@ const {
   VariableDeclaration,
 } = require("ts-morph")
 
-// Define the path to your data directory and items.ts
+// Define the path to your data directory and the Entry module
 const DATA_DIR = path.join(__dirname, "../data")
-const ITEMS_FILE = path.join(DATA_DIR, "items.ts")
+const ENTRY_FILE = path.join(DATA_DIR, "entry.ts")
 
 // Initialize ts-morph project
 const project = new Project({
@@ -23,8 +23,8 @@ const project = new Project({
   skipAddingFilesFromTsConfig: true,
 })
 
-// Add items.ts to the project
-const itemsSourceFile = project.addSourceFileAtPath(ITEMS_FILE)
+// Add the Entry module to the project
+const entrySourceFile = project.addSourceFileAtPath(ENTRY_FILE)
 
 // Function to extract imported data files
 function getImportedDataFiles(sourceFile: typeof SourceFile): string[] {
@@ -50,7 +50,7 @@ function getImportedDataFiles(sourceFile: typeof SourceFile): string[] {
 }
 
 // Get all imported data files
-const dataFiles = getImportedDataFiles(itemsSourceFile)
+const dataFiles = getImportedDataFiles(entrySourceFile)
 
 // Function to add or update "created_at" field
 function addCreatedAtToDataFile(filePath: string) {
@@ -91,7 +91,7 @@ function addCreatedAtToDataFile(filePath: string) {
               const existing = objLiteral.getProperty("created_at")
               if (existing) {
                 console.log(
-                  `"created_at" already exists in item ${index + 1} of ${path.basename(filePath)}. Skipping...`
+                  `"created_at" already exists in entry ${index + 1} of ${path.basename(filePath)}. Skipping...`
                 )
                 return
               }
@@ -103,7 +103,7 @@ function addCreatedAtToDataFile(filePath: string) {
                 initializer: `"${isoString}"`,
               })
 
-              // Subtract one second for the next item
+              // Subtract one second for the next entry
               currentTime = new Date(currentTime.getTime() - 1000)
             }
           })
