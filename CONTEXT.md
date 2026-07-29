@@ -11,7 +11,7 @@ One catalogue record — an author, a caption, source links, a category, and the
 _Avoid_: item, card, component, animation
 
 **Category**:
-The UI kind an Entry belongs to (Buttons, Sliders, Tabbars…). One `data/` file per Category.
+The UI kind an Entry belongs to (Buttons, Sliders, Tabbars…). One `data/` file per Category. Its display name is the canonical form — the lowercase spellings that appear in URLs and Asset paths are derived from it, never the other way round.
 _Avoid_: section, group, tag
 
 **Demo**:
