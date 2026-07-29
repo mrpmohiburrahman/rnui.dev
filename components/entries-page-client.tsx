@@ -17,7 +17,6 @@ import CardModal from "./card-modal"
 
 interface EntriesPageClientProps {
   sortedData: Entry[]
-  filteredFeaturedData: Entry[] | null
   search?: string
   category?: string
   label?: string
@@ -27,7 +26,6 @@ interface EntriesPageClientProps {
 
 const EntriesPageClient = ({
   sortedData: initialData,
-  filteredFeaturedData,
   search,
   category,
   label,
@@ -52,7 +50,7 @@ const EntriesPageClient = ({
         <FadeIn>
           <EntryCardGrid
             sortedData={sortedData}
-            filteredFeaturedData={filteredFeaturedData}
+            treatment="plain"
             openModal={openModal}
             bookmarks={bookmarks}
             toggleBookmark={toggleBookmark}

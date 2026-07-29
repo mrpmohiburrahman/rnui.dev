@@ -14,13 +14,11 @@ import { EntryCardGrid } from "./entry-card-grid"
 
 interface DirectoryPageClientProps {
   sortedData: Entry[]
-  filteredFeaturedData: Entry[] | null
   children?: ReactNode
 }
 
 const DirectoryPageClient: React.FC<DirectoryPageClientProps> = ({
   sortedData: initialData,
-  filteredFeaturedData,
   children,
 }) => {
   // Use the separate hooks
@@ -42,7 +40,7 @@ const DirectoryPageClient: React.FC<DirectoryPageClientProps> = ({
     >
       <EntryCardGrid
         sortedData={sortedData}
-        filteredFeaturedData={filteredFeaturedData}
+        treatment="framed"
         openModal={openModal}
         bookmarks={bookmarks}
         toggleBookmark={toggleBookmark}

@@ -54,6 +54,7 @@ const BookmarksPage = () => {
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
       <EntryCardGrid
         sortedData={sortedData}
+        treatment="framed"
         openModal={openModal}
         bookmarks={bookmarks}
         toggleBookmark={toggleBookmark}

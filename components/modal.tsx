@@ -45,6 +45,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 
           {/* Modal Content */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Entry details"
             className="bg-white dark:bg-gray-800 rounded-lg shadow-lg z-10 max-w-3xl w-full mx-4 p-6 relative"
             variants={modalVariants}
             transition={{ duration: 0.3 }}

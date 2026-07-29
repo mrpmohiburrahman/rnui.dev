@@ -29,7 +29,6 @@ const EntriesPage = async ({
     <div className="flex">
       <EntriesPageClient
         sortedData={data}
-        filteredFeaturedData={null}
         search={search}
         category={category}
         label={label}
