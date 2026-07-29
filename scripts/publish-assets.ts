@@ -21,8 +21,10 @@
 //   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_R2_TOKEN (Workers R2 Storage: Edit), R2_BUCKET
 
 import { execFileSync } from "node:child_process"
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { readFile } from "node:fs/promises"
-import { extname } from "node:path"
+import { tmpdir } from "node:os"
+import { extname, join } from "node:path"
 
 import { allAssetPaths } from "../data/catalogue"
 
@@ -40,8 +42,9 @@ const bucket = process.env.R2_BUCKET
 const args = process.argv.slice(2)
 const dryRun = args.includes("--dry-run")
 // Substring, not prefix, so `misc` selects both demo/misc and thumbnails/misc.
-// check-video-codecs.sh matches identically — if the two ever diverge, the gate
-// starts demanding Staging copies that the publish would never touch.
+// This is the only place the narrowing happens. The gate is handed the paths
+// this produces rather than the fragments that produced them, so there is no
+// second derivation that could select a different set.
 const prefixes = args.filter((a) => !a.startsWith("--"))
 const selected = (path: string) =>
   prefixes.length === 0 || prefixes.some((p) => path.includes(p))
@@ -112,13 +115,28 @@ async function main() {
   // Asset, and once it is one it cannot be replaced — so this runs first, and a
   // failure means nothing is uploaded at all.
   //
-  // Scoped to the same prefixes as the publish itself: checking the whole
-  // catalogue would demand every one of the 554 Staging copies be on disk, and
-  // a machine publishing one new Entry holds one.
-  console.log("Checking Staging copies before publishing anything ...")
+  // The checker is handed the resolved list above, not the fragments the user
+  // typed. It used to re-derive the selection itself, in shell, from those same
+  // fragments; the two agreed by coincidence and a comment, and a checker that
+  // selected fewer paths than the publisher would have passed the gate over
+  // Assets nobody inspected. One derivation, so nothing left to diverge — and
+  // a narrowed run still demands only the Staging copies it will touch, since
+  // that is exactly what this list holds.
+  const listDir = mkdtempSync(join(tmpdir(), "rnui-publish-"))
+  const listFile = join(listDir, "asset-paths.txt")
+  writeFileSync(listFile, paths.join("\n") + "\n")
+
+  console.log(`Checking ${paths.length} Staging copies before publishing anything ...`)
+  let checked = true
   try {
-    execFileSync("bash", ["scripts/check-video-codecs.sh", ...prefixes], { stdio: "inherit" })
+    execFileSync("bash", ["scripts/check-video-codecs.sh", "--paths-from", listFile], {
+      stdio: "inherit",
+    })
   } catch {
+    checked = false
+  }
+  rmSync(listDir, { recursive: true, force: true })
+  if (!checked) {
     console.error("\nAsset check failed — nothing was published.")
     process.exit(1)
   }
