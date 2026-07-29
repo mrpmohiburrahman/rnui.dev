@@ -34,7 +34,6 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "scripts/add-created-at.ts",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
