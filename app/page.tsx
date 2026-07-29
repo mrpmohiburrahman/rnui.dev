@@ -1,6 +1,4 @@
 // app/page.tsx
-import type { Entry } from "@/data/entry"
-
 import { FadeIn } from "@/components/cult/fade-in"
 import DirectoryPageClient from "@/components/directory-page-client"
 import { DirectorySearch } from "@/components/directory-search"
@@ -9,14 +7,9 @@ import NewsletterForm from "@/components/newsletter-form"
 
 import { getEntries } from "./actions/get-entries"
 
-const FEATURED_IDS: string[] = []
-
 async function Page({ searchParams }: { searchParams: Promise<{ search?: string }> }) {
   const params = await searchParams
   const data = await getEntries(params.search)
-  const filteredFeaturedData = data.filter((d: Entry) =>
-    FEATURED_IDS.includes(d.id)
-  )
 
   return (
     <div
@@ -24,10 +17,7 @@ async function Page({ searchParams }: { searchParams: Promise<{ search?: string 
     // style={{ borderWidth: 1, borderColor: "purple" }}
     >
       <FadeIn>
-        <DirectoryPageClient
-          sortedData={data}
-          filteredFeaturedData={filteredFeaturedData}
-        >
+        <DirectoryPageClient sortedData={data}>
           <div
             className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative"
           // style={{ borderWidth: 1, borderColor: "purple" }}

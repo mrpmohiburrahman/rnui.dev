@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import type { Entry } from "@/data/entry"
 
 import { incrementViewCount } from "@/app/actions/increment-view-count"
@@ -15,14 +15,13 @@ export default function CardModal({
   isModalOpen: boolean
   closeModal: () => void
 }) {
-  const [viewCount, setViewCount] = useState<number>(
-    selectedEntry?.view_count || 0
-  )
+  // No local view count here. This component mounts before anything is selected,
+  // so the count it held was seeded from nothing, incremented on every open, and
+  // rendered nowhere — state that could not be right and could not be seen.
   const incrementViewCountLocal = async () => {
     try {
       if (selectedEntry) {
         await incrementViewCount(selectedEntry.id)
-        setViewCount((prev) => prev + 1)
       }
     } catch (error) {
       console.error("Error incrementing view count:", error)

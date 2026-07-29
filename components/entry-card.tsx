@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useEffect, useState } from "react"
 import Link from "next/link"
 import type { Entry } from "@/data/entry"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
@@ -22,9 +22,7 @@ import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 import InteractiveVideo from "./interactive-video"
 
 interface EntryCardProps {
-  trim?: boolean
   entry: Entry
-  order: number
   onClick: (entry: Entry) => void
   isBookmarked: boolean
   toggleBookmark: (id: string) => void
@@ -33,22 +31,33 @@ interface EntryCardProps {
 }
 
 const EntryCardComponent: React.FC<EntryCardProps> = ({
-  trim,
   entry,
-  order,
   onClick,
   isBookmarked,
   toggleBookmark,
   isVoted,
   toggleVote,
 }) => {
-  const [voteCount, setVoteCount] = useState<number>(entry.vote_count || 0)
-  const [viewCount, setViewCount] = useState<number>(entry.view_count || 0)
+  // The displayed counts follow the Entry, with whatever this visitor has just
+  // clicked added on top. They used to be snapshotted into state at mount, so a
+  // re-render handed a fresh Entry kept showing the numbers the card happened to
+  // mount with.
+  const [viewsClicked, setViewsClicked] = useState(0)
+  const [votesClicked, setVotesClicked] = useState(0)
+  const viewCount = (entry.view_count ?? 0) + viewsClicked
+  const voteCount = Math.max((entry.vote_count ?? 0) + votesClicked, 0)
+
+  // Counts arriving from the server already include this visitor's clicks, so the
+  // local additions reset rather than stacking on top of them.
+  useEffect(() => {
+    setViewsClicked(0)
+    setVotesClicked(0)
+  }, [entry.view_count, entry.vote_count])
 
   const incrementViewCountLocal = useCallback(async () => {
     try {
       await incrementViewCount(entry.id)
-      setViewCount((prev) => prev + 1)
+      setViewsClicked((n) => n + 1)
     } catch (error) {
       console.error("Error incrementing view count:", error)
     }
@@ -57,7 +66,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   const decrementVoteCountLocal = useCallback(async () => {
     try {
       await decrementVoteCount(entry.id)
-      setVoteCount((prev) => Math.max(prev - 1, 0))
+      setVotesClicked((n) => n - 1)
     } catch (error) {
       console.error("Error decrementing vote count:", error)
     }
@@ -66,16 +75,19 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   const incrementVoteCountLocal = useCallback(async () => {
     try {
       await incrementVoteCount(entry.id)
-      setVoteCount((prev) => prev + 1)
+      setVotesClicked((n) => n + 1)
     } catch (error) {
       console.error("Error incrementing vote count:", error)
     }
   }, [entry.id])
 
-  const handleClick = useCallback(async (e: React.MouseEvent) => {
+  // Opening the Entry is not a view. Playing the Demo is, and that fires from the
+  // InteractiveVideo below. Opening a card and dismissing it without watching is
+  // not a view of anything, and while both fired one watch billed two. The
+  // judgement is reversible; it is written here because nothing else records it.
+  const handleClick = useCallback(() => {
     onClick(entry)
-    await incrementViewCountLocal()
-  }, [onClick, entry, incrementViewCountLocal])
+  }, [onClick, entry])
 
   const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -97,6 +109,9 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     }
   }, [entry.id, isVoted, toggleVote, incrementViewCountLocal, decrementVoteCountLocal, incrementVoteCountLocal])
 
+  // Following a profile or source link out still records a view. That is a third
+  // interaction, and ticket 10 ruled only on opening versus playing — it is left
+  // as it was rather than decided in passing.
   const handleLinkClick = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation()
     await incrementViewCountLocal()
@@ -105,7 +120,6 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
 
   return (
     <motion.div
-      key={`entry-card-${entry.id}-${order}`}
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -145,7 +159,8 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
             </Badge>
           )}
 
-          {/* Video */}
+          {/* Video. Playing it is the one interaction on this card that counts as
+              a view of the Entry. */}
           <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
             <InteractiveVideo
               src={entry.demoPath}
@@ -165,7 +180,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                 {entry.author.substring(0, 30)}
               </MinimalCardTitle>
               <MinimalCardDescription className="text-sm text-neutral-700 dark:text-neutral-300 mb-2">
-                {trim ? `${entry.caption.slice(0, 82)}...` : entry.caption}
+                {entry.caption}
               </MinimalCardDescription>
               <MinimalCardContent />
             </div>

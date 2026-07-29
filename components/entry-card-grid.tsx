@@ -2,7 +2,6 @@
 "use client"
 
 import { Suspense, useState } from "react"
-import { usePathname } from "next/navigation"
 import type { Entry } from "@/data/entry"
 
 import { cn } from "@/lib/utils"
@@ -10,9 +9,19 @@ import { cn } from "@/lib/utils"
 import { EntryCard } from "./entry-card"
 import LastUpdated from "./last-updated"
 
+/**
+ * Which of the two visual treatments to render. `framed` wraps the heading row
+ * and the grid in a panel; `plain` leaves both bare.
+ *
+ * It is a required prop rather than a default because it used to be a substring
+ * test against the current address, performed in here: invisible from every call
+ * site, and wrong the moment a route was added.
+ */
+export type GridTreatment = "framed" | "plain"
+
 export interface EntryCardGridProps {
   sortedData?: Entry[]
-  filteredFeaturedData?: Entry[] | null
+  treatment: GridTreatment
   children?: React.ReactNode
   openModal: (entry: Entry) => void
   bookmarks: string[]
@@ -25,6 +34,7 @@ export interface EntryCardGridProps {
 
 export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   sortedData,
+  treatment,
   children,
   openModal,
   bookmarks,
@@ -34,7 +44,6 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   setSort, // Destructure new prop
   currentSort, // Destructure new prop
 }) => {
-  const pathname = usePathname()
   const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
   return (
     <div
@@ -44,7 +53,7 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
       <div
         className={cn(
           "px-4",
-          pathname.includes("/products")
+          treatment === "plain"
             ? "md:p-4 md:gap-3"
             : "bg-white p-4 gap-3 dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
         )}
@@ -178,7 +187,7 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
       <div
         className={cn(
           "p-4 w-full",
-          pathname.includes("/products")
+          treatment === "plain"
             ? ""
             : "bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
         )}
@@ -191,7 +200,6 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
                 <EntryCard
                   key={`${index}-${entry.id}`}
                   entry={entry}
-                  order={index}
                   onClick={openModal}
                   isBookmarked={bookmarks.includes(entry.id)}
                   toggleBookmark={toggleBookmark}
