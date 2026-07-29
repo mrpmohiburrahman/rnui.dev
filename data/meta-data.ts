@@ -25,7 +25,8 @@ export const metadata = {
     "@context": "http://schema.org",
     "@type": "WebSite",
     name: "Awesome React Native UI - A list of community made animations",
-    url: "https://rnui.pixellog.io/",
+    // Same dead host the sitemap named. It does not resolve.
+    url: "https://www.rnui.dev/",
     description: "A list of React Native animations made by the community",
   },
   socialMediaTags: {

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://rnui.pixellog.io/
+Host: https://www.rnui.dev
 
 # Sitemaps
-Sitemap: https://rnui.pixellog.io/sitemap.xml
+Sitemap: https://www.rnui.dev/sitemap.xml

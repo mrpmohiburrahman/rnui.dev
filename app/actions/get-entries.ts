@@ -7,6 +7,8 @@ import "server-only"
 import { cache } from "react"
 import { getEntriesWithCounts, type Entry } from "@/data/entry"
 
+import { matchesSearchTerm } from "@/lib/entry-search"
+
 export const getEntries = cache(
   async (
     searchTerm?: string,
@@ -45,13 +47,13 @@ export const getEntries = cache(
     try {
       let filteredEntries = await getEntriesWithCounts()
 
-      // Apply search term filter
+      // Apply search term filter. The rule lives in lib/entry-search.ts, where the
+      // data suite can reach it — this action cannot be imported without Firestore,
+      // so while the rule was a line in here nothing checked it, and it tested the
+      // caption alone.
       if (searchTerm) {
-        const lowerSearchTerm = searchTerm.toLowerCase()
-        filteredEntries = filteredEntries.filter(
-          (entry) => entry.caption.toLowerCase().includes(lowerSearchTerm)
-          //  ||  entry.description.toLowerCase().includes(lowerSearchTerm)
-          // Removed punchline filter
+        filteredEntries = filteredEntries.filter((entry) =>
+          matchesSearchTerm(entry, searchTerm)
         )
       }
 
