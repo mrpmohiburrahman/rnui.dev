@@ -19,7 +19,8 @@ This pipeline (planned, see [ROADMAP.md](./ROADMAP.md)):
 1. Fetches the source.
 2. Calls OpenAI to extract `{ id, title, author, category, description, tags, repoUrl }`.
 3. Validates against the catalog schema.
-4. Generates a thumbnail.
+4. Prints where the Demo must be dropped, and the commands that turn it into a
+   published Entry — it does not fetch or encode any media itself.
 5. Opens a PR on a branch named `submission/<slug>`.
 
 ### 3. Manual entry
@@ -41,11 +42,18 @@ that grows by a video per entry makes every future clone slower, permanently.
 So: **your PR changes `data/*.ts` and nothing binary.** Reference the Asset
 paths your Demo and Poster will have, and a maintainer publishes the files.
 
-A maintainer publishes them with:
+A maintainer drops the Demo at `public/demo/<slug>/<file>.mp4` — `<slug>` being
+the Category's lowercase asset slug, `bottomsheets` and not `Bottom Sheets` — and
+then runs:
 
 ```bash
-pnpm assets:publish     # checks every Demo is H.264, then uploads what is missing
+pnpm posters:generate   # writes the missing Posters as AVIF, one ffmpeg pass each
+pnpm assets:publish     # checks every Demo is H.264 and every Poster AVIF, then
+                        # uploads what is missing
 ```
+
+Both need `ffmpeg` (`brew install ffmpeg`). A Poster that already exists is left
+alone, so `posters:generate` after a single new recording takes a second.
 
 That command refuses to overwrite an Asset path that is already published,
 because Published Assets are cached as immutable for a year and cannot be

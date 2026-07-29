@@ -11,11 +11,10 @@
 // a new path, and a path is never reused (CONTEXT.md, ADR-0003).
 //
 // The catalogue tooling reads the rule from here rather than remembering it:
-// the publish tool, the path lister, the ingest script and the automated review
-// prompt. Two holdouts remain. scripts/check-video-codecs.sh restates the
-// staging prefix in shell, deliberately — ADR-0005 says why. And
-// scripts/generateThumbnails.ts still builds its own directories; ticket 05
-// moves it onto this module when it starts writing AVIF.
+// the publish tool, the path lister, the ingest script, the Poster generator
+// and the automated review prompt. One holdout remains —
+// scripts/check-video-codecs.sh restates the staging prefix in shell,
+// deliberately, and ADR-0005 says why.
 //
 // tests/data-integrity.test.ts restates the same shape as hand-written patterns
 // instead of importing these. That duplication is deliberate and must not be

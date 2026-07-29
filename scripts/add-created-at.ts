@@ -2,8 +2,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // scripts/addCreatedAt.ts
 
-// const fs = require("fs-extra")
-// const path = require("path")
+// `export {}` makes this file a module, so the consts below are its own rather
+// than the project's. Without it a top-level `const` in a .ts file with no
+// imports or exports is a *global* declaration — which is how this script came
+// to type-check for months while throwing on its first line: the two requires
+// below were commented out, and the Poster generator, a script file back when
+// it was scripts/generateThumbnails.ts, was declaring `fs` and `path` globally
+// for it. Making that one a module took the borrowed names away.
+export {}
+
+const fs = require("fs-extra")
+const path = require("path")
 
 const {
   Expression,
