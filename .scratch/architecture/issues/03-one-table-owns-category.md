@@ -12,17 +12,31 @@ The display name is canonical; every slug derives from the row, never the revers
 
 **Blocked by:** 02. This ticket creates a new module; writing it in the old vocabulary and sweeping it days later is the thing the sequencing in ADR-0004 exists to avoid.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] One table in the data layer holds a row per Category with its display name, legacy URL slug, Asset directory slug, data file and exported array name
-- [ ] It no longer lives inside the folder named after the ingest tooling
-- [ ] The legacy redirect map and the redirect matcher are both derived from the table rather than typed out
-- [ ] Every legacy Category URL still redirects to exactly the destination it did before
-- [ ] The search-engine keyword string includes every Category's display name, derived from the table
-- [ ] A test loads each row's data file and asserts every Entry in it reached the merged catalogue
-- [ ] That test's failure message names the Category and the Entry IDs that did not arrive
-- [ ] A Category with no Entries passes the test
-- [ ] A Category whose data file is not merged into the catalogue fails the test
-- [ ] Navigation and the search placeholder still derive their Category list from the Entries present, with a comment recording that empty Categories are legal and why that matters
-- [ ] The compiler still rejects a Category name that is not in the table
-- [ ] Type check, test suite, build and end-to-end tests all pass
+- [x] One table in the data layer holds a row per Category with its display name, legacy URL slug, Asset directory slug, data file and exported array name
+- [x] It no longer lives inside the folder named after the ingest tooling
+- [~] The legacy redirect map and the redirect matcher are both derived from the table rather than typed out — **map derived; matcher cannot be, see comment below**
+- [x] Every legacy Category URL still redirects to exactly the destination it did before
+- [x] The search-engine keyword string includes every Category's display name, derived from the table
+- [x] A test loads each row's data file and asserts every Entry in it reached the merged catalogue
+- [x] That test's failure message names the Category and the Entry IDs that did not arrive
+- [x] A Category with no Entries passes the test
+- [x] A Category whose data file is not merged into the catalogue fails the test
+- [x] Navigation and the search placeholder still derive their Category list from the Entries present, with a comment recording that empty Categories are legal and why that matters
+- [x] The compiler still rejects a Category name that is not in the table
+- [x] Type check, test suite, build and end-to-end tests all pass
+
+## Comments
+
+**2026-07-29 — resolved.** `data/categories.ts` holds the eighteen rows. `lib/codex/categoryMap.ts` is deleted; `slugify` moved to its one caller in `scripts/codex-ingest.ts` with a pointer to ticket 04, which is where the spec puts it. The redirect map and the keyword string are now derived. The wiring test lives in `tests/data-integrity.test.ts`.
+
+**The one deviation: the middleware matcher is still typed out.** Next.js parses `export const config` out of the middleware source at build time and refuses anything it cannot read statically — `matcher: Object.keys(LEGACY_REDIRECTS)` fails the build outright with *"`matcher` needs to be a static string or array of static strings or array of static objects."* This is the same class of constraint the ticket already carves out for the catalogue merge, so it got the same remedy: the literal stays, and a test asserts it equals the table's derived paths.
+
+The alternative that would have satisfied the criterion literally is deleting `config` entirely — the map lookup already guards, so the redirects would still work — at the cost of running the middleware on every request rather than eighteen paths. Not worth it for a list a test now pins.
+
+That test is a deliberate departure from the spec's *"The redirect middleware gets no test."* The spec's reason was that both of the middleware's lists would be generated; one of them cannot be, so the premise no longer holds.
+
+**Evidence.** All eighteen legacy paths were curled against `pnpm start` and return `307` to byte-identical destinations, `/miscellaneous` → `Misc` included. The wiring test was checked by mutation: removing `...pickers` from `data/catalogue.ts` fails one test with *"Pickers: 1 Entries in data/pickers.ts never reached data/catalogue.ts — 01G8YVZ8XY1G8VZ8XY1G8VZ8XY"*. Type check, 29 tests, build and the three end-to-end tests all pass.
+
+**Left alone on purpose.** `CATEGORY_VALUES` in `lib/codex/schema.ts` keeps its own tuple — the spec says so, and the uncovered case degrades to "the extractor never suggests that Category". The duplicate catalogue merge in `lib/codex/entries.ts` is still out of scope (survey candidate 3).
