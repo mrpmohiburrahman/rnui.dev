@@ -12,7 +12,6 @@ import useVotes from "@/hooks/use-votes"
 import { FadeIn } from "@/components/cult/fade-in"
 import { GradientHeading } from "@/components/cult/gradient-heading"
 import { EntryCardGrid } from "@/components/entry-card-grid"
-import { incrementViewCount } from "@/app/actions/increment-view-count"
 
 import CardModal from "./card-modal"
 
@@ -42,12 +41,6 @@ const EntriesPageClient = ({
   const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
   const { sortedData, sort, setSort } = useSortedData(initialData)
 
-  // Vote handler integration
-  const handleToggleVote = (id: string) => {
-    incrementViewCount(id)
-    toggleVote(id)
-  }
-
   // Ensure bookmarks and votedEntryIds are loaded before rendering
   if (bookmarks === null || votedEntryIds === null) {
     return <div /> // Optionally, replace with a loader
@@ -64,7 +57,7 @@ const EntriesPageClient = ({
             bookmarks={bookmarks}
             toggleBookmark={toggleBookmark}
             votedEntryIds={votedEntryIds}
-            toggleVote={handleToggleVote}
+            toggleVote={toggleVote}
             setSort={setSort}
             currentSort={sort}
           >
