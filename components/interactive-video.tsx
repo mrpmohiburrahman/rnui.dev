@@ -96,11 +96,13 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     [posthog, src, videoSource]
   )
 
-  // videoSource is a dependency, not just isPlaying. The grid is virtualised, so
-  // a mounted card can be handed a different Entry while isPlaying is already
-  // true; without this the new source loads but never plays, leaving a decoded
-  // first frame frozen at currentTime 0. The e2e test asserts currentTime
-  // advances precisely because "a video element exists" would not have caught that.
+  // play() lives in an effect and not in the click handler because the <video>
+  // only mounts once isPlaying is true — at click time there is nothing to call
+  // play() on. videoSource is a dependency as well, so a source that changes
+  // under an already-playing element loads *and* plays; without it the new
+  // source decodes a first frame and freezes at currentTime 0. The e2e test
+  // asserts currentTime advances precisely because "a video element exists"
+  // would not have caught that.
   useEffect(() => {
     if (isPlaying) {
       videoRef.current?.play()?.catch(() => {})
