@@ -142,9 +142,9 @@ fail=0
 
 if [ "$PROD" = 0 ]; then
   # ── Staging copies ────────────────────────────────────────────────────────
-  # Every referenced Asset must be on disk, and every Demo must be H.264 — the
-  # only codec every browser decodes. This is what the publish tool runs before
-  # it uploads anything.
+  # Every referenced Asset must be on disk, every Demo must be H.264 — the only
+  # codec every browser decodes — and every Poster must be AVIF. This is what
+  # the publish tool runs before it uploads anything.
 
   # `grep .` drops the blank line printf leaves when a narrowed run selects
   # only one kind of Asset — without it an empty set reads as a missing file.
@@ -156,17 +156,46 @@ if [ "$PROD" = 0 ]; then
     fail=1
   fi
 
-  bad_codec=$(printf '%s\n' "$demos" | grep . \
-    | xargs -P 8 -I{} sh -c '
+  # Which of the Asset paths on stdin do not decode as the codec named in $1.
+  #
+  # Format is a property of the bytes, so this is the only place either kind can
+  # be established — the data suite can see that a path ends in .avif, which a
+  # JPG written under that name satisfies, and that is exactly the file the
+  # documented Poster command used to produce.
+  #
+  # A file ffprobe cannot parse at all reads back as nothing, hence the default:
+  # an unreadable Asset is reported rather than passed over.
+  wrong_codec() {
+    xargs -P 8 -I{} sh -c '
         f="public/$1"; [ -f "$f" ] || exit 0
         c=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "$f" | head -1)
-        [ "$c" = "h264" ] || echo "$c	$1"' _ {})
+        [ "$c" = "$2" ] || echo "${c:-unreadable}	$1"' _ {} "$1"
+  }
+
+  bad_codec=$(printf '%s\n' "$demos" | grep . | wrong_codec h264)
   if [ -n "$bad_codec" ]; then
     echo "Demos that are not H.264 — browsers without that codec show nothing:"
     echo "$bad_codec" | sed 's/^/  /'
     echo
     echo "  Fix: ffmpeg -i IN.mp4 -c:v libx264 -profile:v high -pix_fmt yuv420p \\"
     echo "         -crf 21 -preset slow -movflags +faststart -c:a aac -b:a 96k OUT.mp4"
+    fail=1
+  fi
+
+  # An AVIF's video stream decodes as av1; a JPG under an .avif name reads back
+  # as mjpeg, which is how the old Poster command's output got this far.
+  #
+  # The fix points at the generator rather than repeating its ffmpeg flags. The
+  # encode settings live in scripts/generate-posters.ts and are the kind of
+  # restatement that would diverge silently — unlike the cache instruction and
+  # the extension set this script does restate, both of which fail loudly.
+  bad_poster_codec=$(printf '%s\n' "$posters" | grep . | wrong_codec av1)
+  if [ -n "$bad_poster_codec" ]; then
+    echo "Posters that are not AVIF — the catalogue and its data suite accept nothing else:"
+    echo "$bad_poster_codec" | sed 's/^/  /'
+    echo
+    echo "  Fix: delete them and run pnpm posters:generate, which re-encodes each"
+    echo "  one as AVIF from its Demo."
     fail=1
   fi
 
@@ -191,7 +220,7 @@ if [ "$PROD" = 0 ]; then
     fail=1
   fi
 
-  [ "$fail" = 0 ] && echo "All $n_demos Demos are H.264 and all $n_posters Posters are present, with ASCII filenames."
+  [ "$fail" = 0 ] && echo "All $n_demos Demos are H.264 and all $n_posters Posters are present and AVIF, with ASCII filenames."
 else
   # ── Published Assets ──────────────────────────────────────────────────────
   # What the CDN hands a browser is the only thing users experience, so check

@@ -8,8 +8,8 @@
  *      that conforms to the existing Entry schema in data/entry.ts.
  *   3. Validate via Zod.
  *   4. Append the entry to data/<file>.ts using ts-morph (preserves existing formatting).
- *   5. Print a TODO block reminding the maintainer to upload the demo video so the
- *      thumbnail pipeline (scripts/generateThumbnails.ts) can run.
+ *   5. Print a TODO block reminding the maintainer to drop the Demo into Staging so
+ *      the Poster generator (scripts/generate-posters.ts) can write its Poster.
  *   6. Unless --dry-run: create branch submission/<base>, commit, push, open a PR.
  *
  * Requirements:
@@ -130,16 +130,24 @@ async function main() {
     created_at: new Date().toISOString(),
   }
 
+  // What the tooling actually does, in the order it does it — stated once and
+  // printed twice, to the terminal now and into the pull request below. A
+  // maintainer who followed the older version of this list ended up with a JPG
+  // the data suite rejected and no instruction saying what to do next.
+  const steps = [
+    `Drop the Demo at \`${stagingCopy(entry.demoPath)}\``,
+    `\`pnpm posters:generate\` — writes \`${stagingCopy(entry.posterPath)}\` as AVIF`,
+    "`pnpm check:videos` — the Demo is H.264, the Poster is AVIF, both on disk",
+    "`pnpm test` passes",
+    "`pnpm assets:publish` — both become Published Assets, at paths that never change afterwards",
+  ]
+
   console.log("\nExtracted entry:")
   console.log(JSON.stringify(entry, null, 2))
   console.log(
-    [
-      "",
-      "ASSET TODO — the maintainer must drop the demo video here before merge:",
-      `  ${stagingCopy(entry.demoPath)}`,
-      "Then run:  pnpm generate-thumbnails",
-      "",
-    ].join("\n")
+    ["", "ASSET TODO — before this can be merged:", ...steps.map((s) => `  ${s}`), ""].join(
+      "\n"
+    )
   )
 
   if (dryRun) {
@@ -166,10 +174,7 @@ async function main() {
     `**Category:** ${entry.category}`,
     "",
     "### Maintainer checklist before merge",
-    `- [ ] Upload demo video to \`${stagingCopy(entry.demoPath)}\``,
-    "- [ ] Run `pnpm generate-thumbnails`",
-    "- [ ] Verify thumbnail at the expected path",
-    "- [ ] `pnpm test` passes",
+    ...steps.map((step) => `- [ ] ${step}`),
   ].join("\n")
 
   execSync(`gh pr create --title ${JSON.stringify(`Add ${entry.caption}`)} --body ${JSON.stringify(body)}`, {
