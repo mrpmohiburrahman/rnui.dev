@@ -76,13 +76,16 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     }
   }, [src, useLocalFallback])
 
+  // videoSource is a dependency because the fallback swaps the src while
+  // isPlaying is already true — without it the new source loads but never plays,
+  // leaving a decoded first frame frozen at currentTime 0.
   useEffect(() => {
     if (isPlaying) {
-      videoRef.current?.play()
+      videoRef.current?.play()?.catch(() => {})
     } else {
       videoRef.current?.pause()
     }
-  }, [isPlaying])
+  }, [isPlaying, videoSource])
 
   const handleVideoAreaClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     if (isPlaying) {

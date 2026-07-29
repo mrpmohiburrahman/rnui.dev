@@ -100,8 +100,8 @@ export const buttons: ItemType[] = [
   {
     id: "01JFP08R4FPAVE4VVE8YTQ8EKE",
     caption: "Jelly button",
-    videoSrc: "demo/buttons/jelly_button_kacper_kapuściak.mp4",
-    thumbnailSrc: "thumbnails/buttons/jelly_button_kacper_kapuściak.avif",
+    videoSrc: "demo/buttons/jelly_button_kacper_kapusciak.mp4",
+    thumbnailSrc: "thumbnails/buttons/jelly_button_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-squishy-button",
     twitterId: "kacperkapusciak",

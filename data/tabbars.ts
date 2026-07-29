@@ -86,9 +86,9 @@ export const tabbars: ItemType[] = [
   {
     id: "01JFP1B6R851JTV5TPXMMC24WV",
     caption: "Tab Bar Micro Interactions",
-    videoSrc: "demo/tabbars/tab_bar_micro_interactions_kacper_kapuściak.mp4",
+    videoSrc: "demo/tabbars/tab_bar_micro_interactions_kacper_kapusciak.mp4",
     thumbnailSrc:
-      "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapuściak.avif",
+      "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-expo-router-tabs",
     twitterId: "kacperkapusciak",

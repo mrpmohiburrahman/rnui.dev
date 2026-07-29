@@ -20,9 +20,9 @@ export const bottomsheets: ItemType[] = [
   {
     id: "01JFFAJGRAV9SPXX2WXEV14CE5",
     caption: "Reanimated Bottom Sheet",
-    videoSrc: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.mp4",
+    videoSrc: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.mp4",
     thumbnailSrc:
-      "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapuściak.avif",
+      "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.avif",
     author: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/reanimated-bottom-sheet-video",
