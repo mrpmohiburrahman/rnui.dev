@@ -6,12 +6,41 @@ This is the durable win of the whole migration. The 48 undecodable Demos survive
 
 **Blocked by:** 06
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The existing error handler, which swaps to a root-relative Asset path, is **removed, not repaired**. After the migration that path does not exist in production, making the fallback a guaranteed second failure.
-- [ ] A failed Demo renders a visible error state in place of the media.
-- [ ] A failed Demo emits an analytics event carrying the Asset path and the failure reason.
-- [ ] One failed Demo leaves the rest of the grid working.
-- [ ] End-to-end test: clicking a card causes playback to **advance past the first frame**. Asserting a video element exists is not sufficient — the most recent bug was a Demo that mounted, loaded, decoded a frame and never moved. This is the regression test that bug never got.
-- [ ] End-to-end test: with the CDN request stubbed to fail, the visible error state appears. Deterministic, because the failure is injected rather than waited for.
-- [ ] The playback effect keeps its dependency on the resolved source, not only on the playing flag. This was fixed recently and is easy to lose; the test above locks it down.
+- [x] The existing error handler, which swaps to a root-relative Asset path, is **removed, not repaired**. After the migration that path does not exist in production, making the fallback a guaranteed second failure.
+- [x] A failed Demo renders a visible error state in place of the media.
+- [x] A failed Demo emits an analytics event carrying the Asset path and the failure reason.
+- [x] One failed Demo leaves the rest of the grid working.
+- [x] End-to-end test: clicking a card causes playback to **advance past the first frame**. Asserting a video element exists is not sufficient — the most recent bug was a Demo that mounted, loaded, decoded a frame and never moved. This is the regression test that bug never got.
+- [x] End-to-end test: with the CDN request stubbed to fail, the visible error state appears. Deterministic, because the failure is injected rather than waited for.
+- [x] The playback effect keeps its dependency on the resolved source, not only on the playing flag. This was fixed recently and is easy to lose; the test above locks it down.
+
+## Outcome
+
+The root-relative fallback is removed, not repaired. A failed Demo is terminal
+and visible.
+
+- `data-testid="demo-error"` with `role="alert"` renders in place of the media, naming the Demo and the reason.
+- A PostHog `demo_load_failed` event carries `asset_path`, `reason` and the resolved URL. `MediaError` codes are mapped to `network` / `decode` / `aborted` / `unsupported`, because "decode" is the signature of the HEVC failure and "network" is a missing object — the distinction is the whole point.
+- The handler ignores error events that carry no `MediaError`, so the childless `<track>` cannot masquerade as a broken Demo.
+- One failed Demo leaves the grid working: the test asserts every other card still offers to play.
+
+Two e2e tests added, both proven red first:
+
+| Break | Test that fired |
+| --- | --- |
+| `play()` removed from the effect | `Demo mounted but never advanced past frame 0` |
+| `setFailureReason` removed | error state never appeared |
+
+Playwright now runs with `--autoplay-policy=no-user-gesture-required`: playback
+is started by a real click but `play()` lands in an effect a tick later, outside
+Chrome's gesture window for unmuted audio. Without it the assertion is flaky
+rather than wrong.
+
+**Gap, stated plainly:** the analytics event is *not* asserted by a test. The
+capture call was verified to execute against a live PostHog client, but the SDK
+batches and did not flush within a 12s window, and stubbing the ingest endpoint
+breaks its remote-config load. Asserting it would have meant new test
+infrastructure, which the spec's testing decisions rule out. The two assertions
+the spec named are both in place and both proven red.
