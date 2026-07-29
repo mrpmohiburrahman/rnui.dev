@@ -17,6 +17,11 @@ const useBookmarks = () => {
         if (storedBookmarks) {
           const parsedBookmarks = JSON.parse(storedBookmarks)
           if (Array.isArray(parsedBookmarks)) {
+            // Reading localStorage on mount is the only SSR-safe way to hydrate
+            // this. A lazy useState initialiser runs on the server too, where
+            // there is no localStorage, so the server would render an empty set
+            // and the client a full one — a hydration mismatch.
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setBookmarks(parsedBookmarks)
           } else {
             console.warn(

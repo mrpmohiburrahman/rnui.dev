@@ -20,6 +20,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check-types
+      # Warnings do not fail the job; errors do. The one error that matters most is
+      # no-console in the application tree — twenty-two debug lines reached
+      # production while the rules existed and nothing executed them.
+      - run: pnpm lint
       - run: pnpm test
       - run: pnpm build
         env:

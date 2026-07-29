@@ -1,17 +1,34 @@
-import { dirname } from "path"
-import { fileURLToPath } from "url"
-import { FlatCompat } from "@eslint/eslintrc"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
+// eslint-config-next 16 ships flat configs — `Linter.Config[]`, not eslintrc
+// objects. They were being fed through @eslint/eslintrc's FlatCompat, which is the
+// wrapper for the *legacy* format; it tried to schema-validate a flat array and
+// then crashed formatting its own error ("Converting circular structure to JSON").
+// Spreading them is the whole of the fix, and it is why FlatCompat and
+// @eslint/eslintrc are gone from here and from the manifest.
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
+import nextTypeScript from "eslint-config-next/typescript"
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    ignores: [
+      ".next/**",
+      ".docusaurus/**",
+      "out/**",
+      "build/**",
+      "coverage/**",
+      "test-results/**",
+      "playwright-report/**",
+      "public/**",
+      "next-env.d.ts",
+    ],
+  },
+  ...nextCoreWebVitals,
+  ...nextTypeScript,
+  {
+    // The same glob the shared config declares. These are overrides *of* it, so
+    // they have to land exactly where it lands: an unscoped block also matches
+    // prettier.config.cjs, which the shared glob omits, and configuring
+    // `react/…` for a file with no react plugin registered is a hard error.
+    files: ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"],
     rules: {
       "prefer-const": "warn",
       "@typescript-eslint/no-unused-vars": ["warn"],
@@ -19,6 +36,36 @@ const eslintConfig = [
       "@typescript-eslint/no-empty-object-type": ["warn"],
       "react/no-unescaped-entities": "warn", // Change to "warn" if you prefer a warning
       "@typescript-eslint/no-unused-expressions": "warn", // Change to "warn" if you prefer a warning
+    },
+  },
+  {
+    // The tree a visitor's browser and the server actually render. scripts/ is
+    // exempt by omission: its console output is the product, and twenty-three
+    // exceptions would be worse than no rule at all.
+    files: [
+      "app/**/*.{ts,tsx}",
+      "components/**/*.{ts,tsx}",
+      "hooks/**/*.{ts,tsx}",
+      "lib/**/*.{ts,tsx,js}",
+      "data/**/*.ts",
+      "utils/**/*.ts",
+      "middleware.ts",
+    ],
+    rules: {
+      // error and warn stay: they are how a failed write and a visitor's silently
+      // reset bookmarks get reported. Everything else printed on a normal path is
+      // debug output, and twenty-two lines of it reached production because these
+      // rules existed and nothing ever ran them.
+      "no-console": ["error", { allow: ["error", "warn"] }],
+    },
+  },
+  {
+    // Two files are genuinely CommonJS. tailwind.config.ts loads its plugins with
+    // require(), which is how Tailwind's own documentation spells it, and
+    // scripts/updateLastCommitDate.js is a plain node script a git hook runs.
+    files: ["tailwind.config.ts", "scripts/updateLastCommitDate.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 ]

@@ -68,9 +68,16 @@ pnpm install
 cp .env.example .env.local   # NEXT_PUBLIC_CDN_URL is all you need for media
 pnpm dev            # Next.js dev server (turbopack)
 pnpm check-types    # tsc --noEmit
-pnpm lint
+pnpm lint           # eslint . — warnings are advisory, errors fail CI
 pnpm build
 ```
+
+CI runs `check-types`, `lint`, `test` and `build` on every pull request, so a
+clean local run of those four is a clean job. `lint` forbids `console.log` and
+friends anywhere the browser or the server renders — `app/`, `components/`,
+`hooks/`, `lib/`, `data/`, `utils/`. `console.error` and `console.warn` are
+allowed, and `scripts/` is exempt because printing to the terminal is what those
+tools are for.
 
 A fresh clone has no Assets on disk and renders correctly anyway — every Demo
 and Poster is fetched from the CDN. You do not need to download 77 MB of media,
