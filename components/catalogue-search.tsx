@@ -12,7 +12,7 @@ import { IconSpinner } from "./ui/icons"
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
 
 const placeholders = getUniqueCategories()
-export function DirectorySearch() {
+export function CatalogueSearch() {
   const router = useRouter()
   const pathname = usePathname()
 

@@ -1,7 +1,7 @@
 // app/page.tsx
+import { CataloguePage } from "@/components/catalogue-page"
+import { CatalogueSearch } from "@/components/catalogue-search"
 import { FadeIn } from "@/components/cult/fade-in"
-import DirectoryPageClient from "@/components/directory-page-client"
-import { DirectorySearch } from "@/components/directory-search"
 import { Hero } from "@/components/hero"
 import NewsletterForm from "@/components/newsletter-form"
 
@@ -12,20 +12,14 @@ async function Page({ searchParams }: { searchParams: Promise<{ search?: string 
   const data = await getEntries(params.search)
 
   return (
-    <div
-      className="max-w-full px-2 md:pl-4 md:pr-0 pt-2"
-    // style={{ borderWidth: 1, borderColor: "purple" }}
-    >
+    <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
       <FadeIn>
-        <DirectoryPageClient sortedData={data}>
-          <div
-            className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative"
-          // style={{ borderWidth: 1, borderColor: "purple" }}
-          >
+        <CataloguePage entries={data} treatment="framed">
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative">
             {/* First Column */}
             <div className="col-span-1 md:col-span-2 z-10">
               <Hero title="Awesome React Native UI">
-                <DirectorySearch />
+                <CatalogueSearch />
               </Hero>
             </div>
 
@@ -35,7 +29,7 @@ async function Page({ searchParams }: { searchParams: Promise<{ search?: string 
               <NewsletterForm />
             </div>
           </div>
-        </DirectoryPageClient>
+        </CataloguePage>
       </FadeIn>
     </div>
   )

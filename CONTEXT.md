@@ -22,6 +22,16 @@ _Avoid_: video, clip, preview
 The still frame shown in place of a Demo before it plays. Every Demo has exactly one.
 _Avoid_: thumbnail, placeholder, cover
 
+### The site
+
+**Catalogue page**:
+The client module that renders a set of Entries: the sort controls, the grid of
+cards, and whichever Entry the visitor has opened. Three routes render one —
+the home page, a Category listing and the bookmarks page — and they differ only
+in their heading and where their Entries come from. It never fetches; it is handed
+the Entries it renders.
+_Avoid_: directory, listing, index, feed, results
+
 ### Media
 
 **Asset**:
