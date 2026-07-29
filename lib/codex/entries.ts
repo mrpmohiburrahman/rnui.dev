@@ -1,7 +1,13 @@
-// This is the same eighteen-way merge as `allEntries` in data/catalogue.ts, and
-// nothing asserts the two agree. Collapsing them is survey candidate 3, which
-// the spec holds back to its own ticket; until then the duplication is real and
-// the near-identical names are a warning, not a coincidence.
+// This is the same eighteen-way merge as `allEntries` in data/catalogue.ts.
+// The duplication is real and the near-identical names are a warning, not a
+// coincidence: add a Category here and forget it there (or the reverse) and
+// tests/data-integrity.test.ts fails naming the Entries that went missing.
+//
+// Collapsing the two is survey candidate 3, gated on whether search ships at
+// all: search is this merge's only consumer, so that answer decides whether
+// the module is merged into data/catalogue.ts or deleted outright. Merging it
+// now would be thrown away if search is cut, which is why the two are pinned
+// by a test instead.
 
 import { accordions } from "@/data/accordions"
 import { arcsliders } from "@/data/arcsliders"

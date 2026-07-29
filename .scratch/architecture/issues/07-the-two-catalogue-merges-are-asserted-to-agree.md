@@ -25,13 +25,50 @@ as it stands and pins them from here.
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] The data suite asserts that the two merges hold exactly the same set of Entry ids
-- [ ] The assertion lives beside the existing catalogue-wiring guard, since it is the same class of silent failure
-- [ ] Its failure message names which Entries are missing from which merge, in the shape the suite's other assertions use
-- [ ] Removing one Category's spread from the second merge turns the assertion red, checked by hand before the ticket closes
-- [ ] Test suite and type check pass
+- [x] The data suite asserts that the two merges hold exactly the same set of Entry ids
+- [x] The assertion lives beside the existing catalogue-wiring guard, since it is the same class of silent failure
+- [x] Its failure message names which Entries are missing from which merge, in the shape the suite's other assertions use
+- [x] Removing one Category's spread from the second merge turns the assertion red, checked by hand before the ticket closes
+- [x] Test suite and type check pass
 
 The two merges are not collapsed into one. That is gated on the search decision and
 is recorded separately.
+
+## Comments
+
+**Implemented 2026-07-29.**
+
+The assertion is `tests/data-integrity.test.ts`, last test but one of the
+`catalogue wiring` block — the same describe as the per-Category merge guard, and
+it reuses that block's `merged` set rather than rebuilding it. It compares id sets
+in both directions, so an Entry present in one merge and not the other fails
+whichever side it is missing from. The message takes the sibling assertion's
+shape — count, em-dash, comma-joined ids — and prints both directions always, so
+a failure says which side is clean rather than leaving it to be inferred.
+
+Red checked by hand: deleting `...pickers,` from `lib/codex/entries.ts` fails with
+
+```
+1 Entries in data/catalogue.ts never reached lib/codex/entries.ts — 01G8YVZ8XY1G8VZ8XY1G8VZ8XY; 0 Entries in lib/codex/entries.ts never reached data/catalogue.ts —
+```
+
+then restored. Only the catalogue→search direction was exercised by hand; the
+reverse has no way to be triggered on this tree, since nothing is in the search
+merge that is not in the catalogue. It is written and type-checked but unexecuted.
+
+Three comments changed. The header of `lib/codex/entries.ts` said "nothing asserts
+the two agree", which this ticket makes false; it now points at the test and keeps
+the survey-candidate-3 reference the spec still files this duplication under.
+`data/catalogue.ts` gained the matching pointer — per
+`docs/adr/0005`'s convention that both halves of a deliberate duplication name
+each other, and because it is the likelier place to add a nineteenth Category. The
+gating rationale is written once, in `lib/codex/entries.ts`; the other two point at
+it rather than restate it.
+
+`docs/agents/triage-labels.md` had no terminal state, so closed tickets have been
+drifting between `resolved` (thirteen of them) and `done` (ticket 06). The table
+now records `resolved` as the terminal state and ticket 06 is corrected to match.
+
+Gates: `pnpm check-types` and `pnpm test` (74 passed, was 73) both pass.
