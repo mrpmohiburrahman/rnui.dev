@@ -54,8 +54,9 @@ test("a Demo that cannot load says so, and the rest of the grid survives", async
   await expect(page.getByTestId("demo-error").first()).toBeVisible()
 
   // The failure is confined to the card that broke: the rest of the grid still
-  // renders and still offers playback. Deliberately not an exact count — the
-  // grid is virtualised, so how many cards are mounted moves under you.
+  // renders and still offers playback. Deliberately not an exact count — CI saw
+  // the number move on its own between two counts of the same page, and the
+  // claim under test is isolation, not arithmetic.
   await expect(playButtons.first()).toBeVisible()
   expect(await playButtons.count()).toBeGreaterThan(10)
 })
