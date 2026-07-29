@@ -10,7 +10,7 @@
  *   4. Append the entry to data/<file>.ts using ts-morph (preserves existing formatting).
  *   5. Print a TODO block reminding the maintainer to upload the demo video so the
  *      thumbnail pipeline (scripts/generateThumbnails.ts) can run.
- *   6. Unless --dry-run: create branch submission/<slug>, commit, push, open a PR.
+ *   6. Unless --dry-run: create branch submission/<base>, commit, push, open a PR.
  *
  * Requirements:
  *   - OPENAI_API_KEY in env.
@@ -25,17 +25,9 @@ import { ulid } from "ulid"
 
 import { CODEX_MODEL, requireOpenAIKey } from "@/lib/codex/env"
 import { ExtractedEntrySchema } from "@/lib/codex/schema"
+import { demoPathFor, filenameSlug, posterPathFor, stagingCopy } from "@/lib/asset-path"
 import { CATEGORIES } from "@/data/categories"
 import type { Entry } from "@/data/entry"
-
-// Produces the filename portion of an Asset path. Moves into the Asset path
-// module when that lands (ticket 04); it has nothing to do with Category.
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-}
 
 const args = process.argv.slice(2)
 const rawUrl = args.find((a) => !a.startsWith("--"))
@@ -121,13 +113,14 @@ async function main() {
 
   const extracted = ExtractedEntrySchema.parse(object)
   const row = CATEGORIES[extracted.category]
-  const slug = `${slugify(extracted.caption)}_${slugify(extracted.author)}`
+  const base = `${filenameSlug(extracted.caption)}_${filenameSlug(extracted.author)}`
+  const demoPath = demoPathFor(extracted.category, base)
 
   const entry: Entry = {
     id: ulid(),
     caption: extracted.caption,
-    demoPath: `demo/${row.assetSlug}/${slug}.mp4`,
-    posterPath: `thumbnails/${row.assetSlug}/${slug}.avif`,
+    demoPath,
+    posterPath: posterPathFor(demoPath),
     author: extracted.author,
     source: url,
     ...(extracted.twitterId ? { twitterId: extracted.twitterId } : {}),
@@ -143,7 +136,7 @@ async function main() {
     [
       "",
       "ASSET TODO — the maintainer must drop the demo video here before merge:",
-      `  public/${entry.demoPath}`,
+      `  ${stagingCopy(entry.demoPath)}`,
       "Then run:  pnpm generate-thumbnails",
       "",
     ].join("\n")
@@ -157,7 +150,7 @@ async function main() {
   appendEntry(entry, row.file, row.exportName)
   console.log(`Appended to data/${row.file}.ts.`)
 
-  const branch = `submission/${slug}`
+  const branch = `submission/${base}`
   execSync(`git checkout -b ${branch}`, { stdio: "inherit" })
   execSync(`git add data/${row.file}.ts`, { stdio: "inherit" })
   execSync(`git commit -m "feat(catalog): add ${entry.caption} by ${entry.author}"`, {
@@ -173,7 +166,7 @@ async function main() {
     `**Category:** ${entry.category}`,
     "",
     "### Maintainer checklist before merge",
-    `- [ ] Upload demo video to \`public/${entry.demoPath}\``,
+    `- [ ] Upload demo video to \`${stagingCopy(entry.demoPath)}\``,
     "- [ ] Run `pnpm generate-thumbnails`",
     "- [ ] Verify thumbnail at the expected path",
     "- [ ] `pnpm test` passes",

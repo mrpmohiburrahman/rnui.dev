@@ -4,6 +4,19 @@ import { config as middlewareConfig } from "../middleware"
 import { CATEGORIES, CATEGORY_NAMES, LEGACY_REDIRECTS } from "../data/categories"
 import { allEntries } from "../data/catalogue"
 import type { Entry } from "../data/entry"
+import { demoPathFor, narrow, posterPathFor } from "../lib/asset-path"
+
+// The category directory is lowercase with no spaces, and basenames avoid
+// anything needing percent-encoding. A space survives the local filesystem
+// and 404s or 403s at the CDN, which is how four Bottom Sheets demos ended
+// up pointing at a directory that has never existed.
+//
+// These patterns restate what lib/asset-path.ts already knows, and are
+// deliberately not imported from it: a test that takes its expectation from
+// the code under test can no longer catch that code being wrong. Do not merge
+// the two. See docs/adr/0005-the-data-test-states-the-asset-path-rules-independently.md.
+const DEMO_PATH = /^demo\/[a-z0-9_-]+\/[A-Za-z0-9._-]+\.mp4$/
+const POSTER_PATH = /^thumbnails\/[a-z0-9_-]+\/[A-Za-z0-9._-]+\.avif$/
 
 describe("catalog data integrity", () => {
   it("has items", () => {
@@ -78,13 +91,6 @@ describe("asset paths", () => {
     expect(bad, `non-ASCII asset paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 
-  // The category directory is lowercase with no spaces, and basenames avoid
-  // anything needing percent-encoding. A space survives the local filesystem
-  // and 404s or 403s at the CDN, which is how four Bottom Sheets demos ended
-  // up pointing at a directory that has never existed.
-  const DEMO_PATH = /^demo\/[a-z0-9_-]+\/[A-Za-z0-9._-]+\.mp4$/
-  const POSTER_PATH = /^thumbnails\/[a-z0-9_-]+\/[A-Za-z0-9._-]+\.avif$/
-
   it("all Demo paths are well-formed", () => {
     const bad = allEntries
       .filter((entry) => entry.demoPath && !DEMO_PATH.test(entry.demoPath))
@@ -97,6 +103,79 @@ describe("asset paths", () => {
       .filter((entry) => entry.posterPath && !POSTER_PATH.test(entry.posterPath))
       .map((entry) => `${entry.id}: ${entry.posterPath}`)
     expect(bad, `malformed Poster paths:\n${bad.join("\n")}`).toHaveLength(0)
+  })
+})
+
+// The module that builds Asset paths, checked against the patterns above
+// rather than against itself.
+describe("asset path construction", () => {
+  const base = "a_demo_by_someone"
+
+  it.each(CATEGORY_NAMES)("builds a well-formed Demo path for %s", (name) => {
+    expect(demoPathFor(name, base)).toMatch(DEMO_PATH)
+  })
+
+  it.each(CATEGORY_NAMES)("derives a well-formed Poster path for %s", (name) => {
+    expect(posterPathFor(demoPathFor(name, base))).toMatch(POSTER_PATH)
+  })
+
+  it("a Poster differs from its Demo only in prefix and extension", () => {
+    expect(posterPathFor("demo/buttons/split_button_hewad_mubariz.mp4")).toBe(
+      "thumbnails/buttons/split_button_hewad_mubariz.avif"
+    )
+  })
+
+  it("refuses to derive a Poster from anything that is not a Demo path", () => {
+    expect(() => posterPathFor("thumbnails/buttons/split_button.avif")).toThrow()
+    expect(() => posterPathFor("demo/buttons/split_button.mov")).toThrow()
+  })
+
+  // Every Entry in the catalogue already obeys the derivation, so a new one
+  // that does not is a hand-typed path rather than a generated one.
+  it("every Entry's Poster path is the derivation of its Demo path", () => {
+    const bad = allEntries
+      .filter((entry) => entry.demoPath && entry.posterPath && posterPathFor(entry.demoPath) !== entry.posterPath)
+      .map((entry) => `${entry.id}: ${entry.posterPath} — expected ${posterPathFor(entry.demoPath)}`)
+    expect(bad, `Poster paths that are not derived from their Demo:\n${bad.join("\n")}`).toHaveLength(0)
+  })
+})
+
+// Which Assets a narrowed publish run touches. A pure function since ticket 04:
+// the publish tool resolves the list here and hands it to the codec checker, so
+// there is no second derivation left to disagree with it.
+describe("narrowing a set of Asset paths", () => {
+  const paths = [
+    "demo/buttons/one.mp4",
+    "demo/misc/two.mp4",
+    "thumbnails/buttons/one.avif",
+    "thumbnails/misc/two.avif",
+  ]
+
+  it("selects everything when no fragment is given", () => {
+    expect(narrow(paths, [])).toEqual([
+      "demo/buttons/one.mp4",
+      "demo/misc/two.mp4",
+      "thumbnails/buttons/one.avif",
+      "thumbnails/misc/two.avif",
+    ])
+  })
+
+  // The publish tool sorts what it gets back, and what it passes in is the
+  // catalogue's own exported array.
+  it("does not hand back the array it was given", () => {
+    expect(narrow(paths, [])).not.toBe(paths)
+  })
+
+  it("selects both the Demo and the Poster directory of a Category", () => {
+    expect(narrow(paths, ["misc"])).toEqual(["demo/misc/two.mp4", "thumbnails/misc/two.avif"])
+  })
+
+  it("selects the union of several fragments", () => {
+    expect(narrow(paths, ["misc", "buttons"])).toEqual(paths)
+  })
+
+  it("selects nothing when no path matches", () => {
+    expect(narrow(paths, ["sliders"])).toEqual([])
   })
 })
 

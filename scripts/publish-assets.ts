@@ -27,12 +27,8 @@ import { tmpdir } from "node:os"
 import { extname, join } from "node:path"
 
 import { allAssetPaths } from "../data/catalogue"
+import { CACHE_CONTROL, CONTENT_TYPES, narrow, stagingCopy } from "../lib/asset-path"
 
-const CACHE_CONTROL = "public, max-age=31536000, immutable"
-const CONTENT_TYPES: Record<string, string> = {
-  ".mp4": "video/mp4",
-  ".avif": "image/avif",
-}
 const CONCURRENCY = 6
 
 const account = process.env.CLOUDFLARE_ACCOUNT_ID
@@ -41,13 +37,10 @@ const bucket = process.env.R2_BUCKET
 
 const args = process.argv.slice(2)
 const dryRun = args.includes("--dry-run")
-// Substring, not prefix, so `misc` selects both demo/misc and thumbnails/misc.
-// This is the only place the narrowing happens. The gate is handed the paths
-// this produces rather than the fragments that produced them, so there is no
-// second derivation that could select a different set.
-const prefixes = args.filter((a) => !a.startsWith("--"))
-const selected = (path: string) =>
-  prefixes.length === 0 || prefixes.some((p) => path.includes(p))
+// The narrowing rule itself lives in lib/asset-path.ts. The gate below is
+// handed the paths it produces rather than the fragments that produced them,
+// so there is no second derivation that could select a different set.
+const fragments = args.filter((a) => !a.startsWith("--"))
 
 if (!account || !token || !bucket) {
   console.error(
@@ -87,7 +80,7 @@ async function publish(path: string): Promise<Result> {
   }
   let body: Buffer
   try {
-    body = await readFile(`public/${path}`)
+    body = await readFile(stagingCopy(path))
   } catch {
     return { path, state: "failed", note: "no Staging copy on disk", bytes: 0 }
   }
@@ -105,9 +98,9 @@ async function publish(path: string): Promise<Result> {
 }
 
 async function main() {
-  const paths = allAssetPaths.filter(selected).sort()
+  const paths = narrow(allAssetPaths, fragments).sort()
   if (paths.length === 0) {
-    console.error(`No Assets in the catalogue match ${prefixes.join(", ")}.`)
+    console.error(`No Assets in the catalogue match ${fragments.join(", ")}.`)
     process.exit(1)
   }
 
