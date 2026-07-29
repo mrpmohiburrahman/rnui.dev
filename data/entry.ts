@@ -1,7 +1,5 @@
 // data/entry.ts
-import { collection, getDocs } from "firebase/firestore"
-
-import { db } from "@/lib/firebase"
+import { counters } from "@/lib/counters-firestore"
 
 import { allEntries } from "./catalogue"
 
@@ -60,20 +58,10 @@ export type Entry = {
   isNew?: boolean
 }
 
-// Determine the collection name based on the environment
-const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
-
 export async function getEntriesWithCounts(): Promise<Entry[]> {
-  const countsCollection = collection(db, COLLECTION_NAME)
-  const countsSnapshot = await getDocs(countsCollection)
-
-  const countsMap: {
-    [key: string]: { view_count: number; vote_count: number }
-  } = {}
-  // biome-ignore lint/complexity/noForEach: <explanation>
-  countsSnapshot.forEach((doc) => {
-    countsMap[doc.id] = doc.data() as { view_count: number; vote_count: number }
-  })
+  // The collection name, the fallback and the snapshot walk all live in
+  // lib/counters.ts now. This module used to hold the fourth copy of the first two.
+  const countsMap = await counters.readCounts()
 
   // Merge counts into the local Entries
   const entriesWithCounts: Entry[] = allEntries.map((entry) => ({
