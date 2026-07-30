@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:{{ w }}px;display:flex;flex-direction:column;gap:10px;font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif">
+<a href="#" aria-label="Open entry" style="position:relative;display:block;width:100%;height:{{ mediaH }}px;border-radius:16px;overflow:hidden;background:{{ plinth }};text-decoration:none;box-shadow:{{ tileShadow }};outline:{{ focusRing }};outline-offset:3px;filter:{{ mediaFilter }}" style-focus="outline:3px solid {{ acc }};outline-offset:3px">
+<div style="position:absolute;inset:0;background-image:{{ wash }}"></div>
+<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.055) 0 1px,transparent 1px 8px)"></div>
+<div style="position:absolute;left:14px;right:14px;top:11px;height:3px;border-radius:2px;background:rgba(255,255,255,0.13)"></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:rgba(255,255,255,0.46);text-align:center;white-space:nowrap">{{ mediaLabel }}</div>
+<sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:{{ skelMedia }}"></div>
+</sc-if>
+<sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(4,5,8,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;padding:18px;text-align:center">
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:#F5B3A4">◺ DECODE FAILED</div>
+<div style="font-size:12px;line-height:1.45;color:rgba(255,255,255,0.86);text-wrap:pretty">This recording won’t play in your browser. The source is still there.</div>
+<span style="font-size:11.5px;font-weight:500;color:#08090C;background:#F1F2F4;padding:7px 11px;border-radius:9px">Open repo ↗</span>
+</div>
+</sc-if>
+<sc-if value="{{ showStateChip }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:10px;bottom:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.13em;padding:4px 7px;border-radius:6px;background:{{ chipBg }};color:{{ chipFg }}">{{ stateChip }}</div>
+</sc-if>
+<sc-if value="{{ isNew }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:10px;top:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.13em;padding:4px 7px;border-radius:6px;background:{{ newBg }};color:{{ newFg }}">NEW</div>
+</sc-if>
+</a>
+<sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="height:16px;width:84%;border-radius:4px;background:{{ skel }}"></div>
+<div style="height:16px;width:52%;border-radius:4px;background:{{ skel }}"></div>
+<div style="height:15px;width:38%;border-radius:4px;background:{{ skel }};margin-top:1px"></div>
+<div style="height:15px;width:66%;border-radius:4px;background:{{ skel }}"></div>
+<div style="height:3px;width:100%;border-radius:2px;background:{{ skel }};margin-top:8px"></div>
+<div style="height:26px;width:100%;border-radius:8px;background:{{ skel }};margin-top:4px"></div>
+</div>
+</sc-if>
+<sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="min-height:39px;font-size:14.5px;font-weight:500;line-height:1.32;letter-spacing:-0.01em;color:{{ t1 }};text-wrap:pretty">{{ entry.name }}</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.12em;color:{{ t3 }}">{{ catLabel }}</div>
+<div style="min-height:31px;font-size:12px;line-height:1.32;color:{{ byColor }};overflow-wrap:anywhere">{{ byLine }}</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+<div style="flex:1;height:3px;border-radius:2px;background:{{ barTrack }}">
+<div style="width:{{ barPct }};height:3px;border-radius:2px;background:{{ barFill }}"></div>
+</div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ t3 }};font-variant-numeric:tabular-nums;white-space:nowrap">{{ entry.views }} views</span>
+</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:3px">
+<button type="button" style="display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;padding:6px 9px;border-radius:8px;border:1px solid {{ line }};background:{{ ctrlBg }};color:{{ t2 }};cursor:pointer" style-focus="outline:3px solid {{ acc }};outline-offset:2px" style-hover="border-color:{{ line2 }};color:{{ t1 }}">▲ {{ entry.votes }}</button>
+<button type="button" style="display:flex;align-items:center;gap:5px;font-size:11px;padding:6px 9px;border-radius:8px;border:1px solid {{ saveBorder }};background:{{ saveBg }};color:{{ saveFg }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:2px">{{ saveLabel }}</button>
+<a href="#" style="margin-left:auto;font-size:11.5px;font-weight:500;color:{{ acc }};text-decoration:underline;text-underline-offset:3px" style-focus="outline:3px solid {{ acc }};outline-offset:3px;border-radius:3px">Repo ↗</a>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:260,&quot;height&quot;:560},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;entry&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;w&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:208,&quot;tsType&quot;:&quot;number&quot;},&quot;state&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;paused&quot;,&quot;playing&quot;,&quot;failed&quot;,&quot;loading&quot;,&quot;still&quot;],&quot;default&quot;:&quot;paused&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;isNew&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;saved&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;runRepeat&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;focused&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const PAL = {
+  dark: { canvas:'#0A0B0D', panel:'#101216', raise:'#15181D', line:'rgba(255,255,255,0.11)', line2:'rgba(255,255,255,0.22)', t1:'#F1F2F4', t2:'#B2B8C2', t3:'#8E949F', acc:'#6FE3CC', accSoft:'rgba(111,227,204,0.14)', amber:'#EBD08A', plinth:'#05060A', skel:'rgba(255,255,255,0.07)', ctrlBg:'rgba(255,255,255,0.04)' },
+  light:{ canvas:'#F4F4F1', panel:'#FFFFFF', raise:'#FFFFFF', line:'rgba(16,18,22,0.14)', line2:'rgba(16,18,22,0.30)', t1:'#14161A', t2:'#4F545C', t3:'#666B74', acc:'#0E7062', accSoft:'rgba(14,112,98,0.10)', amber:'#7A5806', plinth:'#080A0E', skel:'rgba(16,18,22,0.07)', ctrlBg:'#FFFFFF' }
+};
+class Component extends DCLogic {
+  renderVals() {
+    const m = this.props.mode === 'light' ? 'light' : 'dark';
+    const p = PAL[m];
+    const e = this.props.entry || {};
+    const w = this.props.w || 208;
+    const st = this.props.state || 'paused';
+    const hue = e.hue == null ? 175 : e.hue;
+    const live = st === 'playing';
+    const isFailed = st === 'failed';
+    const isLoading = st === 'loading';
+    const still = st === 'still';
+    const wash = live
+      ? `radial-gradient(72% 48% at 50% 27%, hsla(${hue},72%,64%,0.46), transparent 74%), linear-gradient(180deg, hsla(${hue},55%,42%,0.24), rgba(0,0,0,0.62))`
+      : `radial-gradient(72% 48% at 50% 27%, hsla(${hue},50%,52%,0.20), transparent 74%), linear-gradient(180deg, hsla(${hue},40%,32%,0.14), rgba(0,0,0,0.66))`;
+    const glow = m === 'dark'
+      ? `0 0 0 1px hsla(${hue},60%,60%,0.24), 0 22px 60px -20px hsla(${hue},70%,55%,0.45)`
+      : `0 0 0 1px rgba(16,18,22,0.10), 0 20px 44px -22px hsla(${hue},55%,40%,0.55)`;
+    const flat = m === 'dark'
+      ? '0 0 0 1px rgba(255,255,255,0.07)'
+      : '0 0 0 1px rgba(16,18,22,0.10), 0 8px 20px -16px rgba(8,10,14,0.5)';
+    const label = isFailed ? '9:16 · UNAVAILABLE'
+      : isLoading ? ''
+      : live ? '9:16 · PLAYING · MUTED'
+      : still ? '9:16 · STILL FRAME'
+      : '9:16 · STILL FRAME';
+    return Object.assign({}, p, {
+      w, mediaH: Math.round(w * 16 / 9), entry: e,
+      isNew: !!this.props.isNew, isFailed, isLoading, notLoading: !isLoading,
+      wash, mediaLabel: label,
+      catLabel: (e.cat || '').toUpperCase(),
+      mediaFilter: live || isFailed || isLoading ? 'none' : (m === 'dark' ? 'brightness(0.78) saturate(0.85)' : 'brightness(0.9)'),
+      tileShadow: live ? glow : flat,
+      focusRing: this.props.focused ? '3px solid ' + p.acc : 'none',
+      showStateChip: !isLoading && !isFailed,
+      stateChip: live ? '● LIVE' : still ? '❙❙ STILLS ONLY' : '❙❙ PAUSED',
+      chipBg: live ? (m === 'dark' ? 'rgba(111,227,204,0.20)' : 'rgba(6,20,18,0.72)') : 'rgba(4,6,10,0.62)',
+      chipFg: live ? (m === 'dark' ? '#8FF0DC' : '#8FF0DC') : 'rgba(255,255,255,0.72)',
+      newBg: m === 'dark' ? 'rgba(235,208,138,0.22)' : 'rgba(255,238,190,0.94)',
+      newFg: m === 'dark' ? '#F3DEA6' : '#5C4204',
+      byLine: (this.props.runRepeat ? '↳ ' : '') + (e.by || ''),
+      byColor: this.props.runRepeat ? p.t3 : p.t2,
+      barTrack: m === 'dark' ? 'rgba(255,255,255,0.09)' : 'rgba(16,18,22,0.10)',
+      barFill: m === 'dark' ? 'rgba(255,255,255,0.34)' : 'rgba(16,18,22,0.34)',
+      barPct: Math.max(4, Math.round(((e.v || 0) / 1426) * 100)) + '%',
+      saveLabel: this.props.saved ? '◆ Saved' : '◇ Save',
+      saveBg: this.props.saved ? p.accSoft : p.ctrlBg,
+      saveFg: this.props.saved ? p.acc : p.t2,
+      saveBorder: this.props.saved ? p.acc : p.line,
+      skel: p.skel,
+      skelMedia: m === 'dark' ? 'linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))' : 'linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03))'
+    });
+  }
+}
+</script>
+</body>
+</html>

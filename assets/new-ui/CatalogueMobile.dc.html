@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative;width:390px;height:844px;background:{{ canvas }};color:{{ t1 }};font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;overflow:hidden;border-radius:26px;border:1px solid {{ line2 }}">
+
+<div style="position:absolute;left:0;right:0;top:0;z-index:3;background:{{ headerBg }};border-bottom:1px solid {{ line }};backdrop-filter:blur(10px)">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px">
+<span style="font-size:15px;font-weight:700;letter-spacing:-0.02em">rnui<span style="color:{{ acc }}">.dev</span></span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.1em;color:{{ t3 }};min-width:104px">277 · 24 · 13H AGO</span>
+<button type="button" style="margin-left:auto;min-height:36px;padding:0 11px;border-radius:9px;border:1px solid {{ line }};background:{{ fieldBg }};color:{{ t2 }};font-size:12px;font-family:'Space Grotesk',system-ui,sans-serif">◆ 3</button>
+<button type="button" style="min-height:36px;padding:0 10px;border-radius:9px;border:1px solid {{ line }};background:{{ fieldBg }};color:{{ t2 }};font-size:12px">{{ modeToggle }}</button>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 14px 10px">
+<div style="flex:1;display:flex;align-items:center;gap:8px;min-height:40px;padding:0 11px;border-radius:10px;border:1px solid {{ searchBorder }};background:{{ fieldBg }}">
+<span style="font-size:12px;color:{{ t3 }}">⌕</span><span style="font-size:12.5px;color:{{ searchColor }}">{{ searchText }}</span>
+</div>
+</div>
+<sc-if value="{{ showChips }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:7px;padding:0 14px 10px;overflow:hidden">
+<span style="display:flex;align-items:center;gap:7px;flex:none;min-height:34px;padding:0 8px 0 10px;border-radius:9px;background:{{ accSoft }};border:1px solid {{ acc }};font-size:11.5px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;color:{{ acc }}">CAT</span>Misc<button type="button" aria-label="Remove" style="border:none;background:{{ xBg }};color:{{ t1 }};width:20px;height:20px;border-radius:6px;font-size:10px">✕</button></span>
+<span style="display:flex;align-items:center;gap:7px;flex:none;min-height:34px;padding:0 8px 0 10px;border-radius:9px;background:{{ accSoft }};border:1px solid {{ acc }};font-size:11.5px;max-width:186px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;color:{{ acc }};flex:none">BY</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Enzo Manuel Mangano (Reac…</span><button type="button" aria-label="Remove" style="border:none;background:{{ xBg }};color:{{ t1 }};width:20px;height:20px;border-radius:6px;font-size:10px;flex:none">✕</button></span>
+</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:0;right:0;top:{{ contentTop }}px;bottom:0;padding:14px 14px 96px;overflow:hidden">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding-bottom:11px">
+<span style="font-size:15px;font-weight:500">{{ heading }}</span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.1em;color:{{ t3 }};min-width:96px;text-align:right">{{ resultLine }}</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,163px);gap:20px 16px">
+<sc-for list="{{ entries }}" as="e" hint-placeholder-count="4">
+<dc-import name="Tile" entry="{{ e }}" mode="{{ mode }}" w="{{ 163 }}" state="{{ e.state }}" is-new="{{ e.isNew }}" saved="{{ e.saved }}" run-repeat="{{ e.runRepeat }}" focused="{{ e.focused }}" hint-size="163px,430px"></dc-import>
+</sc-for>
+</div>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:9px;padding:12px 14px 16px;background:{{ dockBg }};border-top:1px solid {{ line }};backdrop-filter:blur(12px)">
+<button type="button" style="display:flex;align-items:center;gap:8px;flex:1;justify-content:center;min-height:46px;border-radius:12px;border:1px solid {{ filterBtnBorder }};background:{{ filterBtnBg }};color:{{ filterBtnFg }};font-size:13.5px;font-weight:500;font-family:'Space Grotesk',system-ui,sans-serif;outline:{{ dockRing }};outline-offset:3px">⚙ Filters <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;padding:2px 6px;border-radius:5px;background:{{ badgeBg }};color:{{ badgeFg }}">{{ filterCount }}</span></button>
+<button type="button" style="display:flex;align-items:center;gap:7px;flex:none;min-height:46px;padding:0 14px;border-radius:12px;border:1px solid {{ line2 }};background:{{ fieldBg }};color:{{ t1 }};font-size:13px;font-family:'Space Grotesk',system-ui,sans-serif">↕ {{ sortLabel }}</button>
+</div>
+<div style="position:absolute;left:14px;right:14px;bottom:78px;z-index:3;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.1em;color:{{ t3 }};text-align:center">FILTER DOCK IS FIXED — REACHABLE AT ANY SCROLL POSITION</div>
+
+<sc-if value="{{ showSheet }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:6;background:{{ scrim }}"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:7;background:{{ panel }};border-top:1px solid {{ line2 }};border-radius:20px 20px 0 0;padding:14px 16px 18px;box-shadow:0 -30px 70px -20px rgba(0,0,0,0.6)">
+<div style="width:38px;height:4px;border-radius:3px;background:{{ line2 }};margin:0 auto 14px"></div>
+<div style="display:flex;align-items:center;gap:10px;padding-bottom:12px">
+<span style="font-size:15px;font-weight:500">Filter &amp; sort</span>
+<button type="button" aria-label="Close filters" style="margin-left:auto;min-height:36px;min-width:36px;border-radius:9px;border:1px solid {{ acc }};background:{{ accSoft }};color:{{ t1 }};font-size:12px;outline:3px solid {{ acc }};outline-offset:3px">✕</button>
+</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:8px">CATEGORY · 18</div>
+<div style="display:flex;flex-wrap:wrap;gap:7px;padding-bottom:14px">
+<sc-for list="{{ sheetCats }}" as="c" hint-placeholder-count="10">
+<span style="display:flex;align-items:center;gap:6px;min-height:34px;padding:0 10px;border-radius:9px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font-size:12px">{{ c.name }}<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ c.num }}">{{ c.n }}</span></span>
+</sc-for>
+</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:8px">CONTRIBUTOR · 24</div>
+<div style="display:flex;flex-direction:column;gap:6px;padding-bottom:14px">
+<span style="display:flex;align-items:center;gap:8px;min-height:38px;padding:0 11px;border-radius:9px;border:1px solid {{ acc }};background:{{ accSoft }};font-size:12.5px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Enzo Manuel Mangano (Reactiive)</span><span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ acc }}">148</span></span>
+<span style="display:flex;align-items:center;gap:8px;min-height:38px;padding:0 11px;border-radius:9px;border:1px solid {{ line }};font-size:12.5px;color:{{ t2 }}">Daehyeon Mun (문대현)<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ t3 }}">7</span></span>
+</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:8px">SORT</div>
+<div style="display:flex;gap:7px;padding-bottom:16px">
+<span style="flex:1;text-align:center;min-height:38px;line-height:38px;border-radius:9px;border:1px solid {{ line }};font-size:12px;color:{{ t2 }}">Recent</span>
+<span style="flex:1;text-align:center;min-height:38px;line-height:38px;border-radius:9px;border:1px solid {{ acc }};background:{{ accSoft }};font-size:12px;color:{{ t1 }}">Most viewed</span>
+<span style="flex:1;text-align:center;min-height:38px;line-height:38px;border-radius:9px;border:1px solid {{ line }};font-size:12px;color:{{ t2 }}">Most voted</span>
+</div>
+<div style="display:flex;gap:9px">
+<button type="button" style="flex:none;min-height:46px;padding:0 16px;border-radius:12px;border:1px solid {{ line2 }};background:none;color:{{ t1 }};font-size:13px;font-family:'Space Grotesk',system-ui,sans-serif">Clear all</button>
+<button type="button" style="flex:1;min-height:46px;border-radius:12px;border:none;background:{{ acc }};color:{{ onAcc }};font-size:13.5px;font-weight:500;font-family:'Space Grotesk',system-ui,sans-serif">Show 2 recordings</button>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;filtered&quot;,&quot;sheet&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const PAL = {
+  dark: { canvas:'#0A0B0D', panel:'#101216', line:'rgba(255,255,255,0.11)', line2:'rgba(255,255,255,0.24)', t1:'#F1F2F4', t2:'#B2B8C2', t3:'#8E949F', acc:'#6FE3CC', accSoft:'rgba(111,227,204,0.13)', onAcc:'#06120F', fieldBg:'rgba(255,255,255,0.05)', headerBg:'rgba(10,11,13,0.92)', dockBg:'rgba(12,13,17,0.94)', xBg:'rgba(255,255,255,0.13)', scrim:'rgba(4,5,8,0.7)' },
+  light:{ canvas:'#F4F4F1', panel:'#FFFFFF', line:'rgba(16,18,22,0.13)', line2:'rgba(16,18,22,0.26)', t1:'#14161A', t2:'#4F545C', t3:'#666B74', acc:'#0E7062', accSoft:'rgba(14,112,98,0.09)', onAcc:'#FFFFFF', fieldBg:'#FFFFFF', headerBg:'rgba(244,244,241,0.94)', dockBg:'rgba(239,239,235,0.96)', xBg:'rgba(16,18,22,0.10)', scrim:'rgba(24,26,30,0.5)' }
+};
+const E = [
+  {name:'Fluid Carousels', by:'William Candillon', cat:'Carousels', views:'1,426', v:1426, votes:0, hue:196},
+  {name:'Morphing Loader', by:'Daniel Friyia', cat:'Loaders', views:'1,385', v:1385, votes:3, hue:272},
+  {name:'Ripple Effect With React Native Skia', by:'Daehyeon Mun (문대현)', cat:'Misc', views:'316', v:316, votes:4, hue:186, isNew:true},
+  {name:'Wheel Picker', by:'Enzo Manuel Mangano (Reactiive)', cat:'Pickers', views:'1,079', v:1079, votes:0, hue:44, focused:true}
+];
+const F = [
+  {name:'Threads Holo Ticket', by:'Enzo Manuel Mangano (Reactiive)', cat:'Misc', views:'558', v:558, votes:3, hue:290, saved:true},
+  {name:'Bezier Curve Outline', by:'Enzo Manuel Mangano (Reactiive)', cat:'Misc', views:'43', v:43, votes:0, hue:172, isNew:true, runRepeat:true}
+];
+const CATS = [['Accordions',6],['Bottom Sheets',11],['Buttons',14],['Carousels',18],['Charts',7],['Drop Down',1],['Headers',8],['List',12],['Loaders',10],['Misc',148],['Pickers',1],['Tab bars',4]];
+class Component extends DCLogic {
+  renderVals() {
+    const m = this.props.mode === 'light' ? 'light' : 'dark';
+    const p = PAL[m];
+    const v = this.props.variant || 'home';
+    const sheet = v === 'sheet';
+    const filtered = v === 'filtered';
+    const list = (filtered ? F : E).map((e, i) => Object.assign({}, e, { state: i < 4 ? 'playing' : 'paused' }));
+    return Object.assign({}, p, {
+      mode: m, entries: list, showSheet: sheet, showChips: filtered,
+      contentTop: filtered ? 148 : 104,
+      heading: filtered ? 'Misc, by one contributor' : 'Recent',
+      resultLine: filtered ? '2 OF 277' : '48 OF 277',
+      searchText: filtered ? 'ticket' : 'Search 277 recordings',
+      searchColor: filtered ? p.t1 : p.t3,
+      searchBorder: filtered ? p.acc : p.line,
+      modeToggle: m === 'dark' ? '◐' : '◑',
+      filterCount: filtered ? '2' : '0',
+      filterBtnBg: filtered || sheet ? p.acc : p.fieldBg,
+      filterBtnFg: filtered || sheet ? p.onAcc : p.t1,
+      filterBtnBorder: filtered || sheet ? p.acc : p.line2,
+      badgeBg: filtered || sheet ? 'rgba(0,0,0,0.16)' : p.accSoft,
+      badgeFg: filtered || sheet ? p.onAcc : p.t2,
+      dockRing: sheet ? '3px solid ' + p.acc : 'none',
+      sortLabel: filtered ? 'Viewed' : 'Recent',
+      sheetCats: CATS.map(([name, n]) => {
+        const on = name === 'Misc';
+        return { name, n, bg: on ? p.accSoft : 'transparent', border: on ? p.acc : p.line, fg: on ? p.t1 : p.t2, num: on ? p.acc : p.t3 };
+      })
+    });
+  }
+}
+</script>
+</body>
+</html>

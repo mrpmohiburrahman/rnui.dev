@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative;width:{{ shellW }}px;background:{{ shellBg }};color:{{ t1 }};font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;border-radius:{{ shellRadius }}px;border:{{ shellBorder }};box-shadow:{{ shellShadow }};overflow:hidden">
+
+<sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
+<header style="display:flex;align-items:center;gap:16px;height:62px;padding:0 26px;border-bottom:1px solid {{ line }};background:{{ headerBg }}">
+<span style="font-size:16px;font-weight:700;letter-spacing:-0.02em;color:{{ t1 }}">rnui<span style="color:{{ acc }}">.dev</span></span>
+<a href="#" style="font-size:12.5px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px" style-focus="outline:3px solid {{ acc }};outline-offset:3px;border-radius:3px">← All recordings</a>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.1em;color:{{ t3 }}">MISC · 148 ENTRIES</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.12em;color:{{ t3 }}">OPENED FROM A SHARED LINK</span>
+</header>
+</sc-if>
+
+<sc-if value="{{ isOverlay }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid {{ line }};background:{{ headerBg }}">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.13em;color:{{ t3 }}">MISC · 6 OF 148</span>
+<span style="display:flex;align-items:center;gap:9px;margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.1em;color:{{ t3 }}">←&nbsp;→ PREV / NEXT<span style="color:{{ line2 }}">|</span>S SAVE<span style="color:{{ line2 }}">|</span>V VOTE</span>
+<button type="button" aria-label="Close, or press Escape" style="display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;padding:7px 10px;border-radius:8px;border:1px solid {{ acc }};background:{{ accSoft }};color:{{ t1 }};cursor:pointer;outline:3px solid {{ acc }};outline-offset:3px">ESC ✕</button>
+</div>
+</sc-if>
+
+<div style="display:flex;flex-direction:{{ dir }};gap:{{ gap }}px;padding:{{ pad }}">
+<div style="flex:none;width:{{ mW }}px">
+<div style="position:relative;width:{{ mW }}px;height:{{ mH }}px;border-radius:{{ mRadius }}px;overflow:hidden;background:{{ plinth }};box-shadow:{{ mediaGlow }}">
+<div style="position:absolute;inset:0;background-image:radial-gradient(70% 46% at 50% 26%, hsla(290,72%,64%,0.46), transparent 74%), linear-gradient(180deg, hsla(290,55%,42%,0.24), rgba(0,0,0,0.62))"></div>
+<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.05) 0 1px,transparent 1px 8px)"></div>
+<div style="position:absolute;left:18px;right:18px;top:14px;height:3px;border-radius:2px;background:rgba(255,255,255,0.14)"></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.16em;color:rgba(255,255,255,0.5);text-align:center">9:16 · PLAYING · MUTED · LOOPING</div>
+<div style="position:absolute;left:12px;bottom:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.13em;padding:5px 8px;border-radius:7px;background:rgba(111,227,204,0.2);color:#8FF0DC">● LIVE</div>
+<div style="position:absolute;right:12px;bottom:12px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.13em;padding:5px 8px;border-radius:7px;background:rgba(4,6,10,0.6);color:rgba(255,255,255,0.7)">NO AUDIO TRACK</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding-top:10px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.11em;color:{{ t3 }}">CAPTURED ON DEVICE · 4S LOOP · SILENT</div>
+</div>
+
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:{{ infoGap }}px">
+<div>
+<div style="display:flex;align-items:center;gap:8px;padding-bottom:9px">
+<a href="#" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.12em;color:{{ acc }};text-decoration:underline;text-underline-offset:3px">MISC</a>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.12em;padding:4px 7px;border-radius:6px;background:{{ newBg }};color:{{ newFg }}">NEW BATCH</span>
+</div>
+<h1 style="margin:0;font-size:{{ titleSize }}px;font-weight:500;line-height:1.12;letter-spacing:-0.025em;color:{{ t1 }};text-wrap:pretty">Threads Holo Ticket</h1>
+</div>
+
+<div style="display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:12px;border:1px solid {{ line }};background:{{ cardBg }}">
+<div style="flex:none;width:38px;height:38px;border-radius:10px;background:{{ accSoft }};border:1px solid {{ line }};display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ acc }}">EM</div>
+<div style="flex:1;min-width:0">
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:8.5px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:3px">CONTRIBUTED BY</div>
+<div style="font-size:14px;line-height:1.3;color:{{ t1 }};overflow-wrap:anywhere">Enzo Manuel Mangano (Reactiive)</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:7px">
+<a href="#" style="font-size:12px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px" style-focus="outline:3px solid {{ acc }};outline-offset:3px;border-radius:3px">X ↗</a>
+<a href="#" style="font-size:12px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px" style-focus="outline:3px solid {{ acc }};outline-offset:3px;border-radius:3px">GitHub ↗</a>
+<span style="font-size:12px;color:{{ t3 }}">LinkedIn not listed</span>
+</div>
+<div style="padding-top:8px;font-size:11.5px;line-height:1.45;color:{{ t2 }}">148 of the 277 recordings here are theirs. <a href="#" style="color:{{ acc }};text-decoration:underline;text-underline-offset:3px">See all 148 →</a></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ t2 }};font-variant-numeric:tabular-nums;min-width:96px">558 views</span>
+<div style="flex:1;height:3px;border-radius:2px;background:{{ barTrack }}"><div style="width:39%;height:3px;border-radius:2px;background:{{ barFill }}"></div></div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.1em;color:{{ t3 }};white-space:nowrap">39% OF TOP ENTRY</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<button type="button" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 14px;border-radius:10px;border:1px solid {{ line2 }};background:{{ ctrlBg }};color:{{ t1 }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">▲ Vote <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;color:{{ t2 }}">3</span></button>
+<button type="button" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;padding:10px 14px;border-radius:10px;border:1px solid {{ acc }};background:{{ accSoft }};color:{{ acc }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">◆ Saved</button>
+<a href="#" style="flex:1;min-width:200px;display:flex;align-items:center;justify-content:center;gap:9px;font-size:13.5px;font-weight:500;padding:12px 16px;border-radius:10px;background:{{ acc }};color:{{ onAcc }};text-decoration:none" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Open source repo on GitHub ↗</a>
+</div>
+<p style="margin:0;font-size:11.5px;line-height:1.5;color:{{ t2 }}">Your vote and your save stay in this browser on this device. No account exists — clearing site data clears them.</p>
+</div>
+
+<div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:11px">MORE FROM THIS CONTRIBUTOR</div>
+<div style="display:flex;gap:14px">
+<sc-for list="{{ more }}" as="e" hint-placeholder-count="2">
+<dc-import name="Tile" entry="{{ e }}" mode="{{ mode }}" w="{{ moreW }}" state="{{ e.state }}" run-repeat="{{ false }}" hint-size="140px,400px"></dc-import>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<sc-if value="{{ isOverlay }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid {{ line }};background:{{ headerBg }};font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.1em;color:{{ t3 }}">
+<span style="color:{{ acc }}">FOCUS ENTERS HERE →</span> CLOSE BUTTON RECEIVES FOCUS ON OPEN · TAB CYCLES INSIDE THE OVERLAY · ESC RETURNS FOCUS TO THE CARD THAT OPENED IT
+</div>
+</sc-if>
+
+<sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:9px;padding:11px 16px 16px;border-top:1px solid {{ line }};background:{{ headerBg }}">
+<button type="button" aria-label="Vote" style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;padding:12px 13px;border-radius:11px;border:1px solid {{ line2 }};background:{{ ctrlBg }};color:{{ t1 }};min-height:44px">▲ 3</button>
+<button type="button" aria-label="Saved" style="font-size:12.5px;padding:12px 13px;border-radius:11px;border:1px solid {{ acc }};background:{{ accSoft }};color:{{ acc }};min-height:44px">◆</button>
+<a href="#" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:46px;font-size:13.5px;font-weight:500;border-radius:11px;background:{{ acc }};color:{{ onAcc }};text-decoration:none">Open repo ↗</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;form&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;page&quot;,&quot;overlay&quot;,&quot;mobile&quot;],&quot;default&quot;:&quot;page&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const PAL = {
+  dark: { line:'rgba(255,255,255,0.11)', line2:'rgba(255,255,255,0.24)', t1:'#F1F2F4', t2:'#B2B8C2', t3:'#8E949F', acc:'#6FE3CC', accSoft:'rgba(111,227,204,0.13)', onAcc:'#06120F', plinth:'#05060A', ctrlBg:'rgba(255,255,255,0.045)', cardBg:'rgba(255,255,255,0.03)', headerBg:'#0C0D11', canvas:'#0A0B0D', panel:'#101216', barTrack:'rgba(255,255,255,0.09)', barFill:'rgba(255,255,255,0.34)', newBg:'rgba(235,208,138,0.2)', newFg:'#F3DEA6' },
+  light:{ line:'rgba(16,18,22,0.13)', line2:'rgba(16,18,22,0.28)', t1:'#14161A', t2:'#4F545C', t3:'#666B74', acc:'#0E7062', accSoft:'rgba(14,112,98,0.09)', onAcc:'#FFFFFF', plinth:'#080A0E', ctrlBg:'#FFFFFF', cardBg:'#FBFBF9', headerBg:'#EFEFEB', canvas:'#F4F4F1', panel:'#FFFFFF', barTrack:'rgba(16,18,22,0.10)', barFill:'rgba(16,18,22,0.34)', newBg:'rgba(255,238,190,0.94)', newFg:'#5C4204' }
+};
+const MORE = [
+  { name:'Wheel Picker', by:'Enzo Manuel Mangano (Reactiive)', cat:'Pickers', views:'1,079', v:1079, votes:0, hue:44, state:'paused' },
+  { name:'Bezier Curve Outline', by:'Enzo Manuel Mangano (Reactiive)', cat:'Misc', views:'43', v:43, votes:0, hue:172, state:'paused' }
+];
+class Component extends DCLogic {
+  renderVals() {
+    const m = this.props.mode === 'light' ? 'light' : 'dark';
+    const p = PAL[m];
+    const f = this.props.form || 'page';
+    const isMobile = f === 'mobile';
+    const isOverlay = f === 'overlay';
+    const isPage = f === 'page';
+    return Object.assign({}, p, {
+      mode: m, isMobile, isOverlay, isPage, more: MORE,
+      shellW: isMobile ? 390 : isOverlay ? 1080 : 1440,
+      shellBg: isOverlay ? p.panel : p.canvas,
+      shellRadius: isOverlay ? 18 : 0,
+      shellBorder: isOverlay ? '1px solid ' + p.line2 : 'none',
+      shellShadow: isOverlay ? (m === 'dark' ? '0 40px 120px -30px rgba(0,0,0,0.9)' : '0 40px 100px -30px rgba(16,18,22,0.45)') : 'none',
+      dir: isMobile ? 'column' : 'row',
+      gap: isMobile ? 20 : 40,
+      pad: isMobile ? '16px 16px 20px' : isOverlay ? '26px 28px 28px' : '34px 26px 44px',
+      mW: isMobile ? 358 : isOverlay ? 380 : 414,
+      mH: isMobile ? 636 : isOverlay ? 676 : 736,
+      mRadius: isMobile ? 16 : 20,
+      mediaGlow: m === 'dark'
+        ? '0 0 0 1px hsla(290,60%,62%,0.26), 0 40px 120px -30px hsla(290,70%,58%,0.5)'
+        : '0 0 0 1px rgba(16,18,22,0.10), 0 34px 80px -32px hsla(290,55%,40%,0.55)',
+      titleSize: isMobile ? 24 : isOverlay ? 30 : 36,
+      infoGap: isMobile ? 18 : 22,
+      moreW: isMobile ? 150 : 140
+    });
+  }
+}
+</script>
+</body>
+</html>

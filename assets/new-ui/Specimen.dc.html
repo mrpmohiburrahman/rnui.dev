@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:1180px;background:{{ canvas }};color:{{ t1 }};font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;padding:30px 32px 36px;border:1px solid {{ line }}">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:24px;border-bottom:1px solid {{ line }}">
+<span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Studio Dark — specimen</span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;color:{{ acc }}">{{ modeName }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.1em;color:{{ t3 }}">SPACE GROTESK 400/500/700 · JETBRAINS MONO 400/500</span>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;padding-top:24px">
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">PALETTE</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ swatches }}" as="s" hint-placeholder-count="9">
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:52px;height:32px;border-radius:7px;background:{{ s.hex }};border:1px solid {{ line2 }};flex:none"></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:12.5px;color:{{ t1 }}">{{ s.role }}</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ t3 }}">{{ s.hex }} · {{ s.oklch }}</div>
+</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ s.ratioColor }};text-align:right;flex:none;width:96px">{{ s.ratio }}</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:14px;padding:11px 13px;border-radius:10px;border:1px solid {{ line }};background:{{ panel }};font-size:11.5px;line-height:1.5;color:{{ t2 }}">Every text and link colour above clears 4.5:1 on its own background in this mode. The media plinth stays near-black in both modes — the recording is the light source, so it never sits on paper.</div>
+</section>
+
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">TYPE SCALE</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ type }}" as="t" hint-placeholder-count="7">
+<div style="display:flex;align-items:baseline;gap:14px">
+<span style="font-family:{{ t.fam }};font-size:{{ t.px }}px;font-weight:{{ t.w }};letter-spacing:{{ t.ls }};color:{{ t1 }};line-height:1.1">{{ t.sample }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ t3 }};white-space:nowrap;flex:none">{{ t.spec }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:30px;padding-top:34px;margin-top:26px;border-top:1px solid {{ line }}">
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">RADIUS</div>
+<div style="display:flex;flex-direction:column;gap:9px">
+<sc-for list="{{ radii }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:11px">
+<div style="width:44px;height:30px;border:1px solid {{ line2 }};background:{{ panel }};border-radius:{{ r.px }}px;flex:none"></div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ t2 }}">{{ r.label }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">ELEVATION</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<sc-for list="{{ elev }}" as="e" hint-placeholder-count="3">
+<div>
+<div style="width:100%;height:34px;border-radius:10px;background:{{ e.bg }};box-shadow:{{ e.shadow }}"></div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ t3 }};padding-top:6px;line-height:1.4">{{ e.label }}</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">SPACING · 4PX BASE</div>
+<div style="display:flex;flex-direction:column;gap:7px">
+<sc-for list="{{ space }}" as="s" hint-placeholder-count="7">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="height:8px;width:{{ s.px }}px;background:{{ acc }};border-radius:2px;flex:none"></div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ t3 }}">{{ s.label }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding-bottom:12px">MOTION</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ motion }}" as="mo" hint-placeholder-count="6">
+<div style="display:flex;align-items:baseline;gap:10px;font-size:11.5px;color:{{ t2 }}">
+<span>{{ mo.what }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;color:{{ t3 }};white-space:nowrap">{{ mo.spec }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;padding:10px 12px;border-radius:9px;border:1px solid {{ acc }};background:{{ accSoft }};font-size:11px;line-height:1.5;color:{{ t1 }}">prefers-reduced-motion: video elements are never mounted — posters only, tiles at full brightness, all durations 0ms.</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const PAL = {
+  dark: { canvas:'#0A0B0D', panel:'#101216', line:'rgba(255,255,255,0.11)', line2:'rgba(255,255,255,0.22)', t1:'#F1F2F4', t2:'#B2B8C2', t3:'#8E949F', acc:'#6FE3CC', accSoft:'rgba(111,227,204,0.13)' },
+  light:{ canvas:'#F4F4F1', panel:'#FFFFFF', line:'rgba(16,18,22,0.13)', line2:'rgba(16,18,22,0.24)', t1:'#14161A', t2:'#4F545C', t3:'#666B74', acc:'#0E7062', accSoft:'rgba(14,112,98,0.09)' }
+};
+const SW = {
+  dark: [
+    ['Canvas','#0A0B0D','oklch(0.16 0.005 260)','base'],
+    ['Rail / footer','#0C0D11','oklch(0.18 0.008 265)','base'],
+    ['Panel / overlay','#101216','oklch(0.21 0.008 265)','base'],
+    ['Media plinth','#05060A','oklch(0.11 0.010 265)','base'],
+    ['Text primary','#F1F2F4','oklch(0.96 0.003 265)','16.8:1 on canvas'],
+    ['Text secondary','#B2B8C2','oklch(0.78 0.014 260)','9.5:1 on canvas'],
+    ['Text tertiary','#8E949F','oklch(0.65 0.016 262)','5.7:1 on canvas'],
+    ['Accent / links','#6FE3CC','oklch(0.85 0.117 175)','11.9:1 on canvas'],
+    ['New tag text','#F3DEA6','oklch(0.90 0.075 90)','13.1:1 on canvas']
+  ],
+  light: [
+    ['Canvas','#F4F4F1','oklch(0.96 0.004 100)','base'],
+    ['Rail / footer','#EFEFEB','oklch(0.94 0.005 100)','base'],
+    ['Panel / overlay','#FFFFFF','oklch(1.00 0 0)','base'],
+    ['Media plinth','#080A0E','oklch(0.15 0.010 265)','base'],
+    ['Text primary','#14161A','oklch(0.20 0.008 265)','15.4:1 on canvas'],
+    ['Text secondary','#4F545C','oklch(0.44 0.014 265)','7.5:1 on canvas'],
+    ['Text tertiary','#666B74','oklch(0.53 0.015 265)','5.1:1 on canvas'],
+    ['Accent / links','#0E7062','oklch(0.48 0.083 176)','4.9:1 on canvas'],
+    ['New tag text','#5C4204','oklch(0.38 0.081 80)','8.6:1 on tag fill']
+  ]
+};
+const G = "'Space Grotesk',system-ui,sans-serif", M = "'JetBrains Mono',ui-monospace,monospace";
+class Component extends DCLogic {
+  renderVals() {
+    const m = this.props.mode === 'light' ? 'light' : 'dark';
+    const p = PAL[m];
+    return Object.assign({}, p, {
+      modeName: m === 'dark' ? 'DARK — THE DEFAULT' : 'LIGHT — THE SAME ROOM, LIGHTS ON',
+      swatches: SW[m].map(([role, hex, oklch, ratio]) => ({ role, hex, oklch, ratio, ratioColor: ratio === 'base' ? p.t3 : p.acc })),
+      type: [
+        { sample:'Studio Dark', px:36, w:500, ls:'-0.025em', fam:G, spec:'36 / 500 / -2.5% · detail title' },
+        { sample:'A dark room of interfaces', px:29, w:500, ls:'-0.02em', fam:G, spec:'29 / 500 / -2% · hero' },
+        { sample:'Saved on this device', px:17, w:500, ls:'-0.01em', fam:G, spec:'17 / 500 · section head' },
+        { sample:'Threads Holo Ticket', px:14.5, w:500, ls:'-0.01em', fam:G, spec:'14.5 / 500 · card title' },
+        { sample:'Enzo Manuel Mangano (Reactiive)', px:12, w:400, ls:'0', fam:G, spec:'12 / 400 · contributor, body-sm' },
+        { sample:'1,426 views', px:10, w:400, ls:'0', fam:M, spec:'mono 10 · metrics, tabular' },
+        { sample:'CATEGORIES · 9:16 · PLAYING', px:9, w:500, ls:'0.14em', fam:M, spec:'mono 9 / +14% · labels' }
+      ],
+      radii: [
+        { px:16, label:'16 — media tile' }, { px:12, label:'12 — panel, sheet row' },
+        { px:9, label:'9 — chip, control' }, { px:6, label:'6 — badge, tag' }
+      ],
+      elev: [
+        { bg: p.panel, shadow: m === 'dark' ? '0 0 0 1px rgba(255,255,255,0.07)' : '0 0 0 1px rgba(16,18,22,0.10)', label:'E0 · hairline only — chrome, paused tiles' },
+        { bg: p.panel, shadow: m === 'dark' ? '0 0 0 1px hsla(290,60%,62%,0.26), 0 22px 60px -20px hsla(290,70%,58%,0.45)' : '0 0 0 1px rgba(16,18,22,0.10), 0 20px 44px -22px hsla(290,55%,40%,0.55)', label:'E1 · emission — a playing tile, tinted by its own recording' },
+        { bg: p.panel, shadow: m === 'dark' ? '0 40px 120px -30px rgba(0,0,0,0.9)' : '0 40px 100px -30px rgba(16,18,22,0.45)', label:'E2 · overlay — detail over the catalogue' }
+      ],
+      space: [
+        { px:4, label:'4 · icon gap' }, { px:8, label:'8 · control gap' }, { px:12, label:'12 · card meta' },
+        { px:16, label:'16 · mobile gutter' }, { px:24, label:'24 · grid column gap' },
+        { px:28, label:'28 · grid row gap' }, { px:40, label:'40 · detail columns' }
+      ],
+      motion: [
+        { what:'Tile enters view → video swaps in', spec:'160ms opacity, linear' },
+        { what:'Playing tile brightness + glow', spec:'220ms cubic-bezier(.2,.8,.2,1)' },
+        { what:'Filter chip add / remove', spec:'120ms ease-out' },
+        { what:'Overlay open (scrim + 8px rise)', spec:'240ms cubic-bezier(.2,.8,.2,1)' },
+        { what:'Overlay close on Escape', spec:'160ms ease-in' },
+        { what:'Bottom sheet (mobile)', spec:'260ms spring, no overshoot' }
+      ]
+    });
+  }
+}
+</script>
+</body>
+</html>
