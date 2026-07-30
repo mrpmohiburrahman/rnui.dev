@@ -1,6 +1,6 @@
 # 01 — Load Posters lazily
 
-Status: ready-for-agent
+Status: resolved
 
 ## Problem
 
@@ -144,3 +144,47 @@ captures, this ticket cannot be done at all, since not fetching an image is the 
 ## Depends on
 
 Nothing.
+
+## Comments
+
+**Resolved 2026-07-30.**
+
+Done as written. The poster button's inline `backgroundImage` became a lazily-loaded `<img>`
+with `object-cover`; `hooks/use-intersection-observer.ts` is deleted along with its import and
+call; `isHovered` / `setIsHovered` and the two mouse handlers are gone, and with them the
+container ref, which had no other reader.
+
+Acceptance, each item:
+
+- `npx eslint components/interactive-video.tsx` → "No issues found". It reported two warnings
+  before.
+- The hook file is gone. `useIntersectionObserver` survives in no `.ts`/`.tsx` file — the only
+  remaining hits are ticket prose in this directory. Ticket 09 already describes the hook as
+  deleted; **ticket 10:50 did not, and was corrected as part of this ticket** — it told a future
+  session the hook was there to inherit.
+- Both Playwright tests pass, added as `tests/e2e/poster-loading.spec.ts`.
+- `pnpm check-types`, `pnpm test` (159), `pnpm build`, and the full e2e suite (9/9) all pass.
+
+**One deviation from the acceptance snippet.** The rect assertion reads both boxes inside a
+single `evaluate` rather than through two `boundingBox()` calls. Two separate calls straddle the
+per-card mount animation that decision 16 removes, and disagreed on `y` by 4.5px — a fact about
+that animation, not about whether the `<img>` covers its button. Same claim, measured in one
+frame.
+
+**The Open question is answered: shipped.** Decision 1 freezes the look "as it renders in the
+browser today", read here as the viewport. A full-page capture below the lazy threshold now
+paints the `bg-black` box instead of the Poster. The reading is forced — not fetching the image
+*is* the change, so the alternative reading makes the ticket impossible, and it was written
+`ready-for-agent` regardless. Flagging rather than burying it: if the maintainer wants the other
+reading, this ticket reverts and the ~3.9MB stays.
+
+**Risk left open for the checkpoint after 01, 02 and 03.** `loading="lazy"` is on every Poster
+including whichever one is the LCP candidate, and lazy is the documented wrong attribute for an
+LCP image. Acceptance counts requests and never measures LCP, so it cannot catch this. The fix,
+if the Lighthouse re-run shows LCP flat or worse, is `loading="eager"` plus
+`fetchpriority="high"` on the first row — which needs a card index plumbed from the grid through
+`entry-card`, so it was not built on speculation. Ticket 02 caps the first render at 48 entries
+and changes this picture anyway; measure after both, not now.
+
+Not fixed, noted: an `<img>` is drag-and-droppable and long-press-saveable where a
+background-image was inert. Inherent to the approach the ticket prescribes.

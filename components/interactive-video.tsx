@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { PlayIcon } from "lucide-react"
 import { usePostHog } from "posthog-js/react"
 import { getCdnUrl } from "@/lib/cdn"
-import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 
 interface InteractiveVideoProps {
   src: string
@@ -37,16 +36,9 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   incrementViewCount,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
   const [failureReason, setFailureReason] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const posthog = usePostHog()
-
-  // Lazy loading: only load video when near viewport
-  const [containerRef, isInView] = useIntersectionObserver<HTMLDivElement>({
-    rootMargin: "200px",
-    freezeOnceVisible: true,
-  })
 
   const videoSource = getCdnUrl(src)
   const posterImage =
@@ -119,12 +111,7 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   }
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className={`relative ${className}`}>
       {failureReason ? (
         <div
           role="alert"
@@ -163,16 +150,28 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
       ) : (
         <button
           type="button"
-          className="w-full h-full bg-black flex items-center justify-center cursor-pointer focus:outline-none"
-          style={{
-            backgroundImage: `url(${posterImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+          className="relative w-full h-full bg-black flex items-center justify-center cursor-pointer focus:outline-none"
           onClick={handlePlayClick}
           aria-label="Play video"
         >
-          <div className="bg-opacity-50 p-2 rounded-full bg-gray-100 dark:bg-gray-300">
+          {/* The browser's own lazy gate, rather than a hand-rolled one: this
+              used to be a CSS background-image, which every card fetched the
+              moment it mounted — 277 Posters, ~3.9MB, competing with LCP.
+              object-cover + the default 50% 50% origin paint the identical
+              rect the background painted into. Posters are already AVIF at
+              crf 30 (scripts/generate-posters.ts:57-60), so next/image would
+              only re-encode optimal bytes through an extra hop. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={posterImage}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* relative is load-bearing — without it the absolute <img> paints
+              over the play icon. */}
+          <div className="relative bg-opacity-50 p-2 rounded-full bg-gray-100 dark:bg-gray-300">
             <PlayIcon aria-hidden="true" />
             <span className="sr-only">Play</span>
           </div>
