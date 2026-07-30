@@ -15,27 +15,38 @@ import { useCallback, useEffect, useRef, useState } from "react"
 /** Renaming this silently discards every bookmark a visitor has already made. */
 export const BOOKMARKS_KEY = "bookmarkedItems"
 
-/** Renaming this silently discards every vote a visitor has already cast. */
-export const VOTED_ITEMS_KEY = "votedItems"
+/**
+ * Renaming this silently discards every vote a visitor has already cast.
+ *
+ * The stored string keeps "Items"; the constant does not. CONTEXT.md lists `item`
+ * under Entry's _Avoid_, and ADR-0004's frozen boundary is the value in somebody's
+ * browser, not the identifier beside it.
+ */
+export const VOTED_ENTRY_IDS_KEY = "votedItems"
 
 type Problem = "not-an-array" | "unreadable"
 
 /**
- * Read what localStorage handed back. Absent state and unusable state both yield
- * an empty set; `problem` distinguishes them, because a visitor whose saved state
- * was just silently reset is the one case worth reporting.
+ * Read what localStorage handed back. Absent state and unusable state both yield an
+ * empty set; `problem` distinguishes them, because a visitor whose saved state was
+ * just silently reset is the one case worth reporting — and `cause` carries the error
+ * that says why, so the report can name it.
  */
 export function parseRememberedIds(raw: string | null): {
   ids: string[]
   problem: Problem | null
+  cause?: unknown
 } {
-  if (raw === null) return { ids: [], problem: null }
+  // getItem returns null for a key nobody wrote. An empty string is a key written
+  // badly, but the hook this replaced treated it as absent and said nothing, and a
+  // new error on a path that used to be silent is what ticket 08 exists to prevent.
+  if (raw === null || raw.trim() === "") return { ids: [], problem: null }
 
   let parsed: unknown
   try {
     parsed = JSON.parse(raw)
-  } catch {
-    return { ids: [], problem: "unreadable" }
+  } catch (cause) {
+    return { ids: [], problem: "unreadable", cause }
   }
 
   if (!Array.isArray(parsed)) return { ids: [], problem: "not-an-array" }
@@ -64,17 +75,22 @@ export function useRememberedSet(storedKey: string) {
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    const { ids: stored, problem } = parseRememberedIds(
+    const { ids: stored, problem, cause } = parseRememberedIds(
       localStorage.getItem(storedKey)
     )
 
     // The only signal that somebody's saved state was reset without them asking.
+    // The cause is passed on, not swallowed: without it the report says something
+    // failed to parse and not what was wrong with it.
     if (problem === "not-an-array") {
       console.warn(
         `📄 Stored value at "${storedKey}" is not an array. Resetting to empty array.`
       )
     } else if (problem === "unreadable") {
-      console.error(`❌ Error parsing "${storedKey}" from localStorage`)
+      console.error(
+        `❌ Error parsing "${storedKey}" from localStorage:`,
+        cause
+      )
     }
 
     // Reading localStorage on mount is the only SSR-safe way to hydrate this. A
@@ -113,5 +129,3 @@ export function useRememberedSet(storedKey: string) {
 
   return { ids, toggle }
 }
-
-export default useRememberedSet

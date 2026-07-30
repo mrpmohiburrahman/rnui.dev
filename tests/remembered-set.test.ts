@@ -35,17 +35,24 @@ describe("parseRememberedIds", () => {
     expect(parseRememberedIds("42")).toEqual({ ids: [], problem: "not-an-array" })
   })
 
-  it("reports state that does not parse", () => {
-    expect(parseRememberedIds("{not json")).toEqual({
-      ids: [],
-      problem: "unreadable",
-    })
+  it("reports state that does not parse, and hands back the reason why", () => {
+    const parsed = parseRememberedIds("{not json")
+
+    expect(parsed.ids).toEqual([])
+    expect(parsed.problem).toBe("unreadable")
+    // The cause is carried, not swallowed. Without it the hook's report says only
+    // that something failed to parse, and not what was wrong with it — which is
+    // what the two hooks this replaced logged.
+    expect(parsed.cause).toBeInstanceOf(SyntaxError)
   })
 
-  it("treats an empty string as unreadable rather than as absent", () => {
-    // localStorage.getItem returns null for a missing key, so an empty string is
-    // a key someone wrote badly, not a key nobody has written.
-    expect(parseRememberedIds("")).toEqual({ ids: [], problem: "unreadable" })
+  it("treats an empty or whitespace-only string as absent", () => {
+    // getItem returns null for a key nobody wrote, so an empty string is a key
+    // written badly. It still counts as absent: the hooks this replaced took that
+    // path silently, and a new error on a path that used to be quiet is the thing
+    // ticket 08 exists to prevent.
+    expect(parseRememberedIds("")).toEqual({ ids: [], problem: null })
+    expect(parseRememberedIds("   ")).toEqual({ ids: [], problem: null })
   })
 })
 

@@ -7,7 +7,7 @@ import { allEntries } from "../../data/catalogue"
 // constants the code now uses would make the test agree with whatever the code
 // says rather than with what is already sitting in visitors' browsers.
 const BOOKMARKS_KEY = "bookmarkedItems"
-const VOTED_ITEMS_KEY = "votedItems"
+const VOTED_ENTRY_IDS_KEY = "votedItems"
 
 const remembered = allEntries[0]
 
@@ -22,7 +22,7 @@ test("a set stored by the previous build still loads after the hook merge", asyn
     },
     {
       bookmarksKey: BOOKMARKS_KEY,
-      votedKey: VOTED_ITEMS_KEY,
+      votedKey: VOTED_ENTRY_IDS_KEY,
       id: remembered.id,
     }
   )

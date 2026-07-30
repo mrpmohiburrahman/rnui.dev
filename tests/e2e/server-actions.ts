@@ -23,13 +23,13 @@ export async function recordServerActions(
   await page.route("**/*posthog.com/**", (route) => route.abort())
   await page.goto(url)
 
-  const actionIds: string[] = []
+  const fired: { id: string; body: string }[] = []
   let lastSeenAt = 0
   page.on("request", (request) => {
     if (request.method() !== "POST") return
     const id = request.headers()["next-action"]
     if (!id) return
-    actionIds.push(id)
+    fired.push({ id, body: request.postData() ?? "" })
     lastSeenAt = Date.now()
   })
 
@@ -43,7 +43,7 @@ export async function recordServerActions(
   // of the vote test passed against the bug it was written to catch.
   const QUIET_MS = 2_000
   await expect
-    .poll(() => actionIds.length > 0 && Date.now() - lastSeenAt > QUIET_MS, {
+    .poll(() => fired.length > 0 && Date.now() - lastSeenAt > QUIET_MS, {
       timeout: 20_000,
       intervals: [250],
       message: "the interaction produced no server action",
@@ -51,13 +51,30 @@ export async function recordServerActions(
     .toBe(true)
 
   await context.close()
-  return actionIds
+  return fired
 }
 
+export type FiredAction = { id: string; body: string }
+
 /** Fails naming the ids when any action fired more than once. */
-export function expectNoActionRepeated(actionIds: string[]) {
+export function expectNoActionRepeated(fired: FiredAction[]) {
+  const ids = fired.map((action) => action.id)
+  expect(ids.length, `an action fired more than once: ${ids.join(", ")}`).toBe(
+    new Set(ids).size
+  )
+}
+
+/**
+ * Every action a single click produces carries the same Entry id. Recorded from the
+ * bodies rather than inferred: the bodies are the only place the id appears, since
+ * the address is the page's and the header is opaque.
+ */
+export function expectOneEntryTargeted(fired: FiredAction[]) {
+  const bodies = new Set(fired.map((action) => action.body))
   expect(
-    actionIds.length,
-    `an action fired more than once: ${actionIds.join(", ")}`
-  ).toBe(new Set(actionIds).size)
+    bodies.size,
+    `one click addressed more than one Entry: ${[...bodies].join(" | ")}`
+  ).toBe(1)
+  // A body Next did not fill in would make the assertion above pass vacuously.
+  expect([...bodies][0]).toMatch(/^\["[0-9A-Z]{26}"\]$/)
 }

@@ -75,6 +75,16 @@ Supabase Directory". Not a name and not rendered. Those blocks are also why the
 linter reports seven unused imports in that file. Deleting them belongs to a
 sweep, not to this diff, which has to stay readable as a move.
 
+**A neighbouring defect this criterion does not cover.** Review pointed out that
+`InteractiveVideo` names a Demo with `video`, and `CardModal` and `EntryCardGrid`
+name an Entry with `card` — both words sit on their concept's _Avoid_ list in
+`CONTEXT.md`. That is real, and it is a different defect: this criterion is about a
+name for a concept the glossary **does not have**, which "Directory" was and "video"
+and "card" are not. Using an avoided word for a concept the glossary *does* have is
+ticket 02's class of problem, and ticket 02 closed having renamed `ResourceCard` to
+`EntryCard` — it kept "Card" deliberately. Retiring those three is a rename sweep
+across the card surface and belongs in its own ticket.
+
 ### The move is smaller than the module count suggests
 
 The part all three shared is exactly `<EntryCardGrid>{children}</EntryCardGrid>`
@@ -105,16 +115,21 @@ localStorage. Un-bookmarking from a card would update the module's copy and writ
 localStorage, and the route's copy would never hear about it, so the card would stay
 in the list until a reload.
 
-So the route no longer reads the set at all. It fetches the whole catalogue and
-passes `bookmarkedOnly`, and the filter runs inside `CataloguePage` against the same
-set the toggle writes. Removing a bookmark drops the card immediately, as it did
-before.
+So the route no longer holds the set. It passes `bookmarkedOnly`, and the filter runs
+inside `CataloguePage` against the same set the toggle writes. Removing a bookmark
+drops the card immediately, as it did before.
 
-The cost, named: a visitor with no bookmarks now triggers one catalogue fetch that
-the old code skipped, because the route no longer knows whether the set is empty
-before it fetches. One `getEntries()` call — already `cache`d, and the same call the
-home page makes on every visit. The alternative was two copies of a set that lives
-in the visitor's browser, which is the class of bug ticket 13 exists to end.
+**A cost this first shipped with, and does not any more.** The first version fetched
+the whole catalogue unconditionally, where the old route skipped the fetch when the
+set was empty. It was named here as an accepted trade — and review was right that
+this ticket's own stop-rule ("Any behaviour change at all means stopping") does not
+leave that trade available. Fixed: the route reads the stored key **once**, in its
+effect, with `parseRememberedIds`, purely to answer "has this visitor bookmarked
+anything at all". That is a one-shot read and not a second reactive copy — the answer
+cannot change while the visitor is on a route that shows nothing but bookmarks — so
+it restores the skip without reintroducing the staleness the collapse existed to
+avoid. The effect's dependency list is now empty rather than `[bookmarks]`, which
+also drops a refetch per toggle that the old route performed.
 
 ### Verified
 
