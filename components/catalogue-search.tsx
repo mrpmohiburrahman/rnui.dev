@@ -3,12 +3,7 @@
 import { useTransition } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { getUniqueCategories } from "@/data/entry"
-import { AnimatePresence } from "framer-motion"
 
-import { cn } from "@/lib/utils"
-import { InputButton } from "@/components/ui/input"
-
-import { IconSpinner } from "./ui/icons"
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
 
 const placeholders = getUniqueCategories()
@@ -16,7 +11,9 @@ export function CatalogueSearch() {
   const router = useRouter()
   const pathname = usePathname()
 
-  const [isPending, startTransition] = useTransition()
+  // The pending flag has no reader. It drove a spinner inside an alternative input
+  // that shipped commented out and has now been deleted.
+  const [, startTransition] = useTransition()
 
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(window.location.search)
@@ -42,26 +39,6 @@ export function CatalogueSearch() {
         onChange={handleInputChange}
         onSubmit={() => {}}
       />
-      {/* <InputButton
-        hasIcon
-        id="search"
-        className={cn("relative pr-10 pl-12 shadow-sm md:py-4 w-full")}
-        tabIndex={0}
-        onChange={handleInputChange}
-        placeholder="Search"
-        spellCheck={false}
-        enterKeyHint="go"
-      >
-        <div className="relative -ml-10 hidden items-center justify-center md:flex">
-          <div className="absolute ml-4 w-14 rounded-r-full">
-            <AnimatePresence>
-              {isPending ? (
-                <IconSpinner className="-ml-0.5 h-7 w-7 animate-spin stroke-teal-500/80 group-hover:text-teal-500 dark:stroke-teal-400 dark:group-hover:text-teal-300" />
-              ) : null}
-            </AnimatePresence>
-          </div>
-        </div>
-      </InputButton> */}
     </div>
   )
 }
