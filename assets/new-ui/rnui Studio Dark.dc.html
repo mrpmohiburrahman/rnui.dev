@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><style>body{margin:0;background:#111316;font-family:'Space Grotesk',system-ui,sans-serif}a{color:#6FE3CC}a:hover{color:#9BEEDD}</style></helmet>
+
+<section style="padding:52px 48px 44px;border-bottom:1px solid rgba(255,255,255,0.09);color:#F1F2F4;max-width:1500px">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:20px">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.16em;padding:5px 9px;border-radius:6px;background:#6FE3CC;color:#06120F">DIRECTION 2</span>
+<span style="font-size:24px;font-weight:500;letter-spacing:-0.02em">Studio Dark — rnui.dev overhaul</span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.12em;color:#8E949F">277 RECORDINGS · 24 CONTRIBUTORS · 18 CATEGORIES</span>
+</div>
+<div style="display:grid;grid-template-columns:1.1fr 1fr;gap:44px">
+<div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:#8E949F;padding-bottom:10px">09 · THE DIRECTION IN SIX SENTENCES</div>
+<p style="margin:0;font-size:15px;line-height:1.6;color:#D6DAE1;max-width:640px;text-wrap:pretty">This is a dark room where 277 phone recordings are the only light in it. It optimises for the recordings: near-black canvas, chrome reduced to hairlines and monospaced labels, and a tile that physically glows in the hue of its own capture when it plays. Density comes from portrait tiles at 208px across — five to a 1440px row, ten above the fold — so the shelf reads as a rack of devices rather than a gallery wall. Metadata is ranked, not balanced: title, then category, then contributor, then a hairline view bar, then the controls that actually do something. The light mode is the same room with the lights on — the media plinth stays near-black in both, because a recording on paper stops being a light source. It deliberately sacrifices the friendliness of a bright interface, decorative colour, and any sense that this is a marketing page.</p>
+</div>
+<div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:#8E949F;padding-bottom:10px">THE FIRST 800MS</div>
+<div style="display:flex;flex-direction:column;gap:9px;font-size:12.5px;line-height:1.5;color:#B2B8C2">
+<div style="display:flex;gap:12px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#6FE3CC;flex:none;width:78px">0–120ms</span><span>Canvas, rail, header and footer paint from markup alone. Zero images. The counter line, the “updated 13h ago” stamp and the result count already occupy their exact reserved widths as tabular monospace, so nothing reflows when the real numbers land.</span></div>
+<div style="display:flex;gap:12px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#6FE3CC;flex:none;width:78px">120–400ms</span><span>Ten portrait tile boxes are already the right size — height is <em>width × 16 / 9</em>, declared, never measured — and the meta block below reserves two lines for the title and two for the contributor. The layout is final before any pixel of media exists.</span></div>
+<div style="display:flex;gap:12px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#6FE3CC;flex:none;width:78px">400–800ms</span><span>Ten still frames decode into those boxes (≈15 at the widest viewport). No video has been requested yet. Layout shift target: 0.00.</span></div>
+<div style="display:flex;gap:12px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#6FE3CC;flex:none;width:78px">AFTER</span><span>An intersection observer promotes at most five on-screen tiles to muted looping video; the rest hold their still at 78% brightness. Load more, never infinite scroll — the page has a bottom.</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">01</span>
+<span style="font-size:16px;font-weight:500">Catalogue — desktop 1440</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Five columns of 208px portrait tiles. The top row of five is playing; everything below holds its still frame at 78% brightness with a ❙❙ PAUSED marker, so five simultaneous loops read as one band of motion instead of a wall of it. Wheel Picker (column 3, row 2) shows the keyboard focus ring. The three consecutive Enzo entries show the ↳ run marker that keeps 148-by-one-person from looking like a duplication bug.</p>
+<div style="display:flex;gap:40px;flex-wrap:wrap">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK · DEFAULT</div><dc-import name="Catalogue" mode="dark" variant="home" hint-size="1440px,1500px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Catalogue" mode="light" variant="home" hint-size="1440px,1500px"></dc-import></div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">02</span>
+<span style="font-size:16px;font-weight:500">Catalogue — mobile 390</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Filters live in a fixed bottom dock, not in the header — it stays on screen at every scroll position and its badge carries the active count. Tapping it opens a sheet with categories, contributors and sort; the close button takes focus and Escape dismisses. Two columns of 163px tiles; every control is at least 44px tall.</p>
+<div style="display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK · CATALOGUE</div><dc-import name="CatalogueMobile" mode="dark" variant="home" hint-size="390px,844px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK · FILTER SHEET</div><dc-import name="CatalogueMobile" mode="dark" variant="sheet" hint-size="390px,844px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK · 2 FILTERS + SEARCH</div><dc-import name="CatalogueMobile" mode="dark" variant="filtered" hint-size="390px,844px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT · CATALOGUE</div><dc-import name="CatalogueMobile" mode="light" variant="home" hint-size="390px,844px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT · FILTER SHEET</div><dc-import name="CatalogueMobile" mode="light" variant="sheet" hint-size="390px,844px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT · 2 FILTERS + SEARCH</div><dc-import name="CatalogueMobile" mode="light" variant="filtered" hint-size="390px,844px"></dc-import></div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">03</span>
+<span style="font-size:16px;font-weight:500">Catalogue — category + contributor + search all active</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Three active constraints, each its own removable chip with a labelled kind (CATEGORY / BY / SEARCH), plus Clear all. The rail mirrors the state: Misc and the contributor are both ringed. The full 31-character contributor name is shown in the chip — it wraps rather than truncating, and the chip is capped at 330px.</p>
+<div style="display:flex;gap:40px;flex-wrap:wrap">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK</div><dc-import name="Catalogue" mode="dark" variant="filtered" hint-size="1440px,1300px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Catalogue" mode="light" variant="filtered" hint-size="1440px,1300px"></dc-import></div>
+</div>
+<p style="margin:20px 0 0;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Two entries fill a five-column grid without stretching, which is also the answer for Pickers and Drop Down at one entry each: the tile keeps its size, the row simply ends. Nothing is centred to hide the gap.</p>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">04</span>
+<span style="font-size:16px;font-weight:500">Entry detail — standalone page, desktop</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Opened from a shared link: real header, a way back into the catalogue, and the same composition the overlay uses. The repo link is the largest control on the page. Contributor links show only what exists — X and GitHub here, with LinkedIn explicitly marked as not listed rather than rendered dead.</p>
+<div style="display:flex;gap:40px;flex-wrap:wrap">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK</div><dc-import name="Detail" mode="dark" form="page" hint-size="1440px,900px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Detail" mode="light" form="page" hint-size="1440px,900px"></dc-import></div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">05</span>
+<span style="font-size:16px;font-weight:500">Entry detail — overlay over the catalogue</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Same composition, 1080px card on a blurred scrim. Focus moves to the ESC ✕ button on open (shown with its ring), Tab is trapped inside, Escape returns focus to the card that opened it. Catalogue tiles behind the scrim pause — never five loops behind a sixth.</p>
+<div style="display:flex;gap:40px;flex-wrap:wrap">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK</div><dc-import name="Catalogue" mode="dark" variant="home" overlay="{{ true }}" hint-size="1440px,1500px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Catalogue" mode="light" variant="home" overlay="{{ true }}" hint-size="1440px,1500px"></dc-import></div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">06</span>
+<span style="font-size:16px;font-weight:500">Entry detail — mobile 390</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">The recording keeps 9:16 at 358px wide; everything else stacks beneath it. Vote, save and the repo link sit in a fixed action bar so the outbound click is never scrolled away.</p>
+<div style="display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK</div><dc-import name="Detail" mode="dark" form="mobile" hint-size="390px,1500px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Detail" mode="light" form="mobile" hint-size="390px,1500px"></dc-import></div>
+</div>
+</section>
+
+<section style="padding:44px 48px;border-bottom:1px solid rgba(255,255,255,0.09)">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">07</span>
+<span style="font-size:16px;font-weight:500">The states — loading, zero results, saved, empty saved, failed recording, end of catalogue, reduced motion</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:40px">
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.1 LOADING</span><span style="font-size:12.5px;color:#8E949F">Skeletons occupy the exact final geometry — tile height, two title lines, two contributor lines, bar, control row. Header counters keep their reserved widths. Nothing moves when content lands.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="loading" hint-size="1440px,1500px"></dc-import><dc-import name="Catalogue" mode="light" variant="loading" hint-size="1440px,1500px"></dc-import></div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.2 ZERO RESULTS</span><span style="font-size:12.5px;color:#8E949F">The three filters stay visible above the message, and each way out removes exactly one constraint. It names the real reason: Wheel Picker is by this contributor but lives in Pickers.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="zero" hint-size="1440px,900px"></dc-import><dc-import name="Catalogue" mode="light" variant="zero" hint-size="1440px,900px"></dc-import></div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.3 SAVED</span><span style="font-size:12.5px;color:#8E949F">Screen C: the same grid, a different heading, and the device-only truth stated in the footer.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="saved" hint-size="1440px,1100px"></dc-import><dc-import name="Catalogue" mode="light" variant="saved" hint-size="1440px,1100px"></dc-import></div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.4 EMPTY SAVED</span><span style="font-size:12.5px;color:#8E949F">Three empty portrait outlines, the honest sentence about this browser and this device, one way out.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="empty-saved" hint-size="1440px,900px"></dc-import><dc-import name="Catalogue" mode="light" variant="empty-saved" hint-size="1440px,900px"></dc-import></div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.5 FAILED RECORDING</span><span style="font-size:12.5px;color:#8E949F">Onboarding by Thomino fails to decode. The tile keeps its size and glow-less plinth, says so in plain language, and puts a repo button inside the failed slot — the outbound click survives the broken video. Full metadata below is untouched.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="failed" hint-size="1440px,1500px"></dc-import><dc-import name="Catalogue" mode="light" variant="failed" hint-size="1440px,1500px"></dc-import></div>
+<div style="display:flex;gap:30px;flex-wrap:wrap;padding-top:26px;align-items:flex-start">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:#8E949F;padding-bottom:8px">DETAIL · FAILED TILE, DARK</div><dc-import name="Tile" mode="dark" entry="{{ failedEntry }}" w="{{ 300 }}" state="failed" hint-size="300px,700px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:#8E949F;padding-bottom:8px">DETAIL · FAILED TILE, LIGHT</div><dc-import name="Tile" mode="light" entry="{{ failedEntry }}" w="{{ 300 }}" state="failed" hint-size="300px,700px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:#8E949F;padding-bottom:8px">FOCUSED · DARK</div><dc-import name="Tile" mode="dark" entry="{{ focusEntry }}" w="{{ 300 }}" state="playing" focused="{{ true }}" saved="{{ true }}" hint-size="300px,700px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:#8E949F;padding-bottom:8px">FOCUSED · LIGHT</div><dc-import name="Tile" mode="light" entry="{{ focusEntry }}" w="{{ 300 }}" state="playing" focused="{{ true }}" saved="{{ true }}" hint-size="300px,700px"></dc-import></div>
+</div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.6 END OF CATALOGUE</span><span style="font-size:12.5px;color:#8E949F">The last page: a partial row of three, a ruled END OF CATALOGUE line, two things to do next, then the footer. The Load more control (48 of 277 shown · no infinite scroll) appears on every earlier page — see 01.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="end" hint-size="1440px,1100px"></dc-import><dc-import name="Catalogue" mode="light" variant="end" hint-size="1440px,1100px"></dc-import></div>
+</div>
+
+<div>
+<div style="display:flex;align-items:baseline;gap:10px;padding-bottom:6px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#6FE3CC">7.7 REDUCED MOTION</span><span style="font-size:12.5px;color:#8E949F">prefers-reduced-motion: no video is ever mounted. Every tile is a still frame at full brightness with a STILLS ONLY marker, so the dimming that separated playing from paused is dropped — nothing is de-emphasised for a state that no longer exists.</span></div>
+<div style="display:flex;gap:40px;flex-wrap:wrap"><dc-import name="Catalogue" mode="dark" variant="reduced" hint-size="1440px,1500px"></dc-import><dc-import name="Catalogue" mode="light" variant="reduced" hint-size="1440px,1500px"></dc-import></div>
+</div>
+</div>
+</section>
+
+<section style="padding:44px 48px 60px">
+<div style="display:flex;align-items:baseline;gap:12px;padding-bottom:6px;color:#F1F2F4">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;padding:4px 8px;border-radius:5px;background:rgba(255,255,255,0.09);color:#F1F2F4">08</span>
+<span style="font-size:16px;font-weight:500">Specimen sheet</span>
+</div>
+<p style="margin:0 0 22px;font-size:12.5px;line-height:1.55;color:#8E949F;max-width:880px">Palette with hex, oklch and measured contrast; type scale; radii; three elevation levels; the 4px spacing rhythm; motion timings including the reduced-motion rule.</p>
+<div style="display:flex;gap:40px;flex-wrap:wrap">
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">DARK</div><dc-import name="Specimen" mode="dark" hint-size="1180px,760px"></dc-import></div>
+<div><div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:#8E949F;padding-bottom:9px">LIGHT</div><dc-import name="Specimen" mode="light" hint-size="1180px,760px"></dc-import></div>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      failedEntry: { name:'Onboarding by Thomino', by:'Thomino', cat:'Onboarding', views:'1,272', v:1272, votes:2, hue:28 },
+      focusEntry: { name:'Ripple Effect With React Native Skia', by:'Daehyeon Mun (문대현)', cat:'Misc', views:'316', v:316, votes:4, hue:186 }
+    };
+  }
+}
+</script>
+</body>
+</html>

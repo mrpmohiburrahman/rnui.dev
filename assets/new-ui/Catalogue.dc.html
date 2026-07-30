@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></helmet>
+<div style="position:relative;width:1440px;background:{{ canvas }};color:{{ t1 }};font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;overflow:hidden">
+
+<header style="display:flex;align-items:center;gap:18px;height:62px;padding:0 26px;border-bottom:1px solid {{ line }};background:{{ headerBg }}">
+<div style="display:flex;align-items:baseline;gap:9px">
+<span style="font-size:16px;font-weight:700;letter-spacing:-0.02em;color:{{ t1 }}">rnui<span style="color:{{ acc }}">.dev</span></span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.12em;color:{{ t3 }}">RN UI RECORDINGS</span>
+</div>
+<div style="min-width:236px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;line-height:1.1;color:{{ t3 }};font-variant-numeric:tabular-nums;white-space:nowrap">{{ counterLine }}</div>
+<div style="flex:1;display:flex;align-items:center;gap:9px;max-width:400px;height:34px;padding:0 11px;border-radius:10px;border:1px solid {{ searchBorder }};background:{{ fieldBg }};box-shadow:{{ searchGlow }}">
+<span style="font-size:12px;color:{{ t3 }}">⌕</span>
+<span style="font-size:12.5px;color:{{ searchColor }}">{{ searchText }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;color:{{ t3 }};border:1px solid {{ line }};border-radius:4px;padding:2px 5px">/</span>
+</div>
+<div style="display:flex;align-items:center;gap:2px;padding:3px;border-radius:9px;border:1px solid {{ line }};background:{{ fieldBg }}">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.08em;padding:5px 9px;border-radius:6px;background:{{ sortA }};color:{{ sortAFg }}">RECENT</span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.08em;padding:5px 9px;border-radius:6px;background:{{ sortB }};color:{{ sortBFg }}">MOST VIEWED</span>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.08em;padding:5px 9px;color:{{ t3 }}">MOST VOTED</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+<span style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:{{ savedFg }};padding:6px 10px;border-radius:9px;border:1px solid {{ savedBorder }};background:{{ savedBg }}">◆ Saved <span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ t3 }}">{{ savedCount }}</span></span>
+<span style="font-size:12.5px;color:{{ t2 }};padding:6px 9px;border-radius:9px;border:1px solid {{ line }}">{{ modeToggle }}</span>
+</div>
+</header>
+
+<div style="display:flex;align-items:stretch">
+<nav style="width:232px;flex:none;padding:20px 16px 30px;border-right:1px solid {{ line }};background:{{ railBg }}">
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding:0 8px 9px">CATEGORIES</div>
+<div style="display:flex;flex-direction:column;gap:1px">
+<sc-for list="{{ cats }}" as="c" hint-placeholder-count="18">
+<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:7px;background:{{ c.bg }};color:{{ c.fg }};font-size:12.5px;outline:{{ c.ring }};outline-offset:1px">
+<span style="width:5px;height:5px;border-radius:3px;background:{{ c.dot }};flex:none"></span>
+<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.name }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ c.num }};font-variant-numeric:tabular-nums">{{ c.n }}</span>
+</div>
+</sc-for>
+</div>
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.16em;color:{{ t3 }};padding:22px 8px 9px">CONTRIBUTORS · 24</div>
+<div style="display:flex;flex-direction:column;gap:1px">
+<sc-for list="{{ people }}" as="c" hint-placeholder-count="4">
+<div style="display:flex;align-items:baseline;gap:8px;padding:5px 8px;border-radius:7px;background:{{ c.bg }};color:{{ c.fg }};font-size:12px;line-height:1.3;outline:{{ c.ring }};outline-offset:1px">
+<span style="overflow-wrap:anywhere">{{ c.name }}</span>
+<span style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ c.num }};flex:none">{{ c.n }}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding:10px 8px 0;font-size:11.5px"><a href="#" style="color:{{ acc }};text-decoration:underline;text-underline-offset:3px">All 24 contributors →</a></div>
+</nav>
+
+<main style="flex:1;padding:22px 26px 34px;min-height:{{ mainMinH }}px">
+
+<sc-if value="{{ showHero }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:20px">
+<div style="max-width:640px">
+<h1 style="margin:0;font-size:29px;font-weight:500;line-height:1.15;letter-spacing:-0.02em;color:{{ t1 }};text-wrap:pretty">A dark room full of React&nbsp;Native interfaces, playing quietly.</h1>
+<p style="margin:9px 0 0;font-size:13px;line-height:1.5;color:{{ t2 }};max-width:520px">Every entry is a silent screen recording of a real phone, and a link to the repo that made it.</p>
+</div>
+<div style="display:flex;gap:22px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:{{ t3 }};text-align:right">
+<div><div style="font-size:19px;color:{{ t1 }};font-variant-numeric:tabular-nums">277</div>RECORDINGS</div>
+<div><div style="font-size:19px;color:{{ t1 }};font-variant-numeric:tabular-nums">24</div>CONTRIBUTORS</div>
+<div><div style="font-size:19px;color:{{ t1 }};font-variant-numeric:tabular-nums">18</div>CATEGORIES</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showFilters }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;margin-bottom:20px;border-radius:12px;border:1px solid {{ line }};background:{{ filterBarBg }}">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:{{ t3 }}">3 ACTIVE</span>
+<span style="display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;border-radius:8px;background:{{ accSoft }};border:1px solid {{ acc }};font-size:12px;color:{{ t1 }}"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;color:{{ acc }}">CATEGORY</span>Misc <button type="button" aria-label="Remove category filter" style="border:none;background:{{ xBg }};color:{{ t1 }};width:16px;height:16px;border-radius:5px;cursor:pointer;font-size:10px;line-height:1" style-focus="outline:3px solid {{ acc }};outline-offset:2px">✕</button></span>
+<span style="display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;border-radius:8px;background:{{ accSoft }};border:1px solid {{ acc }};font-size:12px;color:{{ t1 }};max-width:330px"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;color:{{ acc }};flex:none">BY</span><span style="overflow-wrap:anywhere">Enzo Manuel Mangano (Reactiive)</span><button type="button" aria-label="Remove contributor filter" style="border:none;background:{{ xBg }};color:{{ t1 }};width:16px;height:16px;border-radius:5px;cursor:pointer;font-size:10px;line-height:1;flex:none" style-focus="outline:3px solid {{ acc }};outline-offset:2px">✕</button></span>
+<span style="display:flex;align-items:center;gap:8px;padding:6px 8px 6px 10px;border-radius:8px;background:{{ accSoft }};border:1px solid {{ acc }};font-size:12px;color:{{ t1 }}"><span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;color:{{ acc }}">SEARCH</span>“{{ query }}” <button type="button" aria-label="Clear search" style="border:none;background:{{ xBg }};color:{{ t1 }};width:16px;height:16px;border-radius:5px;cursor:pointer;font-size:10px;line-height:1" style-focus="outline:3px solid {{ acc }};outline-offset:2px">✕</button></span>
+<button type="button" style="margin-left:auto;font-size:12px;color:{{ t2 }};background:none;border:1px solid {{ line }};padding:6px 11px;border-radius:8px;cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:2px">Clear all</button>
+</div>
+</sc-if>
+
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:14px">
+<h2 style="margin:0;font-size:{{ headSize }}px;font-weight:500;letter-spacing:-0.01em;color:{{ t1 }}">{{ heading }}</h2>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.1em;color:{{ t3 }};min-width:180px;text-align:right;font-variant-numeric:tabular-nums">{{ resultLine }}</span>
+</div>
+
+<sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(5,208px);gap:28px 24px">
+<sc-for list="{{ entries }}" as="e" hint-placeholder-count="10">
+<dc-import name="Tile" entry="{{ e }}" mode="{{ mode }}" w="{{ 208 }}" state="{{ e.state }}" is-new="{{ e.isNew }}" saved="{{ e.saved }}" run-repeat="{{ e.runRepeat }}" focused="{{ e.focused }}" hint-size="208px,522px"></dc-import>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isZero }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:52px 40px;border-radius:14px;border:1px dashed {{ line2 }};background:{{ emptyBg }};max-width:720px">
+<div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;letter-spacing:0.14em;color:{{ t3 }}">0 OF 277 MATCH</div>
+<div style="font-size:22px;font-weight:500;letter-spacing:-0.01em;color:{{ t1 }};text-wrap:pretty">Nothing in Misc by Enzo Manuel Mangano (Reactiive) matches “wheel”.</div>
+<p style="margin:0;font-size:13px;line-height:1.55;color:{{ t2 }};max-width:520px">Loosen one of the three. Wheel Picker is by this contributor, but it lives in Pickers — not Misc.</p>
+<div style="display:flex;gap:9px;flex-wrap:wrap;padding-top:4px">
+<button type="button" style="font-size:12.5px;font-weight:500;padding:9px 13px;border-radius:9px;border:none;background:{{ acc }};color:{{ onAcc }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Drop the category filter</button>
+<button type="button" style="font-size:12.5px;padding:9px 13px;border-radius:9px;border:1px solid {{ line2 }};background:none;color:{{ t1 }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Search all 277 for “wheel”</button>
+<button type="button" style="font-size:12.5px;padding:9px 13px;border-radius:9px;border:1px solid {{ line2 }};background:none;color:{{ t1 }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Clear all three</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEmptySaved }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:flex-start;gap:15px;padding:52px 40px;border-radius:14px;border:1px dashed {{ line2 }};background:{{ emptyBg }};max-width:720px">
+<div style="display:flex;gap:7px">
+<div style="width:34px;height:60px;border-radius:7px;border:1px dashed {{ line2 }}"></div>
+<div style="width:34px;height:60px;border-radius:7px;border:1px dashed {{ line2 }}"></div>
+<div style="width:34px;height:60px;border-radius:7px;border:1px dashed {{ line2 }}"></div>
+</div>
+<div style="font-size:22px;font-weight:500;letter-spacing:-0.01em;color:{{ t1 }}">You haven’t saved anything yet.</div>
+<p style="margin:0;font-size:13px;line-height:1.55;color:{{ t2 }};max-width:520px">Tap ◇ Save on any recording to keep it here. Saves stay in <strong style="font-weight:500;color:{{ t1 }}">this browser on this device only</strong> — there is no account and nothing is synced. Clearing site data clears them.</p>
+<button type="button" style="font-size:12.5px;font-weight:500;padding:9px 13px;border-radius:9px;border:none;background:{{ acc }};color:{{ onAcc }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Browse the catalogue</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showLoadMore }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:11px;padding:42px 0 6px">
+<button type="button" style="font-size:13.5px;font-weight:500;padding:12px 26px;border-radius:11px;border:1px solid {{ line2 }};background:{{ fieldBg }};color:{{ t1 }};cursor:pointer;font-family:'Space Grotesk',system-ui,sans-serif" style-focus="outline:3px solid {{ acc }};outline-offset:3px">Load 48 more</button>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.1em;color:{{ t3 }}">48 OF 277 SHOWN · NO INFINITE SCROLL</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ isEnd }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:16px;padding:34px 0 4px">
+<div style="flex:1;height:1px;background:{{ line }}"></div>
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.14em;color:{{ t3 }}">END OF CATALOGUE · 277 OF 277</span>
+<div style="flex:1;height:1px;background:{{ line }}"></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:18px 0 0">
+<a href="#" style="font-size:12.5px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px">Back to top ↑</a>
+<span style="color:{{ t3 }}">·</span>
+<a href="#" style="font-size:12.5px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px">Add your own recording on GitHub ↗</a>
+</div>
+</sc-if>
+</main>
+</div>
+
+<footer style="display:flex;align-items:flex-start;gap:40px;padding:24px 26px 30px;border-top:1px solid {{ line }};background:{{ footerBg }}">
+<div style="max-width:300px">
+<div style="font-size:13px;font-weight:700;letter-spacing:-0.02em;color:{{ t1 }}">rnui<span style="color:{{ acc }}">.dev</span></div>
+<p style="margin:6px 0 0;font-size:11.5px;line-height:1.5;color:{{ t2 }}">An open catalogue of React Native UI recordings. Every entry belongs to its contributor.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:2px">CONTRIBUTE</span>
+<a href="#" style="font-size:11.5px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px">Submit a recording ↗</a>
+<a href="#" style="font-size:11.5px;color:{{ acc }};text-decoration:underline;text-underline-offset:3px">Repository ↗</a>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px">
+<span style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;letter-spacing:0.14em;color:{{ t3 }};padding-bottom:2px">THIS DEVICE</span>
+<span style="font-size:11.5px;line-height:1.5;color:{{ t2 }};max-width:300px">Your saves and votes are stored in this browser only. No account, no sign-in, nothing synced between devices.</span>
+</div>
+<div style="margin-left:auto;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9.5px;line-height:1.6;color:{{ t3 }};text-align:right">
+<div>UPDATED 13 HOURS AGO</div>
+<div>{{ modeStamp }}</div>
+</div>
+</footer>
+
+<sc-if value="{{ overlay }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:{{ scrim }};backdrop-filter:blur(3px);display:flex;align-items:flex-start;justify-content:center;padding-top:64px">
+<dc-import name="Detail" mode="{{ mode }}" form="overlay" hint-size="1080px,780px"></dc-import>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1200},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;filtered&quot;,&quot;zero&quot;,&quot;saved&quot;,&quot;empty-saved&quot;,&quot;loading&quot;,&quot;end&quot;,&quot;reduced&quot;,&quot;failed&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;overlay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const PAL = {
+  dark: { canvas:'#0A0B0D', panel:'#101216', line:'rgba(255,255,255,0.11)', line2:'rgba(255,255,255,0.24)', t1:'#F1F2F4', t2:'#B2B8C2', t3:'#8E949F', acc:'#6FE3CC', accSoft:'rgba(111,227,204,0.13)', onAcc:'#06120F', fieldBg:'rgba(255,255,255,0.045)', railBg:'#0C0D11', headerBg:'rgba(10,11,13,0.92)', footerBg:'#0C0D11', filterBarBg:'rgba(255,255,255,0.03)', emptyBg:'rgba(255,255,255,0.02)', xBg:'rgba(255,255,255,0.13)', scrim:'rgba(4,5,8,0.74)', skel:'rgba(255,255,255,0.07)' },
+  light:{ canvas:'#F4F4F1', panel:'#FFFFFF', line:'rgba(16,18,22,0.13)', line2:'rgba(16,18,22,0.28)', t1:'#14161A', t2:'#4F545C', t3:'#666B74', acc:'#0E7062', accSoft:'rgba(14,112,98,0.09)', onAcc:'#FFFFFF', fieldBg:'#FFFFFF', railBg:'#EFEFEB', headerBg:'rgba(244,244,241,0.94)', footerBg:'#EFEFEB', filterBarBg:'#FFFFFF', emptyBg:'#FBFBF9', xBg:'rgba(16,18,22,0.10)', scrim:'rgba(24,26,30,0.52)', skel:'rgba(16,18,22,0.07)' }
+};
+const CATS = [['Accordions',6],['Arc Sliders',4],['Bottom Sheets',11],['Buttons',14],['Carousels',18],['Charts',7],['Circular Progress Bars',5],['Drop Down',1],['Full Apps',9],['Headers',8],['List',12],['Loaders',10],['Misc',148],['Onboarding',6],['Parallaxes',5],['Pickers',1],['Sliders',8],['Tab bars',4]];
+const PEOPLE = [['Enzo Manuel Mangano (Reactiive)',148],['Thomino',19],['William Candillon',11],['Daehyeon Mun (문대현)',7]];
+const E = [
+  {name:'Fluid Carousels', by:'William Candillon', cat:'Carousels', views:'1,426', v:1426, votes:0, hue:196},
+  {name:'Morphing Loader', by:'Daniel Friyia', cat:'Loaders', views:'1,385', v:1385, votes:3, hue:272},
+  {name:'Onboarding by Thomino', by:'Thomino', cat:'Onboarding', views:'1,272', v:1272, votes:2, hue:28},
+  {name:'Bottom Bar', by:'Thomino', cat:'Tab bars', views:'1,252', v:1252, votes:2, hue:150, runRepeat:true},
+  {name:'Parallax Carousel', by:'Arunabh Verma', cat:'Carousels', views:'1,132', v:1132, votes:3, hue:214},
+  {name:'Threads Holo Ticket', by:'Enzo Manuel Mangano (Reactiive)', cat:'Misc', views:'558', v:558, votes:3, hue:290, saved:true},
+  {name:'Bezier Curve Outline', by:'Enzo Manuel Mangano (Reactiive)', cat:'Misc', views:'43', v:43, votes:0, hue:172, isNew:true, runRepeat:true},
+  {name:'Wheel Picker', by:'Enzo Manuel Mangano (Reactiive)', cat:'Pickers', views:'1,079', v:1079, votes:0, hue:44, runRepeat:true, focused:true},
+  {name:"Airbnb's Search component", by:'Konstantinos Efkarpidis', cat:'Headers', views:'476', v:476, votes:4, hue:8},
+  {name:'Ripple Effect With React Native Skia', by:'Daehyeon Mun (문대현)', cat:'Misc', views:'316', v:316, votes:4, hue:186, isNew:true}
+];
+class Component extends DCLogic {
+  renderVals() {
+    const m = this.props.mode === 'light' ? 'light' : 'dark';
+    const p = PAL[m];
+    const v = this.props.variant || 'home';
+    const overlay = !!this.props.overlay;
+    const filtered = v === 'filtered' || v === 'zero';
+    const activeCat = filtered ? 'Misc' : (v === 'saved' || v === 'empty-saved' ? null : null);
+    const playCount = v === 'reduced' ? 0 : 5;
+    let list;
+    if (v === 'filtered') list = [E[5], E[6]].map((e, i) => Object.assign({}, e, { state: i < 2 ? 'playing' : 'paused', runRepeat: i === 1 }));
+    else if (v === 'saved') list = [E[5], E[0], E[9]].map((e, i) => Object.assign({}, e, { state: i < 3 ? 'playing' : 'paused', saved: true, runRepeat: false }));
+    else if (v === 'loading') list = E.map(e => Object.assign({}, e, { state: 'loading' }));
+    else if (v === 'end') list = [E[6], E[3], E[8]].map(e => Object.assign({}, e, { state: 'paused' }));
+    else if (v === 'reduced') list = E.map(e => Object.assign({}, e, { state: 'still' }));
+    else if (v === 'failed') list = E.map((e, i) => Object.assign({}, e, { state: i === 2 ? 'failed' : (i < playCount ? 'playing' : 'paused') }));
+    else list = E.map((e, i) => Object.assign({}, e, { state: i < playCount ? 'playing' : 'paused' }));
+    const heads = {
+      home:'Recent', filtered:'Misc, by one contributor', zero:'No matches', saved:'Saved on this device',
+      'empty-saved':'Saved on this device', loading:'Recent', end:'Recent', reduced:'Recent', failed:'Recent'
+    };
+    const results = {
+      home:'48 OF 277 · SORTED RECENT', filtered:'2 OF 277 · 3 FILTERS', zero:'0 OF 277 · 3 FILTERS',
+      saved:'3 SAVED · THIS BROWSER', 'empty-saved':'0 SAVED · THIS BROWSER', loading:'RESERVING SPACE FOR 48',
+      end:'277 OF 277 · SORTED RECENT', reduced:'48 OF 277 · STILLS ONLY', failed:'48 OF 277 · SORTED RECENT'
+    };
+    const isSavedView = v === 'saved' || v === 'empty-saved';
+    return Object.assign({}, p, {
+      mode: m, overlay, entries: list,
+      cats: CATS.map(([name, n]) => {
+        const on = name === activeCat;
+        return { name, n, bg: on ? p.accSoft : 'transparent', fg: on ? p.t1 : p.t2, num: on ? p.acc : p.t3, dot: on ? p.acc : (m === 'dark' ? 'rgba(255,255,255,0.16)' : 'rgba(16,18,22,0.16)'), ring: on ? '1px solid ' + p.acc : 'none' };
+      }),
+      people: PEOPLE.map(([name, n], i) => {
+        const on = filtered && i === 0;
+        return { name, n, bg: on ? p.accSoft : 'transparent', fg: on ? p.t1 : p.t2, num: on ? p.acc : p.t3, ring: on ? '1px solid ' + p.acc : 'none' };
+      }),
+      counterLine: '277 recordings · 24 contributors · updated 13h ago',
+      searchText: filtered ? (v === 'zero' ? 'wheel' : 'ticket') : 'Search 277 recordings',
+      searchColor: filtered ? p.t1 : p.t3,
+      searchBorder: filtered ? p.acc : p.line,
+      searchGlow: filtered ? '0 0 0 3px ' + p.accSoft : 'none',
+      query: v === 'zero' ? 'wheel' : 'ticket',
+      sortA: v === 'home' || v === 'loading' || v === 'end' || v === 'reduced' || v === 'failed' ? p.accSoft : 'transparent',
+      sortAFg: v === 'filtered' || v === 'zero' ? p.t3 : p.t1,
+      sortB: filtered ? p.accSoft : 'transparent',
+      sortBFg: filtered ? p.t1 : p.t3,
+      savedCount: isSavedView ? (v === 'saved' ? '3' : '0') : '3',
+      savedBg: isSavedView ? p.accSoft : 'transparent',
+      savedBorder: isSavedView ? p.acc : p.line,
+      savedFg: isSavedView ? p.t1 : p.t2,
+      modeToggle: m === 'dark' ? '◐ Dark' : '◑ Light',
+      modeStamp: m === 'dark' ? 'STUDIO DARK · #0A0B0D' : 'STUDIO LIGHT · #F4F4F1',
+      showHero: v === 'home' || v === 'loading' || v === 'reduced' || v === 'failed',
+      showFilters: filtered,
+      showGrid: v !== 'zero' && v !== 'empty-saved',
+      isZero: v === 'zero', isEmptySaved: v === 'empty-saved', isEnd: v === 'end',
+      showLoadMore: v === 'home' || v === 'reduced' || v === 'failed',
+      heading: heads[v] || 'Recent',
+      headSize: 17, resultLine: results[v] || '',
+      mainMinH: v === 'zero' || v === 'empty-saved' ? 620 : 400
+    });
+  }
+}
+</script>
+</body>
+</html>
