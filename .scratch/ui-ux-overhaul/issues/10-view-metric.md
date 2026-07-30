@@ -47,8 +47,11 @@ Taken here as: the playback owner exports the one counting function, and the ope
 source-link paths call it rather than the server action. That is also the only way the
 once-per-session cap has a single home.
 
-The in-view half of the metric already has a hook — `hooks/use-intersection-observer.ts` —
-whose `isInView` is destructured and never read at `components/interactive-video.tsx:46`.
+The in-view half of the metric has no hook to inherit. `hooks/use-intersection-observer.ts`
+was deleted by ticket 01 — its `isInView` was destructured and never read, and the Poster gate
+it was meant to serve is now the browser's own `loading="lazy"`. It would not have fitted
+anyway: `freezeOnceVisible: true` latches permanently, while this metric needs bidirectional
+in-view state owned by the playback owner (ticket 09), where the five concurrent slots live.
 
 ## Work
 
