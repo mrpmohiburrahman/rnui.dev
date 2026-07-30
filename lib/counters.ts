@@ -99,8 +99,6 @@ export function createCounters(store: CounterStore) {
   }
 }
 
-export type Counters = ReturnType<typeof createCounters>
-
 /**
  * A stand-in for the document store. `addTo` refuses an unknown Entry the way
  * Firestore's `updateDoc` does, because that refusal is the only reason the

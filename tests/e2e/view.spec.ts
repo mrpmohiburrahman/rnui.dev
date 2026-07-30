@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test"
 
-import { expectNoActionRepeated, recordServerActions } from "./server-actions"
+import {
+  expectNoActionRepeated,
+  expectOneEntryTargeted,
+  recordServerActions,
+} from "./server-actions"
 
 // Playing the Demo is the view; opening the Entry is not. Opening and dismissing
 // without watching is not a view of anything.
@@ -24,5 +28,6 @@ test("opening an Entry and playing its Demo records one view", async ({
   })
 
   expectNoActionRepeated(fired)
+  expectOneEntryTargeted(fired)
   expect(fired).toHaveLength(1) // the Demo played, once
 })

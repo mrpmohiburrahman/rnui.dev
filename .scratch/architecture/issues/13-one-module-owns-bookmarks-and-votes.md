@@ -72,8 +72,30 @@ The other three were dead in both files, so six exported functions became none.
 
 **Both keys live in the new module**, one exported constant each, so the comment
 recording what a rename destroys sits on the key rather than near it:
-`BOOKMARKS_KEY = "bookmarkedItems"`, `VOTED_ITEMS_KEY = "votedItems"`. Unchanged
-spellings.
+`BOOKMARKS_KEY = "bookmarkedItems"` and `VOTED_ENTRY_IDS_KEY = "votedItems"`. Stored
+spellings unchanged.
+
+The *constant* is `VOTED_ENTRY_IDS_KEY` and not `VOTED_ITEMS_KEY`, which is a review
+fix. `item` is on Entry's _Avoid_ list in `CONTEXT.md`, and ADR-0004 freezes the
+value in somebody's browser, not the identifier beside it — ticket 02 renamed the
+variables around this key and missed the key's own name. Moving it into a new module
+and importing it in a second file would have spread the avoided word rather than
+retired it.
+
+**A regression this introduced, caught in review and fixed.** The first version of
+`parseRememberedIds` wrote `} catch {` and the hook logged
+`❌ Error parsing "${storedKey}" from localStorage` with no error argument. Both old
+hooks logged the error itself. That quietly broke ticket 08's ticked criterion —
+"Every catch still reports its error" — since the reason a visitor's saved state
+failed to parse was being discarded. The function now returns the `cause` alongside
+`problem`, the hook passes it to `console.error`, and a test asserts it is the
+`SyntaxError`.
+
+Same review, same function: an empty string now counts as **absent** rather than
+unreadable. The first version reported it as a parse failure, but the hooks this
+replaced treated a falsy stored value as "nothing saved yet" and said nothing, so
+reporting it would have added an error to a path that used to be silent — which is
+the thing ticket 08 exists to prevent.
 
 **The pure pair.** `parseRememberedIds(raw)` returns
 `{ ids, problem: "not-an-array" | "unreadable" | null }`. The `problem` field is

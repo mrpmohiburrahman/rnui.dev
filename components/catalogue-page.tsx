@@ -17,7 +17,7 @@ import useModal from "@/hooks/use-modal"
 import {
   BOOKMARKS_KEY,
   useRememberedSet,
-  VOTED_ITEMS_KEY,
+  VOTED_ENTRY_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
 import CardModal from "@/components/card-modal"
@@ -47,7 +47,7 @@ export function CataloguePage({
   const { ids: bookmarks, toggle: toggleBookmark } =
     useRememberedSet(BOOKMARKS_KEY)
   const { ids: votedEntryIds, toggle: toggleVote } =
-    useRememberedSet(VOTED_ITEMS_KEY)
+    useRememberedSet(VOTED_ENTRY_IDS_KEY)
   const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
 
   const visible = useMemo(
@@ -91,5 +91,3 @@ export function CataloguePage({
     </>
   )
 }
-
-export default CataloguePage

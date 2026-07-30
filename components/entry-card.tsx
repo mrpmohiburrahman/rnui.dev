@@ -49,16 +49,19 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // additions reset rather than stacking on top of them. Adjusted during render
   // rather than from an effect: an effect paints the stale sum and corrects it on
   // the next tick, and react-hooks/set-state-in-effect rejects it outright.
-  const serverCounts = `${entry.view_count ?? 0}/${entry.vote_count ?? 0}`
-  const [countsSeen, setCountsSeen] = useState(serverCounts)
-  if (countsSeen !== serverCounts) {
-    setCountsSeen(serverCounts)
+  const views = entry.view_count ?? 0
+  const votes = entry.vote_count ?? 0
+  const [viewsSeen, setViewsSeen] = useState(views)
+  const [votesSeen, setVotesSeen] = useState(votes)
+  if (viewsSeen !== views || votesSeen !== votes) {
+    setViewsSeen(views)
+    setVotesSeen(votes)
     setViewsClicked(0)
     setVotesClicked(0)
   }
 
-  const viewCount = (entry.view_count ?? 0) + viewsClicked
-  const voteCount = Math.max((entry.vote_count ?? 0) + votesClicked, 0)
+  const viewCount = views + viewsClicked
+  const voteCount = Math.max(votes + votesClicked, 0)
 
   const incrementViewCountLocal = useCallback(async () => {
     try {

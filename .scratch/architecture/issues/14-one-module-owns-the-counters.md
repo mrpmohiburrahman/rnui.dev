@@ -88,11 +88,18 @@ a test that hands it a store whose `addTo` always throws. `changeVote` also swal
 and logs, which is what all three server actions did before; only `recordView` is
 *documented* as non-rejecting, because that is the criterion.
 
-Its callers were left alone. `entry-card.tsx` still wraps the call in a `try`/`catch`
-and `interactive-video.tsx` still writes `void incrementViewCount().catch(() => {})`.
-Both are now dead code. Deleting them is two lines and no risk, but it means editing
-the card surface ticket 10 just finished verifying, for no behaviour gain — so it is
-named here instead of done quietly.
+Its callers keep their handlers, and the first draft of this note had the reason
+wrong. It said `entry-card.tsx`'s `try`/`catch` and `interactive-video.tsx`'s
+`void incrementViewCount().catch(() => {})` were "now dead code". They are not.
+`incrementViewCount` is a **server action**: the client reaches it over HTTP, so the
+promise the client awaits can reject on a network failure, an aborted navigation or a
+500 — none of which the server-side contract can prevent, because none of them reach
+the server-side function. The contract is that `recordView` never rejects *in the
+server process*. The client handlers guard a different failure and stay.
+
+The criterion reads "so no caller needs its own handler", and that is satisfied for
+the reason the module gives: no caller needs a handler for a *counting* failure. A
+transport failure is not a counting failure.
 
 **One thing beyond the criteria.** The ticket observes that the fallback firing means
 writing to the *production* collection "a mistake nothing would report". It now

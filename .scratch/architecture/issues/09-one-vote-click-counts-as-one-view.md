@@ -70,6 +70,14 @@ from the imports.
 
 After: two requests, `407b0172…` once and `403db821…` once, on both routes.
 
+**The bodies are recorded too**, which the criterion asks for and the first version
+of the test skipped — it read only the `Next-Action` header, on the reasoning that
+the bodies cannot tell one action from another. True, but not what the criterion
+says, and the bodies answer a different question the headers cannot: that every
+action one click fires addresses the **same** Entry. `expectOneEntryTargeted` asserts
+one distinct body across the click and that it matches a single ULID, so a body Next
+never filled in cannot make it pass vacuously.
+
 **The first draft of the test passed against the bug.** It waited for the request
 count to stop growing, using `expect.poll`'s default intervals — 100ms then 250ms.
 Both reads landed before the second request arrived at 699ms, so the count looked

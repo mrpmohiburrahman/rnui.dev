@@ -4,6 +4,10 @@
 import React, { useEffect, useState } from "react"
 import type { Entry } from "@/data/entry"
 
+import {
+  BOOKMARKS_KEY,
+  parseRememberedIds,
+} from "@/hooks/use-remembered-set"
 import { CataloguePage } from "@/components/catalogue-page"
 import { Hero } from "@/components/hero"
 
@@ -22,6 +26,14 @@ const BookmarksPage = () => {
 
   useEffect(() => {
     ;(async () => {
+      // A one-shot read of the stored set, not a second copy of it: this answers
+      // only "has this visitor bookmarked anything at all", which cannot change
+      // while they are on a route that shows nothing but bookmarks. Skipping the
+      // fetch when the answer is no is what the pre-collapse route did, and
+      // fetching all 277 Entries to then show none of them was a real cost.
+      const { ids } = parseRememberedIds(localStorage.getItem(BOOKMARKS_KEY))
+      if (ids.length === 0) return
+
       try {
         setEntries(await getEntries())
       } catch (error) {
