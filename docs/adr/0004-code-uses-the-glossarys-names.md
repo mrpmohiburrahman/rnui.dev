@@ -1,6 +1,6 @@
 # Code uses the glossary's names
 
-`CONTEXT.md` names the four load-bearing concepts Entry, Demo, Poster and Asset path, and lists `item`, `video`, `thumbnail` and `src` under *avoid* — yet the code called them `ItemType`, `videoSrc` and `thumbnailSrc`, so every one of its identifiers was on its own avoid list. We are renaming in code to match the glossary (`ItemType` → `Entry`, `videoSrc` → `demoPath`, `thumbnailSrc` → `posterPath`, and the `Resource*`/`Product*` component and variable names alongside them), because this repo is read by agents at least as often as by people — `codex-ingest`, `codex-review-pr` and the `docs/agents/` skills all read it cold — and a reader who learns the vocabulary from `CONTEXT.md` and then opens `data/items.ts` currently learns it twice.
+`CONTEXT.md` names the four load-bearing concepts Entry, Demo, Poster and Asset path, and lists `item`, `video`, `thumbnail` and `src` under *avoid* — yet the code called them `ItemType`, `videoSrc` and `thumbnailSrc`, so every one of its identifiers was on its own avoid list. We are renaming in code to match the glossary (`ItemType` → `Entry`, `videoSrc` → `demoPath`, `thumbnailSrc` → `posterPath`, and the `Resource*`/`Product*` component and variable names alongside them), because this repo is read by agents at least as often as by people — the `docs/agents/` skills read it cold, as did two ingest scripts since deleted (ADR-0006) — and a reader who learns the vocabulary from `CONTEXT.md` and then opens `data/items.ts` currently learns it twice.
 
 ## Considered options
 

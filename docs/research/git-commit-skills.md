@@ -130,7 +130,7 @@ Marketplaces checked and found **not** to contain a commit skill:
 - **Confirmed active globally:** `git config --global core.hooksPath` → `/Users/mrp/.config/git/hooks`, and `/Users/mrp/.config/git/hooks/commit-msg` is the skill's 2.6K hook (verified by reading its header). Every existing and future repo on this machine inherits it.
 - **Confirmed active at the source too:** `/Users/mrp/.claude/settings.json` contains `"attribution": {"commit": "", "pr": "", "sessionUrl": false}` — Claude Code stops emitting attribution before a hook ever has to catch it.
 - Four layers per the SKILL.md: (a) `.claude/settings.json` suppression, (b) `.githooks/commit-msg` rejection, (c) `core.hooksPath` for distribution, (d) a CI workflow as the only un-bypassable layer.
-- Covers Claude, Copilot, Cursor, Aider, Codex, Windsurf, Codeium, Devin, Jules, Gemini, CommandCode, Hermes — matching bot **emails** precisely and product **names** only in the trailer's name position, so `CLAUDE.md`, `@anthropic-ai/sdk`, model ids and human coauthors on agent-ish domains are false-positive-safe.
+- Covers Claude, Copilot, Cursor, Aider, Windsurf, Codeium, Devin, Jules, Gemini, CommandCode, Hermes — matching bot **emails** precisely and product **names** only in the trailer's name position, so `CLAUDE.md`, `@anthropic-ai/sdk`, model ids and human coauthors on agent-ish domains are false-positive-safe. (The skill ships one more agent in that list; this repo's copies drop it — see `docs/adr/0006`.)
 - The installer is idempotent and self-verifies (asserts the hook blocks a trailer and allows a clean message) before reporting success.
 
 ### B3. This repo's four-layer commit guard (commit `30aa29b`)
