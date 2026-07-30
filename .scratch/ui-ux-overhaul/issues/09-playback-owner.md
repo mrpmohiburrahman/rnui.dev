@@ -1,6 +1,7 @@
 # 09 — One owner for playback: autoplay in view, five at a time
 
 Status: ready-for-agent
+Blocked by: 01, 08
 
 Decisions 3 and 15 (`.scratch/ui-ux-overhaul/spec.md:22`, `:34`) and
 `docs/adr/0007-a-view-is-a-recording-watched-not-a-button-pressed.md`.
@@ -319,6 +320,10 @@ Three tickets, all of them hard:
   `createPlayedWatcher` and `countedThisSession` from it and implements neither. That module is
   pure — no React, no Firebase — and ticket 10's own "Depends on" says its step 1 can land before
   this ticket, so the two are not circular even though 10's steps 2-4 wait on this one.
+
+  **The `Blocked by:` line deliberately omits 10, to keep the frontier scan from deadlocking.**
+  If `lib/view-signal.ts` does not exist when this ticket starts, write it here from ticket 10
+  step 1 and say so in this file's `## Comments`. Ticket 10 then skips its step 1.
 
 One ordering to know about:
 

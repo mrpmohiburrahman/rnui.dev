@@ -1,6 +1,7 @@
 # 11 — Make filters compose, put sort in the URL, fix the mobile drawer
 
 Status: ready-for-agent
+Blocked by: 02
 
 Decision 10, plus the two fixes at `spec.md:86-91`.
 

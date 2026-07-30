@@ -1,6 +1,7 @@
 # 02 — Render 48 Entries, then Load more; strip the grid motion
 
 Status: ready-for-agent
+Blocked by: 04
 
 Decisions 6 and 16.
 
