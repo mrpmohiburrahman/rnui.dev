@@ -6,8 +6,4 @@ module.exports = {
   // is where a crawler ends up either way.
   siteUrl: process.env.SITE_URL || "https://www.rnui.dev",
   generateRobotsTxt: true, // (optional)
-  // /search is an orphan: nothing in the tree links to it, and the API it posts to
-  // answers 503 in production, so every search on it fails. Listing it aimed
-  // crawlers at a page that cannot do the one thing it exists for.
-  exclude: ["/search"],
 }

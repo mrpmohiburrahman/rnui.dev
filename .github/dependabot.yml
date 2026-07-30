@@ -12,11 +12,6 @@ updates:
           - "next"
           - "react"
           - "react-dom"
-      ai:
-        patterns:
-          - "ai"
-          - "@ai-sdk/*"
-          - "openai"
       radix:
         patterns:
           - "@radix-ui/*"

@@ -1,0 +1,15 @@
+# Search does not ship, and the Codex layer goes with it
+
+Three OpenAI-backed tools lived in this repo — an ingest script that turned a GitHub URL into a catalogue PR, a workflow that reviewed every PR, and an embedding index behind a `/search` page. They were written as the substance of an application to the OpenAI Codex for OSS grant. That grant is not being pursued, which settles the question `lib/codex/entries.ts` and `.scratch/architecture/NEXT.md` both parked as a product decision rather than an architectural one: search does not ship, so the second catalogue merge that existed only to feed it is deleted rather than merged into `data/catalogue.ts`.
+
+Nothing was lost by deleting the search path, because none of it ever worked in production. `data/embeddings.json` is gitignored and was never generated, no `OPENAI_API_KEY` was ever provisioned, and `POST /api/search` answered 503 to every request the `/search` page made. Nothing in the tree linked to that page. The catalogue's own search box is unaffected: it runs `matchesSearchTerm` in `lib/entry-search.ts`, which needs no index, no key and no network — and which two independent measurements found *beat* embedding search on a corpus this small, where the whole searchable text is under thirteen thousand characters and most captions are one or two words.
+
+The ingest and review tools are deleted on the same reasoning: they automated an intake path that has produced three external commits in the project's lifetime, and each one was a scheduled API bill and a rotating secret in exchange.
+
+## Consequences
+
+- `tests/data-integrity.test.ts` loses the case that pinned the two catalogue merges to each other (ticket 07). It was not weakened, it was made unnecessary — there is one merge now, and the surviving case still asserts every Category's Entries reach it.
+- The `ai`, `@ai-sdk/*` and `ts-morph` dependencies leave with the scripts that imported them. Ticket 06 kept `ts-morph` explicitly because `scripts/codex-ingest.ts` used it; that reason is gone.
+- `.scratch/`, `artifacts/` and the earlier ADRs still describe the Codex layer as present. They are dated records of what was true when written, not instructions, and are deliberately left alone — `artifacts/rnui-architecture.html` in particular still presents it as live architecture.
+- The `codex-grant-prep` branch and the open dependabot PR against the `ai` dependency group both survive this commit. Deleting a published branch and closing someone's PR are the maintainer's calls, not a refactor's.
+- If natural-language search is ever wanted again, it starts from `lib/entry-search.ts` and a measurement, not from an embedding index. The measurement that argued against embeddings is recorded in that file's header.

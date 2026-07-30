@@ -2,34 +2,19 @@
 
 Thanks for helping the React Native UI ecosystem stay discoverable.
 
-## Three ways to contribute
+## Two ways to contribute
 
 ### 1. Suggest an entry (easiest)
 
-Open an issue using the **Animation Submission** template. Provide the GitHub repo URL, Expo Snack, or gist. A maintainer — or the automated Codex ingest workflow (coming soon) — will turn it into a PR.
+Open an issue using the **Animation Submission** template. Provide the GitHub repo URL, Expo Snack, or gist. A maintainer will turn it into a PR.
 
-### 2. Submit a PR via `pnpm codex:ingest` (coming soon)
-
-```bash
-pnpm codex:ingest -- https://github.com/<author>/<repo>
-```
-
-This pipeline (planned, see [ROADMAP.md](./ROADMAP.md)):
-
-1. Fetches the source.
-2. Calls OpenAI to extract `{ id, title, author, category, description, tags, repoUrl }`.
-3. Validates against the catalog schema.
-4. Prints where the Demo must be dropped, and the commands that turn it into a
-   published Entry — it does not fetch or encode any media itself.
-5. Opens a PR on a branch named `submission/<slug>`.
-
-### 3. Manual entry
+### 2. Manual entry
 
 1. Fork and branch.
 2. Add your entry to the correct file in `data/` — one file per UI category (`buttons.ts`, `carousels.ts`, `sliders.ts`, etc.).
 3. Required fields: `id` (unique kebab-case slug), `title`, `author`, `repoUrl`, `category`, `description`, `tags`.
 4. Run `pnpm check-types` and `pnpm lint`.
-5. Open a PR. The Codex triage workflow (coming soon) will leave an automated review within a minute.
+5. Open a PR.
 
 ## Never commit binary Assets
 
