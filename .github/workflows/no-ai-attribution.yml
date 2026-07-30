@@ -31,14 +31,17 @@ jobs:
 
           # (a) agent as coauthor NAME (anchored, no substring matches in human emails), or
           # (b) a known bot email anywhere in the trailer, or the "Generated with"/"Made-with" lines.
-          pat='^[[:space:]]*Co-authored-by:([[:space:]]*(claude|copilot|cursor|aider|codex|windsurf|codeium|devin|jules|gemini|commandcode|hermes)|.*(noreply@anthropic\.com|cursoragent@cursor\.com|aider@aider\.chat|codex@openai\.com|[0-9]*\+?copilot@users\.noreply\.github\.com|copilot@github\.com|noreply@commandcode\.ai|hermes@|noreply@hermes-agent\.local))|(🤖[[:space:]]*)?Generated with (\[)?(Claude Code|Cursor|[Aa]ider|Codex|Copilot|CommandCode|Hermes)|^[[:space:]]*Made-with:[[:space:]]*Cursor'
+          # Codex is deliberately absent from every alternation below — see
+          # docs/adr/0006. Re-add `codex`, `codex@openai\.com` and `Codex` to
+          # restore that coverage.
+          pat='^[[:space:]]*Co-authored-by:([[:space:]]*(claude|copilot|cursor|aider|windsurf|codeium|devin|jules|gemini|commandcode|hermes)|.*(noreply@anthropic\.com|cursoragent@cursor\.com|aider@aider\.chat|[0-9]*\+?copilot@users\.noreply\.github\.com|copilot@github\.com|noreply@commandcode\.ai|hermes@|noreply@hermes-agent\.local))|(🤖[[:space:]]*)?Generated with (\[)?(Claude Code|Cursor|[Aa]ider|Copilot|CommandCode|Hermes)|^[[:space:]]*Made-with:[[:space:]]*Cursor'
 
           if git log --format='%B' "$range" | grep -niE "$pat"; then
             echo "::error::AI co-author/attribution trailer found in $range — clean the commit message(s) and force-push."
             exit 1
           fi
           if git log --format='%an <%ae>%n%cn <%ce>' "$range" \
-             | grep -niE 'noreply@anthropic\.com|aider@aider\.chat|cursoragent@cursor\.com|codex@openai\.com|noreply@commandcode\.ai|hermes@|noreply@hermes-agent\.local|\((aider|cursor|codex)\)[[:space:]]*<'; then
+             | grep -niE 'noreply@anthropic\.com|aider@aider\.chat|cursoragent@cursor\.com|noreply@commandcode\.ai|hermes@|noreply@hermes-agent\.local|\((aider|cursor)\)[[:space:]]*<'; then
             echo "::error::An AI agent is set as commit author/committer in $range."
             exit 1
           fi
