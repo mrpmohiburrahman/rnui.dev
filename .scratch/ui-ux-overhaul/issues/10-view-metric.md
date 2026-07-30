@@ -1,6 +1,7 @@
 # 10 — Count a view the way ADR 0007 defines it
 
 Status: ready-for-agent
+Blocked by: 09
 
 Decision 7 (`.scratch/ui-ux-overhaul/spec.md:26`) and
 `docs/adr/0007-a-view-is-a-recording-watched-not-a-button-pressed.md`.

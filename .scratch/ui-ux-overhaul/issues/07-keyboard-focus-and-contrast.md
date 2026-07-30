@@ -1,6 +1,7 @@
 # 07 — Make the catalogue usable by keyboard, and fix the contrast failures
 
 Status: ready-for-agent
+Blocked by: 08
 
 From `spec.md:93` ("Cards become keyboard-reachable, focus states become visible"), under
 decision 1's freeze (`spec.md:20`).

@@ -140,6 +140,22 @@ these are the ones worth knowing about because they change what the work is:
   60 across the rest — 2.9× the rate, but a small absolute number.
 - Minor: the server intersects filters at `get-entries.ts:54-72`; sort state is `use-sorted-data.ts:8`.
 
+## Checkpoints
+
+Points where an implementing session stops and hands back, rather than taking the next ticket.
+Everywhere else, keep going.
+
+- **After 01, 02 and 03 are all `resolved`** — re-run Lighthouse against a production build and
+  compare to the measured baseline above. These three carry most of the expected win; if the
+  numbers have not moved, the rest of the plan is built on a wrong diagnosis and should be
+  re-examined before more of it lands.
+- **After 08 is `resolved`** — the overlay needs looking at on a 1440px viewport before 07 and 09
+  build on it. The motion brief flags one open risk: `scale(0.98)` on a `max-w-3xl` panel is about
+  15px of growth, which may read as too much. The fix if so is `0.99`, or dropping the scale.
+- **Before any of this deploys** — `.scratch/posthog-expansion/issues/09` steps 2 to 4. The
+  pre-change baseline is already frozen in that file, but the dashboard and the agreed success
+  criteria have to exist before the boundary, not after it.
+
 ## Open
 
 - Ticket 09's Poster-lazying overlaps ticket 01's. Being resolved so 09 builds on 01 rather than

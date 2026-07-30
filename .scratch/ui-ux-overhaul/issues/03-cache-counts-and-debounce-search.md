@@ -1,6 +1,7 @@
 # 03 — Cache the counts, debounce the search, server-render the timestamp
 
 Status: ready-for-agent
+Blocked by: 04
 
 ## Problem
 

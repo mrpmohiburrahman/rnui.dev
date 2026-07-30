@@ -1,6 +1,7 @@
 # 12 — Add the missing nav link, the missing empty states, and fix two layout bugs
 
 Status: ready-for-agent
+Blocked by: 02
 
 Decision 13 (`spec.md:32`) and the two sanctioned layout bugs (`spec.md:98`). Four small,
 independent changes in four files.
