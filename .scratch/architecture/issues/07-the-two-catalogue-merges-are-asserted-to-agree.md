@@ -72,3 +72,12 @@ drifting between `resolved` (thirteen of them) and `done` (ticket 06). The table
 now records `resolved` as the terminal state and ticket 06 is corrected to match.
 
 Gates: `pnpm check-types` and `pnpm test` (74 passed, was 73) both pass.
+
+**2026-07-30 — the assertion is deleted, and so is what it guarded.** This ticket
+pinned the two merges together *because* the search decision was still open. It is
+now closed the other way: search does not ship, `lib/codex/entries.ts` is deleted,
+and one merge remains in `data/catalogue.ts`. The `the search merge holds exactly
+the Entries the catalogue does` case went with the module it compared against — it
+was made unnecessary rather than weakened, and the sibling per-Category case that
+shares its `merged` set still asserts every Category's Entries reach the catalogue.
+See [ADR-0006](../../../docs/adr/0006-search-does-not-ship-and-the-codex-layer-goes-with-it.md).

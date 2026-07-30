@@ -45,22 +45,10 @@ export default function OgImage() {
               lineHeight: 1.5,
             }}
           >
-            343+ animations across Reanimated, Skia, Moti, Gesture Handler, and Lottie. AI-assisted contributions powered by OpenAI Codex.
+            343+ animations across Reanimated, Skia, Moti, Gesture Handler, and Lottie.
           </div>
         </div>
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
-          <div
-            style={{
-              background: "#38bdf8",
-              color: "#0f172a",
-              fontSize: "20px",
-              fontWeight: 700,
-              padding: "12px 28px",
-              borderRadius: "8px",
-            }}
-          >
-            Powered by OpenAI Codex
-          </div>
           <div style={{ color: "#475569", fontSize: "20px" }}>github.com/mrpmohiburrahman/rnui.dev</div>
         </div>
       </div>

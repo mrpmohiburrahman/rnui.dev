@@ -8,7 +8,6 @@
   "total_commits": 237,
   "maintainer_commits": 234,
   "maintainer_commit_pct": 98.7,
-  "codex_triaged_prs": 0,
   "contributors": [
     { "login": "mrpmohiburrahman", "contributions": 234 },
     { "login": "lklima", "contributions": 2 },

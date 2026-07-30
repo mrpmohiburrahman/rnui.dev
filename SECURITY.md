@@ -20,7 +20,6 @@ Please do **not** open public issues for security vulnerabilities.
 
 - The Next.js site at `rnui.dev`.
 - The data ingestion / thumbnail scripts in `scripts/`.
-- The Codex-triage GitHub Action (once landed).
 
 ## Out of scope
 

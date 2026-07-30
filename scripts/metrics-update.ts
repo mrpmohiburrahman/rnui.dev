@@ -28,13 +28,6 @@ const contributors: Array<{ login: string; contributions: number }> = JSON.parse
 const totalCommits = parseInt(run("git log --oneline | wc -l"), 10);
 const maintainerCommits = parseInt(run("git log --author=mrpmohiburrahman --oneline | wc -l"), 10);
 
-const codexTriagedPrs = parseInt(
-  run(
-    `gh api "repos/${repo}/issues?state=all&labels=codex-triage&per_page=100" --jq 'length'`,
-  ),
-  10,
-);
-
 const metrics = {
   generated_at: new Date().toISOString().slice(0, 10),
   repo,
@@ -45,7 +38,6 @@ const metrics = {
   total_commits: totalCommits,
   maintainer_commits: maintainerCommits,
   maintainer_commit_pct: Math.round((maintainerCommits / totalCommits) * 1000) / 10,
-  codex_triaged_prs: codexTriagedPrs,
   contributors,
 };
 

@@ -93,3 +93,8 @@ this session made (`f6d2e27`, `022400c`) sit adjacent in the reflog with no
 Gates: `pnpm check-types`, `pnpm test` (73 passed) and `pnpm build` all pass.
 `public/sitemap-0.xml` churns on every build because `next-sitemap` restamps
 `lastmod`; that churn was reverted rather than committed.
+
+**2026-07-30 — the one dependency this ticket kept is gone.** `ts-morph` was held
+back here because `scripts/codex-ingest.ts:23` imported it. That script is deleted
+along with the rest of the Codex layer, so `ts-morph` left with it, as did `ai` and
+`@ai-sdk/*`. See [ADR-0006](../../../docs/adr/0006-search-does-not-ship-and-the-codex-layer-goes-with-it.md).

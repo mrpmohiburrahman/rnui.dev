@@ -146,3 +146,9 @@ up the corrected host on its own.
 
 Verified: `pnpm check-types`, `pnpm lint` (0 errors), `pnpm test` (160 passed, up from
 93), `pnpm build`, `pnpm exec playwright test` (7 passed).
+
+**2026-07-30 — the three dead search modules this ticket left alone are deleted.**
+So is the `/search` page they served, so the sitemap `exclude` that pointed at it
+has gone too: there is no such route to exclude. `matchesSearchTerm` is untouched
+and is now the only search in the repo. See
+[ADR-0006](../../../docs/adr/0006-search-does-not-ship-and-the-codex-layer-goes-with-it.md).

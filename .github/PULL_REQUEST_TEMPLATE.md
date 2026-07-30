@@ -8,7 +8,6 @@
 - [ ] Bug fix
 - [ ] Documentation
 - [ ] Tooling / CI
-- [ ] Codex integration
 
 ## Checklist
 
@@ -19,6 +18,5 @@
       Asset paths are the ones `lib/asset-path.ts` derives — no binary files
 - [ ] If adding an entry, the maintainer publishing it: Demo dropped in Staging,
       `pnpm posters:generate`, `pnpm check:videos`, `pnpm assets:publish`
-- [ ] If touching Codex scripts: dry-run output included in PR description
 
 ## Screenshots (if UI change)

@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, codex-grant-prep]
+    branches: [main]
   pull_request:
     branches: [main]
 
