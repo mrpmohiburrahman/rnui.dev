@@ -47,21 +47,18 @@ export function NavSidebar({ authors, categories }: NavSidebarProps) {
         </div>
       </aside>
 
-      {/* Mobile Header and Sheet */}
-      <div
-        className="flex flex-col gap-4 pb-2 px-2"
-        style={{
-          // borderWidth: 1,
-          borderColor: "black",
-          position: "absolute",
-          top: 10,
-        }}
-      >
-        <header
-          className={
-            "sticky top-0 z-30 flex h-10 mx-1 rounded-b-lg items-center gap-4 bg-background dark:bg-[#1E1E1E] sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
-          }
-        >
+      {/* Mobile Header and Sheet.
+          `fixed`, not `absolute`: no ancestor is positioned, so an absolute
+          wrapper's containing block was the initial one — anchored to the
+          document, so the only route to Categories on a phone left the screen
+          after 10px of scroll. With `left` unset, `fixed` resolves to the same
+          static position, so at scroll 0 the trigger paints where it always did.
+          The `sticky top-0 z-30` on the header below could not have helped: its
+          containing block was this wrapper, whose height is the header's own, so
+          the sticky range was zero. `z-30` moves up here, leaving paint order
+          unchanged. */}
+      <div className="fixed top-[10px] z-30 flex flex-col gap-4 pb-2 px-2">
+        <header className="flex h-10 mx-1 rounded-b-lg items-center gap-4 bg-background dark:bg-[#1E1E1E] sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           {/* Mobile Menu Trigger */}
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
@@ -85,8 +82,11 @@ export function NavSidebar({ authors, categories }: NavSidebarProps) {
               <nav className="flex flex-col justify-between h-full">
                 {/* Navigation Links */}
                 <div className="flex flex-col items-start gap-4 px-2 py-1">
+                  {/* `authors` too, matching the desktop call above: the author
+                      facet used to be desktop-only. */}
                   <CatalogueNav
                     categories={categories}
+                    authors={authors}
                     handleLinkClick={handleLinkClick}
                   />
                   <div className="my-4 space-y-3">

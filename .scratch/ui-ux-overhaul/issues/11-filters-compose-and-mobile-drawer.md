@@ -1,6 +1,6 @@
 # 11 — Make filters compose, put sort in the URL, fix the mobile drawer
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 02
 
 Decision 10, plus the two fixes at `spec.md:86-91`.
@@ -211,3 +211,72 @@ the admin branches from `nav-side-bar.tsx` and the Tags/Labels blocks from `cata
 so whichever lands second should anchor on the code quoted above rather than the line numbers.
 Ticket 02 introduces the `page` param that step 1 clears and step 4 preserves; both are no-ops
 until it lands.
+
+## Comments
+
+Resolved. Steps 1, 2, 4, 7, 8, 9 and 11 landed as written; 3, 5 and 6 were already no-ops.
+
+**Step 3 — no-op.** Ticket 05 had already deleted the Tags and Labels blocks, so there was one
+spelling of a facet href to change, not three.
+
+**Step 5 — no-op.** `pnpm build` reports no missing-suspense error and `/bookmarks` is still
+prerendered (`○`). Ticket 02 had already put the boundary at `bookmarks/page.tsx:61`, and it
+covers `useSortedData`'s new `useSearchParams` as well as the grid's.
+
+**Step 10 — measured, nothing changed.** With the drawer open at 390×844 the ScrollArea viewport
+renders at top 80, height 524, bottom 604, `scrollHeight` 1,464 over 24 author rows, inside a
+panel whose bottom is 844. So 240px of slack sits below the box that could be cut.
+
+The measurement was taken in headless Chromium, which has no URL bar — so it does not reproduce
+the `100vh`-is-the-large-viewport condition directly, and the argument is arithmetic rather than
+observation. It is still decisive: the drawer is `fixed inset-y-0 h-full`, so a URL bar shortens
+the *panel* while `100vh` holds the ScrollArea's height at 524. The box would only be cut once
+the visible panel fell below its bottom edge of 604 — a URL bar taller than 240px. An iPhone's
+is about 99px. `catalogue-nav.tsx` keeps `h-[calc(100vh-320px)]`; the 320px reserve absorbs it.
+
+What the URL bar does eat is the 240px below the ScrollArea, which holds the Subscribe/Bookmarks
+/Home links and the mode toggle — those compress, the facet list does not. Worth a look on a real
+phone, but it is not defect (d).
+
+**Screenshot parity, measured rather than eyeballed.** The only pixel-risky change is step 7's
+`position: absolute; top: 10` → `fixed top-[10px]`. Measured at scroll 0 on `/products` at 390,
+768 and 1440, with the step-7/8 hunk stashed and unstashed:
+
+| | trigger | header | wrapper | body height |
+|---|---|---|---|---|
+| 390 before / after | `12,12,56,36` | `12,10,56,40` | `0,10,80,48` | 37,982 |
+| 768 before / after | not rendered | `12,10,48,0` | `0,10,72,8` | 10,596 |
+| 1440 before / after | not rendered | `12,10,48,0` | `0,10,72,8` | 6,901 |
+
+Every box identical. The only difference is which element carries `z-30` — it moves from the
+header to the wrapper, which is its ancestor, so paint order is unchanged.
+
+**Open question 1 — already decided.** `spec.md` decision 20 is "Clicking an active filter clears
+it. New behaviour, no pixels changed." The ticket's own uncertainty predates it. Implemented and
+pinned by a test.
+
+**Open question 2 — still open, for the maintainer.** From 10px of scroll the trigger now floats
+over the grid on a phone. That is what decision 10 asks for; what it overlaps still wants one
+look at 390px.
+
+**One observation, deliberately not acted on.** On `≥sm` the wrapper is now a permanently fixed
+72×8px transparent box at the viewport's top-left, where before it scrolled away — its only
+visible child is `sm:hidden`, so it paints nothing either way. At scroll 0 it was already there,
+and the desktop aside is itself `fixed`, so nothing new is covered at any scroll position; the
+aside's content is vertically centred and nothing renders in that band. `sm:hidden` on the wrapper
+would delete the question for one class and no pixels, but step 7 spells the className out and the
+spec is frozen. Maintainer's call.
+
+**One test changed.** `tests/e2e/search.spec.ts:111` asserted `/products?category=Onboarding` after
+a facet click from a search — the old behaviour, which dropped the term. It now asserts the term
+survives, which is what this ticket exists to do.
+
+**Not acted on: four spellings of one query-string edit.** "Copy the query, set or delete one key,
+decide about `page`, serialise" now lives in `catalogue-search.tsx:24-32`, `entry-card-grid.tsx
+:72-74`, `facetHref` and `setSort`, and the `page` rule differs between them by design. A shared
+helper is the obvious tidy, but all four are prescribed verbatim by tickets 02, 03 and this one.
+Worth a follow-up ticket rather than a deviation.
+
+**Verified:** `pnpm check-types`, `pnpm lint` (0 errors), `pnpm test` (166), `pnpm exec playwright
+test` (60, including the 8 new ones), `pnpm build`, and all 18 legacy paths still redirecting to
+`/products?category=…` against a production server.
