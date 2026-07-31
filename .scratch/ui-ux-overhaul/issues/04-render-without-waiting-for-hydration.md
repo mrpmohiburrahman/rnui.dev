@@ -144,6 +144,13 @@ that genuinely suspends, on `useSearchParams` in `components/nav/nav-side-bar.ts
 ships inside `<div hidden id="S:0">` and stays invisible without JavaScript. Acceptance bullet 4 names
 the catalogue and passes, but the page is not whole without scripts. Nav belongs to ticket 12.
 
+> **Retracted — see ticket 14, which fixes it.** Two things above are wrong. The defect is worse
+> than "stays invisible": the fallback string `Loading sidebar...` is *painted*, on all eleven
+> prerendered routes, and stays there. And deferring it to ticket 12 was justified by the claim that
+> ticket 11 would reintroduce `useSearchParams` during render anyway — it does not; ticket 11
+> consumes the `searchParams` **prop** that `catalogue-nav.tsx:19` already declares. Ticket 14 moves
+> the hook down to the one component that needs it and deletes the layout boundary.
+
 **Two notes for whoever works here next.** Turbopack's incremental cache served stale output twice
 during this ticket — a change to a `motion` prop compiled in 3.8s and did not reach the HTML.
 `rm -rf .next` before believing a negative result. And `pnpm build` rewrites `public/sitemap-0.xml`

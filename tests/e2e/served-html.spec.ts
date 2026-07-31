@@ -78,6 +78,42 @@ test("/ is readable with JavaScript turned off", async ({ browser }) => {
   await context.close()
 })
 
+// The sidebar's own half of the same defect. `useSearchParams()` used to be
+// called in nav-side-bar.tsx, which opted every ancestor out of prerendering and
+// left the root layout's fallback — the literal words "Loading sidebar..." — as
+// what eleven prerendered routes served in place of a sidebar.
+for (const route of [...ROUTES, "/aboutus"]) {
+  test(`${route} serves a real sidebar, not a loading string`, async ({
+    request,
+  }) => {
+    const html = await (await request.get(route)).text()
+
+    expect(html).not.toContain("Loading sidebar")
+
+    // Present, and present *early* — before any `<div hidden>` React uses to
+    // stream a suspended boundary. An `<aside>` that only appears after one is
+    // the bug, not the fix.
+    const aside = html.indexOf("<aside")
+    const hidden = html.indexOf('<div hidden id="S:')
+    expect(aside).toBeGreaterThan(-1)
+    if (hidden !== -1) expect(aside).toBeLessThan(hidden)
+
+    // And it carries usable links, not just a shell.
+    const categoryLinks = html.match(/href="\/products\?category=/g) ?? []
+    expect(categoryLinks.length).toBeGreaterThan(10)
+  })
+}
+
+// The read has to stay during render, not move to an effect: ticket 11 builds
+// each href from the current query so filters compose, and an href computed
+// after mount is already wrong in the document that was served.
+test("the active filter is highlighted in the served HTML, not after hydration", async ({
+  request,
+}) => {
+  const html = await (await request.get("/products?category=Buttons")).text()
+  expect(html).toContain("bg-yellow-400")
+})
+
 test("/bookmarks never shows more than the bookmarked Entries, at any frame", async ({
   browser,
 }) => {
