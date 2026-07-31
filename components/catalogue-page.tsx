@@ -50,22 +50,18 @@ export function CataloguePage({
     useRememberedSet(VOTED_ENTRY_IDS_KEY)
   const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
 
+  // A set that has not been read yet means "nothing remembered so far", not
+  // "everything". The distinction never used to matter: a hydration guard used to
+  // sit under this memo and return before any of it was read. Once that went, a
+  // null set on the bookmarks route fell through to the whole catalogue.
   const visible = useMemo(
     () =>
-      bookmarkedOnly && bookmarks
-        ? entries.filter((entry) => bookmarks.includes(entry.id))
+      bookmarkedOnly
+        ? entries.filter((entry) => bookmarks?.includes(entry.id) ?? false)
         : entries,
     [bookmarkedOnly, bookmarks, entries]
   )
   const { sortedData, sort, setSort } = useSortedData(visible)
-
-  // Both stored sets read localStorage in an effect, so on the first client render
-  // they are still null and no card can know whether it is bookmarked or voted.
-  // Rendering nothing for that one frame is the placeholder; it was written three
-  // times before this module existed.
-  if (bookmarks === null || votedEntryIds === null) {
-    return <div />
-  }
 
   return (
     <>
@@ -73,9 +69,15 @@ export function CataloguePage({
         sortedData={sortedData}
         treatment={treatment}
         openModal={openModal}
-        bookmarks={bookmarks}
+        // Both stored sets are still null until an effect has read localStorage.
+        // `[]` rather than a placeholder render: the server and the first client
+        // render both see an empty set, so there is no hydration mismatch, and the
+        // effect fills it on the next render. Waiting instead meant the served HTML
+        // of every catalogue route was a bare `<div />` — no heading, no sort
+        // controls, no Entries.
+        bookmarks={bookmarks ?? []}
         toggleBookmark={toggleBookmark}
-        votedEntryIds={votedEntryIds}
+        votedEntryIds={votedEntryIds ?? []}
         toggleVote={toggleVote}
         setSort={setSort}
         currentSort={sort}

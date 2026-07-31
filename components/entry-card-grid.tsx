@@ -1,7 +1,7 @@
 // components/entry-card-grid.tsx
 "use client"
 
-import { Suspense, useState } from "react"
+import { useState } from "react"
 import type { Entry } from "@/data/entry"
 
 import { cn } from "@/lib/utils"
@@ -192,24 +192,29 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
             : "bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
         )}
       >
-        <Suspense fallback={<div>Loading...</div>}>
-          <div className="relative">
-            {/* Adjusted Grid Columns for Smaller Portrait Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {sortedData?.map((entry, index) => (
-                <EntryCard
-                  key={`${index}-${entry.id}`}
-                  entry={entry}
-                  onClick={openModal}
-                  isBookmarked={bookmarks.includes(entry.id)}
-                  toggleBookmark={toggleBookmark}
-                  isVoted={votedEntryIds.includes(entry.id)}
-                  toggleVote={toggleVote}
-                />
-              ))}
-            </div>
+        {/* No Suspense boundary. Nothing below here is async — every card
+            renders from props already in hand — but the server still emitted
+            the "Loading…" fallback and streamed all 277 cards into a
+            `<div hidden>` for an inline script to swap in. A visitor with
+            JavaScript off never got that swap, so the catalogue stayed hidden
+            inside markup that had been there all along. The sidebar keeps its
+            boundary, because that one suspends for real on useSearchParams. */}
+        <div className="relative">
+          {/* Adjusted Grid Columns for Smaller Portrait Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {sortedData?.map((entry, index) => (
+              <EntryCard
+                key={`${index}-${entry.id}`}
+                entry={entry}
+                onClick={openModal}
+                isBookmarked={bookmarks.includes(entry.id)}
+                toggleBookmark={toggleBookmark}
+                isVoted={votedEntryIds.includes(entry.id)}
+                toggleVote={toggleVote}
+              />
+            ))}
           </div>
-        </Suspense>
+        </div>
       </div>
     </div>
   )
