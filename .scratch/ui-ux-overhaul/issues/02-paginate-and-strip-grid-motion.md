@@ -1,6 +1,6 @@
 # 02 — Render 48 Entries, then Load more; strip the grid motion
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 04
 
 Decisions 6 and 16.
@@ -126,3 +126,40 @@ Three further things found while reading, all in scope:
 ## Depends on
 
 nothing
+
+## Comments
+
+All six steps landed as written. `entry-card.tsx` is a plain `<div>` with no motion import;
+`entry-card-grid.tsx` keys on `entry.id`, slices to `page * PAGE_SIZE`, and renders `Load more`
+below the framed panel when there is more. `pnpm build`, 159 unit tests and 28 e2e all pass.
+
+**Step 5's condition really fired.** `pnpm build` failed with
+`useSearchParams() should be wrapped in a suspense boundary at page "/bookmarks"`, exactly as the
+step predicted. Two of its citations are stale, though: `app/layout.tsx:56-58` no longer holds a
+`Suspense` — commit e113b98 moved the sidebar's boundary down into
+`components/nav/catalogue-nav.tsx` — so that file is what the fix follows instead. Its pattern is a
+fallback that renders the same content minus the part that reads the URL, so `/bookmarks` serves its
+heading rather than going blank, and the route is still prerendered (`○`) after the change. The grid
+`<div>` the Load more control sits under closes at `216`, not `210`.
+
+**Placement, from the Open questions.** Centred under the panel, `self-center` on the existing
+flex column, reusing the pill treatment. No remaining count in the label — the plainest option, and
+the `Total Items` pill next to the sort controls already states the whole set. Worth a look.
+
+**`Total Items` keeps counting the whole set,** and the two pills that carry it now share a
+`PILL_CLASS` constant. The string is byte-identical to both it replaced; the only class added
+anywhere in this change is `self-center`.
+
+**The 277-card assertion in `tests/e2e/served-html.spec.ts` had to move.** It asserted the served
+HTML of `/` carries one card per Entry, which decision 6 makes false. It now asserts one full page
+in the served document, plus `?page=99` serving all 277 — so what ticket 04 was defending, that the
+catalogue is in the bytes rather than added by script, still has a test, and a crawler reaching the
+whole catalogue without JavaScript is now covered where it was not before.
+
+**The sort-does-not-remount criterion is tested,** in `tests/e2e/pagination.spec.ts`, against a
+`?search=` result set small enough to fit one page — otherwise a reorder could move the playing card
+out of the rendered slice and fail the test for the wrong reason.
+
+**Both unconfirmable claims stand unconfirmed.** CLS was not re-measured and is not expected to
+move; the 11,349-element and 34,526px figures were not reproduced. The checkpoint after 01, 02 and
+03 is where those numbers get taken.

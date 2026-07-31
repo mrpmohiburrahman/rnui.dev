@@ -13,6 +13,11 @@ import { BOOKMARKS_KEY } from "../../hooks/use-remembered-set"
 
 const ROUTES = ["/", "/products", "/bookmarks"] as const
 
+// Kept in step with PAGE_SIZE in components/entry-card-grid.tsx. Restated rather
+// than imported: that module is a "use client" component and pulling it into a
+// Playwright process would drag the whole card tree in with it.
+const PAGE_SIZE = 48
+
 const remembered = allEntries[0]
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -22,7 +27,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 })
 
-test("the served HTML of / carries the heading, the sort controls and every card", async ({
+test("the served HTML of / carries the heading, the sort controls and its cards", async ({
   request,
 }) => {
   const html = await (await request.get("/")).text()
@@ -35,10 +40,18 @@ test("the served HTML of / carries the heading, the sort controls and every card
     expect(html).toContain(`>${label}</span>`)
   }
 
-  // One card per Entry. `getEntries` merges Firestore counts onto the local
-  // catalogue without adding or dropping rows, so the count is exact.
+  // One full page of cards, in the document rather than added by script. This
+  // used to be all 277, before the grid started rendering a page at a time.
+  // Still exact: a served document that is a card short is the same class of
+  // defect this file exists to catch.
   const cards = html.match(/aria-label="Play video"/g) ?? []
-  expect(cards).toHaveLength(allEntries.length)
+  expect(cards).toHaveLength(PAGE_SIZE)
+
+  // And the rest of the catalogue is reachable without running any of it.
+  const everything = await (await request.get("/?page=99")).text()
+  expect(everything.match(/aria-label="Play video"/g) ?? []).toHaveLength(
+    allEntries.length
+  )
 })
 
 test("the served HTML of /bookmarks carries its heading", async ({ request }) => {

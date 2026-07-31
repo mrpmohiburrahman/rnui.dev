@@ -1,7 +1,7 @@
 // app/bookmarks/page.tsx
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import type { Entry } from "@/data/entry"
 
 import {
@@ -43,13 +43,26 @@ const BookmarksPage = () => {
     })()
   }, [])
 
+  const hero = (
+    <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-8 relative">
+      <Hero title="Bookmarks" />
+    </div>
+  )
+
+  // The grid reads `page` from the URL, and useSearchParams() opts every
+  // ancestor out of prerendering — this is the one catalogue route with no
+  // server component above it to absorb that, so the boundary lives here.
+  // The fallback is the heading on its own, following components/nav/
+  // catalogue-nav.tsx: the served HTML keeps what it can rather than going
+  // blank. Which Entries this route shows is decided by localStorage, so the
+  // grid itself was never going to be in that HTML.
   return (
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
-      <CataloguePage entries={entries} treatment="framed" bookmarkedOnly>
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-8 relative">
-          <Hero title="Bookmarks" />
-        </div>
-      </CataloguePage>
+      <Suspense fallback={hero}>
+        <CataloguePage entries={entries} treatment="framed" bookmarkedOnly>
+          {hero}
+        </CataloguePage>
+      </Suspense>
     </div>
   )
 }
