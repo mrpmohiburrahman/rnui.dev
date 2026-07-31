@@ -1,6 +1,6 @@
 # 13 — Follow the device's light/dark setting on a first visit
 
-Status: ready-for-agent
+Status: resolved
 
 Decision 9 (`.scratch/ui-ux-overhaul/spec.md:28`).
 
@@ -137,3 +137,76 @@ Collision, not a dependency: ticket 05 step 2 rewrites the same `app/layout.tsx:
 `:53`), so match on the `<html …>` tag and the `ThemeProvider` prop list, not on line numbers.
 Ticket 07's prose cites `app/layout.tsx:45` as evidence for auditing in light; if this lands first
 that sentence goes stale, but its measurements stand either way.
+
+## Comments
+
+Both steps landed as written: `defaultTheme="system"` with the commented sibling deleted, and
+`suppressHydrationWarning` on the `<html>` tag. `grep -n defaultTheme app/layout.tsx` returns one
+line. `app/providers.tsx` untouched.
+
+New spec `tests/e2e/theme.spec.ts`, 8 tests, one per acceptance line:
+
+- dark device + empty storage → `html.dark` and `style="color-scheme: dark"`; light device → light.
+  Also asserts nothing was written to `localStorage`, so the visitor has still made no choice.
+- `theme=light` seeded + dark device → light. The stored value wins.
+- toggle to Dark, reload → still dark, `localStorage.theme === "dark"`.
+- pick System, then flip the emulated setting with the tab open → follows without a reload.
+- no hydration warning under either emulation.
+- nothing light has been painted by first contentful paint.
+
+`pnpm check-types`, `pnpm lint`, `pnpm test` (166) and the Playwright suite (118) pass, the suite
+three times consecutively.
+
+### The no-flash check was measuring the wrong thing at first
+
+The first version sampled `getComputedStyle(document.body).backgroundColor` every
+`requestAnimationFrame` from an init script, and reported one light frame. That is a false
+positive: a rAF callback runs *before* the paint of its own frame, so the first one reads the
+document before next-themes' blocking script has run — a frame that is never painted. It now reads
+the background at `first-contentful-paint` via `PerformanceObserver`, which is the first moment a
+visitor could have seen anything. At FCP under dark emulation the body is already `rgb(10,10,10)`
+and `<html>` already carries `dark`.
+
+### `suppressHydrationWarning` deleted a link from the header, and why
+
+Adding the attribute — on its own, with `defaultTheme` untouched — removed the "Star us on GitHub"
+item from the server-rendered header. The `<li>` was emitted **empty**. Verified on `rm -rf .next`
+clean production builds, both directions, several times; present without the attribute, absent
+with it. Not hydration: it is already missing from the `curl` HTML.
+
+It is not really about that attribute. The extra props lengthen the RSC Flight payload, and past a
+row-size threshold React stops inlining an element into the parent row and emits a lazy reference
+to a row of its own. Radix's `asChild` renders through `Slot`, which reads `children.props`; a lazy
+reference has none, so the child is silently erased. The third nav item was hit because it sits
+furthest down the row — the other two were only ever lucky. A parallel investigation reached this
+from two independent directions (reading the installed React server bundles, and an empirical
+bisect that pinned it to a ~32-byte payload shift moving a Flight row boundary).
+
+Fix: `"use client"` at the top of `components/nav/top-nav-bar.tsx`. The header then crosses the
+boundary as a single client reference, nothing inside it is Flight-serialized, and no `asChild`
+child in it can be outlined. It costs almost nothing — every Radix primitive in that file was
+already a client component. Verified: with the attribute *and* the fix, the link is back in the
+served HTML.
+
+Audited the rest of the exposure. `asChild` appears in six files; `entry-overlay.tsx`,
+`top-nav-bar.tsx` and `nav-side-bar.tsx` are client components already. Of the two server files,
+`logo.tsx` is only ever rendered from the two nav components, so it is inside a client boundary
+either way, and `cult/gradient-heading.tsx`'s single caller (`app/products/page.tsx:48`) does not
+pass `asChild`, so it renders an `h3` rather than a `Slot`. Nothing else is on the knife edge
+today — but it is a size threshold, so growth can trip it again, and it fails silently.
+`tests/e2e/theme.spec.ts` asserts the link is in the served markup, which is the guard.
+
+### Open questions and one thing left for the maintainer
+
+1. **`/contactus` in dark.** Still unfixed, as the ticket says. It has zero `dark:` utilities and
+   four `border-black … text-black` inputs, so it is now black-on-near-black for every dark-device
+   visitor rather than only for those who had opted in. This ticket raised its exposure; it did not
+   cause it. Needs its own ticket.
+2. **Reviewing dark before this ships.** Unchanged — it is a look call. Dark is now the default for
+   a share of visitors and nobody has audited it at that exposure.
+3. **An intermittent hydration mismatch in `next dev` only.** 1 in 8 loads under dark emulation,
+   0 in 8 under light. Zero in 16 loads against a production build, and the suite's own
+   no-hydration-warning test passes every run. When it does fire the diff points at a missing
+   wrapper `<div>` in the server HTML around `entry-card-grid.tsx`'s children — the same
+   "element missing from SSR" family as the nav link above, which is why it is recorded here
+   rather than dismissed. Not reproducible in production, so not blocking.

@@ -24,7 +24,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const authors = getUniqueAuthors()
 
   return (
-    <html lang="en" className="font-sans">
+    // suppressHydrationWarning because next-themes inlines a blocking script
+    // that writes `class` and `style="color-scheme"` onto this element before
+    // React hydrates, so the served html and the hydrated html cannot match. It
+    // emits no attribute and moves no pixel.
+    //
+    // Adding it here also, on its own, deleted the "Star us on GitHub" item
+    // from the server-rendered header. Not a coincidence and not about this
+    // element: the extra props lengthen the RSC payload row, and past a
+    // threshold React outlines a later element into its own row as a lazy
+    // reference, which Radix's `asChild` Slot drops on the floor. The header is
+    // a client component now (components/nav/top-nav-bar.tsx) so nothing in it
+    // is Flight-serialized and the size stops mattering.
+    <html lang="en" className="font-sans" suppressHydrationWarning>
       <head>
         {/* Every Demo and Poster comes from here, so warm the connection early. */}
         {CDN_ORIGIN && (
@@ -38,8 +50,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <body className="flex flex-col min-h-screen">
           <ThemeProvider
             attribute="class"
-            // defaultTheme="system"
-            defaultTheme="light"
+            // The device setting, on a first visit. next-themes only calls
+            // matchMedia when the resolved name is literally "system", so with
+            // "light" here `enableSystem` was inert on that path and a
+            // dark-device visitor got light as a steady state, not a flash.
+            // Nothing is persisted until the toggle is used, so this is the
+            // answer for everyone who has never opened it. Dark is already
+            // built; this only picks which finished appearance starts.
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >

@@ -51,3 +51,7 @@ __data__
 **/stage-1-crawl/storage.env
 
 .docusaurus
+
+# Scratch worktrees created by coding agents. They hold a full checkout and a
+# .next build, so eslint and vitest glob straight into them if they are tracked.
+.claude/worktrees/

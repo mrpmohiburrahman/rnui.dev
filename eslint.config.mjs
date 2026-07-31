@@ -22,6 +22,11 @@ const eslintConfig = [
       // never built (`.scratch/ui-ux-overhaul/spec.md`), and its vendored
       // `support.js` was the only thing making `pnpm lint` exit non-zero.
       "assets/new-ui/**",
+      // Scratch worktrees a coding agent checks out inside the repo. Each is a
+      // whole second copy of the tree with its own `.next`, so without this
+      // `pnpm lint` reports thousands of issues in bundled vendor code and
+      // exits non-zero for as long as one exists.
+      ".claude/**",
       "next-env.d.ts",
     ],
   },
