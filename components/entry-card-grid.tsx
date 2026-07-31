@@ -2,12 +2,24 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 import type { Entry } from "@/data/entry"
 
 import { cn } from "@/lib/utils"
 
 import { EntryCard } from "./entry-card"
 import LastUpdated from "./last-updated"
+
+/** How many Entries one page of the grid renders. The catalogue is 277. */
+const PAGE_SIZE = 48
+
+/**
+ * The pill treatment, verbatim from the Last updated and Total items controls
+ * below. Shared so the new Load more control introduces no colour, radius or
+ * shadow value that was not already on the page.
+ */
+const PILL_CLASS =
+  "px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] "
 
 /**
  * Which of the two visual treatments to render. `framed` wraps the heading row
@@ -45,6 +57,25 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   currentSort, // Destructure new prop
 }) => {
   const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
+
+  // Pagination lives in the URL, not in state, so a page is shareable and Back
+  // returns to the previous count. `page` is the only reader of the param that
+  // catalogue-search.tsx has been deleting on every keystroke all along, which
+  // is what makes a search reset to the first page.
+  const searchParams = useSearchParams()
+  const page = Math.max(1, Number(searchParams.get("page")) || 1)
+  const shownCount = page * PAGE_SIZE
+  const hasMore = (sortedData?.length ?? 0) > shownCount
+
+  // pushState rather than router.push: the App Router picks it up through
+  // useSearchParams, so it costs no server render and no Firestore read, it does
+  // not move the scroll position, and Back pops to the previous count.
+  const loadMore = () => {
+    const params = new URLSearchParams(window.location.search)
+    params.set("page", String(page + 1))
+    window.history.pushState(null, "", `?${params}`)
+  }
+
   return (
     <div
       // style={{ borderWidth: 1, borderColor: "purple" }}
@@ -166,20 +197,11 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
         </div>
         {/* last updade and total number of ites */}
         <div className="flex flex-row space-x-4">
-          <button
-            type="button"
-            className={
-              "px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] "
-            }
-          >
+          <button type="button" className={PILL_CLASS}>
             <LastUpdated />
           </button>
-          <button
-            type="button"
-            className={
-              "px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] "
-            }
-          >
+          {/* Counts the whole set, not the rendered slice. */}
+          <button type="button" className={PILL_CLASS}>
             <span>Total Items: {sortedData?.length}</span>
           </button>
         </div>
@@ -202,9 +224,13 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
         <div className="relative">
           {/* Adjusted Grid Columns for Smaller Portrait Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {sortedData?.map((entry, index) => (
+            {/* Keyed by id alone. The key used to carry the array index, so
+                every key changed when the list reordered and a sort toggle
+                unmounted and remounted all 277 cards, restarting every Demo.
+                Ids are unique — tests/data-integrity.test.ts enforces it. */}
+            {sortedData?.slice(0, shownCount).map((entry) => (
               <EntryCard
-                key={`${index}-${entry.id}`}
+                key={entry.id}
                 entry={entry}
                 onClick={openModal}
                 isBookmarked={bookmarks.includes(entry.id)}
@@ -216,6 +242,15 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
           </div>
         </div>
       </div>
+      {hasMore && (
+        <button
+          type="button"
+          className={cn(PILL_CLASS, "self-center")}
+          onClick={loadMore}
+        >
+          Load more
+        </button>
+      )}
     </div>
   )
 }

@@ -4,7 +4,6 @@ import { memo, useCallback, useState } from "react"
 import Link from "next/link"
 import type { Entry } from "@/data/entry"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
-import { motion } from "framer-motion"
 import { Bookmark, Linkedin, Star } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -128,12 +127,12 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   }, [incrementViewCountLocal])
 
   return (
-    <motion.div
-      layout
-      // No mount animation. framer-motion serialises `initial` into the style
-      // attribute during a server render, so every card in the served HTML
-      // arrived at `opacity: 0` and only appeared once hydration finished — and
-      // 277 of them slid up 10px at once when it did.
+    // A plain div. There was a `motion.div` here, projecting its layout and
+    // sliding in on mount. The slide serialised `initial` into the style
+    // attribute during the server render, so every card arrived at `opacity: 0`
+    // and 277 of them slid up 10px the moment hydration finished. The layout
+    // projection ran over all 277 on every sort toggle, for a rare reorder.
+    <div
       className="group relative break-inside-avoid w-full sm:w-[221px] cursor-pointer"
       onClick={handleClick}
     >
@@ -277,7 +276,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
           </div>
         </MinimalCard>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
