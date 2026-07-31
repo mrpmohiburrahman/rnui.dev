@@ -11,7 +11,7 @@
 // an event handler at all.
 "use client"
 
-import React from "react"
+import React, { useEffect, useRef } from "react"
 import type { Entry } from "@/data/entry"
 
 import InteractiveVideo from "./interactive-video"
@@ -25,15 +25,36 @@ export function EntryDetail({
   // passes it in here. It cannot be imported into this file: DialogTitle throws
   // outside a Dialog, and this same body renders standalone at /entry/<id>.
   Title = "h2",
+  // Count the open from here. Only app/entry/[id]/page.tsx sets it, and it has
+  // to be explicit rather than inferred: the overlay renders this same body
+  // after components/entry-card.tsx has already counted, so a component that
+  // decided for itself would double-bill every open from the grid.
+  countsOwnOpen = false,
 }: {
   entry: Entry
   Title?: React.ElementType
+  countsOwnOpen?: boolean
 }) {
   // No local view count here, and no counting on play. This component used to
   // mount before anything was selected, so the count it held was seeded from
   // nothing, incremented on every open, and rendered nowhere. The Demo below no
   // longer bills a view either: ADR-0007 counts a recording watched, and the
   // playback owner is the only thing that can tell watched from pressed.
+  //
+  // An effect, because a cold /entry/<id> has no click to hang the count on —
+  // the visitor arrived from a shared link or a cmd-clicked headline, and
+  // ADR-0007:3 counts that as an open all the same. The ref is not ceremony:
+  // reactStrictMode is on by default, so in development React mounts, unmounts
+  // and remounts this, and the effect would bill the real Firestore twice every
+  // time the maintainer opened an Entry page. Keyed on the id rather than a bare
+  // boolean so a client navigation between two Entries still counts the second.
+  const counted = useRef<string | null>(null)
+  useEffect(() => {
+    if (!countsOwnOpen || counted.current === entry.id) return
+    counted.current = entry.id
+    countView(entry.id)
+  }, [countsOwnOpen, entry.id])
+
   return (
     <div className="flex flex-col md:flex-row md:h-[80vh] space-y-4 md:space-y-0 md:space-x-6 p-4">
       {/* Left Side: Video Demo */}

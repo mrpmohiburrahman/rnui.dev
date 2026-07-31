@@ -124,7 +124,10 @@ No pixel moves. No new dependency.
 
 - `rg -l "increment-view-count" app components lib hooks` returns exactly two paths:
   `app/actions/increment-view-count.ts` and the playback owner module.
-- `rg "incrementViewCount" components/` returns nothing.
+- ~~`rg "incrementViewCount" components/` returns nothing.~~ **Withdrawn — unsatisfiable.**
+  The bullet above names the playback owner as a permitted importer and step 2 puts the
+  import there, and the playback owner is `components/playback-owner.tsx`. This bullet dates
+  from a draft where it was not under `components/`. The bullet above carries the meaning.
 - Loading a Catalogue page and scrolling top to bottom without stopping fires zero view
   server actions.
 - Letting one Demo play three seconds, then scrolling it away and back and letting it play
@@ -179,10 +182,10 @@ they still need or a click on a byline would open the panel behind the departing
 - The `card-modal.tsx` of step 5 is `entry-detail.tsx`, and its Source link is the one
   labelled "GitHub Repository".
 
-**Acceptance bullet 2 is unsatisfiable as written** and was not met. `rg "incrementViewCount"
-components/` returns two matches, both in `components/playback-owner.tsx` — which bullet 1 and
-step 2 both require to hold that import. The bullet dates from a draft where the owner was not
-in `components/`. Bullet 1, the one that carries the meaning, passes exactly:
+**Acceptance bullet 2 was unsatisfiable as written** and has been struck through above. `rg
+"incrementViewCount" components/` returns two matches, both in `components/playback-owner.tsx`
+— which bullet 1 and step 2 both require to hold that import. The bullet dates from a draft
+where the owner was not in `components/`. Bullet 1, the one that carries the meaning, passes:
 `grep -rl "increment-view-count" app components lib hooks` returns the action and the owner and
 nothing else. That grep is also why one prose mention of the path in
 `app/actions/get-entries.ts` was reworded — no import changed there.
@@ -194,17 +197,31 @@ cannot land in the middle of the claim) and "pressing play in the panel bills no
 the only thing that could have counted). One test doing both would have had to let autoplay run
 and then guess which of the actions it saw was whose.
 
-**Still uncounted, and nobody owns it: the cold `/entry/<id>` open.** Step 4 assigns it to
-ticket 08 — "the cold-loaded Entry route from decision 5 counts its own open and is that
-ticket's, not this one's" — and 08 resolved without it. Two paths reach that route: a shared
-link, and a cmd/ctrl/shift/alt-click on a card headline, which `entry-card.tsx` deliberately
-returns from before counting so the new tab is not billed twice once the route does count.
-ADR-0007:3 says an open counts, so this is a real gap in the metric, left where the ticket put
-it rather than taken in passing.
+**The cold `/entry/<id>` open now counts too — taken here rather than left to fall between two
+tickets.** Step 4 assigned it to ticket 08 ("the cold-loaded Entry route from decision 5 counts
+its own open and is that ticket's, not this one's") and 08 resolved without it, so ADR-0007:3's
+"or when a visitor opens an Entry" was half-implemented: a click on a card counted, a shared
+link did not. Two paths reach that route — a shared link, and a cmd/ctrl/shift/alt-click on a
+card headline, which `entry-card.tsx` returns from before counting precisely so the new tab
+bills it once rather than twice.
 
-Both **Open questions** above are unchanged and still the maintainer's: reduced-motion visitors
-can only ever produce opens and Source clicks, and the three profile links now count nothing.
+`components/entry-detail.tsx` takes a `countsOwnOpen` prop, set only by
+`app/entry/[id]/page.tsx`. Explicit rather than inferred: the overlay renders the same body
+after the card has already counted, so a component deciding for itself would double-bill every
+open from the grid. The count is an effect because there is no click to hang it on, and it is
+guarded by a ref keyed on the Entry id — `reactStrictMode` defaults on, so without it running
+`pnpm dev` and opening an Entry page bills the real Firestore twice.
+
+**Maintainer decisions taken 2026-07-31**, on the two Open questions above:
+
+- **The three profile links stay uncounted.** ADR-0007:3 says "its source link", and
+  `data/entry.ts:30` is the one field that is the Entry's own; a click on an author's Twitter
+  says nothing about this Entry having been viewed.
+- **Reduced motion earning fewer views is now recorded in ADR-0007**, as a consequence rather
+  than a defect. Nothing to fix — mounting a video for those visitors to satisfy a metric would
+  be the tail wagging the dog — but anyone comparing two numbers is comparing populations that
+  earn views at different rates, and the ADR now says so.
 
 Verified: `pnpm check-types` clean, `pnpm test` 166/166, `npx playwright test` 52/52 against a
 production build. No `className` changed; the only JSX removed is the `incrementViewCount`
-prop.
+prop, and the only JSX added is the `countsOwnOpen` prop above.

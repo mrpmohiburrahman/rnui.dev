@@ -49,7 +49,11 @@ export default async function EntryPage(props: Params) {
 
   return (
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
-      <EntryDetail entry={entry} />
+      {/* This route counts its own open (ADR-0007:3). The grid's open is counted
+          by the card that pushed the address; arriving here cold — a shared
+          link, a cmd-clicked headline — there is no card and no click, so
+          nothing else can. */}
+      <EntryDetail entry={entry} countsOwnOpen />
     </div>
   )
 }
