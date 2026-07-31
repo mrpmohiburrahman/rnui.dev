@@ -1,6 +1,7 @@
 # 03 — Instrument the catalogue's real events
 
 Status: ready-for-agent
+Blocked by: 01
 
 ## Problem
 

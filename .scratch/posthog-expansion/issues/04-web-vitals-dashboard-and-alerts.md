@@ -1,6 +1,7 @@
 # 04 — Core Web Vitals dashboard and alerts
 
 Status: ready-for-agent
+Blocked by: 01
 
 ## Problem
 

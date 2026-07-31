@@ -1,6 +1,7 @@
 # 08 — Feature-flag the autoplay rollout
 
 Status: ready-for-agent
+Blocked by: 03
 
 ## Problem
 

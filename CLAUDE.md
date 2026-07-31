@@ -18,12 +18,14 @@ Single-context — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents
 
 `/implement` with no ticket named means **take the frontier** of the active effort. Do not ask which one, and do not re-plan — the spec is frozen.
 
-Active effort: `.scratch/ui-ux-overhaul/`.
+Active effort: `.scratch/posthog-expansion/`.
 
-1. Read `spec.md` in that directory first. Its decision table is binding; decision 1 freezes the site's appearance.
+1. Read `spec.md` in that directory first. Its Goals, Non-goals and Constraints are binding — in particular `api_host` stays `https://us.i.posthog.com`, Firebase not PostHog owns view and vote counts, and nothing here changes what the site looks like.
 2. Scan `issues/`. A ticket is available when its `Status:` is `ready-for-agent` and every number on its `Blocked by:` line is `resolved`. Lowest number wins. No `Blocked by:` line means nothing blocks it.
 3. Set that ticket's `Status:` to `claimed` and save before writing any code.
 4. Implement only that ticket. Its `## Acceptance` is the definition of done.
 5. On finish: set `Status: resolved`, append what you did under `## Comments`, and commit the code and the ticket together.
 
 Stop and hand back to the maintainer at the checkpoints listed in `spec.md`.
+
+Finished efforts, not to be reopened: `.scratch/ui-ux-overhaul/` — all 14 tickets `resolved` as of 2026-07-31. Its one outstanding checkpoint is a PostHog task, ticket 09 steps 2 to 4, which must land before the redesign deploys.
