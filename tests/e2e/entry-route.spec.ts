@@ -6,13 +6,16 @@ import { allEntries } from "../../data/catalogue"
 // autocaptures into the production PostHog project.
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  // Nor is it a viewing. Demos autoplay, and nothing here is about playback, so
+  // letting them run would bill views against the real catalogue on every run.
+  await page.route("**/demo/**", (route) => route.abort())
 })
 
 const known = allEntries[0]
 
-// The card heading, not the card itself: the Demo fills the top of the card and
-// its play button would swallow the click, and the bookmark button sits over the
-// top-right corner. The heading is inside the div that carries the onClick.
+// The card heading, not the card itself: the bookmark button sits over the
+// top-right corner and the Demo fills the top. The heading is inside the div
+// that carries the onClick.
 const firstCard = (page: import("@playwright/test").Page) =>
   page.getByRole("heading", { level: 3 }).first()
 

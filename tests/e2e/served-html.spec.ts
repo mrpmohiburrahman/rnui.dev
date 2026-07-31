@@ -25,6 +25,9 @@ const remembered = allEntries[0]
 // context repeats it, because this only covers the shared `page` fixture.
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  // Nor is it a viewing. Demos autoplay, and nothing here is about playback, so
+  // letting them run would bill views against the real catalogue on every run.
+  await page.route("**/demo/**", (route) => route.abort())
 })
 
 test("the served HTML of / carries the heading, the sort controls and its cards", async ({
@@ -44,17 +47,23 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
   // used to be all 277, before the grid started rendering a page at a time.
   // Still exact: a served document that is a card short is the same class of
   // defect this file exists to catch.
-  const cards = html.match(/aria-label="Play video"/g) ?? []
+  //
+  // Counted by the tile's testid, which used to be the play control's
+  // aria-label. The trailing quote is load-bearing: `data-testid="demo-error"`
+  // is one per failed tile, and a prefix match would count both.
+  const cards = html.match(/data-testid="demo"/g) ?? []
   expect(cards).toHaveLength(PAGE_SIZE)
 
   // And the rest of the catalogue is reachable without running any of it.
   const everything = await (await request.get("/?page=99")).text()
-  expect(everything.match(/aria-label="Play video"/g) ?? []).toHaveLength(
+  expect(everything.match(/data-testid="demo"/g) ?? []).toHaveLength(
     allEntries.length
   )
 })
 
-test("the served HTML of /bookmarks carries its heading", async ({ request }) => {
+test("the served HTML of /bookmarks carries its heading", async ({
+  request,
+}) => {
   const html = await (await request.get("/bookmarks")).text()
   expect(html).toMatch(/<h1[^>]*>Bookmarks<\/h1>/)
 })
@@ -84,9 +93,7 @@ test("/ is readable with JavaScript turned off", async ({ browser }) => {
   await expect(
     page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
   ).toBeVisible()
-  await expect(
-    page.getByRole("button", { name: "Play video" }).first()
-  ).toBeVisible()
+  await expect(page.getByTestId("demo").first()).toBeVisible()
 
   await context.close()
 })
@@ -140,9 +147,7 @@ test("/bookmarks never shows more than the bookmarked Entries, at any frame", as
       const watched = window as unknown as { __peakCards: number }
       watched.__peakCards = 0
       new MutationObserver(() => {
-        const showing = document.querySelectorAll(
-          '[aria-label="Play video"]'
-        ).length
+        const showing = document.querySelectorAll('[data-testid="demo"]').length
         if (showing > watched.__peakCards) watched.__peakCards = showing
       }).observe(document, { childList: true, subtree: true })
     },
@@ -151,9 +156,10 @@ test("/bookmarks never shows more than the bookmarked Entries, at any frame", as
 
   const page = await context.newPage()
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  await page.route("**/demo/**", (route) => route.abort())
   await page.goto("/bookmarks")
 
-  await expect(page.getByRole("button", { name: "Play video" })).toHaveCount(1)
+  await expect(page.getByTestId("demo")).toHaveCount(1)
   await page.waitForLoadState("networkidle")
 
   const peak = await page.evaluate(

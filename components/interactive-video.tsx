@@ -144,6 +144,9 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
           }}
           poster={posterImage}
           preload="auto"
+          // Without this, iOS takes any playback to fullscreen the moment it
+          // starts — inside the overlay as well as on the page.
+          playsInline
         >
           <track kind="captions" srcLang="en" label={caption} default />
         </video>

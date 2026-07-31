@@ -1,6 +1,6 @@
 # 09 — One owner for playback: autoplay in view, five at a time
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 08
 
 Decisions 3 and 15 (`.scratch/ui-ux-overhaul/spec.md:22`, `:34`) and
@@ -332,3 +332,175 @@ One ordering to know about:
   the other rather than in parallel. 02 also makes this cheaper — 48 registered tiles instead of
   277 — and its `key={entry.id}` fix stops a sort toggle from remounting and re-registering every
   tile. Neither is required for this to work.
+
+## Comments
+
+**Resolved 2026-07-31.** All eight steps done. `pnpm check-types` and eslint clean,
+`pnpm test` 166 (was 159 — `tests/view-signal.test.ts` adds 7), `pnpm build` prerenders as
+before, `pnpm exec playwright test` 49/49.
+
+### `lib/view-signal.ts` was written here
+
+It did not exist, so per this ticket's own "Depends on" note it was written from
+`10-view-metric.md` step 1, verbatim to that step's description: `VIEW_THRESHOLD_SECONDS = 2`,
+`createPlayedWatcher()` accumulating only positive deltas, `countedThisSession()` over a
+module-level `Set` seeded once from `sessionStorage` and reusing `parseRememberedIds` /
+`serialiseRememberedIds`. **Ticket 10 skips its step 1**, and the vitest half of its step 9 is
+also done (`tests/view-signal.test.ts`, 7 cases). Everything else in ticket 10 is untouched:
+`incrementViewCountLocal` and its two callers still stand in `entry-card.tsx`, the overlay path
+still calls the action directly, and `lib/counters.ts:78-84` is unchanged.
+
+`countedThisSession` is a test-and-set — it answers "already billed?" and records the Entry if
+not — rather than a query plus a separate write. One call site, so the question and the record
+cannot drift apart.
+
+### Measured, not read
+
+| Claim | Measurement |
+|---|---|
+| A screenshot of `/` differs only by the play glyph | **7,008 differing pixels of 1,296,000** at 1440×900 under `prefers-reduced-motion`, in 11 regions: five 40×40 boxes at y=534 — one play glyph per visible card, 6,574px — and six in the `Updated: N minutes ago` pill, which read 33 and 32 minutes in the two runs. Nothing else on the page moved |
+| Every grid `<video>` | `muted`, `loop`, `playsInline` true, `preload="none"`, `controls` false, no `poster` attribute, zero `<track>` children — sampled live off `/` |
+| The cap holds | 48 `<video>` mounted, exactly 5 with `paused === false` |
+
+### One line the ticket did not call for: `bg-black` on the tile root
+
+Step 3 says to keep "the `bg-black` on the box behind it", read as the card's own
+`aspect-[9/16] w-full bg-black` wrapper. That is one layer where the old play button was two —
+the wrapper *and* the button's own `bg-black`. The card clips that box to a rounded top corner,
+and the arc is antialiased against however many dark layers sit under it: with one instead of
+two, the ten visible top corners came out a few levels lighter (174,174,174 → 207,207,207 on the
+arc). 138 pixels, and the only thing between this ticket and "differs by the play glyph and
+nothing else". `bg-black` is back on the tile root and the corners are now identical.
+
+### The e2e suite was billing views, and now mostly does not
+
+Step 8 aborts `**/demo/**` inside `recordServerActions` so the vote and view specs stay
+deterministic. That fixes those two files, but every *other* spec loads a Catalogue page too,
+and after this ticket each of those loads plays five Demos past two seconds — against the real
+Firestore counters, on every local run. Roughly 40 tests × up to 5 phantom views per run, into
+the metric ADR-0007 exists to define.
+
+The same one-line abort is now in the `beforeEach` of `search`, `keyboard`, `entry-route` and
+`served-html`, and beside the two own-context blocks in `served-html` and `remembered-set`. It
+is deliberately **not** in `home`, `pagination`, `poster-loading` or `view`: those four assert on
+playback or on Posters, and a Demo that cannot load takes the Poster down with it (the failure
+state replaces the whole tile). Those four still bill, which is the honest cost of testing
+playback against a live CDN.
+
+### Five more specs referenced the deleted play control than the ticket listed
+
+Step 8 names four files. `rg 'Play video'` found nine call sites across seven:
+`pagination.spec.ts:77`, `keyboard.spec.ts:83`, `poster-loading.spec.ts:19,28,41` and
+`served-html.spec.ts:47,52,88,144,156` as well. All now locate the tile by
+`data-testid="demo"`, and two claims had to be restated rather than relocated:
+
+- **`served-html.spec.ts:47`** counted cards in the served HTML by `aria-label="Play video"`.
+  It counts `data-testid="demo"` now — with the closing quote in the regex, because
+  `data-testid="demo-error"` is one per failed tile and a prefix match would count both.
+- **`pagination.spec.ts:68`** ("toggling the sort reorders the cards without restarting a Demo")
+  used to click play, then assert `page.locator("video")` had count 1. Every tile has a `<video>`
+  now, and a sort is a reorder, so `.first()` after the toggle is a different Entry than before
+  it. It identifies the playing Demos by `video.src` instead — the Entry's own Demo, which
+  follows the element wherever it lands — and reads them straight after the click with no poll: a
+  remount hands back a fresh element at `currentTime` 0, and a poll would wait for the owner to
+  start it again, which is the failure rather than the fix.
+
+`keyboard.spec.ts` simply drops the play button from its focus-ring list; nothing focusable
+replaces it, which is the point.
+
+### Smaller notes
+
+- **`spec.md:34` needed no fix.** This ticket's first correction says `spec.md` repeats the wrong
+  `scripts/generate-posters.ts:45`. It does not — it already reads `:47-48`, as does `spec.md:138`.
+  Corrected by an earlier ticket, or never wrong there.
+- **The observer is built on first use, not in an effect.** React runs ref callbacks before
+  effects, so the first tile registers before an effect could have made one.
+- **`register` is wrapped in `useCallback` at the tile**, not passed inline as the ticket's
+  `ref={(el) => el && owner.register(el, entryId)}` sketch has it. An inline arrow is a new
+  function identity every render, and React 19 detaches and re-attaches a ref whose identity
+  changed — unobserving and re-observing the tile on every render.
+- **`home.spec.ts` gained the two acceptance claims the ticket's step 8 did not spell out**: that
+  scrolling a tile away pauses it and scrolling back restarts it, and that opening the overlay
+  leaves zero grid `<video>` unpaused while closing returns them. The five-at-a-time assertion
+  also checks the *identity* of the five, not just the count — they are the first five on screen
+  in document order, not a scattered five.
+- **Open question 2 stands.** Five concurrent decodes on a low-end phone is still unmeasured on
+  hardware. `MAX_PLAYING` is one constant in `components/playback-owner.tsx`.
+
+### Two-axis review, and what it changed
+
+**Standards.** Three findings acted on:
+
+- **ADR-0004, hard.** `demo-tile.tsx` was a new module written in the vocabulary the ADR
+  renamed away from — `src`, `poster`, `videoSource`, `handleVideoError`. CONTEXT.md lists `src`
+  and `url` under *Asset path — Avoid* and `video` under *Demo — Avoid*, and ADR-0004's whole
+  argument is that modules written after the rename should speak the new names once. The props
+  are now `demoPath` / `posterPath`, the derived values `demoUrl` / `posterUrl`, and the handlers
+  `handleDemoError` / `registerDemo`. Identifier-only; no pixel and no behaviour moved.
+  `interactive-video.tsx` keeps the old names — it is the file being retired.
+- **A false claim in a comment.** `playback-owner.tsx` called itself "the only module in the
+  tree that records a view". Not yet: `entry-card.tsx:18` and `entry-detail.tsx:17` still import
+  the action, and `10-view-metric.md` step 6 is what deletes them. The header and `countView`'s
+  doc now say so and point at the ticket.
+- **Dead field and a misnamed function.** `Tile.entryId` was written and never read (the
+  `onTimeUpdate` closure already captures it), and `observe()` observed nothing — it lazily built
+  and returned the observer. Now `getObserver()`.
+
+Declined, with reasons:
+
+- **`countedThisSession` reads as a query but is a test-and-set.** True, and the JSDoc says so.
+  It is the name both `09` step 2 and `10` step 1 give the seam; renaming it here would leave
+  ticket 10 looking for a function that no longer exists.
+- **`countView` has no external importer yet.** By design — step 2 exports it *for* ticket 10's
+  open and Source-link paths. It is called internally, so it is not dead.
+- **`DemoTile`'s four props are an Entry with fields stripped.** They are, and step 5 spells them
+  out. A tile that takes the whole Entry can reach `view_count`, `source` and the Remembered-set
+  ids it has no business reading.
+- **The demo abort is copy-pasted into six spec files.** So is `page.route("**/*posthog.com/**")`,
+  in every spec in the directory. Extracting one and not the other is the worse of the two
+  consistencies.
+- **`lib/view-signal.ts` says "no React" and imports a `"use client"` hook file.** Reworded rather
+  than restructured: `10-view-metric.md` step 1 names `hooks/use-remembered-set.ts:35,61` as the
+  source of the two parsers, and moving them to `lib/` is a change to a file this ticket does not
+  otherwise touch.
+
+**Spec.** Steps 1-7 came back implemented as written. Three findings acted on:
+
+- **A latent bug in `grant()`, and the real one of the eight.** A tile whose `play()` rejected
+  stayed in `granted` — which is exactly what stops `play()` being called twice on the same
+  element — so it held a slot while paused and was never retried until it left the viewport and
+  came back. Acceptance bullet 3 ("between 1 and 5 playing") could have read 0 on a browser that
+  refused the first autoplay. The rejection now gives the slot back, so the next `grant()` tries
+  again. Ceiling named in the comment: nothing retries a tile whose viewport never moves again.
+- **Acceptance bullet 2 was true by construction and pinned by nothing.** `preload="none"` plus
+  play-on-grant means a Demo below the fold costs nothing, and the only demo-request assertion in
+  the suite was the reduced-motion one. `home.spec.ts` now counts: 48 tiles rendered, at most 5
+  Demos requested, and more arriving on the way down.
+- **"Never more than five in flight" is not what the network shows.** Measured on `/`: 5 requests
+  at rest with 5 concurrent, but scrolling the first page top to bottom started 28 of the 48 and
+  peaked at **7 concurrent**. Pausing a `<video>` does not close its connection, so a paused
+  tile's socket overlaps the newly granted tile's. Five *playing* holds throughout, which is the
+  claim the cap actually makes; the acceptance line reads as though the two were the same. The
+  new test asserts the count, not the concurrency.
+
+Three findings declined, and one worth arguing with:
+
+- **`tests/view-signal.test.ts` is ticket 10's step 9, not this ticket's.** It is. The
+  authorisation here was for `lib/view-signal.ts` "only". Shipping a new module that owns two
+  rules ADR-0007 calls load-bearing with no test at all, in a ticket whose Acceptance ends
+  "`pnpm test` passes", was the worse of the two readings. Ticket 10's step 9 now says which
+  three claims are already pinned.
+- **`recordServerActions` gained `interact(page, fired)`, beyond step 8's fourth parameter.**
+  Step 8 also asks the rewritten `view.spec.ts` to assert "that the reload added none". Nothing
+  in the recording is visible until it returns, so a reading has to be taken at reload time; the
+  alternative is asserting distinct bodies and calling that the same claim, which it is not.
+- **The demo abort landed in five files step 8 does not list**, and `remembered-set.spec.ts` is
+  one where step 8 says "Nothing else in that file changes". Named here rather than buried: the
+  conflict is real, and the reason is that step 8 was written before anyone worked out that
+  autoplay bills a view from *every* spec that loads a Catalogue page, not just the two it
+  centralises the abort for. Reverting that one line puts ~5 phantom views per run back into the
+  metric ADR-0007 exists to define.
+- **`entry-card.tsx`'s Video comment lost "is the one interaction on this card"** as well as the
+  locality clause step 5 asked to strike. Playing is no longer an interaction on that card at
+  all — there is nothing to press — so the surviving half would have been false. Step 8 of ticket
+  10 rewrites the sentence against the ADR regardless.
