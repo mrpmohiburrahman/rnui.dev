@@ -87,10 +87,16 @@ test("opening an Entry and following its Source link bill one view each", async 
   expectOneEntryTargeted(fired)
 })
 
-// The reversal ADR-0007 turns on, pinned where it can be seen on its own: the
-// standalone Entry page has no grid, so no playback owner, so no autoplay. Any
-// action recorded here came from the press — and there is to be none.
-test("pressing play in the panel bills nothing at all", async ({ page }) => {
+// Two claims about the standalone Entry page, which is the one place they can be
+// seen apart: it has no grid, so no playback owner and no autoplay, and nothing
+// clicked a card to get here. Every action recorded is therefore attributable.
+//
+// The open is counted from an effect rather than a click because there is no
+// click — the visitor arrived from a shared link or a cmd-clicked headline, and
+// ADR-0007:3 counts that as an open all the same.
+test("an Entry opened cold counts one view, and playing its Demo adds none", async ({
+  page,
+}) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 
   const fired: string[] = []
@@ -99,11 +105,23 @@ test("pressing play in the panel bills nothing at all", async ({ page }) => {
       fired.push(request.postData() ?? "")
   })
 
-  await page.goto(`/entry/${allEntries[0].id}`)
+  const entry = allEntries[0]
+  await page.goto(`/entry/${entry.id}`)
+
+  // Exactly one, and it names this Entry. Polled rather than slept: the effect
+  // fires after hydration, and how long that takes is not this test's to guess.
+  await expect
+    .poll(() => fired.length, {
+      timeout: 20_000,
+      message: "the cold open billed no view",
+    })
+    .toBe(1)
+  expect(fired[0]).toBe(JSON.stringify([entry.id]))
+
   await page.getByRole("button", { name: "Play video" }).click()
 
-  // Played, not merely mounted. Past the two-second threshold on purpose: a
-  // Demo stopped at 0.1s would satisfy "no view was billed" vacuously.
+  // Played, not merely mounted. Past the two-second threshold on purpose: a Demo
+  // stopped at 0.1s would satisfy "the press billed nothing" vacuously.
   const video = page.locator("video")
   await expect
     .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime), {
@@ -112,5 +130,8 @@ test("pressing play in the panel bills nothing at all", async ({ page }) => {
     })
     .toBeGreaterThan(2)
 
-  expect(fired).toEqual([])
+  // Still one. InteractiveVideo cannot tell watched from pressed, so it counts
+  // nothing at all — only the playback owner holds enough to decide, and it is
+  // not on this page.
+  expect(fired).toHaveLength(1)
 })
