@@ -1,6 +1,6 @@
 # 03 — Cache the counts, debounce the search, server-render the timestamp
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 04
 
 ## Problem
@@ -194,3 +194,76 @@ grid produces no server HTML at all. The placeholder deletion lands regardless.
 
 Ticket 07 step 4 edits `components/ui/placeholders-and-vanish-input.tsx:193`; step 6 above edits lines
 8-16, 49, 153-157 and 173-177 of the same file. No overlap — either order lands.
+
+## Comments
+
+Implemented as written, with three departures, all recorded below.
+
+**What landed**
+
+1. `app/actions/get-entries.ts` — `readEntriesWithCounts`, a module-level non-exported
+   `unstable_cache(getEntriesWithCounts, ["entries-with-counts"], { revalidate: 300 })`.
+   The React `cache()` stays. Named for what it returns rather than the ticket's
+   `readCatalogue`: CONTEXT.md reserves "Catalogue page" for the client module and gives
+   no "Catalogue" noun for a set of Entries (ADR-0004).
+2. `components/catalogue-search.tsx` — a `useRef` timer, cleared on each keystroke and on
+   unmount, 300ms. `handleSearch` untouched, including its read of `window.location.search`
+   rather than the new `useSearchParams` value: it runs 300ms late, so the live URL is the
+   correct source. Commented at the read site.
+3. `components/last-updated.tsx` — state, effect, try/catch and the branch deleted.
+4. `components/ui/placeholders-and-vanish-input.tsx` — `defaultValue` prop seeding
+   `useState`; `vanishAndSubmit` gone from Enter and submit.
+5. `components/catalogue-search.tsx` — `defaultValue={searchParams.get("search") ?? ""}`,
+   no `Suspense` wrapper, and `/` still builds as `ƒ`.
+
+**Departure 1 — the particle machinery is deleted now, not in a follow-up.** The Open
+question above sized it at ~110 dead lines and deferred it. Deferring was wrong: `draw()`
+was wired to `useEffect(..., [value, draw])`, so every keystroke resized an 800×800 canvas,
+read it back with `getImageData` and walked 640,000 pixels — for a canvas that, with
+`animating` never set, could no longer become visible. That is the per-keystroke cost
+problem (b) exists to remove, so it went with the rest. `canvasRef`, `newDataRef`,
+`inputRef`, `animating`, `draw` and `animate` are gone; the 3-second placeholder cycle
+(`spec.md:48`) is untouched and still wants its own ticket.
+
+**Departure 2 — `suppressHydrationWarning` sits on the `<strong>`, not the `<p>`.** React
+applies it one level deep and the text that can cross a `timeago` bucket boundary is the
+`<strong>`'s own child, so the ticket's markup would not have suppressed the case it was
+added for. The file is 16 lines rather than the ≤12 the acceptance asks for; the extra
+lines are that fix.
+
+**Departure 3 — no automated guard for the pill width.** Every shape tried (a `commit`
+navigation, held-back `_next/static/chunks`) still measured after the swap and so passed
+against the unfixed tree. A test that cannot fail is worse than none. Verified manually
+instead — see below. `tests/e2e/last-updated.spec.ts` asserts the served HTML instead,
+which does fail on `827955c`.
+
+**Acceptance, checked**
+
+- `grep -n getEntriesWithCounts app/actions/get-entries.ts` returns **2** lines, not 1: the
+  import and the `unstable_cache` call. One call site, which is what the bullet means; the
+  import cannot be spelled away without an `import * as`. Amend the bullet, not the code.
+  Same for `grep -n useSearchParams components/catalogue-search.tsx` — the import and the
+  hook call.
+- `console.count("readAll")` in `lib/counters-firestore.ts`, `next dev`, three sequential
+  requests for `/products?search=a|ab|abc` → `readAll: 1`. Instrument removed.
+- `tests/e2e/search.spec.ts` types `buttons` 10ms apart and counts RSC navigations carrying
+  `search=`. Verified in both directions: 1 with the debounce, **7** without it. It waits
+  for a quiet period rather than a fixed delay, per `tests/e2e/server-actions.ts:38-43`.
+  It counts `_rsc=` **and** `search=`, narrower than the bullet's `_rsc=`, because the
+  router prefetches sidebar links on its own schedule.
+- `grep -c "Loading last updated date" components/last-updated.tsx` → 0.
+- Appearance: `/` and `/products` at 1440×900 and 390×844, screenshotted from a production
+  build before and after and compared pixel by pixel. The only differing region on any of
+  the four is the Updated pill, and the cause is the clock — "30 minutes ago" against "31
+  minutes ago" between the two runs. Both desktop pairs matched exactly on a later run.
+  Deleting the `<canvas>` changed nothing: it was `absolute`, `pointer-events-none` and
+  `opacity-0` unless `animating`.
+- `/?search=slider` cold shows `slider`; select-all + Delete drops the param and returns
+  48 cards. Enter leaves box and URL alone. Back after a Category click restores the term.
+  All four are `tests/e2e/search.spec.ts`, and all four fail on `827955c`.
+- `pnpm test` 159 pass, `pnpm check-types` clean, `pnpm build` clean, 33 Playwright specs
+  pass — including the pre-existing "hydrates without React disagreeing with the server".
+
+**Still open, unchanged:** `revalidate: 300` wants the maintainer's confirmation; the 130KB
+of catalogue in the client bundle wants its own ticket; the 3-second placeholder cycle
+wants one too; `/products` still has no search box.
