@@ -255,28 +255,52 @@ header to the wrapper, which is its ancestor, so paint order is unchanged.
 it. New behaviour, no pixels changed." The ticket's own uncertainty predates it. Implemented and
 pinned by a test.
 
-**Open question 2 — still open, for the maintainer.** From 10px of scroll the trigger now floats
-over the grid on a phone. That is what decision 10 asks for; what it overlaps still wants one
-look at 390px.
+**Open question 2 — looked at, and it found a defect.** Screenshotted at 390×844 scrolled 1,400px,
+light and dark. What the trigger overlaps is a card's Demo, and as a pill with its own background
+it reads as a floating filter control — that is decision 10 working, no change wanted.
 
-**One observation, deliberately not acted on.** On `≥sm` the wrapper is now a permanently fixed
-72×8px transparent box at the viewport's top-left, where before it scrolled away — its only
-visible child is `sm:hidden`, so it paints nothing either way. At scroll 0 it was already there,
-and the desktop aside is itself `fixed`, so nothing new is covered at any scroll position; the
-aside's content is vertically centred and nothing renders in that band. `sm:hidden` on the wrapper
-would delete the question for one class and no pixels, but step 7 spells the className out and the
-spec is frozen. Maintainer's call.
+What the look actually found is underneath it. `document.elementFromPoint` 8px to the right of the
+pill, and 8px below it, both returned the wrapper `div`. The wrapper's `px-2 pb-2` makes it 80×48px
+where the header paints 56×40, so roughly a quarter of it is invisible, and at `z-30` that
+invisible margin swallowed taps on the card behind. It cost nothing while the wrapper scrolled
+away with the document; step 7 made it permanent, so this ticket created it.
+
+Fixed in the same file: `pointer-events-none` on the wrapper, `pointer-events-auto` on the header.
+Exactly what paints is what responds. Re-probed: the two points now hit the card's `<video>`, the
+pill's own edge still hits the header, and the trigger still opens the drawer. No pixel moves —
+the 390px geometry below was re-measured after the fix and is unchanged.
+`tests/e2e/filters.spec.ts` hit-tests it rather than reading the class off the element.
+
+**And the `≥sm` box is gone.** On `≥sm` the wrapper had become a permanently fixed 72×8px
+transparent box at the viewport's top-left, where before it scrolled away. Its only visible child
+is already `sm:hidden`, so `sm:hidden` on the wrapper removes it for one class and no pixels —
+`display: none` at 768 and 1440, measured. That also makes the header's `sm:h-auto sm:border-0
+sm:bg-transparent sm:px-6` unreachable, so they go with it. This deviates from step 7's literal
+className, which was written before the box was permanent.
 
 **One test changed.** `tests/e2e/search.spec.ts:111` asserted `/products?category=Onboarding` after
 a facet click from a search — the old behaviour, which dropped the term. It now asserts the term
 survives, which is what this ticket exists to do.
 
-**Not acted on: four spellings of one query-string edit.** "Copy the query, set or delete one key,
-decide about `page`, serialise" now lives in `catalogue-search.tsx:24-32`, `entry-card-grid.tsx
-:72-74`, `facetHref` and `setSort`, and the `page` rule differs between them by design. A shared
-helper is the obvious tidy, but all four are prescribed verbatim by tickets 02, 03 and this one.
-Worth a follow-up ticket rather than a deviation.
+**Four spellings of one query-string edit — looked at, and left alone.** "Copy the query, set or
+delete one key, decide about `page`, serialise" now lives in four places, which reads as
+duplication until the four are lined up:
+
+| | source | key | `page` | output |
+|---|---|---|---|---|
+| `catalogue-search.tsx:24-32` | `window.location` | `search` | deleted | `router.replace` |
+| `entry-card-grid.tsx:72-74` | `window.location` | `page` | set | `pushState` |
+| `facetHref` | a passed-in `URLSearchParams` | `category`/`author` | deleted | an href string |
+| `setSort` | `window.location` | `sort` | kept | `replaceState` |
+
+Every column differs at every row. A helper covering them takes a source, a key, a value, a `page`
+policy and an output mode — five parameters, four callers, no two alike, which is a rename of
+`new URLSearchParams(...)` wearing a config object. What is genuinely shared is two lines: the
+copy and the `toString()`. Not extracted, and not deferred to a follow-up ticket either — the
+answer is no.
 
 **Verified:** `pnpm check-types`, `pnpm lint` (0 errors), `pnpm test` (166), `pnpm exec playwright
 test` (60, including the 8 new ones), `pnpm build`, and all 18 legacy paths still redirecting to
 `/products?category=…` against a production server.
+
+Nothing in this ticket is left for the maintainer.

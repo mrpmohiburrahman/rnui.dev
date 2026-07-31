@@ -56,9 +56,23 @@ export function NavSidebar({ authors, categories }: NavSidebarProps) {
           The `sticky top-0 z-30` on the header below could not have helped: its
           containing block was this wrapper, whose height is the header's own, so
           the sticky range was zero. `z-30` moves up here, leaving paint order
-          unchanged. */}
-      <div className="fixed top-[10px] z-30 flex flex-col gap-4 pb-2 px-2">
-        <header className="flex h-10 mx-1 rounded-b-lg items-center gap-4 bg-background dark:bg-[#1E1E1E] sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          unchanged.
+
+          `sm:hidden` because the only thing in here is the trigger, which was
+          already `sm:hidden`: at `≥sm` this painted nothing but still occupied a
+          fixed 72×8px of the top-left corner at z-30, forever, over the aside.
+          It cost no pixels before because it scrolled away with the document;
+          now that it does not, it has to say so. That also makes the header's
+          `sm:` classes dead, so they go.
+
+          `pointer-events-none` for the same reason: the wrapper's own padding is
+          an 80×48px box where the header paints 56×40, so ~24px of it is
+          invisible and used to swallow taps on whatever is under it. Harmless
+          while it scrolled away; a permanent dead strip over the grid once it
+          stopped. The header takes the events back, so exactly what paints is
+          what responds. */}
+      <div className="fixed top-[10px] z-30 flex flex-col gap-4 pb-2 px-2 sm:hidden pointer-events-none">
+        <header className="flex h-10 mx-1 rounded-b-lg items-center gap-4 bg-background dark:bg-[#1E1E1E] pointer-events-auto">
           {/* Mobile Menu Trigger */}
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
