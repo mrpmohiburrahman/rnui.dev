@@ -11,17 +11,17 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
+import { usePathname } from "next/navigation"
 import type { Entry } from "@/data/entry"
 
-import useModal from "@/hooks/use-modal"
 import {
   BOOKMARKS_KEY,
   useRememberedSet,
   VOTED_ENTRY_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
-import CardModal from "@/components/card-modal"
 import { EntryCardGrid, type GridTreatment } from "@/components/entry-card-grid"
+import { EntryOverlay } from "@/components/entry-overlay"
 
 interface CataloguePageProps {
   entries: Entry[]
@@ -48,7 +48,20 @@ export function CataloguePage({
     useRememberedSet(BOOKMARKS_KEY)
   const { ids: votedEntryIds, toggle: toggleVote } =
     useRememberedSet(VOTED_ENTRY_IDS_KEY)
-  const { isModalOpen, selectedEntry, openModal, closeModal } = useModal()
+
+  // Which Entry is open is the address, not state. The card pushes /entry/<id>
+  // with the History API, which the App Router reflects back through
+  // usePathname — no server render, no Firestore read, and Back closes the
+  // panel because Back is the only close path there is.
+  //
+  // Searched against `entries`, not the filtered or sorted list: un-bookmarking
+  // the open Entry from inside the panel must not make the panel vanish
+  // mid-interaction.
+  const pathname = usePathname()
+  const openEntry =
+    (pathname.startsWith("/entry/") &&
+      entries.find((e) => e.id === pathname.slice("/entry/".length))) ||
+    null
 
   // A set that has not been read yet means "nothing remembered so far", not
   // "everything". The distinction never used to matter: a hydration guard used to
@@ -68,7 +81,6 @@ export function CataloguePage({
       <EntryCardGrid
         sortedData={sortedData}
         treatment={treatment}
-        openModal={openModal}
         // Both stored sets are still null until an effect has read localStorage.
         // `[]` rather than a placeholder render: the server and the first client
         // render both see an empty set, so there is no hydration mismatch, and the
@@ -85,11 +97,12 @@ export function CataloguePage({
         {children}
       </EntryCardGrid>
 
-      <CardModal
-        selectedEntry={selectedEntry}
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-      />
+      {/* history.back() is the whole close path, so Escape, the close button,
+          the tint and the browser's own Back button all do one identical thing.
+          Safe because the overlay only opens on an /entry/… pathname this page
+          pushed itself; a cold /entry/… renders app/entry/[id]/page.tsx, which
+          has no overlay. */}
+      <EntryOverlay entry={openEntry} onClose={() => window.history.back()} />
     </>
   )
 }

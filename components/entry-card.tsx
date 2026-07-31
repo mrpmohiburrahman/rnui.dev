@@ -22,7 +22,6 @@ import InteractiveVideo from "./interactive-video"
 
 interface EntryCardProps {
   entry: Entry
-  onClick: (entry: Entry) => void
   isBookmarked: boolean
   toggleBookmark: (id: string) => void
   isVoted: boolean
@@ -31,7 +30,6 @@ interface EntryCardProps {
 
 const EntryCardComponent: React.FC<EntryCardProps> = ({
   entry,
-  onClick,
   isBookmarked,
   toggleBookmark,
   isVoted,
@@ -89,13 +87,27 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     }
   }, [entry.id])
 
+  // The card owns its own address. pushState rather than router.push: the App
+  // Router reflects it through usePathname, so the panel opens with no server
+  // render and no Firestore read, and Back closes it. At 10–30 opens a session a
+  // router.push here would refetch the whole catalogue every time.
+  //
+  // The query string is carried over rather than dropped. pushState replaces the
+  // whole URL, and the grid reads its page count from useSearchParams — so
+  // opening an Entry from page 2 collapsed the catalogue behind the tint from 96
+  // cards back to 48, then re-expanded it on close.
+  //
   // Opening the Entry is not a view. Playing the Demo is, and that fires from the
   // InteractiveVideo below. Opening a card and dismissing it without watching is
   // not a view of anything, and while both fired one watch billed two. The
   // judgement is reversible; it is written here because nothing else records it.
   const handleClick = useCallback(() => {
-    onClick(entry)
-  }, [onClick, entry])
+    window.history.pushState(
+      null,
+      "",
+      `/entry/${entry.id}${window.location.search}`
+    )
+  }, [entry.id])
 
   const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()

@@ -35,7 +35,6 @@ export interface EntryCardGridProps {
   sortedData?: Entry[]
   treatment: GridTreatment
   children?: React.ReactNode
-  openModal: (entry: Entry) => void
   bookmarks: string[]
   toggleBookmark: (id: string) => void
   votedEntryIds: string[]
@@ -48,7 +47,6 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   sortedData,
   treatment,
   children,
-  openModal,
   bookmarks,
   toggleBookmark,
   votedEntryIds,
@@ -232,7 +230,6 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
               <EntryCard
                 key={entry.id}
                 entry={entry}
-                onClick={openModal}
                 isBookmarked={bookmarks.includes(entry.id)}
                 toggleBookmark={toggleBookmark}
                 isVoted={votedEntryIds.includes(entry.id)}
