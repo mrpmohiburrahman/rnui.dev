@@ -9,10 +9,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 })
 
-// The search box has no accessible name yet — ticket 07 owns that — and no
-// placeholder attribute either, since its placeholder is an animated overlay.
-// Its type is what tells it apart from the newsletter's `type="email"`.
-const searchBox = (page: Page) => page.locator('input[type="text"]')
+const searchBox = (page: Page) =>
+  page.getByRole("textbox", { name: "Search the catalogue" })
 
 const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 

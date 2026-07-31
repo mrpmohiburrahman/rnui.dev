@@ -1,51 +1,28 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { useState } from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Deliberately one string used twice, as the `placeholder` and as the
+ * `aria-label`. A non-empty placeholder is itself a naming mechanism, so the
+ * field stays named even if the label is lost; the label is the name that
+ * survives the visitor typing, when the placeholder disappears. A voice-control
+ * visitor says what they can see, so the two have to match (WCAG 2.5.3).
+ */
+const SEARCH_LABEL = "Search the catalogue"
+
 export function PlaceholdersAndVanishInput({
-  placeholders,
   defaultValue,
   onChange,
   onSubmit,
 }: {
-  placeholders: string[]
   /** Seeds the box on mount. The child still owns the text from then on. */
   defaultValue?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }) {
-  const [currentPlaceholder, setCurrentPlaceholder] = useState(0)
-
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const startAnimation = () => {
-    intervalRef.current = setInterval(() => {
-      setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length)
-    }, 3000)
-  }
-  const handleVisibilityChange = () => {
-    if (document.visibilityState !== "visible" && intervalRef.current) {
-      clearInterval(intervalRef.current) // Clear the interval when the tab is not visible
-      intervalRef.current = null
-    } else if (document.visibilityState === "visible") {
-      startAnimation() // Restart the interval when the tab becomes visible
-    }
-  }
-
-  useEffect(() => {
-    startAnimation()
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-    }
-  }, [placeholders])
-
   const [value, setValue] = useState(defaultValue ?? "")
 
   // Enter used to run vanishAndSubmit, whose particle loop ends in `setValue("")`.
@@ -78,8 +55,20 @@ export function PlaceholdersAndVanishInput({
           onChange && onChange(e)
         }}
         value={value}
+        // Not type="search": WebKit draws a clear button of its own inside it.
         type="text"
-        className="w-full relative text-sm sm:text-base z-50 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-10 pr-20"
+        name="search"
+        aria-label={SEARCH_LABEL}
+        // The hint used to be an animated <p> overlaying the box, cycling
+        // through all 18 Categories every 3 seconds — unconditionally, with no
+        // prefers-reduced-motion check, and named by nothing, so the field had
+        // no accessible name at all. The placeholder attribute does the same job
+        // standing still, and names the field while it is at it.
+        //
+        // The two colour utilities carry the <p>'s colour over: app/globals.css
+        // sets a global `::placeholder { color: #a0aec0 }` that otherwise wins.
+        placeholder={SEARCH_LABEL}
+        className="w-full relative text-sm sm:text-base z-50 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-10 pr-20 placeholder:text-neutral-500 dark:placeholder:text-zinc-500"
       />
 
       {/* <button
@@ -118,42 +107,6 @@ export function PlaceholdersAndVanishInput({
           <path d="M13 6l6 6" />
         </motion.svg>
       </button> */}
-
-      <div className="absolute inset-0 flex items-center rounded-full pointer-events-none">
-        {/* initial={false} so the first placeholder is neither animated in nor
-            served invisible. framer-motion serialises the `initial` variant into
-            the style attribute during a server render, and this one starts at
-            opacity 0 — so the HTML of `/` arrived with the search box captioned
-            by a string nobody could see. The presence context suppresses both
-            halves at once, and only for children already there on the first
-            render; every later swap still fades. */}
-        <AnimatePresence mode="wait" initial={false}>
-          {!value && (
-            <motion.p
-              initial={{
-                y: 5,
-                opacity: 0,
-              }}
-              key={`current-placeholder-${currentPlaceholder}`}
-              animate={{
-                y: 0,
-                opacity: 1,
-              }}
-              exit={{
-                y: -15,
-                opacity: 0,
-              }}
-              transition={{
-                duration: 0.3,
-                ease: "linear",
-              }}
-              className="dark:text-zinc-500 text-sm sm:text-base font-normal text-neutral-500 pl-4 sm:pl-12 text-left w-[calc(100%-2rem)] truncate"
-            >
-              Search for {placeholders[currentPlaceholder]}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
     </form>
   )
 }

@@ -1,6 +1,6 @@
 # 07 — Make the catalogue usable by keyboard, and fix the contrast failures
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 08
 
 From `spec.md:93` ("Cards become keyboard-reachable, focus states become visible"), under
@@ -217,3 +217,66 @@ opacity, the post-hydration pop it describes is reduced to the vote star filling
 08, for step 3 only. Steps 1, 2, 4, 5 and step 6's non-link assertions can land before it.
 Step 3 is order-independent with respect to ticket 06 (see the note in that step); step 5 is
 order-independent with respect to ticket 03.
+
+## Comments
+
+All six steps done. `pnpm check-types`, `pnpm lint` and `pnpm build` are clean, `pnpm test`
+is 159/159 and `pnpm exec playwright test` is 46/46 — seven new assertions in
+`tests/e2e/keyboard.spec.ts` and two existing locators updated, both forced by steps 4-5.
+
+### Measured, not read
+
+| Claim | Measurement |
+|---|---|
+| Card bounding boxes unchanged | 12 cards at 1440×900, baseline build vs this one: the two JSON dumps are byte-identical |
+| Only the two authorised regions differ | **7,047 of 1,296,000 pixels**, in exactly three places: the five bookmark icons, the search hint, and `Updated: 10 → 11 minutes ago` (a clock, not a code change) |
+| The hint keeps the `<p>`'s colour | computed `::placeholder` is `rgb(115,115,115)` light / `rgb(113,113,122)` dark — `neutral-500` and `zinc-500`, so the global `#a0aec0` at `globals.css:138` loses, as the ticket predicted |
+| The hint moves 8px left at `sm`+ | measured: text starts at x+49 before, x+41 after. Exactly the `sm:pl-12` → `sm:pl-10` difference. Left alone per the ticket |
+| Lighthouse "Form elements have associated labels" | **passes** (was the failure step 4 exists to fix) |
+| Lighthouse contrast | **still fails, 48 items**, every one `text-blue-500` on a Source link. No colour changed |
+| Accessibility score | 0.96, contrast the only remaining failure |
+
+### Two places the ticket's instructions did not survive contact
+
+1. **There is no path helper.** Step 3 says "use the path helper ticket 08 introduces; do
+   not invent a path here" — 08 introduced none and its own Comments record the helper as
+   raised and declined. The literal is now bound once as `const href` at
+   `entry-card.tsx:94` and read by both `handleClick` and the `<Link>`, so the file has one
+   address expression rather than the two it would otherwise have had.
+
+2. **The sample `onClick={(e) => e.stopPropagation()}` would have opened the wrong thing.**
+   With only `stopPropagation`, the `<Link>` navigates — so the headline would have sent a
+   visitor to the standalone page while the card body next to it opened the overlay, and
+   `?page=` would have been dropped. Decision 5 (`spec.md:24`) is explicit that an Entry
+   opens "as an overlay from the grid and as a page cold". A plain click is therefore
+   intercepted (`preventDefault` + the card's own `handleClick`), while cmd/ctrl/shift/alt
+   are left to the browser so the real `href` still opens a new tab. `tests/e2e/entry-route.spec.ts`
+   would have caught the other version: it clicks the `<h3>` and asserts zero navigation
+   requests.
+
+   The `href` itself carries no query string and cannot — it renders on the server, where
+   `window.location` does not exist, so appending one would be a hydration mismatch on every
+   card. `handleClick` reads `window.location.search` at click time instead.
+
+### For the maintainer, before merge
+
+Both were flagged in Open questions as things to see rather than discover in a diff.
+Screenshots in this session's scratchpad: `before.png`, `after.png`, `diff.png`.
+
+- **The bookmark control at rest** (step 2, the third exception to decision 1). It is now a
+  20px outline icon on a white pill at full opacity on every card, where the frozen
+  screenshot shows it at 10%. Nothing moves; opacity only. Pre-authorised by decision 19
+  (`spec.md:38`), but this is what it looks like.
+- **The search hint** reads `Search the catalogue` and stands still, where it read
+  `Search for Accordions` and rotated through all 18 Categories. 8px further left at `sm`
+  and up, for the reason measured above.
+
+### Left as the ticket asks
+
+The Source-link colour is untouched, so Lighthouse still reports 48 contrast failures. The
+first Open question is still open and still a maintainer call. The search input's own
+`focus:outline-none focus:ring-0` also stays — the pill is `overflow-hidden rounded-full`,
+so a restored outline would be clipped.
+
+Half of ticket 04's open question closes with step 2: the post-hydration pop is now just the
+vote star filling.

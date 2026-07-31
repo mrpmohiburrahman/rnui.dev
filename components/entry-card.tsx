@@ -87,6 +87,12 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     }
   }, [entry.id])
 
+  // The Entry's address, written once. The headline link needs it as an href and
+  // the open needs it with the query string appended, and having those be two
+  // separate literals is how one of them ends up carrying the query and the
+  // other not.
+  const href = `/entry/${entry.id}`
+
   // The card owns its own address. pushState rather than router.push: the App
   // Router reflects it through usePathname, so the panel opens with no server
   // render and no Firestore read, and Back closes it. At 10–30 opens a session a
@@ -102,12 +108,23 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // not a view of anything, and while both fired one watch billed two. The
   // judgement is reversible; it is written here because nothing else records it.
   const handleClick = useCallback(() => {
-    window.history.pushState(
-      null,
-      "",
-      `/entry/${entry.id}${window.location.search}`
-    )
-  }, [entry.id])
+    window.history.pushState(null, "", `${href}${window.location.search}`)
+  }, [href])
+
+  // The headline is a real <a>, so a modified click is the browser's to handle —
+  // cmd/ctrl/shift/alt open the Entry in a new tab or window, which is the point
+  // of it having an address. Everything else is the same open the card body does,
+  // so only one of the two runs: stopPropagation keeps the ancestor from pushing
+  // a second entry onto the history stack.
+  const handleHeadlineClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+      e.preventDefault()
+      handleClick()
+    },
+    [handleClick]
+  )
 
   const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -155,16 +172,16 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
             "w-full h-full transition-colors duration-200 rounded-lg shadow-elevationLight flex flex-col"
           )}
         >
-          {/* Bookmark Button */}
+          {/* Bookmark Button.
+              It used to be opacity-10 and pointer-events-none until the card was
+              hovered. Neither takes an element out of the tab order, so a keyboard
+              visitor landed on a control drawn at 10% that also removed its own
+              focus ring; on touch, where there is no hover, it was unreachable
+              entirely. It is `absolute`, so showing it at rest moves nothing. */}
           <button
             type="button"
             onClick={handleBookmarkClick}
-            className={cn(
-              "absolute top-4 right-4 p-1 bg-white dark:bg-gray-800 rounded-full shadow-md focus:outline-none z-10",
-              "transition-opacity duration-200 opacity-10 group-hover:opacity-100",
-              "pointer-events-none group-hover:pointer-events-auto",
-              isBookmarked && "opacity-100"
-            )}
+            className="absolute top-4 right-4 p-1 bg-white dark:bg-gray-800 rounded-full shadow-md z-10"
             aria-label={isBookmarked ? "Remove Bookmark" : "Add Bookmark"}
           >
             {isBookmarked ? (
@@ -199,7 +216,37 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
           <div className="flex flex-col flex-grow justify-between p-4">
             <div>
               <MinimalCardTitle className="font-semibold mb-1 text-neutral-800 dark:text-neutral-200 text-sm">
-                {entry.caption}
+                {/* The card's one keyboard route into the Entry. The card body
+                    is a div with an onClick — a mouse affordance that no Tab
+                    ever reaches — so without this the detail view had no
+                    keyboard route at all.
+
+                    A real href, so the Entry can be opened in a new tab, copied
+                    and crawled; but a plain click is intercepted and handed to
+                    handleClick, so the headline and the card body do the same
+                    thing. Letting the <Link> navigate instead would send a
+                    keyboard visitor to the standalone page while a mouse
+                    visitor got the overlay.
+
+                    The href alone carries no query string, and cannot: it is
+                    rendered on the server, where window.location does not
+                    exist, so appending one would be a hydration mismatch on
+                    every card. handleClick reads window.location.search at
+                    click time instead, which is what keeps `?page=2` across an
+                    open. A cmd-click therefore opens the Entry's own address
+                    with no listing state attached — right for a new tab, which
+                    is not showing the listing.
+
+                    No aria-label: the link's name is its visible text. Tailwind
+                    preflight sets `a { color: inherit; text-decoration: inherit }`,
+                    so nothing about the heading moves or changes colour. */}
+                <Link
+                  href={href}
+                  prefetch={false}
+                  onClick={handleHeadlineClick}
+                >
+                  {entry.caption}
+                </Link>
               </MinimalCardTitle>
               <MinimalCardDescription className="text-sm text-neutral-700 dark:text-neutral-300 mb-2">
                 {entry.author}
@@ -275,7 +322,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
               <button
                 type="button"
                 onClick={handleVoteClick}
-                className="text-yellow-500 hover:text-yellow-700 focus:outline-none"
+                className="text-yellow-500 hover:text-yellow-700"
                 aria-label={isVoted ? "Unvote" : "Vote"}
               >
                 {isVoted ? (
@@ -304,5 +351,4 @@ export const EntryCard = memo(EntryCardComponent, (prevProps, nextProps) => {
   )
 })
 
-EntryCard.displayName = 'EntryCard'
-
+EntryCard.displayName = "EntryCard"
