@@ -1,6 +1,7 @@
 # 09 — Redesign baseline dashboard
 
 Status: ready-for-agent
+Blocked by: 01, 03
 
 ## Problem
 
