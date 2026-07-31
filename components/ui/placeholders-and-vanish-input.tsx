@@ -245,7 +245,14 @@ export function PlaceholdersAndVanishInput({
       </button> */}
 
       <div className="absolute inset-0 flex items-center rounded-full pointer-events-none">
-        <AnimatePresence mode="wait">
+        {/* initial={false} so the first placeholder is neither animated in nor
+            served invisible. framer-motion serialises the `initial` variant into
+            the style attribute during a server render, and this one starts at
+            opacity 0 — so the HTML of `/` arrived with the search box captioned
+            by a string nobody could see. The presence context suppresses both
+            halves at once, and only for children already there on the first
+            render; every later swap still fades. */}
+        <AnimatePresence mode="wait" initial={false}>
           {!value && (
             <motion.p
               initial={{

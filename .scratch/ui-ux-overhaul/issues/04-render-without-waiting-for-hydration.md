@@ -1,6 +1,6 @@
 # 04 — Stop serving an invisible page
 
-Status: ready-for-agent
+Status: resolved
 
 ## Problem
 
@@ -101,3 +101,50 @@ or `app/` server-renders a zero opacity.
 ## Depends on
 
 nothing
+
+## Comments
+
+Steps 1 to 5 landed as written. `components/cult/fade-in.tsx` is gone, both wrappers with it;
+`entry-card.tsx` keeps only `layout`; the guard is deleted and the memo now reads a null set as
+"nothing remembered yet". Verified by a new `tests/e2e/served-html.spec.ts`, which asserts against
+`request.get` rather than `page.goto` so no JavaScript ever runs. 19/19 e2e, 159 unit,
+`pnpm check-types` and `pnpm build` all pass. `pnpm lint` still reports its two pre-existing errors,
+both in `assets/new-ui/support.js` — the kept Studio Dark mock, untouched here.
+
+**The Problem section is wrong on one point, and the acceptance could not be met without noticing.**
+"Nothing else in `components/` or `app/` server-renders a zero opacity" — the rotating search
+placeholder does, `components/ui/placeholders-and-vanish-input.tsx`, serving
+`style="opacity:0;transform:translateY(5px)"` on the caption of the search box on `/`. Fixed with
+`initial={false}` on its `AnimatePresence`, which suppresses both the mount animation and the
+serialised style, and only for children present on the first render — every later swap still fades.
+This is the SSR half only. The 3-second cycle itself is still there, still unowned; ticket 03 notes
+that and asks for a follow-up ticket to take it along with the dead `vanishAndSubmit` machinery.
+
+**A fourth cause the ticket does not list.** `entry-card-grid.tsx` wrapped the grid in
+`<Suspense fallback={<div>Loading...</div>}>`. Nothing inside is async, but React still emitted the
+fallback and streamed all 277 cards into `<div hidden id="S:1">` for an inline script to swap in — so
+the cards were in the served bytes and invisible to anyone without JavaScript, which is exactly the
+defect this ticket is named for. Removed. Confirmed by rebuilding with and without it: with the
+boundary, one `Loading...` and two hidden divs; without, the grid renders inline.
+
+**Acceptance bullet 8, measured rather than argued.** 1440x1200, `networkidle` plus 3s, ImageMagick
+`compare -metric AE`. Two captures of the *same* build differ by 4px, so that is the floor. HEAD vs
+this change came out at 227px — all of it two live Firestore counters that this repo's own
+`vote.spec.ts` and `view.spec.ts` had incremented between the captures, at identical string widths,
+in one 634x74 band. Masking that band: **0 differing pixels**. Decision 1 holds. Not committed as a
+test — pinning a screenshot against counters that move on every e2e run is a permanently flaky test.
+
+**Both Open questions.** The first is shipped as "accept it": a visitor with saved state sees the
+Bookmark and Star flip one render after hydration. No layout moves. Reverting it means holding both
+controls hidden until the sets are read, which is the guard again, in miniature. The second is
+answered — step 1 is done here, so decision 16's ticket will find only `layout` left to remove.
+
+**Left open, and outside this ticket's letter.** `app/layout.tsx:55` wraps `NavSidebar` in a Suspense
+that genuinely suspends, on `useSearchParams` in `components/nav/nav-side-bar.tsx`. The sidebar still
+ships inside `<div hidden id="S:0">` and stays invisible without JavaScript. Acceptance bullet 4 names
+the catalogue and passes, but the page is not whole without scripts. Nav belongs to ticket 12.
+
+**Two notes for whoever works here next.** Turbopack's incremental cache served stale output twice
+during this ticket — a change to a `motion` prop compiled in 3.8s and did not reach the HTML.
+`rm -rf .next` before believing a negative result. And `pnpm build` rewrites `public/sitemap-0.xml`
+with a fresh `lastmod`; that is build noise, not work, and does not belong in the commit.

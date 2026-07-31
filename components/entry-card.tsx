@@ -130,8 +130,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      // No mount animation. framer-motion serialises `initial` into the style
+      // attribute during a server render, so every card in the served HTML
+      // arrived at `opacity: 0` and only appeared once hydration finished — and
+      // 277 of them slid up 10px at once when it did.
       className="group relative break-inside-avoid w-full sm:w-[221px] cursor-pointer"
       onClick={handleClick}
     >
