@@ -190,7 +190,13 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     // and 277 of them slid up 10px the moment hydration finished. The layout
     // projection ran over all 277 on every sort toggle, for a rare reorder.
     <div
-      className="group relative break-inside-avoid w-full sm:w-[221px] cursor-pointer"
+      // No fixed width. A hard 221-pixel width used to sit here, inside a
+      // `minmax(0, 1fr)` track, so from `sm` up the card was correct at exactly
+      // one viewport width per breakpoint and overlapped its neighbour either
+      // side of it — the last card in each row running past the grid, where
+      // `overflow-hidden` on the root cut it off. The column-break hint went
+      // with it: nothing on the site establishes a multi-column context.
+      className="group relative w-full cursor-pointer"
       onClick={handleClick}
     >
       <div className="w-full h-full relative">
@@ -281,7 +287,14 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
               <MinimalCardContent />
             </div>
             <MinimalCardFooter className="p-0">
-              <div className="flex justify-between items-center w-full text-neutral-800 dark:text-neutral-200">
+              {/* Wraps. Three social icons and the Source link have a
+                  129px min-content width, and neither half can shrink — an
+                  icon is a fixed 20px and "Source" is a word. That fitted while
+                  the card was pinned at 221 pixels; once it became its track,
+                  the narrower bands put the content box under 129px and Source
+                  ran off the right edge of the card. Wrapping only engages
+                  where it did not fit. */}
+              <div className="flex flex-wrap gap-y-2 justify-between items-center w-full text-neutral-800 dark:text-neutral-200">
                 {/* Left Side: Social Icons */}
                 <div className="flex items-center gap-3">
                   {entry.twitterId && (
