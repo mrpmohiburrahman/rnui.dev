@@ -266,10 +266,25 @@ The clipping was real at every one of the ten measurements, not at "the low end 
    `document.documentElement.scrollWidth > clientWidth` at 640px on both `/` and `/products` —
    before this ticket and after it, unchanged. Not caused by the card width and not cured by
    fixing it. 390px is clean. Needs its own ticket.
+   **Resolved in the follow-up commit**, at the maintainer's instruction to fix rather than
+   file. The cause: at 640px the sidebar appears and `main` picks up its 168px left margin,
+   leaving 440px of content box, while the sort controls turn horizontal at the same breakpoint
+   with a 470px min-content — three sort pills at 278px and two status pills at 191px, neither
+   able to shrink. A flex item cannot go below its min-content, so `main` was floored at 502px
+   and the document scrolled sideways for the 640–670px band. That row now wraps, and
+   `gap-y-4` replaces `space-y-4 sm:space-y-0` because `space-y` puts a margin on the first item
+   of a wrapped line. Swept every width from 320 to 1600 in 10px steps on `/products`: no
+   document overflow and no grid overflow at any of them.
 3. **`tests/e2e/entry-route.spec.ts` "the panel fades and never scales" is flaky.** It failed
    once in a full run and passed on every re-run, alone and in suite. It samples overlay opacity
    across frames and gets one distinct value when the fade completes before the first sample.
    Nothing in this ticket touches the overlay. Ticket 08's file.
+   **Resolved in the follow-up commit.** The sampler was 25 round-trips of `page.evaluate` with
+   an 8ms wait between them, which is not a frame clock — a CDP round-trip costs more than a
+   frame on a loaded machine, so a whole exit animation could finish inside two polls. It now
+   installs a `requestAnimationFrame` recorder in the page and reads the whole recording out in
+   one call at the end, so it samples every frame the browser paints. The full suite has since
+   run clean three times consecutively.
 
 ### From the review
 

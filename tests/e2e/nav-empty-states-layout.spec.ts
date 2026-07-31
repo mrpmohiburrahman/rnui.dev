@@ -213,6 +213,29 @@ test.describe("a card fills its track instead of overflowing it", () => {
   }
 })
 
+test.describe("the page never scrolls sideways", () => {
+  // 640px is where the sidebar appears (`hidden sm:flex`) and `main` picks up
+  // its 168px left margin, and where the sort controls turn horizontal. For a
+  // 30px-wide band above it the three sort pills and the two status pills had a
+  // 470px min-content against the 440px `main` had left, and a flex item cannot
+  // shrink below its min-content — so `main` was floored wider than the
+  // viewport and the whole document scrolled. 700px is past the band, 639px is
+  // below the margin, and both were always clean.
+  for (const width of [390, 639, 640, 660, 700, 768, 1024, 1440]) {
+    for (const path of ["/", "/products", "/bookmarks"]) {
+      test(`${path} at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 })
+        await page.goto(path)
+        const measured = await page.evaluate(() => ({
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
+        }))
+        expect(measured.scrollWidth).toBeLessThanOrEqual(measured.clientWidth)
+      })
+    }
+  }
+})
+
 test.describe("the content clears the header instead of sitting under it", () => {
   const mainTop = (page: Page) =>
     page.evaluate(

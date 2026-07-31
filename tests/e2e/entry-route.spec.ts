@@ -19,6 +19,69 @@ const known = allEntries[0]
 const firstCard = (page: import("@playwright/test").Page) =>
   page.getByRole("heading", { level: 3 }).first()
 
+/** One frame of the overlay's computed style, recorded in the page. */
+type OverlayFrame = { transform: string; opacity: number; tint: number | null }
+
+/**
+ * Start recording the overlay's computed style once per animation frame.
+ *
+ * In the page rather than from the test, because a Playwright round-trip is not
+ * a frame clock: `page.evaluate` in a loop samples at whatever rate the CDP
+ * connection manages, which on a loaded machine is slower than the animation it
+ * is trying to measure. `requestAnimationFrame` samples every frame the browser
+ * paints, and the whole recording is read out in one call at the end.
+ *
+ * Frames where the overlay is absent are skipped, not recorded as a gap — the
+ * loop keeps running so a recording can start before the node exists (or carry
+ * on past its unmount) and still hold every frame in between.
+ */
+async function startSampling(page: import("@playwright/test").Page) {
+  await page.evaluate(() => {
+    const frames: OverlayFrame[] = []
+    const w = window as unknown as {
+      __overlayFrames: OverlayFrame[]
+      __stopSampling: () => void
+    }
+    w.__overlayFrames = frames
+    let running = true
+    w.__stopSampling = () => {
+      running = false
+    }
+    const tick = () => {
+      const panel = document.querySelector('[role="dialog"]')
+      const tint = document.querySelector(".fixed.inset-0.bg-black")
+      if (panel) {
+        const style = getComputedStyle(panel)
+        frames.push({
+          transform: style.transform,
+          opacity: Number(style.opacity),
+          tint: tint ? Number(getComputedStyle(tint).opacity) : null,
+        })
+      }
+      if (running) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  })
+}
+
+async function readSamples(
+  page: import("@playwright/test").Page
+): Promise<OverlayFrame[]> {
+  // One extra frame first, so a recording that is read the instant an assertion
+  // resolves still holds the frame that satisfied it.
+  await page.evaluate(
+    () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+  )
+  return page.evaluate(() => {
+    const w = window as unknown as {
+      __overlayFrames: OverlayFrame[]
+      __stopSampling: () => void
+    }
+    w.__stopSampling()
+    return w.__overlayFrames
+  })
+}
+
 test("clicking a card opens the panel at the Entry's own address, without navigating", async ({
   page,
 }) => {
@@ -135,52 +198,40 @@ test.describe("reduced motion", () => {
   // and the whole close, because one frame is all it took.
   test("the panel fades and never scales", async ({ page }) => {
     await page.goto("/")
+
+    // Sampling happens inside the page, one frame at a time, and is read out
+    // once at the end. It used to be 25 round-trips of page.evaluate with an 8ms
+    // wait between them, which is not a frame clock: a round-trip costs more
+    // than 16ms on a loaded machine, so a whole exit could finish inside two
+    // polls and the run would see a single opacity value and call the fade
+    // missing. It failed that way in a full suite and passed alone, which is the
+    // signature of a sampler racing the thing it samples rather than of a
+    // regression.
+    await startSampling(page)
     await firstCard(page).click()
     await expect(page.getByRole("dialog")).toBeVisible()
+    const opening = await readSamples(page)
 
-    const scales: number[] = []
-    const panelOpacity: number[] = []
-    const tintOpacity: number[] = []
-    const sample = async () => {
-      for (let i = 0; i < 25; i++) {
-        const seen = await page.evaluate(() => {
-          const panel = document.querySelector('[role="dialog"]')
-          const tint = document.querySelector(".fixed.inset-0.bg-black")
-          if (!panel) return null
-          const style = getComputedStyle(panel)
-          return {
-            transform: style.transform,
-            opacity: style.opacity,
-            tint: tint ? getComputedStyle(tint).opacity : null,
-          }
-        })
-        if (!seen) continue
-        const matrix = seen.transform.match(
-          /matrix\(([-\d.]+), 0, 0, ([-\d.]+),/
-        )
-        if (matrix) scales.push(Number(matrix[1]), Number(matrix[2]))
-        panelOpacity.push(Number(seen.opacity))
-        if (seen.tint !== null) tintOpacity.push(Number(seen.tint))
-        await page.waitForTimeout(8)
-      }
-    }
-
-    await sample()
-    // The close is sampled from its first frame, unlike the open, which cannot
-    // be reached before toBeVisible() resolves. So the fade claim is made
-    // against the close: each node is checked on its own, because a set of
-    // combined strings would pass on either one moving alone.
+    // Sampled from its first frame, because the sampler is already running when
+    // the key is pressed. Each node is checked on its own: a set of combined
+    // strings would pass on either one moving alone.
+    await startSampling(page)
     await page.keyboard.press("Escape")
-    panelOpacity.length = 0
-    tintOpacity.length = 0
-    await sample()
+    await expect(page.getByRole("dialog")).toHaveCount(0)
+    const closing = await readSamples(page)
 
+    const scales = [...opening, ...closing].flatMap((frame) => {
+      const matrix = frame.transform.match(/matrix\(([-\d.]+), 0, 0, ([-\d.]+),/)
+      return matrix ? [Number(matrix[1]), Number(matrix[2])] : []
+    })
     expect(scales.length).toBeGreaterThan(0)
     expect([...new Set(scales)]).toEqual([1])
 
     // Both nodes still fade, so the transition still says "on top of" rather
     // than "went somewhere else".
-    expect(new Set(panelOpacity).size).toBeGreaterThan(1)
-    expect(new Set(tintOpacity).size).toBeGreaterThan(1)
+    expect(new Set(closing.map((f) => f.opacity)).size).toBeGreaterThan(1)
+    expect(
+      new Set(closing.map((f) => f.tint).filter((t) => t !== null)).size
+    ).toBeGreaterThan(1)
   })
 })

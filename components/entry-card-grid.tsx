@@ -102,7 +102,20 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
       >
         {children}
       </div>
-      <div className="flex flex-col sm:flex-row justify-between w-full items-start sm:items-center space-y-4 sm:space-y-0">
+      {/* Wraps, and spaces its lines with `gap-y` rather than `space-y`.
+          The three sort pills have a 278px min-content and the two status pills
+          191px; together 470px, against the 440px `main` actually has at 640px
+          (a 640px viewport less the sidebar's 168px margin and this column's
+          32px of padding). A flex item cannot shrink below its min-content, so
+          `main` was floored at 502px and the document scrolled sideways for the
+          640-670px band — the band where the sidebar appears and this row turns
+          horizontal, but nothing is wide enough for both yet.
+
+          `gap-y-4` in place of `space-y-4 sm:space-y-0` because `space-y` is a
+          margin on every child but the first, which lands on the first item of
+          a wrapped line too. The two spell the same 16px in the column layout
+          and in the unwrapped row, so nothing moves where it already fitted. */}
+      <div className="flex flex-wrap flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-y-4">
         {setSort && currentSort && (
           <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             {/* Desktop Sorting Buttons */}
