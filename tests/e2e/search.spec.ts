@@ -7,6 +7,9 @@ const PAGE_SIZE = 48
 // autocaptures into the production PostHog project.
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  // Nor is it a viewing. Demos autoplay, and nothing here is about playback, so
+  // letting them run would bill views against the real catalogue on every run.
+  await page.route("**/demo/**", (route) => route.abort())
 })
 
 const searchBox = (page: Page) =>

@@ -11,8 +11,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 })
 
-// One bookmark button per card, present whether or not the Demo is playing —
-// unlike the play button, which the <video> replaces once a card is playing.
+// One bookmark button per card.
 const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 
 test("the home page renders one page of Entries, not the whole catalogue", async ({
@@ -74,19 +73,30 @@ test("toggling the sort reorders the cards without restarting a Demo", async ({
   expect(count).toBeGreaterThan(1)
   expect(count).toBeLessThanOrEqual(PAGE_SIZE)
 
-  await page.getByRole("button", { name: "Play video" }).first().click()
-  const video = page.locator("video").first()
+  // Identified by source, not by position: a sort is a reorder, so `.first()`
+  // after the toggle is a different Entry than `.first()` before it. The src is
+  // the Entry's own Demo and follows the element wherever it lands.
+  const advanced = () =>
+    page
+      .locator("video")
+      .evaluateAll((all) =>
+        (all as HTMLVideoElement[])
+          .filter((video) => video.currentTime > 0)
+          .map((video) => video.src)
+      )
+
   await expect
-    .poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime), {
+    .poll(advanced, {
       timeout: 20_000,
-      message: "Demo mounted but never advanced past frame 0",
+      message: "no Demo ever advanced past frame 0",
     })
-    .toBeGreaterThan(0)
+    .not.toHaveLength(0)
+  const before = await advanced()
 
   await page.getByRole("button", { name: "Top Voted" }).click()
 
-  await expect(page.locator("video")).toHaveCount(1)
-  expect(
-    await page.locator("video").evaluate((v: HTMLVideoElement) => v.currentTime)
-  ).toBeGreaterThan(0)
+  // Read straight after the click, with no poll: a remount hands back a fresh
+  // <video> at currentTime 0, and a poll would wait for the owner to grant it a
+  // slot and start it again — which is the failure, not the fix.
+  expect(await advanced()).toEqual(expect.arrayContaining(before))
 })

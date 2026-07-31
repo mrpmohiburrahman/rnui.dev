@@ -16,7 +16,7 @@ test("only Posters near the viewport are fetched", async ({ page }) => {
     if (r.url().includes("/thumbnails/")) posters.add(r.url())
   })
   await page.goto("/")
-  await page.getByRole("button", { name: "Play video" }).first().waitFor()
+  await page.getByTestId("demo").first().waitFor()
   await page.waitForLoadState("networkidle")
 
   expect(posters.size).toBeGreaterThan(0) // Posters still load
@@ -24,10 +24,7 @@ test("only Posters near the viewport are fetched", async ({ page }) => {
 
   // …and the rest arrive on demand rather than never.
   const nearTop = posters.size
-  await page
-    .getByRole("button", { name: "Play video" })
-    .last()
-    .scrollIntoViewIfNeeded()
+  await page.getByTestId("demo").last().scrollIntoViewIfNeeded()
   await expect.poll(() => posters.size).toBeGreaterThan(nearTop)
 })
 
@@ -38,17 +35,17 @@ test("the Poster paints the same rect the background painted into", async ({
   page,
 }) => {
   await page.goto("/")
-  const button = page.getByRole("button", { name: "Play video" }).first()
-  await button.waitFor()
+  const tile = page.getByTestId("demo").first()
+  await tile.waitFor()
 
-  const img = button.locator("img")
+  const img = tile.locator("img")
   await expect(img).toHaveCSS("object-fit", "cover")
   await expect(img).toHaveCSS("object-position", "50% 50%")
 
   // Both rects come out of one evaluate, in one frame. Two separate
   // boundingBox() calls straddle the card mount animation and disagree on y by
-  // a few px, which says nothing about whether the <img> covers its button.
-  const [imgRect, buttonRect] = await button.evaluate((el) => {
+  // a few px, which says nothing about whether the <img> covers its tile.
+  const [imgRect, tileRect] = await tile.evaluate((el) => {
     const image = el.querySelector("img")!
     const r = (n: Element) => {
       const { x, y, width, height } = n.getBoundingClientRect()
@@ -56,5 +53,5 @@ test("the Poster paints the same rect the background painted into", async ({
     }
     return [r(image), r(el)]
   })
-  expect(imgRect).toEqual(buttonRect)
+  expect(imgRect).toEqual(tileRect)
 })

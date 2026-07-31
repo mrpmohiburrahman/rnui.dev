@@ -55,7 +55,13 @@ in-view state owned by the playback owner (ticket 09), where the five concurrent
 
 ## Work
 
-1. **`lib/view-signal.ts`** — new, pure, no React and no Firebase, mirroring the split
+1. **`lib/view-signal.ts` — already done. Skip this step.** Ticket 09 landed it on
+   2026-07-31 under the arrangement in its own "Depends on" section, together with the
+   `tests/view-signal.test.ts` half of step 9 (7 cases). Read the file before writing
+   anything against it; the description below is what it was built to and still holds.
+   One thing to know that this step did not say: `countedThisSession` is a test-and-set —
+   it answers "already billed?" *and* records the Entry if not — so there is no separate
+   write to call. New, pure, no React and no Firebase, mirroring the split
    `lib/counters.ts:8-10` explains:
    - `export const VIEW_THRESHOLD_SECONDS = 2`.
    - `createPlayedWatcher()` → a closure over `last` and `played` that takes a
@@ -100,10 +106,13 @@ in-view state owned by the playback owner (ticket 09), where the five concurrent
    `tests/counters.test.ts:82-89` to expect `{ view_count: 0, vote_count: 1 }`.
 8. **Rewrite the comments that state the old rule**: `components/entry-card.tsx:93-96`,
    `:106-109`, `:121-123`, `:171-172` and the header of `tests/e2e/view.spec.ts`.
-9. **Tests.** One vitest file `tests/view-signal.test.ts`: a second call for the same Entry
+9. **Tests.** `tests/view-signal.test.ts` is **already written** — ticket 09 landed it with
+   step 1, covering all three claims below. `tests/e2e/view.spec.ts` was also rewritten
+   there, against the autoplay rule rather than this ticket's open and source-link signals;
+   extend it rather than replacing it. What is left here: a second call for the same Entry
    id is refused and a different id is not; the watcher crosses only after two seconds of
-   positive deltas and survives a loop wrap. Rewrite `tests/e2e/view.spec.ts` against the new
-   rule; `tests/e2e/vote.spec.ts:26` becomes `toHaveLength(1)`. Note that
+   positive deltas and survives a loop wrap — all three now pinned.
+   `tests/e2e/vote.spec.ts:26` becomes `toHaveLength(1)`. Note that
    `expectNoActionRepeated` (`tests/e2e/server-actions.ts:63`) forbids a repeated action id
    within one recording, so a spec that opens two Entries cannot use it.
    `tests/e2e/home.spec.ts:30,51` locate `button[name="Play video"]`, which ticket 09 deletes
@@ -142,5 +151,9 @@ No pixel moves. No new dependency.
 
 ## Depends on
 
-09 — the playback owner. Steps 1, 6, 7 and the `lib/view-signal.ts` half of 9 can land
-before it; steps 2, 3 and 4 cannot.
+09 — the playback owner, now `resolved`. It landed step 1, step 3 (the `timeupdate` handler
+and the played signal), the `lib/view-signal.ts` half of step 9, and the `countView` export
+of step 2 — but **not** step 2's other half: `components/entry-card.tsx:18` and
+`components/entry-detail.tsx:17` still import the action directly, and step 6 is what makes
+the playback owner the only importer. **What is left for this ticket is steps 2 (the
+deletion half), 4, 5, 6, 7, 8 and the e2e half of 9.**

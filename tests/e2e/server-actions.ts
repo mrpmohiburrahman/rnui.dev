@@ -11,19 +11,31 @@ import { expect, type Browser, type Page } from "@playwright/test"
  * while `interact` runs. A fresh context per call, not a second `goto` on one
  * page: bookmarks and votes are remembered in localStorage, so a reused context
  * arrives at the next route already holding the last one's state.
+ *
+ * `interact` is handed the recording as it stands, so a test can take a reading
+ * partway through — how many actions had fired before a reload, say.
  */
 export async function recordServerActions(
   browser: Browser,
   url: string,
-  interact: (page: Page) => Promise<void>
+  interact: (page: Page, fired: FiredAction[]) => Promise<void>,
+  /**
+   * Demos autoplay, and one that plays two seconds bills a view. That makes
+   * every other claim in this file non-deterministic — five autoplays land in
+   * the middle of the quiet period and a vote test counts them as its own. A
+   * Demo that cannot load cannot bill a view, so they are aborted unless the
+   * test under way is about playback.
+   */
+  { playDemos = false }: { playDemos?: boolean } = {}
 ) {
   const context = await browser.newContext()
   const page = await context.newPage()
   // A CI run is not a site visit.
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  if (!playDemos) await page.route("**/demo/**", (route) => route.abort())
   await page.goto(url)
 
-  const fired: { id: string; body: string }[] = []
+  const fired: FiredAction[] = []
   let lastSeenAt = 0
   page.on("request", (request) => {
     if (request.method() !== "POST") return
@@ -33,7 +45,7 @@ export async function recordServerActions(
     lastSeenAt = Date.now()
   })
 
-  await interact(page)
+  await interact(page, fired)
 
   // Wait for a quiet period rather than for a fixed delay: the claim under test
   // is how many writes one interaction produces, so the test has to know the

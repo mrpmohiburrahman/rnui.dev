@@ -6,6 +6,9 @@ import { allEntries } from "../../data/catalogue"
 // autocaptures into the production PostHog project.
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  // Nor is it a viewing. Demos autoplay, and nothing here is about playback, so
+  // letting them run would bill views against the real catalogue on every run.
+  await page.route("**/demo/**", (route) => route.abort())
 })
 
 // Written out rather than imported, for the reason tests/e2e/remembered-set.spec.ts
@@ -34,8 +37,8 @@ for (const route of ["/", "/products", "/bookmarks"]) {
 
 // The card body is a div with an onClick — a mouse affordance no Tab reaches.
 // Before the headline became a link, the detail view had no keyboard route at
-// all: the one focusable thing in the poster area is the play button, and that
-// plays the Demo.
+// all: the poster area held one focusable thing, a play button, and that played
+// the Demo. Demos autoplay now, so it holds none.
 test("the headline opens the Entry from the keyboard", async ({ page }) => {
   await page.goto("/")
 
@@ -56,6 +59,9 @@ test("the headline opens the Entry from the keyboard", async ({ page }) => {
 // buttons, so a keyboard visitor arrived at a control with no way to tell they
 // had. Nothing replaced it — the browser's own ring draws on :focus-visible
 // only, which is why a mouse click still shows none.
+//
+// The play button is not in the list below because it no longer exists: the
+// Demo autoplays and the tile is not focusable at all.
 test("focused controls draw a ring, clicked ones do not", async ({ page }) => {
   await page.goto("/")
 
@@ -80,7 +86,6 @@ test("focused controls draw a ring, clicked ones do not", async ({ page }) => {
     page.getByRole("heading", { level: 3 }).first().getByRole("link"),
     page.getByRole("link", { name: "Source" }).first(),
     page.getByRole("button", { name: "Vote" }).first(),
-    page.getByRole("button", { name: "Play video" }).first(),
   ]) {
     await control.focus()
     expect(await ring(), await control.innerText()).not.toBe("none")

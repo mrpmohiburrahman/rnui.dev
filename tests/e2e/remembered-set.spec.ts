@@ -30,15 +30,20 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   const page = await context.newPage()
   // A CI run is not a site visit.
   await page.route("**/*posthog.com/**", (route) => route.abort())
+  // Nor is it a viewing. Demos autoplay, and this test has nothing to say about
+  // playback, so letting them run would bill views against the real catalogue.
+  await page.route("**/demo/**", (route) => route.abort())
   await page.goto("/bookmarks")
 
   // Exactly the one Entry the stored set names — so the set was read, and the
   // route's filter ran against it.
-  await expect(page.getByRole("button", { name: "Play video" })).toHaveCount(1)
+  await expect(page.getByTestId("demo")).toHaveCount(1)
   await expect(page.getByText(remembered.author)).toBeVisible()
 
   // Both labels are the flipped ones, so both sets hydrated rather than only one.
-  await expect(page.getByRole("button", { name: "Remove Bookmark" })).toBeVisible()
+  await expect(
+    page.getByRole("button", { name: "Remove Bookmark" })
+  ).toBeVisible()
   await expect(page.getByRole("button", { name: "Unvote" })).toBeVisible()
 
   // Un-bookmarking drops the card from the list immediately. Two copies of the set
@@ -52,7 +57,7 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   // pointer travels to it.
   await page.getByRole("heading", { level: 3 }).hover()
   await page.getByRole("button", { name: "Remove Bookmark" }).click()
-  await expect(page.getByRole("button", { name: "Play video" })).toHaveCount(0)
+  await expect(page.getByTestId("demo")).toHaveCount(0)
 
   await context.close()
 })

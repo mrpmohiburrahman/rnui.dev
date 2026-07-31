@@ -18,7 +18,7 @@ import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
 import { incrementViewCount } from "@/app/actions/increment-view-count"
 import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 
-import InteractiveVideo from "./interactive-video"
+import { DemoTile } from "./demo-tile"
 
 interface EntryCardProps {
   entry: Entry
@@ -103,10 +103,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // opening an Entry from page 2 collapsed the catalogue behind the tint from 96
   // cards back to 48, then re-expanded it on close.
   //
-  // Opening the Entry is not a view. Playing the Demo is, and that fires from the
-  // InteractiveVideo below. Opening a card and dismissing it without watching is
-  // not a view of anything, and while both fired one watch billed two. The
-  // judgement is reversible; it is written here because nothing else records it.
+  // Opening the Entry is not a view. Playing the Demo is. Opening a card and
+  // dismissing it without watching is not a view of anything, and while both
+  // fired one watch billed two. The judgement is reversible; it is written here
+  // because nothing else records it.
   const handleClick = useCallback(() => {
     window.history.pushState(null, "", `${href}${window.location.search}`)
   }, [href])
@@ -198,17 +198,14 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
             </Badge>
           )}
 
-          {/* Video. Playing it is the one interaction on this card that counts as
-              a view of the Entry. */}
+          {/* Video. Playing it counts as a view of the Entry. */}
           <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
-            <InteractiveVideo
-              src={entry.demoPath}
+            <DemoTile
+              entryId={entry.id}
+              demoPath={entry.demoPath}
               caption={`video demo of ${entry.caption}`}
-              poster={entry.posterPath}
+              posterPath={entry.posterPath}
               className="w-full h-full object-contain"
-              controls
-              loop
-              incrementViewCount={incrementViewCountLocal}
             />
           </div>
 

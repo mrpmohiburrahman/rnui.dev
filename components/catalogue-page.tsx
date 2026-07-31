@@ -22,6 +22,7 @@ import {
 import useSortedData from "@/hooks/use-sorted-data"
 import { EntryCardGrid, type GridTreatment } from "@/components/entry-card-grid"
 import { EntryOverlay } from "@/components/entry-overlay"
+import { PlaybackOwner } from "@/components/playback-owner"
 
 interface CataloguePageProps {
   entries: Entry[]
@@ -78,24 +79,30 @@ export function CataloguePage({
 
   return (
     <>
-      <EntryCardGrid
-        sortedData={sortedData}
-        treatment={treatment}
-        // Both stored sets are still null until an effect has read localStorage.
-        // `[]` rather than a placeholder render: the server and the first client
-        // render both see an empty set, so there is no hydration mismatch, and the
-        // effect fills it on the next render. Waiting instead meant the served HTML
-        // of every catalogue route was a bare `<div />` — no heading, no sort
-        // controls, no Entries.
-        bookmarks={bookmarks ?? []}
-        toggleBookmark={toggleBookmark}
-        votedEntryIds={votedEntryIds ?? []}
-        toggleVote={toggleVote}
-        setSort={setSort}
-        currentSort={sort}
-      >
-        {children}
-      </EntryCardGrid>
+      {/* One owner for every Demo on the page, and the only thing that records a
+          view. `suspended` reads the same open-Entry binding the overlay does —
+          not a boolean of its own — so five Demos cannot keep decoding behind
+          the tint, and closing re-grants whatever is still in view. */}
+      <PlaybackOwner suspended={openEntry !== null}>
+        <EntryCardGrid
+          sortedData={sortedData}
+          treatment={treatment}
+          // Both stored sets are still null until an effect has read localStorage.
+          // `[]` rather than a placeholder render: the server and the first client
+          // render both see an empty set, so there is no hydration mismatch, and the
+          // effect fills it on the next render. Waiting instead meant the served HTML
+          // of every catalogue route was a bare `<div />` — no heading, no sort
+          // controls, no Entries.
+          bookmarks={bookmarks ?? []}
+          toggleBookmark={toggleBookmark}
+          votedEntryIds={votedEntryIds ?? []}
+          toggleVote={toggleVote}
+          setSort={setSort}
+          currentSort={sort}
+        >
+          {children}
+        </EntryCardGrid>
+      </PlaybackOwner>
 
       {/* history.back() is the whole close path, so Escape, the close button,
           the tint and the browser's own Back button all do one identical thing.
