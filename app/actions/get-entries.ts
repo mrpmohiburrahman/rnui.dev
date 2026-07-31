@@ -16,9 +16,10 @@ import { matchesSearchTerm } from "@/lib/entry-search"
 // dedupes within a single render pass, which this does not do.
 //
 // Not exported, and not movable into data/entry.ts. A "use server" module may
-// export only async functions (see app/actions/increment-view-count.ts), and
-// data/entry.ts is in the client graph — components/catalogue-search.tsx imports
-// getUniqueCategories from it, so `next/cache` there would break the bundle.
+// export only async functions, which is why every counter action in this
+// directory is a one-line delegate. And data/entry.ts is in the client graph —
+// components/catalogue-search.tsx imports getUniqueCategories from it, so
+// `next/cache` there would break the bundle.
 const readEntriesWithCounts = unstable_cache(
   getEntriesWithCounts,
   ["entries-with-counts"],

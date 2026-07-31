@@ -15,10 +15,10 @@ import MinimalCard, {
   MinimalCardTitle,
 } from "@/components/cult/minimal-card"
 import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
-import { incrementViewCount } from "@/app/actions/increment-view-count"
 import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 
 import { DemoTile } from "./demo-tile"
+import { countView } from "./playback-owner"
 
 interface EntryCardProps {
   entry: Entry
@@ -60,13 +60,20 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   const viewCount = views + viewsClicked
   const voteCount = Math.max(votes + votesClicked, 0)
 
-  const incrementViewCountLocal = useCallback(async () => {
-    try {
-      await incrementViewCount(entry.id)
-      setViewsClicked((n) => n + 1)
-    } catch (error) {
-      console.error("Error incrementing view count:", error)
-    }
+  // Two of ADR-0007's three signals are this card's: opening the Entry, and
+  // following its Source link. Both go through the playback owner's countView
+  // rather than importing the action a second time — ADR-0007:22 leaves the
+  // increment with exactly one importer, which is what keeps the cap on the
+  // third signal from being routed around.
+  //
+  // Neither awaited nor wrapped: countView never rejects (lib/counters.ts:60-63),
+  // and a counter must not sit between a visitor and what they clicked. The bump
+  // moves the number on screen for these two signals only — a view billed by
+  // autoplay lands in Firestore and shows up on the next server render, because
+  // a tile that ticks its own count up while nobody clicked reads as a glitch.
+  const recordView = useCallback(() => {
+    countView(entry.id)
+    setViewsClicked((n) => n + 1)
   }, [entry.id])
 
   const decrementVoteCountLocal = useCallback(async () => {
@@ -103,13 +110,14 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // opening an Entry from page 2 collapsed the catalogue behind the tint from 96
   // cards back to 48, then re-expanded it on close.
   //
-  // Opening the Entry is not a view. Playing the Demo is. Opening a card and
-  // dismissing it without watching is not a view of anything, and while both
-  // fired one watch billed two. The judgement is reversible; it is written here
-  // because nothing else records it.
+  // Opening the Entry is a view, and an uncapped one — ADR-0007:3 lists it
+  // alongside watching the Demo and following the source link. It is deliberate
+  // in a way autoplay is not, so unlike the played signal it is not held to
+  // once per session: a visitor who opens the same Entry twice looked twice.
   const handleClick = useCallback(() => {
+    recordView()
     window.history.pushState(null, "", `${href}${window.location.search}`)
-  }, [href])
+  }, [href, recordView])
 
   // The headline is a real <a>, so a modified click is the browser's to handle —
   // cmd/ctrl/shift/alt open the Entry in a new tab or window, which is the point
@@ -131,29 +139,49 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     toggleBookmark(entry.id)
   }, [toggleBookmark, entry.id])
 
-  // The only view increment in the vote path. The stored-set toggle used to fire
-  // one of its own and two of the three page modules wrapped it to fire a third,
-  // so a single click billed two views on the home page and three on the Category
-  // listing while the number on screen moved by one.
-  const handleVoteClick = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    await incrementViewCountLocal()
-    toggleVote(entry.id)
-    if (isVoted) {
-      await decrementVoteCountLocal()
-    } else {
-      await incrementVoteCountLocal()
-    }
-  }, [entry.id, isVoted, toggleVote, incrementViewCountLocal, decrementVoteCountLocal, incrementVoteCountLocal])
+  // A vote records no view. ADR-0007:3 lists the three signals and voting is not
+  // among them, because votes already measure interest and having view_count
+  // measure it too would measure the same thing twice (ADR-0007:7). One click,
+  // one write.
+  const handleVoteClick = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      toggleVote(entry.id)
+      if (isVoted) {
+        await decrementVoteCountLocal()
+      } else {
+        await incrementVoteCountLocal()
+      }
+    },
+    [
+      entry.id,
+      isVoted,
+      toggleVote,
+      decrementVoteCountLocal,
+      incrementVoteCountLocal,
+    ]
+  )
 
-  // Following a profile or source link out still records a view. That is a third
-  // interaction, and ticket 10 ruled only on opening versus playing — it is left
-  // as it was rather than decided in passing.
-  const handleLinkClick = useCallback(async (e: React.MouseEvent) => {
+  // The Source link is the Entry's own address on GitHub (data/entry.ts:30), and
+  // ADR-0007:3 counts following it. The stopPropagation is not decoration: the
+  // card body opens the Entry, so without it a click here would count twice and
+  // push a panel over the tab that is already leaving.
+  const handleSourceClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      recordView()
+      // Allow the default link behavior
+    },
+    [recordView]
+  )
+
+  // The three profile links count nothing. They point at a person, not at the
+  // Entry, so a click on one says nothing about this Entry having been viewed —
+  // one page announces the same three links up to 124 times. They still have to
+  // stop the click reaching the card, or following a byline would open the panel.
+  const stopPropagation = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    await incrementViewCountLocal()
-    // Allow the default link behavior
-  }, [incrementViewCountLocal])
+  }, [])
 
   return (
     // A plain div. There was a `motion.div` here, projecting its layout and
@@ -198,7 +226,9 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
             </Badge>
           )}
 
-          {/* Video. Playing it counts as a view of the Entry. */}
+          {/* The Demo. It autoplays and counts its own view — two seconds of
+              actual playback, once per browser session — from inside the
+              playback owner, which is why nothing about that is wired here. */}
           <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
             <DemoTile
               entryId={entry.id}
@@ -261,7 +291,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       rel="noopener noreferrer"
                       className="hover:text-blue-700 transition-colors"
                       aria-label={`${entry.author} on X`}
-                      onClick={handleLinkClick}
+                      onClick={stopPropagation}
                     >
                       <TwitterLogoIcon className="w-5 h-5" />
                     </Link>
@@ -274,7 +304,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       rel="noopener noreferrer"
                       className="hover:text-blue-900 transition-colors"
                       aria-label={`${entry.author} on LinkedIn`}
-                      onClick={handleLinkClick}
+                      onClick={stopPropagation}
                     >
                       <Linkedin size={20} />
                     </Link>
@@ -286,7 +316,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       rel="noopener noreferrer"
                       className="text-gray-800 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
                       aria-label={`${entry.author} on GitHub`}
-                      onClick={handleLinkClick}
+                      onClick={stopPropagation}
                     >
                       <GitHubLogoIcon className="w-5 h-5" />
                     </Link>
@@ -300,7 +330,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline flex items-center gap-1 tracking-tight text-sm font-semibold"
-                    onClick={handleLinkClick}
+                    onClick={handleSourceClick}
                   >
                     Source
                   </Link>

@@ -16,6 +16,10 @@ function oneVoteClick(browser: Browser, url: string) {
 // four unrelated layers, so one vote click billed two views on the home page and
 // three on the Category listing — the busiest route, since every legacy Category
 // address redirects into it.
+//
+// The count is now one, not two. A vote no longer records a view at all
+// (ADR-0007:3, :7): votes are the site's interest signal, and having view_count
+// measure interest too would have measured the same thing twice.
 test("a vote click fires each server action exactly once", async ({
   browser,
 }) => {
@@ -23,7 +27,7 @@ test("a vote click fires each server action exactly once", async ({
 
   expectNoActionRepeated(fired)
   expectOneEntryTargeted(fired)
-  expect(fired).toHaveLength(2) // one view, one vote
+  expect(fired).toHaveLength(1) // the vote, and nothing else
 })
 
 test("the Category listing records the same count as the home page", async ({

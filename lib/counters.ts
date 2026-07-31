@@ -75,12 +75,14 @@ export function createCounters(store: CounterStore) {
     async changeVote(entryId: string, change: VoteChange): Promise<void> {
       try {
         if (change === "cast") {
-          // `view_count: 1` is what the old increment wrote, kept rather than
-          // corrected: a vote click records a view first, so by the time this runs
-          // the document exists and this payload is all but unreachable.
+          // `view_count: 0`, and the zero is load-bearing. This payload used to
+          // seed one view because a vote click recorded a view first, which made
+          // it unreachable. ADR-0007 stops a vote counting as a view, so a
+          // first-ever vote on an Entry nobody has watched now reaches here — and
+          // a 1 would invent a view that never happened.
           await addOrCreate(entryId, "vote_count", 1, {
             vote_count: 1,
-            view_count: 1,
+            view_count: 0,
           })
         } else {
           await addOrCreate(entryId, "vote_count", -1, {

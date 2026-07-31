@@ -1,16 +1,18 @@
 import { expect, test } from "@playwright/test"
 
-import { recordServerActions } from "./server-actions"
+import { allEntries } from "../../data/catalogue"
+import { expectOneEntryTargeted, recordServerActions } from "./server-actions"
 
 // A view is a recording watched, not a button pressed (ADR-0007). There is no
-// play control left to press: a Demo counts once it has actually advanced two
-// seconds while holding one of the five playback slots, at most once per Entry
-// per browser session.
+// play control left to press on the grid: a Demo counts once it has actually
+// advanced two seconds while holding one of the five playback slots, at most
+// once per Entry per browser session. Two deliberate acts count as well and are
+// uncapped — opening an Entry, and following its source link out (ADR-0007:3).
 //
 // This file used to assert the opposite — that playing the Demo *in the modal*
-// was the one view. Both halves of the rule it now pins are called load-bearing
-// by ADR-0007's own consequences: drop the threshold and this is an impression
-// count, drop the cap and it is a scroll counter.
+// was the one view. Both halves of the autoplay rule it now pins are called
+// load-bearing by ADR-0007's own consequences: drop the threshold and this is an
+// impression count, drop the cap and it is a scroll counter.
 test("a page of autoplaying Demos bills each Entry once, and a reload bills none", async ({
   browser,
 }) => {
@@ -54,4 +56,61 @@ test("a page of autoplaying Demos bills each Entry once, and a reload bills none
   // The reload replayed every one of those Demos past two seconds and billed
   // nothing, which is the once-per-Entry-per-session cap.
   expect(fired).toHaveLength(beforeReload)
+})
+
+// The other two signals, and the only two a visitor under prefers-reduced-motion
+// can ever produce — no Demo is mounted for them at all. Demos are aborted here
+// so the autoplay signal cannot land in the middle of the claim; what is left is
+// exactly the deliberate acts.
+test("opening an Entry and following its Source link bill one view each", async ({
+  browser,
+}) => {
+  const fired = await recordServerActions(browser, "/", async (page) => {
+    // The panel's Source link is a target=_blank to a real repository. Left
+    // alone the popup fetches github.com on every run, which is neither this
+    // test's claim nor its to pay for.
+    await page
+      .context()
+      .route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort())
+
+    // The heading, not the card: the bookmark button sits over the top-right
+    // corner and the Demo fills the top. Both open the Entry the same way.
+    await page.getByRole("heading", { level: 3 }).first().click()
+    await expect(page.getByRole("dialog")).toBeVisible()
+    await page.getByRole("link", { name: "GitHub Repository" }).click()
+  })
+
+  // Two, from one Entry. expectNoActionRepeated is deliberately not used: this
+  // is the same action id twice, which is the thing being asserted rather than a
+  // double billing. Three would mean the panel's Demo counted a press as well.
+  expect(fired).toHaveLength(2)
+  expectOneEntryTargeted(fired)
+})
+
+// The reversal ADR-0007 turns on, pinned where it can be seen on its own: the
+// standalone Entry page has no grid, so no playback owner, so no autoplay. Any
+// action recorded here came from the press — and there is to be none.
+test("pressing play in the panel bills nothing at all", async ({ page }) => {
+  await page.route("**/*posthog.com/**", (route) => route.abort())
+
+  const fired: string[] = []
+  page.on("request", (request) => {
+    if (request.method() === "POST" && request.headers()["next-action"])
+      fired.push(request.postData() ?? "")
+  })
+
+  await page.goto(`/entry/${allEntries[0].id}`)
+  await page.getByRole("button", { name: "Play video" }).click()
+
+  // Played, not merely mounted. Past the two-second threshold on purpose: a
+  // Demo stopped at 0.1s would satisfy "no view was billed" vacuously.
+  const video = page.locator("video")
+  await expect
+    .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime), {
+      timeout: 20_000,
+      message: "the Demo never played",
+    })
+    .toBeGreaterThan(2)
+
+  expect(fired).toEqual([])
 })
