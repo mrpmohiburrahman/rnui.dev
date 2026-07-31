@@ -31,37 +31,8 @@ export const getEntries = cache(
   async (
     searchTerm?: string,
     category?: string,
-    label?: string,
-    tag?: string,
     author?: string
   ): Promise<Entry[]> => {
-    // previous implementation
-    // const db = createClient()
-    // let query = db.from("products").select("*")
-
-    // if (searchTerm) {
-    //   query = query.or(
-    //     `codename.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,punchline.ilike.%${searchTerm}%`
-    //   )
-    // }
-
-    // if (category) {
-    //   query = query.eq("categories", category)
-    // }
-
-    // if (label) {
-    //   query = query.contains("labels", [label])
-    // }
-
-    // if (tag) {
-    //   query = query.contains("tags", [tag])
-    // }
-
-    // const { data, error } = await query
-
-    // if (error) {
-    //   return []
-    // }
     try {
       let filteredEntries = await readEntriesWithCounts()
 
@@ -82,25 +53,12 @@ export const getEntries = cache(
         )
       }
 
-      // Apply category filter
+      // Apply author filter
       if (author) {
         filteredEntries = filteredEntries.filter(
           (entry) => entry.author.toLowerCase() === author.toLowerCase()
         )
       }
-      // Apply label filter
-      // if (label) {
-      //   filteredEntries = filteredEntries.filter((entry) =>
-      //     entry.labels.map((l) => l.toLowerCase()).includes(label.toLowerCase())
-      //   )
-      // }
-
-      // Apply tag filter
-      // if (tag) {
-      //   filteredEntries = filteredEntries.filter((entry) =>
-      //     entry.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
-      //   )
-      // }
 
       return filteredEntries
     } catch (error) {
