@@ -2,6 +2,7 @@
 "use client"
 
 import * as React from "react"
+import { MotionConfig } from "framer-motion"
 import { Moon, Sun } from "lucide-react"
 import {
   ThemeProvider as NextThemesProvider,
@@ -17,7 +18,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  return (
+    <NextThemesProvider {...props}>
+      {/* Reduced motion is answered once, here, rather than in each animated
+          component: `reducedMotion="user"` makes every framer animation below
+          drop its transforms and keep its opacity when the OS asks for it.
+          Before this it was honoured in exactly one file. */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
+    </NextThemesProvider>
+  )
 }
 
 export function ModeToggle() {

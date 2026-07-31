@@ -1,6 +1,6 @@
 # 08 — Give every Entry its own address
 
-Status: ready-for-agent
+Status: resolved
 
 Decision 5. The animation is settled by `.scratch/ui-ux-overhaul/motion-brief-overlay.md`;
 implement it exactly and do not re-decide any of it.
@@ -222,3 +222,107 @@ the same `usePathname()`; do not add a second mechanism here.
 Nothing. Ticket 06 rewrites the same panel body (`card-modal.tsx:58-68`); whichever lands second
 applies its change to `components/entry-detail.tsx`. Ticket 09 (pause the grid's Demos) depends
 on this one.
+
+## Comments
+
+All seven steps done. `pnpm build` prerenders 277 `/entry/…` routes (`● /entry/[id]`),
+`public/sitemap-0.xml` lists all 277 of them, `pnpm check-types` and eslint are clean,
+`pnpm test` is 159/159 and `pnpm exec playwright test` is 39/39 — the six new assertions
+in `tests/e2e/entry-route.spec.ts` and no existing spec edited.
+
+### Measured, not read
+
+| Claim | Measurement |
+|---|---|
+| A screenshot of `/` is pixel-identical | **0 differing pixels** of 1,296,000 at 1440×900, baseline build vs this one |
+| The panel is the same size as today's modal | `336, 66, 768, 768` before and after, at 1440px |
+| The tint settles at black 50% | over the sidebar: `187,187,187` → `125,125,125`. The old double fade multiplied to ≈0.26 alpha; this is 0.5, as the brief asks |
+| Panel body unchanged | body fill, close glyph and caption pixels identical |
+| No document or RSC request on open | asserted in the spec: zero requests for `/entry/…`, navigation or `?_rsc=` |
+| Cold `/entry/<id>` | title `Dropdown Menu — Enzo Manuel Mangano ( Reactiive )`, `og:image` the Poster on the CDN, caption and author in the served HTML |
+| `/entry/nope` | `404` |
+
+Screenshots for the checkpoint are in this session's scratchpad: `overlay-1440.png`,
+`overlay-1440-before.png`, `after.png`, `before.png`.
+
+### Four places the ticket's instructions did not survive contact
+
+1. **`entry-detail.tsx` needs `"use client"`.** Not in step 1, but the standalone page
+   is a server component and `incrementViewCountLocal` is an ordinary function handed to
+   `InteractiveVideo` — a server component may not pass one that is not itself a Server
+   Action. `card-modal.tsx` never needed the directive because it only ever rendered
+   inside a client tree.
+
+2. **`MotionConfig reducedMotion="user"` does not drop the scale.** Step 3 says it is
+   "what drops the `scale`". It is not: framer's reduced-motion path passes
+   `{ type: false }` for transform values
+   (`animation/interfaces/visual-element-target.mjs:57`) — it *snaps* them rather than
+   skipping them. Sampled under `reducedMotion: "reduce"`, the panel's computed transform
+   was `matrix(0.98, 0, 0, 0.98, -384, -384)`, so it painted at 0.98 and jumped. The scale
+   is now gated on `useReducedMotion()` in `entry-overlay.tsx` (`rest = reduce ? 1 : 0.98`),
+   and the sampled transforms are `matrix(1, 0, 0, 1, -384, -384)` only. `MotionConfig`
+   stays: it is right for every other animation on the site, which asks nothing.
+   `tests/e2e/entry-route.spec.ts` samples across the whole open and the whole close,
+   because one frame was all it took.
+
+3. **The Radix title warning fires in production, not only dev.** `TitleWarning` is not
+   `NODE_ENV`-gated in `@radix-ui/react-dialog@1.1.4`, and it checks
+   `document.getElementById(titleId)` — `aria-label` silences neither it nor its cause.
+   Confirmed against a production build: one `console.error` per open. Took the ticket's
+   own fallback (wrap the `<h2>` in `Dialog.Title`) but passed as an optional `Title`
+   element prop rather than an import, because `Dialog.Title` throws outside a `Dialog`
+   and this body also renders standalone. Radix's `DialogTitle` renders an `h2`, so the
+   markup is unchanged and no hidden text was added. Console is clean on open now, and the
+   dialog is named by the caption rather than "Entry details" — `aria-label` stays as the
+   fallback it was.
+
+4. **`export const dynamicParams = false`.** `app/not-found.tsx` calls `redirect("/")`, so
+   an on-demand `notFound()` would have answered a redirect, not the `404` the acceptance
+   names. Refusing unknown params at the route is also what the page already is: static,
+   from `data/catalogue.ts`, with no other id that could exist.
+
+### Smaller notes
+
+- The acceptance grep still matches three lines — all of them prose. `entry-detail.tsx:3`
+  and `entry-overlay.tsx:3` say what file they replaced, which is this repo's house style
+  for every module, and `entry-route.spec.ts:82` names the bug the focus-trap assertion
+  exists for. No import, path or identifier survives.
+- The close button now carries a focus ring at rest, because Radix moves focus into the
+  dialog on open. That is the focus trap working; it is the one visible difference inside
+  the panel and it is not a restyle.
+- Step 2's exit duration reads `reduce ? 0.1 : 0.1`. Written as `0.1`.
+- The two open questions the ticket raises stand as raised, both for the maintainer at the
+  checkpoint: cards are still `div`s with an `onClick`, so there is no inbound link and no
+  cmd-click; and Forward after Back does navigate to the standalone page.
+
+### What the two-axis review found, and what it changed
+
+**One real defect, fixed.** Step 5's `pushState(null, "", \`/entry/${entry.id}\`)` is what the
+ticket dictates, and it drops the query string — `pushState` replaces the whole URL. The grid
+reads its page count from `useSearchParams`, so opening an Entry from page 2 collapsed the
+catalogue **behind the tint** from 96 cards to 48, then re-expanded it on close. Measured, not
+argued: `96 → 48 → 96`. The card now pushes `` `/entry/${entry.id}${window.location.search}` ``,
+and `entry-route.spec.ts` opens from `/?page=2` and asserts both the preserved param and an
+unchanged card count while the panel is open. The acceptance's *"restore the exact previous URL
+including its `?search=` / `?page=` params"* only ever covered the close; the open needed saying
+too.
+
+**Three test gaps, closed.** The tint click was one of the four close paths the acceptance names
+and the only one not asserted — it is in the loop now. The reduced-motion fade assertion compared
+combined `panel/tint` strings, so either node moving alone would have passed, and it sampled the
+open, which cannot be reached before `toBeVisible()` resolves; it now checks each node separately
+across the close, which is sampled from its first frame.
+
+**Two tidies.** `aria-label="Entry details"` was inert once `Dialog.Title` renders —
+`aria-labelledby` wins per accname — so it is gone rather than left reading as a name that never
+applies. `app/entry/[id]/page.tsx` had `allEntries.find` twice and its title and description
+strings twice; both are once now.
+
+**Raised and declined.** The `/entry/` prefix appears in three places (`entry-card.tsx`,
+`catalogue-page.tsx`, the spec), which the Standards axis called Primitive Obsession. A helper
+for a prefix that will not change is not worth the file. Also noted, and left for the tickets
+that own them: `CONTEXT.md` has no glossary term for the detail panel or an Entry's address
+(a real gap, for `/domain-modeling`); `"Close Modal"`, `"No Video Available"` and `video demo of`
+are off-glossary strings carried over byte-for-byte under step 1's freeze, and belong to ticket
+06; and a cold `/entry/<id>` is now a way to open an Entry that counts no view, which widens the
+ADR 0007 contradiction this ticket was told not to resolve.
