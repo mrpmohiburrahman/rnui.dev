@@ -1,6 +1,6 @@
 # 06 — Make the Entry caption the card headline
 
-Status: ready-for-agent
+Status: resolved
 
 Decision 4 (`.scratch/ui-ux-overhaul/spec.md:23`).
 
@@ -95,6 +95,67 @@ Neither is decided here; both need the maintainer.
    caption / `@handle` / author, because `card-modal.tsx:61-63` sits directly under the
    `<h2>` and stays put. Putting the author above the handle is a DOM reorder, i.e. a
    visual change, so it is not taken here.
+
+## Comments
+
+Done as written. The diff is four string positions and three `aria-label` values,
+across `components/entry-card.tsx` and `components/card-modal.tsx`. No `className`
+value changed and no JSX element was added or removed. `substring` is gone from
+`entry-card.tsx` and no truncation replaced it.
+
+Step 4 held: the Playwright suite is 33/33 with **no** spec edited.
+`remembered-set.spec.ts:38` did not break — `getByText("William Candillon")` still
+matches, because the author is now the `<p>` rather than the `<h3>` but the text is
+unchanged. `pnpm test` 159/159, `tsc --noEmit` clean, eslint and prettier clean on
+both files.
+
+### Card height at `sm` — the measurement the acceptance asks for
+
+Measured on a production build at a 640px viewport (`w-[221px]` cards), on
+`/products?page=6` so that all **277** cards render, before and after, matched by
+position:
+
+| | result |
+|---|---|
+| Cards unchanged | 269 |
+| Cards +20px (one `text-sm` line) | 8 |
+| Cards +2 lines or more | **0** |
+| Cards that shrank | 0 |
+
+The eight: Theme Canvas Animation, Telegram Theme Switch, Steps, Steddy Graph
+Interaction, Animated Stacked Cards, Expandable List, Gran Turismo Countdown,
+Metaball Shader. Worst case is one extra line, which this ticket's acceptance
+admits as expected. Nothing goes back to the maintainer on height.
+
+**The acceptance's stated reason for the growth is wrong, and it is worth recording
+why.** It predicts the extra line comes from the author being 3 characters longer
+untruncated. It does not. The first measurement was taken on an all-Enzo page, where
+every card carries the identical 33-character author, and only 4 of those 48 grew —
+if the author were the cause, all 48 would have. The cause is the **caption** moving
+into `MinimalCardTitle`, which keeps `font-semibold` in its passed className. Semibold
+is wider, so the longest captions gain a wrap. That is decision 4 working exactly as
+written ("Only which string is bold changes"), but it means caption length is the
+variable to watch, not author length — hence the re-measurement across all 277 rather
+than one author's page.
+
+### Review
+
+Two-axis review run before commit. Spec: faithful, no missing or wrong requirement.
+Standards: one hard violation — a five-line explanatory comment added above the swap
+used "Entry" for what the glossary calls the caption and "contributor" for what it
+calls the author, which ADR-0004 forbids. Both axes independently flagged the same
+comment (Standards as vocabulary drift, Spec as scope creep beyond the declared
+diff). It was deleted rather than reworded: this ticket file already records the
+history, and the code reads fine without it.
+
+Two review notes deliberately not acted on:
+
+- `aria-label={`${entry.author} on X`}` sits on a link built from `entry.twitterId`,
+  pointing at `twitter.com`, rendering `TwitterLogoIcon`. The label is the only place
+  saying "X". Step 2 of this ticket dictates that exact string, so it stands; renaming
+  the field and the icon is a separate change.
+- The overlay now reads caption / `@handle` / author, because step 3 says to leave the
+  handle line where it is. That is open question 2 below, still the maintainer's call.
 
 ## Depends on
 

@@ -56,7 +56,7 @@ export default function CardModal({
           <div className="w-full md:w-1/2 flex flex-col space-y-4 overflow-y-auto">
             <div>
               <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
-                {selectedEntry.author}
+                {selectedEntry.caption}
               </h2>
               {selectedEntry.twitterId && (
                 <p className="text-gray-500">@{selectedEntry.twitterId}</p>
@@ -64,7 +64,7 @@ export default function CardModal({
             </div>
             <div>
               <p className="text-gray-700 dark:text-gray-300">
-                {selectedEntry.caption}
+                {selectedEntry.author}
               </p>
             </div>
             <div>

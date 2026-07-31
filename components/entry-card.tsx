@@ -187,10 +187,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
           <div className="flex flex-col flex-grow justify-between p-4">
             <div>
               <MinimalCardTitle className="font-semibold mb-1 text-neutral-800 dark:text-neutral-200 text-sm">
-                {entry.author.substring(0, 30)}
+                {entry.caption}
               </MinimalCardTitle>
               <MinimalCardDescription className="text-sm text-neutral-700 dark:text-neutral-300 mb-2">
-                {entry.caption}
+                {entry.author}
               </MinimalCardDescription>
               <MinimalCardContent />
             </div>
@@ -204,7 +204,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-blue-700 transition-colors"
-                      aria-label="Twitter Profile"
+                      aria-label={`${entry.author} on X`}
                       onClick={handleLinkClick}
                     >
                       <TwitterLogoIcon className="w-5 h-5" />
@@ -217,7 +217,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-blue-900 transition-colors"
-                      aria-label="LinkedIn Profile"
+                      aria-label={`${entry.author} on LinkedIn`}
                       onClick={handleLinkClick}
                     >
                       <Linkedin size={20} />
@@ -229,7 +229,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-800 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-                      aria-label="GitHub Profile"
+                      aria-label={`${entry.author} on GitHub`}
                       onClick={handleLinkClick}
                     >
                       <GitHubLogoIcon className="w-5 h-5" />
