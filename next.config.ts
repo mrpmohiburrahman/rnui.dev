@@ -13,7 +13,12 @@ const nextConfig: NextConfig = {
       // it answers 404 with a `location` header, which no browser follows, so
       // without this rule the URL would just break. /contactus rather than /
       // because it is the page the visitor was actually asking for.
-      { source: "/feedback", destination: "/contactus", permanent: true },
+      //
+      // `permanent: false` (307), not 308: ticket 05 asks for four commits any
+      // one of which can be reverted alone, and a 308 a browser has already
+      // cached cannot be revoked. /feedback had zero pageviews in 90 days, so
+      // there is no ranking to preserve by making it permanent.
+      { source: "/feedback", destination: "/contactus", permanent: false },
     ]
   },
 
