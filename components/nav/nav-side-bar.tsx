@@ -4,16 +4,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ModeToggle } from "@/app/providers"
 
 import { Logo } from "../logo"
-import { AdminNav } from "./admin-nav"
 import { CatalogueNav } from "./catalogue-nav"
 
 type NavSidebarProps = {
@@ -33,7 +30,6 @@ export function NavSidebar({
   // and the nearest boundary was the root layout's — so eleven prerendered routes
   // served "Loading sidebar..." as their sidebar until React ran. The read now
   // lives on the one thing that needs it, inside CatalogueNav.
-  const pathname = usePathname()
   const [isSheetOpen, setSheetOpen] = useState(false)
 
   const handleLinkClick = () => {
@@ -43,39 +39,21 @@ export function NavSidebar({
   return (
     <>
       <aside
-        className={cn(
-          pathname.includes("admin")
-            ? "w-16 border-r border-black/10 dark:border-white/10"
-            : "w-42",
-          "fixed inset-y-0 left-0 z-10 hidden sm:flex flex-col bg-[#FAFAFA] justify-center dark:bg-background pt-10" // Added pt-4 here
-        )}
+        className="w-42 fixed inset-y-0 left-0 z-10 hidden sm:flex flex-col bg-[#FAFAFA] justify-center dark:bg-background pt-10"
         // style={{ borderWidth: 1, borderColor: "black" }}
       >
         {/* Navigation Section */}
         <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          {pathname.includes("admin") ? (
-            <>
-              <Logo />
-              <AdminNav pathname={pathname} />
-            </>
-          ) : (
-            <CatalogueNav
-              categories={categories}
-              labels={labels}
-              tags={tags}
-              authors={authors}
-            />
-          )}
+          <CatalogueNav
+            categories={categories}
+            labels={labels}
+            tags={tags}
+            authors={authors}
+          />
         </nav>
 
         {/* Bottom Controls: Avatar and ModeToggle */}
-        <div
-          className={
-            pathname.includes("admin")
-              ? "flex flex-col gap-4 items-center py-5 mt-auto px-2 mx-2"
-              : " flex flex-col justify-center gap-4 items-start pl-4"
-          }
-        >
+        <div className=" flex flex-col justify-center gap-4 items-start pl-4">
           {/* Mode Toggle */}
           <ModeToggle />
         </div>
@@ -119,50 +97,41 @@ export function NavSidebar({
               <nav className="flex flex-col justify-between h-full">
                 {/* Navigation Links */}
                 <div className="flex flex-col items-start gap-4 px-2 py-1">
-                  {pathname.includes("admin") ? (
-                    <>
-                      <Logo />
-                      <AdminNav pathname={pathname} />
-                    </>
-                  ) : (
-                    <>
-                      <CatalogueNav
-                        categories={categories}
-                        labels={labels}
-                        tags={tags}
-                        handleLinkClick={handleLinkClick}
-                      />
-                      <div className="my-4 space-y-3">
-                        <Link
-                          href="/subscribe"
-                          className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                          prefetch={false}
-                          onClick={handleLinkClick}
-                        >
-                          <Rss className="h-5 w-5" />
-                          Subscribe
-                        </Link>
-                        <Link
-                          href="/bookmarks"
-                          className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                          prefetch={false}
-                          onClick={handleLinkClick}
-                        >
-                          <Bookmark className="h-5 w-5" />
-                          Bookmarks
-                        </Link>
-                        <Link
-                          href="/"
-                          className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                          prefetch={false}
-                          onClick={handleLinkClick}
-                        >
-                          <HomeIcon className="h-5 w-5" />
-                          Home
-                        </Link>
-                      </div>
-                    </>
-                  )}
+                  <CatalogueNav
+                    categories={categories}
+                    labels={labels}
+                    tags={tags}
+                    handleLinkClick={handleLinkClick}
+                  />
+                  <div className="my-4 space-y-3">
+                    <Link
+                      href="/subscribe"
+                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                      prefetch={false}
+                      onClick={handleLinkClick}
+                    >
+                      <Rss className="h-5 w-5" />
+                      Subscribe
+                    </Link>
+                    <Link
+                      href="/bookmarks"
+                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                      prefetch={false}
+                      onClick={handleLinkClick}
+                    >
+                      <Bookmark className="h-5 w-5" />
+                      Bookmarks
+                    </Link>
+                    <Link
+                      href="/"
+                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                      prefetch={false}
+                      onClick={handleLinkClick}
+                    >
+                      <HomeIcon className="h-5 w-5" />
+                      Home
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Bottom Controls: Avatar and ModeToggle */}
