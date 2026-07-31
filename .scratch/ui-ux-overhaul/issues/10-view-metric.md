@@ -1,6 +1,6 @@
 # 10 — Count a view the way ADR 0007 defines it
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 09
 
 Decision 7 (`.scratch/ui-ux-overhaul/spec.md:26`) and
@@ -157,3 +157,54 @@ of step 2 — but **not** step 2's other half: `components/entry-card.tsx:18` an
 `components/entry-detail.tsx:17` still import the action directly, and step 6 is what makes
 the playback owner the only importer. **What is left for this ticket is steps 2 (the
 deletion half), 4, 5, 6, 7, 8 and the e2e half of 9.**
+
+## Comments
+
+Done 2026-07-31. Steps 2 (deletion half), 4, 5, 6, 7, 8 and the e2e half of 9.
+`components/playback-owner.tsx` is now the only module that imports the action.
+
+**Where the four old call sites went.** The `incrementViewCount` prop is gone from
+`components/interactive-video.tsx` entirely — pressing play in the panel bills nothing, which
+is the reversal ADR-0007 turns on. `entry-detail.tsx` lost `incrementViewCountLocal` with it
+and gained a `countView` on its Source link. On the card, the vote path no longer counts and
+the three profile links no longer count; both now share a `stopPropagation` handler, which
+they still need or a click on a byline would open the panel behind the departing tab.
+
+**Two things the ticket did not anticipate, because 08 landed first.**
+
+- The open funnel is not `catalogue-page.tsx:51` any more. Ticket 08 replaced `openModal`
+  with a `pushState` in `entry-card.tsx`'s `handleClick`, and the overlay opens off the
+  pathname. The count went there, which is still one funnel: the card body and the headline
+  both route through it.
+- The `card-modal.tsx` of step 5 is `entry-detail.tsx`, and its Source link is the one
+  labelled "GitHub Repository".
+
+**Acceptance bullet 2 is unsatisfiable as written** and was not met. `rg "incrementViewCount"
+components/` returns two matches, both in `components/playback-owner.tsx` — which bullet 1 and
+step 2 both require to hold that import. The bullet dates from a draft where the owner was not
+in `components/`. Bullet 1, the one that carries the meaning, passes exactly:
+`grep -rl "increment-view-count" app components lib hooks` returns the action and the owner and
+nothing else. That grep is also why one prose mention of the path in
+`app/actions/get-entries.ts` was reworded — no import changed there.
+
+**Acceptance bullet 5 is pinned in two tests rather than one.** `tests/e2e/view.spec.ts` gets
+"opening an Entry and following its Source link bill one view each" (Demos aborted, so autoplay
+cannot land in the middle of the claim) and "pressing play in the panel bills nothing at all"
+(the standalone `/entry/<id>` page, which has no grid and so no playback owner — the press is
+the only thing that could have counted). One test doing both would have had to let autoplay run
+and then guess which of the actions it saw was whose.
+
+**Still uncounted, and nobody owns it: the cold `/entry/<id>` open.** Step 4 assigns it to
+ticket 08 — "the cold-loaded Entry route from decision 5 counts its own open and is that
+ticket's, not this one's" — and 08 resolved without it. Two paths reach that route: a shared
+link, and a cmd/ctrl/shift/alt-click on a card headline, which `entry-card.tsx` deliberately
+returns from before counting so the new tab is not billed twice once the route does count.
+ADR-0007:3 says an open counts, so this is a real gap in the metric, left where the ticket put
+it rather than taken in passing.
+
+Both **Open questions** above are unchanged and still the maintainer's: reduced-motion visitors
+can only ever produce opens and Source clicks, and the three profile links now count nothing.
+
+Verified: `pnpm check-types` clean, `pnpm test` 166/166, `npx playwright test` 52/52 against a
+production build. No `className` changed; the only JSX removed is the `incrementViewCount`
+prop.

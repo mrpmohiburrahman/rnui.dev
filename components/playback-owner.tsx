@@ -3,8 +3,9 @@
 // One owner for playback across a whole grid: it holds the only
 // IntersectionObserver, decides which five tiles play, and is where recording a
 // view belongs (ADR-0007:22 — the cap on concurrent playback is what bounds the
-// metric, so the two cannot live in different places). Two older call sites
-// still increment on their own; see countView below.
+// metric, so the two cannot live in different places). It is now the only module
+// in the tree that imports the increment action; the open and Source-link paths
+// call countView below rather than reaching for it themselves.
 //
 // Nothing here is state. Granting or revoking a slot commands a <video> through
 // a ref and re-renders no consumer at all: on a 48-card page a re-render per
@@ -36,10 +37,10 @@ const MAX_PLAYING = 5
  * Record a view. Exported so the open and Source-link paths can route through
  * here rather than importing the action a second time.
  *
- * **Not yet the only caller of the action.** ADR-0007:22 says nothing else may
- * increment a view, and two things still do — `entry-card.tsx:18` on the vote
- * and profile-link paths, and `entry-detail.tsx:17` in the overlay.
- * `10-view-metric.md` step 6 deletes both; this file is where they land.
+ * Uncapped on purpose. The once-per-session cap belongs to the played signal
+ * below, where it stops a scroll billing an impression; opening an Entry and
+ * following its source link are deliberate acts, and a visitor who does one of
+ * them twice did look twice.
  *
  * `counters.recordView` never rejects by contract (`lib/counters.ts:60-63`), so
  * this fires and forgets: a counter must never sit between a visitor and what

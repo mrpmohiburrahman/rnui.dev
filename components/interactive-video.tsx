@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { PlayIcon } from "lucide-react"
 import { usePostHog } from "posthog-js/react"
+
 import { getCdnUrl } from "@/lib/cdn"
 
 interface InteractiveVideoProps {
@@ -12,7 +13,6 @@ interface InteractiveVideoProps {
   className?: string
   controls?: boolean
   loop?: boolean
-  incrementViewCount: () => Promise<void>
 }
 
 // MediaError codes, so a failure is reported as "decode" or "network" rather
@@ -33,7 +33,6 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   className = "",
   controls = true,
   loop = false,
-  incrementViewCount,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [failureReason, setFailureReason] = useState<string | null>(null)
@@ -56,15 +55,13 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
     setIsPlaying(false)
   }
 
-  // Playback starts first and the view counter follows, rather than the click
-  // awaiting a round trip to Firestore before anything happens. A counter must
-  // never sit between a user and the thing they clicked: on a slow connection
-  // that is a stall, and when the counter backend is unreachable it never
-  // resolves at all, so the Demo simply never starts.
+  // Pressing play counts nothing. ADR-0007 makes a view a recording watched, and
+  // this component cannot tell watched from pressed — it does not know whether
+  // the Demo then advanced a second or stalled. Only components/playback-owner.tsx
+  // holds that, and it holds it for the grid; here the press just starts it.
   const handlePlayClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation()
     setIsPlaying(true)
-    void incrementViewCount().catch(() => {})
   }
 
   // A failed Demo is terminal and says so. There is deliberately no fallback

@@ -41,7 +41,9 @@ describe("recordView", () => {
 
     // The contract the call sites rely on: they fire this without waiting, so a
     // rejection here would be an unhandled promise on every view.
-    await expect(createCounters(broken).recordView(ENTRY)).resolves.toBeUndefined()
+    await expect(
+      createCounters(broken).recordView(ENTRY)
+    ).resolves.toBeUndefined()
     expect(reported).toHaveBeenCalled()
 
     reported.mockRestore()
@@ -79,13 +81,14 @@ describe("changeVote", () => {
     expect(store.documents[ENTRY]).toEqual({ view_count: 1, vote_count: -1 })
   })
 
-  it("creates the document a cast vote is missing, seeding one view with it", async () => {
-    // The payload the old increment wrote, kept rather than corrected. A vote click
-    // records a view first, so in practice the document already exists.
+  it("creates the document a cast vote is missing, and invents no view with it", async () => {
+    // Reachable since ADR-0007: a vote no longer records a view first, so this is
+    // what a first-ever vote on an Entry nobody has watched writes. It used to
+    // seed `view_count: 1` — a phantom view, on the one path that can now hit it.
     const store = inMemoryCounterStore()
     await createCounters(store).changeVote(ENTRY, "cast")
 
-    expect(store.documents[ENTRY]).toEqual({ view_count: 1, vote_count: 1 })
+    expect(store.documents[ENTRY]).toEqual({ view_count: 0, vote_count: 1 })
   })
 
   it("creates an empty document a withdrawn vote is missing", async () => {
