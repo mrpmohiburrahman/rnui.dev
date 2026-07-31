@@ -1,8 +1,6 @@
 // tailwind.config.ts
 import type { Config } from "tailwindcss"
 
-const { fontFamily } = require("tailwindcss/defaultTheme")
-
 const config = {
   darkMode: ["class"],
   content: [
@@ -21,9 +19,10 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ["Haskoy", ...fontFamily.sans],
-      },
+      // No `fontFamily` override. `font-sans` resolves to Tailwind's own default
+      // stack, which is what the site has always rendered in: the local face this
+      // key used to name never loaded, because `next/font` emitted its own family
+      // name and nothing asked for that one. See ticket 05.
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

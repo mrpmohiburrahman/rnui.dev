@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 import "./globals.css"
 
 import { getUniqueAuthors, getUniqueCategories } from "@/data/entry"
-import { fontSans } from "@/data/font-sans"
 import { metadata } from "@/data/meta-data"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -18,7 +17,6 @@ import { SiteFooter } from "@/components/site-footer"
 
 import { ThemeProvider } from "./providers"
 
-export { fontSans }
 export { metadata }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -26,7 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const authors = getUniqueAuthors()
 
   return (
-    <html lang="en" className={`${fontSans.variable} font-sans`}>
+    <html lang="en" className="font-sans">
       <head>
         {/* Every Demo and Poster comes from here, so warm the connection early. */}
         {CDN_ORIGIN && (
