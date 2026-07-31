@@ -154,6 +154,26 @@ test.describe("on a phone", () => {
     await expect(
       page.getByRole("button", { name: "Toggle Menu" })
     ).toBeInViewport()
+
+    // …and it floats over the grid without eating it. The wrapper's padding is
+    // an 80×48px box where the pill paints 56×40, so a quarter of it is
+    // invisible and sits at z-30 over a card. Harmless while it scrolled away;
+    // a permanent dead strip once it stopped, which is what `pointer-events`
+    // undoes. Hit-tested rather than read off the class, because the class is
+    // the declaration and this is the behaviour.
+    const swallowsWhatIsBesideIt = await page.evaluate(() => {
+      const button = [...document.querySelectorAll("span")]
+        .find((s) => s.textContent === "Toggle Menu")
+        ?.closest("button")
+      if (!button) return null
+      const box = button.getBoundingClientRect()
+      const under = document.elementFromPoint(
+        box.right + 8,
+        box.y + box.height / 2
+      )
+      return under !== null && under.contains(button)
+    })
+    expect(swallowsWhatIsBesideIt).toBe(false)
   })
 
   test("the drawer carries Authors, and its last row can be reached", async ({
