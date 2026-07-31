@@ -77,6 +77,24 @@ export function CataloguePage({
   )
   const { sortedData, sort, setSort } = useSortedData(visible)
 
+  // Which of the two empty states an empty list is, decided here because this is
+  // the only place that knows. null means "not known yet, so say nothing".
+  //
+  // On the bookmarks route the question is answered by the stored set, not by the
+  // rendered list: that route mounts with no Entries and fills them from an
+  // effect (app/bookmarks/page.tsx:27-44), so a message keyed on the rendered
+  // list would tell a visitor who does have bookmarks that they have none, for as
+  // long as the fetch takes. `bookmarks` is null until localStorage has been
+  // read, which is the same "not known yet".
+  //
+  // The other routes are handed their Entries by a server component, so an empty
+  // list there is an answer rather than a gap.
+  const emptyMessage = !bookmarkedOnly
+    ? "No Entries match the current search or filters."
+    : bookmarks?.length === 0
+      ? "No bookmarked Entries yet. Bookmarks are kept in this browser on this device — there are no accounts, so they do not follow you to another browser or another device."
+      : null
+
   return (
     <>
       {/* One owner for every Demo on the page, and the only thing that records a
@@ -87,6 +105,7 @@ export function CataloguePage({
         <EntryCardGrid
           sortedData={sortedData}
           treatment={treatment}
+          emptyMessage={emptyMessage}
           // Both stored sets are still null until an effect has read localStorage.
           // `[]` rather than a placeholder render: the server and the first client
           // render both see an empty set, so there is no hydration mismatch, and the

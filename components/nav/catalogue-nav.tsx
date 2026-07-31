@@ -19,6 +19,27 @@ type CatalogueNavProps = {
 }
 
 /**
+ * The chip treatment every link in this list wears at rest, following
+ * `PILL_CLASS` in components/entry-card-grid.tsx. Named rather than spelled a
+ * third time so the All Entries link cannot drift from the facets it sits
+ * above: decision 13 authorises it to exist, not to introduce an appearance of
+ * its own.
+ */
+const CHIP_CLASS = [
+  "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",
+  "shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)]",
+  "dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]",
+  "dark:hover:shadow-[0_0_0_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.4),0_1px_2px_rgba(0,0,0,0.5)]",
+]
+
+/**
+ * Added on top of CHIP_CLASS by the facet that is currently applied, so the
+ * visitor can see which link would clear what. The All Entries link carries no
+ * facet, so it never wears this.
+ */
+const ACTIVE_CHIP_CLASS = "bg-yellow-400 text-black dark:text-black"
+
+/**
  * A facet link that keeps every param it did not set, so filters compose — the
  * server has always intersected them (app/actions/get-entries.ts:54-72); only
  * these hrefs, written whole, discarded what the visitor already had.
@@ -91,6 +112,19 @@ function CatalogueNavList({
       {/* <Logo /> */}
       {children}
       <ScrollArea className="h-[calc(100vh-320px)] md:h-[calc(100vh-200px)] flex flex-col gap-4 pl-2">
+        {/* The whole catalogue. /products carries twice the traffic of / and is
+            where 18 legacy Category paths redirect (middleware.ts:23-43), but
+            every link that reached it — the facets below, those redirects —
+            arrived with a filter already applied. The unfiltered page had no
+            route to it from anywhere on the site (decision 13). */}
+        <Link
+          href="/products"
+          onClick={handleLinkClick}
+          className={cn(CHIP_CLASS)}
+          prefetch={false}
+        >
+          <span className="px-1">All Entries</span>
+        </Link>
         {/* Categories Section */}
         {categories && categories.length > 0 && (
           <div className="flex items-center gap-2 mt-6 text-muted-foreground">
@@ -105,13 +139,8 @@ function CatalogueNavList({
                 href={facetHref(searchParams, "category", category)}
                 onClick={handleLinkClick}
                 className={cn(
-                  "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",
-                  "shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)]",
-                  "dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]",
-                  "dark:hover:shadow-[0_0_0_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.4),0_1px_2px_rgba(0,0,0,0.5)]",
-                  searchParams.get("category") === category
-                    ? "bg-yellow-400 text-black dark:text-black"
-                    : ""
+                  CHIP_CLASS,
+                  searchParams.get("category") === category ? ACTIVE_CHIP_CLASS : ""
                 )}
                 prefetch={false}
               >
@@ -134,13 +163,8 @@ function CatalogueNavList({
                 href={facetHref(searchParams, "author", author)}
                 onClick={handleLinkClick}
                 className={cn(
-                  "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",
-                  "shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)]",
-                  "dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]",
-                  "dark:hover:shadow-[0_0_0_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.4),0_1px_2px_rgba(0,0,0,0.5)]",
-                  searchParams.get("author") === author
-                    ? "bg-yellow-400 text-black dark:text-black"
-                    : ""
+                  CHIP_CLASS,
+                  searchParams.get("author") === author ? ACTIVE_CHIP_CLASS : ""
                 )}
                 prefetch={false}
               >

@@ -47,7 +47,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <div className="hidden md:block">
                 <TopNavBar />
               </div>
-              <div className="flex flex-1 pt-16">
+              {/* Mirrors the header's own height, components/nav/top-nav-bar.tsx:18
+                  (`h-[83px] fixed`), which only renders at `md` and up — so the
+                  base pt-16 stays: below `md` there is no header, and that 64px
+                  is what clears the mobile sheet trigger. It was 64px at every
+                  width, so the header painted over the top 19px of every page. */}
+              <div className="flex flex-1 pt-16 md:pt-[83px]">
                 <NavSidebar categories={categories} authors={authors} />
                 {/* Add responsive left margin to main */}
                 <main className="p-4 sm:ml-[10.5rem] w-full">{children}</main>

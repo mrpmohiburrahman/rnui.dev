@@ -1,6 +1,6 @@
 # 12 — Add the missing nav link, the missing empty states, and fix two layout bugs
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 02
 
 Decision 13 (`spec.md:32`) and the two sanctioned layout bugs (`spec.md:98`). Four small,
@@ -188,3 +188,95 @@ Nothing, but three files are contested:
   (`:96-156`). Different region, but expect a rebase.
 - `components/entry-card-grid.tsx` — ticket 02 also edits `:198-201`. Land 02 first if both
   are open.
+
+## Comments
+
+All four changes landed. `pnpm check-types`, `pnpm lint`, `pnpm test` (166) and the Playwright
+suite (86, including 26 new in `tests/e2e/nav-empty-states-layout.spec.ts`) pass.
+
+**A — the nav link.** `components/nav/catalogue-nav.tsx`: one `<Link href="/products">All
+Entries</Link>`, first child of the `ScrollArea`. `grep -rn 'href="/products"' app components`
+returns exactly one hit, this one. The chip class string was extracted to `CHIP_CLASS` (and the
+active highlight to `ACTIVE_CHIP_CLASS`) rather than spelled a third time, which is what makes
+the new link's `class` attribute byte-identical to an inactive Category link's — asserted in a
+test rather than eyeballed. Open question 1 shipped as `All Entries`; open question 2 shipped
+first-inside-the-`ScrollArea` as written.
+
+**B — the empty states.** `emptyMessage` on `EntryCardGridProps`, rendered in place of the grid
+when the list is empty; copy chosen in `catalogue-page.tsx`. Open question 3: `Total Items: 0`
+left beside the sentence, and it reads fine — see the bookmarks screenshot.
+
+**C — the card width.** `sm:w-[221px]` and `break-inside-avoid` gone.
+`grep -rnE '221px|break-inside' components/` returns nothing.
+
+**D — the nav offset.** `pt-16` → `pt-16 md:pt-[83px]` in `app/layout.tsx` (the ticket says
+`:53`; the line is `:50` on this branch).
+
+### Step 6 — the measurements
+
+Chromium, dev server, first row of cards. "track" is the computed first `grid-template-columns`
+track on `entry-card-grid.tsx`'s grid; "card" is `getBoundingClientRect().width`.
+
+Before:
+
+| path | width | track | card | scrollW/clientW | clipped |
+|---|---|---|---|---|---|
+| `/` | 640 | 206.9 | 221 | 452/438 | yes |
+| `/` | 768 | 146.7 | 221 | 562/488 | yes |
+| `/` | 1024 | 168 | 221 | 797/744 | yes |
+| `/` | 1280 | 180.8 | 221 | 1040/1000 | yes |
+| `/` | 1440 | 212.8 | 221 | 1168/1160 | yes |
+| `/products` | 640 | 206.9 | 221 | 452/438 | yes |
+| `/products` | 768 | 141.3 | 221 | 552/472 | yes |
+| `/products` | 1024 | 164 | 221 | 785/728 | yes |
+| `/products` | 1280 | 177.6 | 221 | 1027/984 | yes |
+| `/products` | 1440 | 209.6 | 221 | 1155/1144 | yes |
+
+After:
+
+| path | width | track | card | scrollW/clientW | clipped |
+|---|---|---|---|---|---|
+| `/` | 640 | 206.9 | 206.9 | 438/438 | no |
+| `/` | 768 | 146.7 | 146.7 | 488/488 | no |
+| `/` | 1024 | 168 | 168 | 744/744 | no |
+| `/` | 1280 | 180.8 | 180.8 | 1000/1000 | no |
+| `/` | 1440 | 212.8 | 212.8 | 1160/1160 | no |
+| `/products` | 640 | 206.9 | 206.9 | 438/438 | no |
+| `/products` | 768 | 141.3 | 141.3 | 472/472 | no |
+| `/products` | 1024 | 164 | 164 | 728/728 | no |
+| `/products` | 1280 | 177.6 | 177.6 | 984/984 | no |
+| `/products` | 1440 | 209.6 | 209.6 | 1144/1144 | no |
+
+The clipping was real at every one of the ten measurements, not at "the low end of every band" —
+221px never once matched a track. `main.getBoundingClientRect().top` went 64 → 83 at 768 and
+1440 on `/`, `/products` and `/bookmarks`, and stayed 64 at 390.
+
+### Three things for the maintainer
+
+1. **One edit beyond step 5, which said "change nothing else on that element".** Removing the
+   fixed width exposed a second overflow *inside* the card: the footer row is three social
+   icons (a fixed 20px each) and the word "Source", a 129px min-content width against a 93px
+   card content box at the narrower tracks. Step 5 alone therefore could not satisfy its own
+   acceptance line — `scrollWidth === clientWidth` still failed at 768px, with "Source" running
+   off the card. `flex-wrap gap-y-2` on that row (`entry-card.tsx:290`) is the fix; it is inert
+   at every width where the row already fitted, and where it engages the card grows one line
+   taller. That is a fourth thing moving against "Nothing else moves", so it is flagged rather
+   than buried. Reverting it means shipping visible overflow.
+2. **Open question 4 is a real third bug, not fixed here as instructed.**
+   `document.documentElement.scrollWidth > clientWidth` at 640px on both `/` and `/products` —
+   before this ticket and after it, unchanged. Not caused by the card width and not cured by
+   fixing it. 390px is clean. Needs its own ticket.
+3. **`tests/e2e/entry-route.spec.ts` "the panel fades and never scales" is flaky.** It failed
+   once in a full run and passed on every re-run, alone and in suite. It samples overlay opacity
+   across frames and gets one distinct value when the fade completes before the first sample.
+   Nothing in this ticket touches the overlay. Ticket 08's file.
+
+### From the review
+
+`/code-review-mp` caught a defect worth recording: on `/bookmarks`, `emptyMessage` keyed on the
+*rendered* list told a visitor who does have bookmarks that they have none, for the length of
+the `getEntries()` round trip that route fires from an effect. The rendered list is empty during
+that window; the stored set is not. `emptyMessage` is now `string | null`, null meaning "not
+known yet", and the bookmarks copy is keyed on `bookmarks?.length === 0` — the stored set, which
+is the thing that actually answers the question. Regression test: "a held fetch never claims the
+visitor has no bookmarks", verified red against the old predicate before being made green.

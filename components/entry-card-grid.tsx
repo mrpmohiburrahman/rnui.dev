@@ -34,6 +34,17 @@ export type GridTreatment = "framed" | "plain"
 export interface EntryCardGridProps {
   sortedData?: Entry[]
   treatment: GridTreatment
+  /**
+   * What to say when there is nothing to show, or null when the caller cannot
+   * yet tell whether there is anything — an empty list is a gap during a fetch
+   * as often as it is an answer, and a message shown across that gap is a false
+   * one.
+   *
+   * Required rather than defaulted: only the caller knows whether an empty list
+   * means "no Entry matches this filter" or "this visitor has bookmarked
+   * nothing", and a default here would quietly show the wrong one of those.
+   */
+  emptyMessage: string | null
   children?: React.ReactNode
   bookmarks: string[]
   toggleBookmark: (id: string) => void
@@ -46,6 +57,7 @@ export interface EntryCardGridProps {
 export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   sortedData,
   treatment,
+  emptyMessage,
   children,
   bookmarks,
   toggleBookmark,
@@ -64,6 +76,7 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   const page = Math.max(1, Number(searchParams.get("page")) || 1)
   const shownCount = page * PAGE_SIZE
   const hasMore = (sortedData?.length ?? 0) > shownCount
+  const isEmpty = (sortedData?.length ?? 0) === 0
 
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
@@ -220,23 +233,33 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
             inside markup that had been there all along. The sidebar keeps its
             boundary, because that one suspends for real on useSearchParams. */}
         <div className="relative">
-          {/* Adjusted Grid Columns for Smaller Portrait Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {/* Keyed by id alone. The key used to carry the array index, so
-                every key changed when the list reordered and a sort toggle
-                unmounted and remounted all 277 cards, restarting every Demo.
-                Ids are unique — tests/data-integrity.test.ts enforces it. */}
-            {sortedData?.slice(0, shownCount).map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry}
-                isBookmarked={bookmarks.includes(entry.id)}
-                toggleBookmark={toggleBookmark}
-                isVoted={votedEntryIds.includes(entry.id)}
-                toggleVote={toggleVote}
-              />
-            ))}
-          </div>
+          {/* An empty list used to render an empty grid: the only thing on
+              screen was `Total Items: 0`, on a filtered catalogue and on a
+              /bookmarks page with nothing saved alike. Both paths arrive here,
+              because CataloguePage is the only caller. */}
+          {isEmpty && emptyMessage ? (
+            <p className="text-sm text-neutral-700 dark:text-neutral-300">
+              {emptyMessage}
+            </p>
+          ) : (
+            /* Adjusted Grid Columns for Smaller Portrait Cards */
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {/* Keyed by id alone. The key used to carry the array index, so
+                  every key changed when the list reordered and a sort toggle
+                  unmounted and remounted all 277 cards, restarting every Demo.
+                  Ids are unique — tests/data-integrity.test.ts enforces it. */}
+              {sortedData?.slice(0, shownCount).map((entry) => (
+                <EntryCard
+                  key={entry.id}
+                  entry={entry}
+                  isBookmarked={bookmarks.includes(entry.id)}
+                  toggleBookmark={toggleBookmark}
+                  isVoted={votedEntryIds.includes(entry.id)}
+                  toggleVote={toggleVote}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       {hasMore && (
