@@ -2,8 +2,9 @@
 
 "use client"
 
-import type { ReactNode } from "react"
+import { Suspense, type ReactNode } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { BoxIcon, Hash, TagIcon, User } from "lucide-react"
 
 import { cn, truncateString } from "@/lib/utils"
@@ -16,19 +17,52 @@ type CatalogueNavProps = {
   tags?: string[]
   labels?: string[]
   handleLinkClick?: () => void
-  searchParams: URLSearchParams
   children?: ReactNode
 }
 
-export function CatalogueNav({
+/**
+ * The filter list, and a boundary around the one part of it that reads the URL.
+ *
+ * `useSearchParams()` opts every ancestor out of prerendering. It used to be called
+ * in `nav-side-bar.tsx`, which pushed the bail-out all the way to the root layout —
+ * so eleven prerendered routes served `<div>Loading sidebar...</div>` as their
+ * sidebar, and a visitor without JavaScript never got the swap that replaces it.
+ *
+ * Reading it after mount instead would remove the hook entirely, but ticket 11
+ * builds each `href` from the current query so filters compose, and an href
+ * computed after mount is wrong in the document that gets served. So the read
+ * stays during render and only moves down to what needs it.
+ *
+ * The fallback is the same list with nothing highlighted, which is why the served
+ * HTML still carries every filter link.
+ */
+export function CatalogueNav(props: CatalogueNavProps) {
+  return (
+    <Suspense fallback={<CatalogueNavList {...props} />}>
+      <ActiveCatalogueNav {...props} />
+    </Suspense>
+  )
+}
+
+// Not collapsible into CatalogueNav: calling the hook there puts it outside the
+// boundary and the bail-out comes straight back, and a conditional hook is illegal.
+// Three components is the floor React allows here.
+function ActiveCatalogueNav(props: CatalogueNavProps) {
+  const searchParams = useSearchParams()
+  return <CatalogueNavList {...props} searchParams={searchParams} />
+}
+
+function CatalogueNavList({
   authors,
   categories,
   labels,
   tags,
   handleLinkClick,
-  searchParams,
+  // Absent means "the URL has not been read yet", and every `.get` below returns
+  // null — which is exactly the unhighlighted list the fallback wants.
+  searchParams = new URLSearchParams(),
   children,
-}: CatalogueNavProps) {
+}: CatalogueNavProps & { searchParams?: URLSearchParams }) {
   return (
     <div className="">
       {/* <Logo /> */}

@@ -1,6 +1,5 @@
 // app/layout.tsx
 import type { ReactNode } from "react"
-import { Suspense } from "react"
 
 import "./globals.css"
 
@@ -51,10 +50,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <TopNavBar />
               </div>
               <div className="flex flex-1 pt-16">
-                {/* Wrap NavSidebar with Suspense */}
-                <Suspense fallback={<div>Loading sidebar...</div>}>
-                  <NavSidebar categories={categories} authors={authors} />
-                </Suspense>
+                <NavSidebar categories={categories} authors={authors} />
                 {/* Add responsive left margin to main */}
                 <main className="p-4 sm:ml-[10.5rem] w-full">{children}</main>
               </div>

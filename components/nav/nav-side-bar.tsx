@@ -4,7 +4,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -29,8 +29,11 @@ export function NavSidebar({
   labels,
   tags,
 }: NavSidebarProps) {
+  // No useSearchParams here. Reading it opts every ancestor out of prerendering,
+  // and the nearest boundary was the root layout's — so eleven prerendered routes
+  // served "Loading sidebar..." as their sidebar until React ran. The read now
+  // lives on the one thing that needs it, inside CatalogueNav.
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [isSheetOpen, setSheetOpen] = useState(false)
 
   const handleLinkClick = () => {
@@ -61,7 +64,6 @@ export function NavSidebar({
               labels={labels}
               tags={tags}
               authors={authors}
-              searchParams={searchParams}
             />
           )}
         </nav>
@@ -129,7 +131,6 @@ export function NavSidebar({
                         labels={labels}
                         tags={tags}
                         handleLinkClick={handleLinkClick}
-                        searchParams={searchParams}
                       />
                       <div className="my-4 space-y-3">
                         <Link
