@@ -2,11 +2,8 @@
 
 import { useEffect, useRef, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { getUniqueCategories } from "@/data/entry"
 
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
-
-const placeholders = getUniqueCategories()
 
 /** How long the box stays quiet before it navigates. */
 const DEBOUNCE_MS = 300
@@ -54,8 +51,11 @@ export function CatalogueSearch() {
 
   return (
     <div className="relative max-w-[90%] md:min-w-[4rem] w-full md:max-w-[42ch] md:mr-auto ">
+      {/* The rotating Category hint this component used to feed the input is
+          gone, and with it the module-scope getUniqueCategories() call — the
+          last value import of @/data/* from any client component, so
+          data/catalogue.ts is no longer pulled into a client chunk. */}
       <PlaceholdersAndVanishInput
-        placeholders={placeholders}
         // Seeded once, from the URL this component mounted against, so a shared
         // `/?search=slider` shows the term that filtered the grid. Writes still
         // go one way, keystroke → URL; see the ticket for when a resync is owed.

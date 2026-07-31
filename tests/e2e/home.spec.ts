@@ -17,8 +17,13 @@ test("home page renders catalog and search", async ({ page }) => {
     page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
   ).toBeVisible()
 
-  // Search input present
-  await expect(page.locator("input[placeholder]")).toBeVisible()
+  // Search input present. By its accessible name, which it did not have when
+  // this was written — `input[placeholder]` used to identify it by being the
+  // only input on the page without one, and matched the newsletter's once the
+  // search box gained a placeholder of its own.
+  await expect(
+    page.getByRole("textbox", { name: "Search the catalogue" })
+  ).toBeVisible()
 })
 
 // Asserting that a video element exists is not enough. The most recent bug was

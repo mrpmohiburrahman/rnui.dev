@@ -150,7 +150,7 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
       ) : (
         <button
           type="button"
-          className="relative w-full h-full bg-black flex items-center justify-center cursor-pointer focus:outline-none"
+          className="relative w-full h-full bg-black flex items-center justify-center cursor-pointer"
           onClick={handlePlayClick}
           aria-label="Play video"
         >
