@@ -19,6 +19,33 @@ type CatalogueNavProps = {
 }
 
 /**
+ * A facet link that keeps every param it did not set, so filters compose — the
+ * server has always intersected them (app/actions/get-entries.ts:54-72); only
+ * these hrefs, written whole, discarded what the visitor already had.
+ *
+ * Clicking the facet that is already on removes it. Without that there is no way
+ * out of an intersection short of leaving the page.
+ *
+ * `page` is dropped because a different filter is a different result set, and
+ * carrying page=4 into it renders a slice of something that no longer exists.
+ *
+ * The display name goes in unaltered: it is the key the 18 legacy redirects land
+ * on (data/categories.ts:68-70). `URLSearchParams` spells a space `+` where that
+ * table spells it `%20`; both decode to the same string, so the active test below
+ * and the redirect targets keep agreeing.
+ */
+function facetHref(current: URLSearchParams, key: string, value: string) {
+  // A copy: useSearchParams() hands back a ReadonlyURLSearchParams whose
+  // set/delete throw.
+  const params = new URLSearchParams(current)
+  if (params.get(key) === value) params.delete(key)
+  else params.set(key, value)
+  params.delete("page")
+  const query = params.toString()
+  return query ? `/products?${query}` : "/products"
+}
+
+/**
  * The filter list, and a boundary around the one part of it that reads the URL.
  *
  * `useSearchParams()` opts every ancestor out of prerendering. It used to be called
@@ -75,7 +102,7 @@ function CatalogueNavList({
           {categories?.map((category, index) => (
             <li key={`category-${index}-${category}`}>
               <Link
-                href={`/products?category=${encodeURIComponent(category)}`}
+                href={facetHref(searchParams, "category", category)}
                 onClick={handleLinkClick}
                 className={cn(
                   "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",
@@ -104,7 +131,7 @@ function CatalogueNavList({
           {authors?.map((author, index) => (
             <li key={`category-${index}-${author}`}>
               <Link
-                href={`/products?author=${encodeURIComponent(author)}`}
+                href={facetHref(searchParams, "author", author)}
                 onClick={handleLinkClick}
                 className={cn(
                   "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",

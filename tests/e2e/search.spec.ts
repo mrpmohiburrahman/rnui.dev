@@ -108,10 +108,14 @@ test("Back leaves the box showing whatever the URL says", async ({ page }) => {
   await box.pressSequentially("slider", { delay: 40 })
   await expect(page).toHaveURL(/search=slider/)
 
+  // The Category link carries the search with it: a facet link keeps every
+  // param it did not set. It used to be written whole and dropped the term.
   await page.getByRole("link", { name: "Onboarding" }).first().click()
-  await expect(page).toHaveURL(/\/products\?category=Onboarding/)
+  await expect(page).toHaveURL(/category=Onboarding/)
+  await expect(page).toHaveURL(/search=slider/)
 
   await page.goBack()
+  await expect(page).not.toHaveURL(/category=/)
   await expect(page).toHaveURL(/search=slider/)
   await expect(searchBox(page)).toHaveValue("slider")
 })
