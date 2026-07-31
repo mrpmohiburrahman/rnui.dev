@@ -12,7 +12,7 @@ Open an issue using the **Animation Submission** template. Provide the GitHub re
 
 1. Fork and branch.
 2. Add your entry to the correct file in `data/` — one file per UI category (`buttons.ts`, `carousels.ts`, `sliders.ts`, etc.).
-3. Required fields: `id` (unique kebab-case slug), `title`, `author`, `repoUrl`, `category`, `description`, `tags`.
+3. Required fields: `id` (unique kebab-case slug), `title`, `author`, `repoUrl`, `category`, `description`.
 4. Run `pnpm check-types` and `pnpm lint`.
 5. Open a PR.
 
