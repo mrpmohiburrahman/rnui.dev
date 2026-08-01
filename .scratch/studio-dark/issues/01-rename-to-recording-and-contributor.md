@@ -1,6 +1,6 @@
 # 01 — Rename the domain to Recording and Contributor
 
-Status: ready-for-human
+Status: resolved
 
 ## Problem
 
@@ -429,3 +429,23 @@ Three ways out, and this is the maintainer's call rather than an agent's:
 
 Recommended: **2**, because it is free after the fact — the two commits can be made now and the
 result is identical to what is staged. Say which and it will be done before this commits.
+
+### 2026-08-01 — Committed. Two commits, and the history bullet is now met.
+
+The maintainer approved the snapshot and chose the two-commit split.
+
+`dc2c7fd` moves the ten files and changes nothing inside them, so every one is
+detected at **R100** — a perfect rename. `fb6a0ea` carries the rewrite. That tree in
+between does not build, which is the cost, and it is an intermediate commit rather
+than the released half-renamed state ADR-0004:8 objected to.
+
+The bullet that could not be met as written now is:
+
+| File | History reachable by `git log --follow` |
+|---|---|
+| `app/recording/[id]/page.tsx` | 4 commits |
+| `app/actions/get-recordings.ts` | 10 commits |
+| `tests/recording-search.test.ts` | 3 commits |
+
+All acceptance met. `pnpm assets:paths` identical across both commits, 184 unit tests,
+119 Playwright specs, `pnpm build` clean, working tree clean.
