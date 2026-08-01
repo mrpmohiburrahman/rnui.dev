@@ -75,3 +75,38 @@ Superseded — this ticket cannot be accepted as written. Re-specify after the d
 
 Ticket 03 — `repo_clicked` and `entry_opened` must exist before they can be compared. Still
 true for any version of this ticket that keeps step 4.
+
+## Comments
+
+### 2026-08-01 — Left untouched on purpose, plus a defect that would have bitten option 2
+
+The maintainer's 2026-08-01 delegation was read as covering the tickets that are decisions, not
+this one, which is a triage question with a recommendation against the option that is easiest to
+execute. Nothing was created. `feature-flag-get-all` still returns `count: 0`.
+
+Three reasons, in order of how much they matter:
+
+1. **This ticket says "do not implement it as written."** Option 2 is one of three, and the
+   ticket's own recommendation is 1 or 3. Creating the two flags would decide the ticket rather
+   than execute it.
+2. **`Blocked by: 03`, and 03 is `ready-for-human`, not `resolved`** — unavailable under the
+   availability rule in `CLAUDE.md` regardless of triage.
+3. **A defect that survives even if option 2 is picked, found while checking whether the calls
+   would work.** `lib/posthog-provider.tsx` calls `posthog.init` with **no `bootstrap`** — that is
+   the ticket's original step 3, and it is a precondition of steps 1 and 2 rather than a nicety.
+   posthog-js resolves flags over a network round-trip *after* init, so a client-side read returns
+   `undefined` on first render. Creating both flags at 100% therefore does not prevent a rollback;
+   it converts a permanent one into a per-session flicker in which the site paints click-to-play
+   with the contributor as the headline, then visibly flips to autoplay with the caption. That is
+   a text reflow on every card in the grid — precisely the layout shift this effort exists to
+   remove. Correct order if option 2 is ever picked: ship `bootstrap: { featureFlags: {…} }`
+   first, *then* create the flags.
+
+Two smaller notes for whoever triages it. The ticket's code references are stale — it names
+`components/entry-card.tsx:281` and `entry.author`; the live lines are
+`components/recording-card.tsx:309` (`recording.caption`) and `:313` (`recording.contributor`),
+and `MAX_PLAYING = 5` is at `components/playback-owner.tsx:35`. And `bucketing_identifier:
+"device_id"` would be inert at 100% rollout — bucketing only matters for partial rollouts, and
+with no `identify()` call anywhere the distinct_id is already the anonymous device id.
+
+Stays `needs-triage`. That label is correct: the ticket is undecided, not unstarted.

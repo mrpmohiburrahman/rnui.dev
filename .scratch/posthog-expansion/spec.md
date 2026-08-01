@@ -20,20 +20,20 @@ not have to re-measure the project to know what is already on.
 | Rageclick | on — 74 events / 50 people | on |
 | Session replay | on — 100% sample, 90d retention, console logs + network perf captured | on, 100% kept; input masking pinned in code (was already the default, unchanged behaviour), 1,000ms minimum duration — ticket 04 |
 | Heatmaps | on (server side) | on |
-| Person profiles | `always` — a profile for every anonymous visitor | `always` — ticket 10 |
+| Person profiles | `always` — a profile for every anonymous visitor | `always`, **decided** not merely inherited — ticket 10 |
 | Exception autocapture | **off** | **on** — ticket 02, both project setting and `capture_exceptions` in `posthog.init` |
 | Source-map upload | not wired | wired, off until `POSTHOG_API_KEY` + `POSTHOG_PROJECT_ID` are on Vercel — ticket 02 |
 | Dead clicks | **off** | on in `posthog.init`, live at next deploy — ticket 04 |
-| Surveys | **off** | **off** — ticket 07 |
+| Surveys | **off** | project setting still **off**; one survey exists as an unlaunched **draft** (`019fbc46-c7ec-0000-5875-da30034b95d1`) — ticket 07. Launching needs both a `start_date` and `surveys_opt_in: true` |
 | Feature flags | **0 defined** | **0 defined** — ticket 08 |
 | Actions | **0 defined** | 0 defined |
-| Insights | 6 | 25 — +1 error tracking (ticket 02), +13 web vitals (ticket 04), +5 redesign baseline (ticket 09) |
+| Insights | 6 | 25 — +1 error tracking (ticket 02), +13 web vitals (ticket 04), +5 redesign baseline (ticket 09). Five repaired 2026-08-01: the funnel's renamed step, and path cleaning on the four "by page" tiles |
 | Alerts | 0 | 5 — daily on `$error_tracking_issue_created`, weekly on LCP (mobile + desktop), CLS (desktop), INP (mobile) p75 |
 | Dashboards | 1 (primary: 295272) | 3 — "Web performance — field" (`1937530`), "Redesign — before / after" (`1937576`) |
 | Custom events | **none — zero in 90 days** | **13 defined in code**, live at next deploy — ticket 03 |
 | Annotations | 0 | 0 — the redesign deploy boundary is owed, ticket 09 step 3 |
 | Test-account filter | localhost / 127.0.0.1 only | localhost, `*.vercel.app`, `$virt_is_bot` — ticket 01, default-checked |
-| Path cleaning rules | none | none, and now overdue — `/entry/<id>` shipped, 275 paths, ticket 10 |
+| Path cleaning rules | none | **2** — `/recording/<id>` and `/entry/<id>`, both dormant until deploy A — ticket 10 |
 
 ## What the data already says
 

@@ -1,6 +1,6 @@
 # 10 — Person-profile and retention hygiene
 
-Status: needs-triage
+Status: resolved
 
 ## Problem
 
@@ -64,3 +64,77 @@ revisit "only if per-entry URLs ship". They shipped, with `ui-ux-overhaul` ticke
 item is no longer "revisit later"; the cleaning rule collapsing them to `/entry/:id` is due
 now, and the path breakdowns on ticket 04's and ticket 09's dashboards are the things that
 break without it.
+
+## Comments
+
+### 2026-08-01 — All four decided, and one error in this ticket's own Notes found
+
+The maintainer delegated every remaining decision on 2026-08-01. Each of the four is recorded
+below with what was actually checked, not what was assumed.
+
+**1. Person profiles — keep `person_profiles: "always"`.** No code change to
+`lib/posthog-provider.tsx:22`. The ticket's option 2 (suppress profiles for bot traffic) is not
+merely a dead end, it is impossible: `$virt_is_bot` is **not a stored property** in project
+117415 — the taxonomy check returns *"Property $virt_is_bot was not found in this project
+taxonomy"* — because it is derived server-side at query time. Nothing client-side can know the
+traffic type before `posthog.init` runs. Only a proxy could, and `api_host` is pinned by the
+Malware-classification constraint. Option 3 (`identified_only`) is ruled out by the ticket's own
+argument: this site never calls `identify()`, so it would produce no profiles at all.
+
+**2. Session-recording retention — keep 90 days.** Confirmed live at `90d`; the enum is
+30d/90d/1y/5y. No call made. The setting governs *new* recordings only, ticket 05 still has
+existing rage-click replays to watch, ticket 11's readout will want the window, and volume is
+~734 recordings/month against a 5,000/month allowance. Revisit if that allowance is approached.
+
+**3. Event retention 84 months — accepted, because no lever exists.** `event_retention_months`
+and `events_retention_enforced` are absent from the `project-settings-update` schema, and
+PostHog's own documentation is explicit that event retention is plan-derived and cannot be
+customised. So 84 is not a choice anyone made and not one anyone can unmake. At ~5,500
+pageviews/90d it costs nothing.
+
+**4. Path cleaning — two rules saved.** `/recording/<id>` → `^/recording/[^/]+/?$`, and
+`/entry/<id>` → `^/entry/[^/]+/?$`. Both verified against sample paths before saving: they
+rewrite the two detail forms and leave `/`, `/products`, `/contributors` and `/recording/`
+untouched.
+
+Two corrections to what this ticket assumed:
+
+- **The alias is `/recording/<id>`, not the ticket's `/entry/:id`.** Commit `fb6a0ea` renamed the
+  route. Angle brackets are PostHog's convention, not colons.
+- **Both rules are dormant today.** Zero `/recording/` pathnames have ever been ingested, and
+  `/entry/` has exactly 4, all from `$host = localhost:3000` and already excluded by ticket 01's
+  test-account filter. This is pre-positioning for deploy A, not a fix to a live problem. The
+  `/entry/<id>` rule was added deliberately anyway — see below.
+
+### The error in the Notes, and the tile fix it was hiding
+
+This ticket's Notes claimed the path cleaning rule protects the four "by page" web-vitals tiles.
+**It does not, by itself.** The rule is a project setting; a saved trends insight has to opt in.
+Insights `10645891` LCP, `10645892` CLS, `10645893` INP and `10645894` FCP on dashboard `1937530`
+all broke down by raw `$pathname` with `breakdown_limit: 6`.
+
+Why that matters after deploy A: 277 `/recording/<id>` addresses start being served, and a p75
+breakdown is **ordered by value**. One recording page with a single sample and a 12-second LCP
+outranks `/products`, and the six pages the dashboard exists to show get pushed out by noise. The
+tile would still render, still look reasonable, and be describing nothing.
+
+Fixed on all four by setting `breakdownFilter.breakdown_path_cleaning: true`, which is the
+supported field for exactly this and which reads the project rule rather than duplicating its
+regex in a hand-written expression.
+
+**This was tested, not assumed, because the two available sources disagreed.** A review pass
+claimed path cleaning does not reach trends breakdowns, citing PostHog issue 29801; the live tool
+schema documents `breakdown_path_cleaning` as doing precisely that. The `/entry/<id>` rule exists
+because it is the only rule matching data that has actually been ingested, which made an
+end-to-end test possible. Two identical `query-trends` runs on `$pageview`, `filterTestAccounts:
+false`, breakdown `$pathname`, differing only in the flag:
+
+| `breakdown_path_cleaning` | Breakdown value returned |
+|---|---|
+| `true` | `/entry/<id>` — 4 |
+| omitted | `/entry/01JFP0VE8A5KT8R0QSBQFE34VR` — 4 |
+
+The flag works. The review pass was reading a stale issue.
+
+Status `resolved`: every acceptance bullet here is a recorded decision, and the two actions they
+implied are MCP writes that are done, not deploys that are pending.
