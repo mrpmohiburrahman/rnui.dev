@@ -20,6 +20,13 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_pageview: false, // Disable automatic pageview capture, as we capture manually
       capture_pageleave: true, // Enable pageleave capture
       person_profiles: "always", // or 'always' to create profiles for anonymous users as well
+      // Unhandled exceptions become $exception events. Set here and not left to
+      // the project's remote config so capture starts on the first page of a
+      // session, before the config arrives, and so a toggle flipped in PostHog
+      // cannot silently switch it off. It supplements demo_load_failed, which
+      // reports a Demo the browser refused to play — that is not an exception
+      // and never raises one.
+      capture_exceptions: true,
     })
   }, [])
 

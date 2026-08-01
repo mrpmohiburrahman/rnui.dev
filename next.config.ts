@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import { withPostHogConfig } from "@posthog/nextjs-config"
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -33,4 +34,22 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+// Error tracking is worthless against a minified bundle, so the production
+// build hands its source maps to PostHog and then deletes them — they are
+// uploaded, never served. Turbopack is the bundler here (Next 16), and the
+// wrapper covers it: it turns on `productionBrowserSourceMaps` and runs the
+// PostHog CLI from the `runAfterProductionCompile` hook.
+//
+// Both credentials are maintainer-only and exist in no fork or clone, and the
+// wrapper throws on sight if the upload is enabled without them. `next dev`
+// evaluates this file too, so an unguarded wrapper would stop a contributor
+// running the site at all. Off unless both are present; the site is identical
+// either way, only the stack traces in PostHog differ.
+const personalApiKey = process.env.POSTHOG_API_KEY
+const projectId = process.env.POSTHOG_PROJECT_ID
+
+export default withPostHogConfig(nextConfig, {
+  personalApiKey: personalApiKey ?? "",
+  projectId,
+  sourcemaps: { enabled: Boolean(personalApiKey && projectId) },
+})
