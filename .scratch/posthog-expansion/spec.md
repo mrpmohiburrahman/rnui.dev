@@ -8,26 +8,31 @@ Measured 2026-07-30 against project **117415 "rnui.dev dashboard"**
 
 ## What is running today
 
-| | State |
-|---|---|
-| Autocapture | on — 14,879 events / 90d, the dominant signal |
-| Manual pageviews | on — `capture_pageview: false` + `SuspendedPostHogPageView` |
-| Pageleave | on — 1,020 events |
-| Web vitals | on — 2,135 events |
-| Rageclick | on — 74 events / 50 people |
-| Session replay | on — 100% sample, 90d retention, console logs + network perf captured |
-| Heatmaps | on (server side) |
-| Person profiles | `always` — a profile for every anonymous visitor |
-| Exception autocapture | **off** |
-| Dead clicks | **off** |
-| Surveys | **off** |
-| Feature flags | **0 defined** |
-| Actions | **0 defined** |
-| Insights | 6 |
-| Dashboards | 1 (primary: 295272) |
-| Custom events | **none — zero in 90 days** |
-| Test-account filter | localhost / 127.0.0.1 only |
-| Path cleaning rules | none |
+Measured 2026-07-30; the **Now** column is kept current as tickets land, so a fresh session does
+not have to re-measure the project to know what is already on.
+
+| | 2026-07-30 | Now |
+|---|---|---|
+| Autocapture | on — 14,879 events / 90d, the dominant signal | on |
+| Manual pageviews | on — `capture_pageview: false` + `SuspendedPostHogPageView` | on |
+| Pageleave | on — 1,020 events | on |
+| Web vitals | on — 2,135 events | on |
+| Rageclick | on — 74 events / 50 people | on |
+| Session replay | on — 100% sample, 90d retention, console logs + network perf captured | on, still at defaults — ticket 04 |
+| Heatmaps | on (server side) | on |
+| Person profiles | `always` — a profile for every anonymous visitor | `always` — ticket 10 |
+| Exception autocapture | **off** | **on** — ticket 02, both project setting and `capture_exceptions` in `posthog.init` |
+| Source-map upload | not wired | wired, off until `POSTHOG_API_KEY` + `POSTHOG_PROJECT_ID` are on Vercel — ticket 02 |
+| Dead clicks | **off** | **off** — ticket 04 |
+| Surveys | **off** | **off** — ticket 07 |
+| Feature flags | **0 defined** | **0 defined** — ticket 08 |
+| Actions | **0 defined** | 0 defined |
+| Insights | 6 | 7 — "New error tracking issues" (`lQ52Apa4`) |
+| Alerts | 0 | 1 — daily email on `$error_tracking_issue_created` |
+| Dashboards | 1 (primary: 295272) | 1 — tickets 04 and 09 add two |
+| Custom events | **none — zero in 90 days** | **still none** — ticket 03 |
+| Test-account filter | localhost / 127.0.0.1 only | localhost, `*.vercel.app`, `$virt_is_bot` — ticket 01, default-checked |
+| Path cleaning rules | none | none, and now overdue — `/entry/<id>` shipped, 275 paths, ticket 10 |
 
 ## What the data already says
 
@@ -85,17 +90,77 @@ has failed since instrumentation, or the capture never runs. Ticket 03 resolves 
   events are for behaviour, never for the numbers rendered on a card.
 - No PII in event properties. Contributor names are public catalogue data; visitor data is not.
 
+## Checkpoints
+
+`CLAUDE.md` says to stop and hand back at the checkpoints listed here. These are they. Each is
+a place where continuing would mean an agent deciding something that is not an agent's to
+decide, or claiming something it cannot verify.
+
+1. **Before anything reaches a visitor.** The exit survey (ticket 07) is the only instrument in
+   this effort that interrupts someone. Do not enable `surveys_opt_in` or ship a survey until
+   the maintainer has answered 07's open question, which allows "no".
+2. **Before wiring an alert to a channel.** Email to the project's own users is fine. Slack, a
+   webhook, Discord or anything else outbound needs the maintainer to supply and confirm the
+   destination — a new alert never goes to a shared channel on an agent's initiative.
+3. **Before setting `Status: resolved` on a ticket whose acceptance needs a deploy.** Vercel
+   environment variables and preview deployments are outside an agent's reach. Hand back with
+   `ready-for-human` and say exactly what is left; ticket 02 is the worked example.
+4. **Before implementing anything marked `needs-triage`.** Tickets 08 and 10 are decisions with
+   the options already written out. Present the options; do not pick one and build it.
+5. **Before agreeing what counts as success.** Ticket 09 step 4 has to be settled by the
+   maintainer, in writing, before the numbers arrive. Deciding it afterwards is not measurement.
+6. **Before reading data that is not ripe.** Ticket 11's readings each have a waiting period.
+   Reading two days of dead clicks and writing it up as the breakdown is worse than not reading
+   it, because it looks like an answer.
+
 ## Tickets
 
-| # | Ticket | Why it is first |
+Regrouped 2026-08-01. The original ten split cleanly into three kinds of work, and several
+files mixed two of them, which is why nothing could be finished in one sitting. Each file now
+carries exactly one kind. Numbers did not change — 08, 09 and ticket 02's notes reference them.
+
+### Agent work, in this order
+
+| # | Ticket | State |
 |---|---|---|
-| 01 | Exclude AI-crawler and internal traffic | Every other number is wrong until this lands |
-| 02 | Turn on error tracking | Free, off, and would have caught the HEVC decode incident |
-| 03 | Instrument the catalogue's real events | Zero custom events exist today |
-| 04 | Core Web Vitals dashboard and alerts | Field data already contradicts the site's claims |
-| 05 | Put session replay to work | Already recording; nothing is watching |
-| 06 | Turn on dead-click capture | Cards are non-semantic divs; this measures it |
-| 07 | One exit survey | Free, off, and the only qualitative signal available |
-| 08 | Feature-flag the autoplay rollout | Autoplay redefines the view metric; ship it reversibly |
-| 09 | Redesign baseline dashboard | Capture "before" while the old site is still live |
-| 10 | Person-profile and retention hygiene | Crawler profiles burn quota for no signal |
+| 04 | Field performance, dead clicks and replay config | **Take this first.** `ready-for-agent`, unblocked. Absorbed old 06 and 05's config steps |
+| 03 | Instrument the catalogue's real events | `ready-for-agent`, unblocked. Land ticket 09 steps 2–3 in the same pass |
+| 09 | Redesign baseline dashboard | `ready-for-agent`, blocked by 03. Step 1 is already done; steps 2–3 ride with 03 |
+
+**Take 04 before 03, even though 03 is the lower number and the frontier rule in `CLAUDE.md`
+will offer 03 first.** 04 flips on dead-click capture and the replay triggers, which collect
+nothing until they are on and are not readable for two weeks (ticket 11). 03 is a day's work
+that would delay that clock for no reason. This is the only place in the effort where the
+number order and the right order disagree — say why in the commit.
+
+### The maintainer's judgement — one sitting, about an hour
+
+| # | Ticket | The decision |
+|---|---|---|
+| 07 | One exit survey | Is a survey wanted at all? Binary, and upstream of the whole ticket |
+| 10 | Person-profile and retention hygiene | Four yes/no answers; every trade-off is already written down |
+| 05 | Watch the rage-click replays | What were the 32 home-page rage-clicks aimed at? |
+| 09 | Step 4 only | Agree success criteria **in writing, before** the redesign numbers land |
+
+Nothing else in the effort waits on any of these.
+
+### Held
+
+| # | Ticket | Why |
+|---|---|---|
+| 02 | Turn on error tracking | `ready-for-human`. Code and project config are done; acceptance needs the Vercel credentials and a preview deploy |
+| 08 | Feature-flag the autoplay rollout | `needs-triage`. Its premise is stale — autoplay and the card headline both already shipped, unflagged, in `ui-ux-overhaul` |
+| 11 | Post-deploy readout | `needs-triage`, blocked by 02 and 04. Fully specified, not yet due. Convert when the first reading is ripe |
+
+### Done
+
+| # | Ticket | |
+|---|---|---|
+| 01 | Exclude AI-crawler and internal traffic | `resolved` — every other number was wrong until it landed |
+
+### Why ticket 11 exists
+
+Four tickets shared a shape: do the thing now, come back in one to four weeks and read what it
+collected. That tail is what kept ticket 02 out of `resolved` — the work was done, one step was
+a calendar entry, and the tracker has no way to say "finished, but check back". The tails now
+live in ticket 11 so their parents can close on the work they actually did.

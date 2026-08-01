@@ -51,3 +51,16 @@ Recommendation: **option 1**, revisited only if the free tier is ever approached
 
 A decision is recorded here for each of the four items, with its reason. No code change is
 required for the recommended path.
+
+## Notes
+
+Every option and its trade-off is already written above, so this is four yes/no answers, not an
+investigation. Do it in one sitting with tickets 05 and 07 and step 4 of ticket 09 — the whole
+maintainer-judgement pile of this effort is about an hour, and nothing else waits on any of it.
+
+One item has already had its trigger pulled: `path_cleaning_filters`. The last bullet says to
+revisit "only if per-entry URLs ship". They shipped, with `ui-ux-overhaul` ticket 08 — as
+`/entry/<id>`, not the `/e/<id>` guessed here, and `pnpm build` prerenders 275 of them. So that
+item is no longer "revisit later"; the cleaning rule collapsing them to `/entry/:id` is due
+now, and the path breakdowns on ticket 04's and ticket 09's dashboards are the things that
+break without it.

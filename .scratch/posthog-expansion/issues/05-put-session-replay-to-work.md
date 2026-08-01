@@ -1,12 +1,20 @@
-# 05 — Put session replay to work
+# 05 — Watch the rage-click replays
 
 Status: ready-for-human
 
+Narrowed 2026-08-01. This ticket used to mix "watch recordings and form a judgement" with
+"set four project settings", so it could never be handed to an agent or finished by a person in
+one sitting. The configuration — masking, minimum duration, the `$rageclick` trigger, the
+"Rage-clicks" playlist — moved to ticket 04. What is left is the part that needs eyes.
+
+Do this in one sitting with tickets 07 and 10, and step 4 of ticket 09. All four are the
+maintainer's judgement, and together they are about an hour.
+
 ## Problem
 
-Session replay is on, sampling 100% of sessions, retaining 90 days, capturing console logs and
-network performance. It has been running since 2025-06-05 and its onboarding was never
-completed. Nothing is watching the recordings, and the 55KB recorder loads on every page.
+Session replay has been on since 2025-06-05, sampling 100% of sessions and retaining 90 days.
+Its onboarding was never completed. Nothing is watching the recordings, and the 55KB recorder
+loads on every page.
 
 Meanwhile there are 74 rage-click events pointing at exactly where to look:
 
@@ -26,32 +34,27 @@ with no role or handler feedback, and the demo requires a second click on the pl
 start. The search-result cluster is consistent with the undebounced search re-rendering 277
 cards on every keystroke.
 
-This ticket is `ready-for-human` because the first step is watching recordings, which needs a
-person's judgement, not an agent's.
+Both candidates have since been worked on in the `ui-ux-overhaul` effort, so part of what the
+replays show may already be fixed. Say which, in the notes — it is the difference between
+"proved the fix" and "still broken".
 
 ## Work
 
 1. Watch the replays behind the 32 home-page rage-clicks. Write down what the visitor was
-   trying to click, in one line each, under `## Comments`.
-2. Create a saved playlist "Rage-clicks" filtered to sessions containing `$rageclick`, and one
-   "Failed demos" filtered to `demo_load_failed` once ticket 03 lands.
-3. Configure replay rather than leaving it at defaults:
-   - Set a masking config. Nothing on the site is sensitive, but the newsletter and contact
-     forms take email addresses — mask inputs by default.
-   - Consider `session_recording_minimum_duration_milliseconds` so one-second crawler visits
-     are not stored.
-   - Keep the 100% sample rate. Volume is low enough that sampling would only lose signal.
-4. Add `$rageclick` to `session_recording_event_trigger_config` so those sessions are certain
-   to be captured.
+   trying to click, one line each, under `## Comments`.
+2. Confirm email inputs are masked, by watching one recording of the newsletter form being
+   filled. Ticket 04 sets the masking config; this is the check that it took.
 
 ## Acceptance
 
 - The cause of the 32 home-page rage-clicks is written down and traced to a specific element.
-- Two saved playlists exist.
-- Email inputs are masked in replays — verified by watching one recording of the newsletter
-  form being filled.
+- Each cause is marked as already fixed by the UI/UX work, or still live.
+- Email masking is confirmed on a real recording.
 
 ## Notes
 
-The maintainer has confirmed session replay stays on. Its 55KB cost is accepted; this ticket
-is about earning it back.
+The maintainer has confirmed session replay stays on. Its 55KB cost is accepted; this ticket is
+about earning it back.
+
+The second playlist this ticket used to ask for, "Failed demos" filtered to `demo_load_failed`,
+belongs to whoever lands ticket 03 — the event does not exist until then.

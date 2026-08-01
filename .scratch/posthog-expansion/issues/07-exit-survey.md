@@ -45,3 +45,11 @@ low-frequency survey will not come close.
 
 Is a survey wanted at all? It is the only qualitative instrument available and it is free, but
 it is also the only thing in this whole spec that interrupts a visitor. Reasonable to decline.
+
+**Answer this before anything else in the ticket.** It is binary and it is upstream of every
+other step — decline it and the whole ticket closes as `wontfix` with no work done. Do it in
+one sitting with tickets 05 and 10 and step 4 of ticket 09; together they are about an hour of
+the maintainer's judgement and nothing else in the effort waits on them.
+
+Step 4, the monthly review of responses, has moved to ticket 11 so this ticket can close on the
+day the survey ships rather than a month later.
