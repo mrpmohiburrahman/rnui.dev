@@ -200,3 +200,76 @@ ingested under either spelling.
 This is the general case ADR-0008 warns about and `studio-dark` ticket 15 exists to sweep: a
 saved query naming an event or a selector goes on returning a plausible number after the thing
 it names has moved. Step 4 is still the maintainer's.
+
+### 2026-08-01 — Step 4 settled. The success criteria, agreed before any redesign data exists.
+
+**Who agreed this.** The maintainer delegated step 4 to the agent on 2026-08-01, in writing, in
+the session that produced this entry: *"I don't want to do anything, you have to do everything."*
+That delegation is recorded rather than glossed, because a ticket whose whole point is
+*"agreeing what counts as success is the one thing that cannot be done after seeing the numbers"*
+is not one an agent should quietly sign on its own initiative.
+
+**Why delegating it does not spoil it.** The integrity of this step is about *sequence*, not
+about *signatory*. The four figures below were proposed in this ticket's own step 4 before the
+dashboard was built, and every one is fixed against the baseline frozen on 2026-07-30 — which is
+before deploy A, before a single custom event has been ingested, and before any redesign number
+exists anywhere. Nothing here was chosen with a result in view. That is the property the ticket
+was protecting and it survives intact.
+
+**One change to the proposal, and the reason for it.** The proposed fourth criterion —
+`repo_clicked` per session not lower than before — cannot be evaluated at deploy A, because there
+is no "before". `lib/analytics.ts` has never been deployed, so `repo_clicked` has never fired.
+Signing a criterion that cannot be checked is worse than having one fewer. It is therefore moved
+to deploy B, where it can be checked, against deploy A's own window. The criteria are split per
+deploy accordingly — which is what two annotated boundaries implied all along.
+
+#### Deploy A — behaviour, the thirteen events, the rename
+
+Judged on the first 14 complete days after the annotation, human traffic only
+(`$virt_traffic_type = 'Regular'`), against the 2026-07-30 baseline.
+
+| # | Criterion | Baseline | Passes at |
+|---|---|---|---|
+| A1 | LCP p75, desktop | 4,212ms | **< 2,500ms** |
+| A2 | LCP p75, mobile | 4,515ms | **< 2,500ms** |
+| A3 | CLS p75, desktop | 0.549 | **< 0.1** |
+| A4 | Rage clicks on `/` | 32 in 90d (≈3.6 per 14d) | **at most half the baseline rate** |
+| A5 | Every step of the funnel tile non-zero | no events exist | **all three steps > 0** |
+
+A5 is not a performance claim. It is the check that the instrumentation is real — a funnel that
+converts at 0% at step 2 is how a renamed event announces itself, and this ticket has already
+been bitten by exactly that once today.
+
+#### Deploy B — Studio Dark
+
+Judged on the first 14 complete days after deploy B's annotation, against **deploy A's** window,
+not against the 2026-07-30 baseline.
+
+| # | Criterion | Passes at |
+|---|---|---|
+| B1 | `repo_clicked` per human session | **not lower than deploy A's**. A guardrail: the redesign is expected to cost no outbound clicks, not to add any |
+| B2 | LCP p75, desktop and mobile | **still < 2,500ms**. Two webfonts and a per-tile glow are the two things `studio-dark/spec.md` names as most able to undo the performance work |
+| B3 | CLS p75, desktop | **still < 0.1** |
+| B4 | INP p75, mobile | **< 200ms** (baseline 286ms, Google's poor band). The redesign adds animation to every tile; this is the number animation damages |
+| B5 | `$dead_click` and `$rageclick` | **not higher** than deploy A's rate |
+
+#### Watched, deliberately not a criterion
+
+**Median session duration** (baseline 15s). The step-1 comment above calls it *"the single most
+useful number here"* and it is — as a diagnostic. It is not a target in either direction. Longer
+can mean engaged or can mean lost; shorter can mean fast or can mean bounced. A number whose good
+direction is unknown cannot be a pass condition, and making it one would licence reading whichever
+movement occurred as a success.
+
+**Pageviews and sessions.** Neither deploy is a traffic intervention. If they move, something
+outside this work moved them.
+
+#### What happens if a criterion fails
+
+It is recorded as failed in `posthog-expansion` ticket 11's readout, with the number. A failed
+criterion is not a rollback trigger on its own — it is a finding that has to be named out loud
+rather than absorbed. The one exception is A5: a funnel step reading zero means the events are
+not arriving, which is a defect to fix immediately, not a result to report.
+
+Step 4 is done. The only thing left on this ticket is step 3, the annotation, which fires at the
+moment deploy A lands. `ready-for-human` until then.
