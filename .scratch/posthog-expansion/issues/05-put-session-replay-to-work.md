@@ -67,3 +67,62 @@ about earning it back.
 
 The second playlist this ticket used to ask for, "Failed demos" filtered to `demo_load_failed`,
 belongs to whoever lands ticket 03 — the event does not exist until then.
+
+## Comments
+
+### 2026-08-01 — The element-level half done. The watching is not, and cannot be done from here.
+
+The maintainer delegated this on 2026-08-01. Most of it was delegated to something that cannot
+do it, so this entry records both the part that is finished and the hard reason the rest is not.
+
+**What the MCP cannot do: watch.** `query-session-recordings-list` and `session-recording-get`
+return metadata only — duration, click and keypress counts, start URL. No DOM snapshots, no
+pointer coordinates, no video. The one substitute would be an AI summary and that path is closed
+on this connection: `session-recording-summary-get` returns HTTP 404 *"No stored summary found
+for this session"*, every recording comes back `summary: null`, and the tools that would generate
+one (`vision-scanners-scan-session`, `vision-observations-list`) are not exposed here.
+
+So acceptance bullets 2 and 3 — marking each cause fixed-or-still-live, and confirming email
+masking by watching a newsletter submission — stay open and stay a person's job. Masking in
+particular has no metadata proxy at all: `keypress_count` exists, keystroke values never do.
+
+**What was done instead, and it is most of bullet 1.** The question *"what was the visitor trying
+to click"* is answerable from `elements_chain` without watching anything. Home page, 90 days:
+
+| What was clicked | Rage clicks | Sessions |
+|---|---|---|
+| `svg.lucide.lucide-play` — the play icon on a card | 22 | 20 |
+| the search input (`input.bg-transparent…`) | 12 | 7 |
+| `polygon` inside that same play icon | 3 | 3 |
+| `video.h-full.object-contain` — the video itself | 3 | 3 |
+| Category chips (`Full Apps` 2, `Headers` 1) | 3 | 3 |
+| the circular icon button (`div.bg-gray-100…rounded-full`) | 2 | 2 |
+| a close `✕`, two buttons, a second search input | 4 | 4 |
+
+**28 of 49 are the play affordance** — the icon, its inner polygon, and the video underneath it,
+which is what a visitor hits when they aim at a play button and miss. That is one finding, and it
+is the finding: on the deployed site a Demo does not play until you click, and the thing you click
+does not respond fast enough to feel like it worked.
+
+**Three corrections to this ticket.**
+
+1. **It is not 32, it is 49 across 38 sessions** over the 90 days to 2026-08-01. The 32 came from
+   a different window. Neither figure is contaminated: bot checks return zero.
+2. **The events skew old and some replays expire this week.** Only 11 of the last 120 days' home
+   rage-clicks are from July onward; 30 are from April. The 2026-05-06/07 recordings carry
+   `recording_ttl` of 3 and 4 days. Watch those first or lose them.
+3. **Do not use the obvious ancestor-chain SQL.** `splitByChar(';', elements_chain)` also splits
+   on semicolons inside inline `style` attributes, so it emits ` background-size` and `"` as if
+   they were DOM ancestors. Read the raw chain instead. The table above uses `substring(…, 1, 90)`
+   for that reason.
+
+**A trap, recorded so nobody else falls in it.** Correlating these rage-click sessions against
+`demo_played` looks like the perfect proof that the play button did nothing, and it returns a
+clean zero for all 22. It measures nothing: `demo_played` first fired at 2026-08-01T02:36:35Z,
+from a local dev run. Every one of these sessions predates the instrumentation by months. The
+same holds for `$dead_click`, which the taxonomy still does not recognise.
+
+Still `ready-for-human`, and now precisely so: open playlist `aEGpGdxI` ("Rage-clicks", 90d, test
+accounts excluded — **not** `SezPvgHU`, which is the seeded 3-day unfiltered one) and watch. Start
+with `019f6be6-aebb-740f-ad04-d2fb96d8f536` (2026-07-16, 2,420s, 147 clicks) and
+`019f093c-b459-77e7-97e9-32d5aad4f41c` (2026-06-27, 332 clicks).

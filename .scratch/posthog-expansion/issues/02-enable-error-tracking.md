@@ -48,8 +48,13 @@ deferred by the ticket's own wording.
 **Not `resolved`.** The first acceptance criterion needs credentials on Vercel and a preview
 deploy, neither of which an agent can do, and `## Acceptance` is the definition of done. Left
 `ready-for-human` — "requires human implementation" per `docs/agents/triage-labels.md` — the
-same state tickets 05 and 07 sit in. See "Left for the maintainer" at the bottom. Step 4's
-follow-up rides on this ticket staying open.
+same state tickets 05 and 07 sit in. See "Left for the maintainer" at the bottom.
+
+*Correction, 2026-08-01.* This paragraph used to end "Step 4's follow-up rides on this ticket
+staying open." It does not any more — ticket 11 reading 1 took ownership of step 4 (setting
+`autocapture_exceptions_errors_to_ignore` once a week of `$exception` data exists), so this
+ticket no longer has to stay open on its account. It stays open on its own first acceptance
+bullet, which still needs credentials on Vercel and a preview deploy.
 
 ### posthog-js had to be upgraded first
 

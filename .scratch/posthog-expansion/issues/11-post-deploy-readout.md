@@ -71,3 +71,26 @@ with the reason. No reading is left silently undone.
 If this pattern recurs in a future effort, the cheaper fix is at the source: write the
 collect-the-data half and the read-the-data half as separate tickets from the start, rather
 than as step 4 of a ticket whose steps 1 to 3 finish in an afternoon.
+
+## Comments
+
+### 2026-08-01 — Two facts this ticket will need, found while auditing the effort
+
+Nothing on this ticket is startable — every reading is keyed to deploy A, which has not happened.
+Two things were established that its readings depend on, recorded here so they are not
+rediscovered under time pressure.
+
+**Production runs posthog-js 1.203.1, not the `^1.409.0` in `package.json`.** All 1,902
+production events (host `www.rnui.dev`) come from 1.203.1. The caret range is what the *next*
+deploy will install; it is not what is serving today. Any reading that assumes a 1.409 feature is
+live before deploy A is wrong.
+
+**Reading 1 now owns ticket 02's step 4** — setting `autocapture_exceptions_errors_to_ignore`
+once a week of `$exception` data exists. Ticket 02's Comments have been corrected to stop
+claiming it has to stay open for that.
+
+**Reading 3's clock is still conditional and should be dated when it starts.** Ticket 07's survey
+now exists as an unlaunched draft (`019fbc46-c7ec-0000-5875-da30034b95d1`); the month begins when
+somebody launches it, not when it was created.
+
+Stays `needs-triage`.
