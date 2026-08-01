@@ -27,10 +27,11 @@ not have to re-measure the project to know what is already on.
 | Surveys | **off** | **off** — ticket 07 |
 | Feature flags | **0 defined** | **0 defined** — ticket 08 |
 | Actions | **0 defined** | 0 defined |
-| Insights | 6 | 20 — +1 error tracking (ticket 02), +13 web vitals (ticket 04) |
+| Insights | 6 | 25 — +1 error tracking (ticket 02), +13 web vitals (ticket 04), +5 redesign baseline (ticket 09) |
 | Alerts | 0 | 5 — daily on `$error_tracking_issue_created`, weekly on LCP (mobile + desktop), CLS (desktop), INP (mobile) p75 |
-| Dashboards | 1 (primary: 295272) | 2 — "Web performance — field" (`1937530`); ticket 09 adds one |
-| Custom events | **none — zero in 90 days** | **still none** — ticket 03 |
+| Dashboards | 1 (primary: 295272) | 3 — "Web performance — field" (`1937530`), "Redesign — before / after" (`1937576`) |
+| Custom events | **none — zero in 90 days** | **13 defined in code**, live at next deploy — ticket 03 |
+| Annotations | 0 | 0 — the redesign deploy boundary is owed, ticket 09 step 3 |
 | Test-account filter | localhost / 127.0.0.1 only | localhost, `*.vercel.app`, `$virt_is_bot` — ticket 01, default-checked |
 | Path cleaning rules | none | none, and now overdue — `/entry/<id>` shipped, 275 paths, ticket 10 |
 
@@ -65,6 +66,10 @@ no role, and the demo needs a second click to start. Search results draw their o
 **`demo_load_failed` has never fired.** It is the only custom event in the code
 (`components/interactive-video.tsx:75`) and has zero occurrences in 90 days. Either no demo
 has failed since instrumentation, or the capture never runs. Ticket 03 resolves which.
+
+*Resolved 2026-08-01: neither. The capture was added on 2026-07-29, one day before this was
+measured — "zero in 90 days" was one day of silence. It was also only reachable after a
+click-to-play. Nothing was broken. Ticket 03 `## Comments` has the detail.*
 
 ## Goals
 
@@ -121,14 +126,16 @@ carries exactly one kind. Numbers did not change — 08, 09 and ticket 02's note
 
 ### Agent work, in this order
 
-| # | Ticket | State |
-|---|---|---|
-| 03 | Instrument the catalogue's real events | **Take this next.** `ready-for-agent`, unblocked. Land ticket 09 steps 2–3 in the same pass |
-| 09 | Redesign baseline dashboard | `ready-for-agent`, blocked by 03. Step 1 is already done; steps 2–3 ride with 03 |
+**Nothing here is `ready-for-agent`.** 03 landed 2026-08-01 and took 09 steps 2 and 3 with it;
+everything now open needs either the maintainer's judgement or a deploy.
 
-04 landed 2026-08-01 and is `ready-for-human` — its work is done, two acceptance bullets wait
-on a deploy. It was taken before 03 because it starts the dead-click clock ticket 11 reads;
-that ordering no longer applies, and 03 is now simply the frontier.
+03 and 04 are both `ready-for-human` for the same reason: the code and the PostHog
+configuration are done, and the remaining acceptance bullets cannot be checked from a machine
+that cannot deploy. **One deploy discharges most of them at once** — it starts the custom events
+(03), `$dead_click` (04) and the input masking (04), and it is the date ticket 09 step 3
+annotates.
+
+09 step 4 is the only thing that must happen **before** that deploy rather than after.
 
 ### The maintainer's judgement — one sitting, about an hour
 
@@ -146,7 +153,9 @@ Nothing else in the effort waits on any of these.
 | # | Ticket | Why |
 |---|---|---|
 | 02 | Turn on error tracking | `ready-for-human`. Code and project config are done; acceptance needs the Vercel credentials and a preview deploy |
+| 03 | Instrument the catalogue's real events | `ready-for-human`. All thirteen events wired and unit-tested; seeing them in the activity feed and the funnel returning non-zero both need the deploy. Two property questions for the maintainer are in its `## Comments` |
 | 04 | Field performance, dead clicks and replay | `ready-for-human`. Dashboard, three firing alerts, playlist and project settings all landed; `$dead_click` arriving and input masking both need the deploy |
+| 09 | Redesign baseline dashboard | `ready-for-human`. Steps 1–2 done — dashboard `1937576`, seven tiles. Step 3 needs the deploy date to exist; **step 4 is due before the deploy, not after** |
 | 08 | Feature-flag the autoplay rollout | `needs-triage`. Its premise is stale — autoplay and the card headline both already shipped, unflagged, in `ui-ux-overhaul` |
 | 11 | Post-deploy readout | `needs-triage`, blocked by 02 and 04. Fully specified, not yet due. Convert when the first reading is ripe |
 

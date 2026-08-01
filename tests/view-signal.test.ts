@@ -51,6 +51,21 @@ describe("createPlayedWatcher", () => {
     expect(played(VIEW_THRESHOLD_SECONDS)).toBe(true)
   })
 
+  it("reports the seconds it accumulated, which demo_watched sends", () => {
+    const played = createPlayedWatcher()
+    expect(played.seconds()).toBe(0)
+
+    played(0)
+    played(1.4)
+    // 1.4, then the wrap contributing nothing, then 0.7 — the same arithmetic
+    // the threshold above crosses on, read out rather than compared. A wall
+    // clock would say 2.3 here and demo_watched would report a Demo that
+    // stalled as one that played.
+    played(0.2)
+    played(0.9)
+    expect(played.seconds()).toBeCloseTo(2.1)
+  })
+
   it("is one watcher per tile, with no shared total", () => {
     const first = createPlayedWatcher()
     const second = createPlayedWatcher()

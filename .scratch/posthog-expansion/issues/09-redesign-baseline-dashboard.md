@@ -1,6 +1,6 @@
 # 09 — Redesign baseline dashboard
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 01, 03
 
 ## Problem
@@ -129,3 +129,57 @@ lands, it should move.
 
 Steps 2 through 4 remain open and are not time-sensitive — the dashboard needs the custom
 events from ticket 03 before it can show the headline metric.
+
+### 2026-08-01 — Step 2 complete. Step 3 cannot be done yet. Step 4 is still yours.
+
+Dashboard **"Redesign — before / after"**, id `1937576`, project 117415.
+<https://us.posthog.com/project/117415/dashboard/1937576>
+
+Every tile is `filterTestAccounts: true`, so every number on it is human — ticket 01's filter
+(localhost, `*.vercel.app`, `$virt_is_bot`). Seven tiles plus a text tile, weekly over 90 days,
+annotations on so the deploy boundary appears the moment step 3 can happen:
+
+| Tile | Insight | Query |
+|---|---|---|
+| `repo_clicked` per session — **headline** | `8JGlZjnZ` | `repo_clicked` total ÷ `$pageview` unique sessions, formula `A/B` |
+| `demo_watched` per session | `FF1bmFb6` | same shape |
+| Funnel `demo_played → entry_opened → repo_clicked` | `0FGtPuxq` | ordered, **1-day** window |
+| `/products` vs `/` | `ac9M7qYD` | `$pageview` on `$pathname`, views and humans, four series |
+| LCP p75 by device | `ebkjI5NY` | ticket 04's insight, now on both dashboards |
+| CLS p75 by device | `FWQuo5NJ` | ticket 04's insight, now on both dashboards |
+| Rage clicks and dead clicks | `qgrmxGJM` | `$rageclick` and `$dead_click` totals |
+
+The two web-vitals tiles are ticket 04's existing insights attached to a second dashboard rather
+than copies. One query, two dashboards: a copy would drift from the alert that watches it.
+
+The funnel uses a one-day conversion window, not the 14-day default. Median session is 15
+seconds; a repo click a week later is a second visit, not this journey.
+
+The text tile at the top carries the frozen 2026-07-30 "before" numbers, so both sides of the
+boundary are readable in one place rather than one of them living only in this file.
+
+**Every query executes.** Verified via `insight-query`: the rage-click tile returns 13 weeks of
+real data, and the headline formula returns 0 — its denominator (sessions) resolves and its
+numerator (`repo_clicked`) does not exist yet. That is the tile waiting for ticket 03's deploy,
+not a broken query.
+
+**Step 3 is not done, and could not be.** It asks for the deploy date annotated. The redesign has
+not deployed and there is no date to annotate; inventing one would be worse than leaving it. The
+project has zero annotations today. When the redesign deploys, one call does it:
+
+```
+posthog:exec  call annotation-create {"content": "ui-ux-overhaul redesign deployed", "date_marker": "<the deploy timestamp>", "scope": "project"}
+```
+
+`scope: project` rather than a single dashboard, so it lands on ticket 04's charts too. Every
+tile on both dashboards already has `showAnnotations: true`, so nothing else needs touching.
+
+**Acceptance, honestly.** "The dashboard exists and every tile has data" is not met and cannot
+be until two deploys have happened: ticket 03's instrumentation for the three custom-event tiles
+and the funnel, and ticket 04's for `$dead_click`. The four remaining tiles have data now.
+
+`ready-for-human`, with three things left: the deploy annotation above, a look at the dashboard
+once ticket 03 is live, and **step 4 — agreeing the success criteria in writing, before the
+redesign ships.** That last one is the whole reason this ticket is time-sensitive, and it is the
+one thing here that cannot be done after seeing the numbers. The proposal in step 4 above is
+unchanged and still needs a yes or a counter-proposal.

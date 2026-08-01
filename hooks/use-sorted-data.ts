@@ -3,6 +3,8 @@ import { useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Entry } from "@/data/entry"
 
+import { sortChanged } from "@/lib/analytics"
+
 type SortType = "recent" | "top-voted" | "top-viewed"
 
 const useSortedData = (initialData: Entry[]) => {
@@ -23,6 +25,10 @@ const useSortedData = (initialData: Entry[]) => {
   // `page` already uses. Replace rather than push because a sort is a mode, not
   // a step — Back should leave the page, not undo three toggles.
   const setSort = (next: SortType) => {
+    // Reported on use, not on change: pressing the pill that is already active
+    // is a visitor looking for something a re-sort was not going to give them,
+    // and a control that answers nothing is worth seeing in the numbers.
+    sortChanged(next)
     const params = new URLSearchParams(window.location.search)
     if (next === "recent") params.delete("sort")
     else params.set("sort", next)

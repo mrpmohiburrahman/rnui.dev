@@ -1,11 +1,19 @@
 "use client"
 
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useMemo, useState } from "react"
 import Link from "next/link"
 import type { Entry } from "@/data/entry"
 import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
 import { Bookmark, Linkedin, Star } from "lucide-react"
 
+import {
+  bookmarkAdded,
+  bookmarkRemoved,
+  entryFacts,
+  entryOpened,
+  repoClicked,
+  voteCast,
+} from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 import Badge from "@/components/badge" // Import the Badge component
 import MinimalCard, {
@@ -59,6 +67,11 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
 
   const viewCount = views + viewsClicked
   const voteCount = Math.max(votes + votesClicked, 0)
+
+  // Every event this card reports names the same four things. Memoised because
+  // the Demo tile passes it straight to the playback owner's `register`, which
+  // observes and unobserves a <video> on each new identity.
+  const facts = useMemo(() => entryFacts(entry), [entry])
 
   // Two of ADR-0007's three signals are this card's: opening the Entry, and
   // following its Source link. Both go through the playback owner's countView
@@ -116,8 +129,9 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
   // once per session: a visitor who opens the same Entry twice looked twice.
   const handleClick = useCallback(() => {
     recordView()
+    entryOpened(facts, "card")
     window.history.pushState(null, "", `${href}${window.location.search}`)
-  }, [href, recordView])
+  }, [href, recordView, facts])
 
   // The headline is a real <a>, so a modified click is the browser's to handle —
   // cmd/ctrl/shift/alt open the Entry in a new tab or window, which is the point
@@ -134,10 +148,18 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     [handleClick]
   )
 
-  const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    toggleBookmark(entry.id)
-  }, [toggleBookmark, entry.id])
+  const handleBookmarkClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      // Read before the toggle: `isBookmarked` describes the state the visitor
+      // clicked out of, which is the one that says which of the two events this
+      // was. Reading it after would report every save as a removal.
+      if (isBookmarked) bookmarkRemoved(facts)
+      else bookmarkAdded(facts)
+      toggleBookmark(entry.id)
+    },
+    [toggleBookmark, entry.id, isBookmarked, facts]
+  )
 
   // A vote records no view. ADR-0007:3 lists the three signals and voting is not
   // among them, because votes already measure interest and having view_count
@@ -150,6 +172,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
       if (isVoted) {
         await decrementVoteCountLocal()
       } else {
+        // Only the cast direction. Withdrawing a vote is the same button and a
+        // different act, and there is one event name for it — reporting both
+        // under `vote_cast` would make a count of it mean nothing.
+        voteCast(facts)
         await incrementVoteCountLocal()
       }
     },
@@ -159,6 +185,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
       toggleVote,
       decrementVoteCountLocal,
       incrementVoteCountLocal,
+      facts,
     ]
   )
 
@@ -170,9 +197,10 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
     (e: React.MouseEvent) => {
       e.stopPropagation()
       recordView()
+      repoClicked(facts, "grid")
       // Allow the default link behavior
     },
-    [recordView]
+    [recordView, facts]
   )
 
   // The three profile links count nothing. They point at a person, not at the
@@ -237,7 +265,7 @@ const EntryCardComponent: React.FC<EntryCardProps> = ({
               playback owner, which is why nothing about that is wired here. */}
           <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
             <DemoTile
-              entryId={entry.id}
+              facts={facts}
               demoPath={entry.demoPath}
               caption={`video demo of ${entry.caption}`}
               posterPath={entry.posterPath}

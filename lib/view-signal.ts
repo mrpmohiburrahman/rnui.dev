@@ -26,6 +26,18 @@ import {
 export const VIEW_THRESHOLD_SECONDS = 2
 
 /**
+ * What `createPlayedWatcher` hands back: the predicate, plus a readout of what it
+ * has accumulated. The readout exists because `demo_watched` reports how much
+ * actually played, and the alternative — the caller keeping its own running total
+ * beside the watcher's — is two accumulators that can disagree about a loop wrap.
+ */
+export type PlayedWatcher = ((currentTime: number) => boolean) & {
+  /** Seconds of playback accumulated so far. Not a position: a looped Demo's
+   *  `currentTime` goes backwards and this does not. */
+  seconds: () => number
+}
+
+/**
  * One watcher per tile. Feed it the element's `currentTime`; it answers whether
  * the recording has now played for `VIEW_THRESHOLD_SECONDS`.
  *
@@ -41,15 +53,18 @@ export const VIEW_THRESHOLD_SECONDS = 2
  * The first reading only establishes a baseline: a watcher handed a Demo already
  * at 1.9s has not watched 1.9s of it.
  */
-export function createPlayedWatcher() {
+export function createPlayedWatcher(): PlayedWatcher {
   let last: number | null = null
   let played = 0
 
-  return (currentTime: number): boolean => {
-    if (last !== null && currentTime > last) played += currentTime - last
-    last = currentTime
-    return played >= VIEW_THRESHOLD_SECONDS
-  }
+  return Object.assign(
+    (currentTime: number): boolean => {
+      if (last !== null && currentTime > last) played += currentTime - last
+      last = currentTime
+      return played >= VIEW_THRESHOLD_SECONDS
+    },
+    { seconds: () => played }
+  )
 }
 
 /**

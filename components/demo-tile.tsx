@@ -10,9 +10,9 @@
 // playing"). Nothing else about the tile moves.
 "use client"
 
-import { useCallback, useState, useSyncExternalStore } from "react"
-import { usePostHog } from "posthog-js/react"
+import { useCallback, useRef, useState, useSyncExternalStore } from "react"
 
+import { demoLoadFailed, demoPlayed, type EntryFacts } from "@/lib/analytics"
 import { getCdnUrl } from "@/lib/cdn"
 
 import { usePlaybackOwner } from "./playback-owner"
@@ -53,13 +53,17 @@ const usePrefersReducedMotion = () =>
 // entry, which lists `src` and `url` under _Avoid_. `interactive-video.tsx`
 // still speaks the old vocabulary; a module written after the rename does not.
 export function DemoTile({
-  entryId,
+  facts,
   demoPath,
   posterPath,
   caption,
   className = "",
 }: {
-  entryId: string
+  // The Entry's analytics facts rather than its id: this tile reports the play
+  // and the owner reports the watch, and both events name the Category and the
+  // author. Memoise it at the call site — it is a `register` dependency, and a
+  // fresh object per render unobserves and re-observes the <video>.
+  facts: EntryFacts
   demoPath: string
   posterPath?: string
   caption?: string
@@ -67,7 +71,10 @@ export function DemoTile({
 }) {
   const [failureReason, setFailureReason] = useState<string | null>(null)
   const [hasPlayed, setHasPlayed] = useState(false)
-  const posthog = usePostHog()
+  // Once per tile per page. The owner pauses and re-grants a slot on every
+  // scroll that changes what is on screen, so `playing` fires repeatedly for a
+  // tile nobody did anything new to.
+  const announced = useRef(false)
   const owner = usePlaybackOwner()
   const reduced = usePrefersReducedMotion()
 
@@ -89,13 +96,9 @@ export function DemoTile({
       if (!error) return
       const reason = FAILURE_REASONS[error.code] ?? "unknown"
       setFailureReason(reason)
-      posthog?.capture("demo_load_failed", {
-        asset_path: demoPath,
-        reason,
-        url: demoUrl,
-      })
+      demoLoadFailed(demoPath, reason, demoUrl)
     },
-    [posthog, demoPath, demoUrl]
+    [demoPath, demoUrl]
   )
 
   // A React 19 ref cleanup, memoised: an inline arrow would unregister and
@@ -103,9 +106,9 @@ export function DemoTile({
   const registerDemo = useCallback(
     (el: HTMLVideoElement | null) => {
       if (!el) return
-      return owner.register(el, entryId)
+      return owner.register(el, facts)
     },
-    [owner, entryId]
+    [owner, facts]
   )
 
   return (
@@ -163,7 +166,12 @@ export function DemoTile({
               className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-150 ${
                 hasPlayed ? "opacity-100" : "opacity-0"
               }`}
-              onPlaying={() => setHasPlayed(true)}
+              onPlaying={() => {
+                setHasPlayed(true)
+                if (announced.current) return
+                announced.current = true
+                demoPlayed(facts, "grid", "autoplay")
+              }}
               onError={handleDemoError}
               muted
               loop
