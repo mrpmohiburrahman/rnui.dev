@@ -48,6 +48,15 @@ const nextConfig: NextConfig = {
 const personalApiKey = process.env.POSTHOG_API_KEY
 const projectId = process.env.POSTHOG_PROJECT_ID
 
+// Neither set is the normal case — a fork, a clone, a contributor. Exactly one
+// set is somebody halfway through configuring Vercel, and that build would
+// otherwise go green while shipping stack traces nobody can read.
+if (Boolean(personalApiKey) !== Boolean(projectId)) {
+  console.warn(
+    "[posthog] Source maps will NOT be uploaded: POSTHOG_API_KEY and POSTHOG_PROJECT_ID must both be set. Stack traces in error tracking will stay minified."
+  )
+}
+
 export default withPostHogConfig(nextConfig, {
   personalApiKey: personalApiKey ?? "",
   projectId,

@@ -1,6 +1,6 @@
 # 02 — Turn on error tracking
 
-Status: resolved
+Status: ready-for-human
 
 ## Problem
 
@@ -42,8 +42,14 @@ is on for replay (`capture_console_log_opt_in: true`) and that is sufficient.
 
 ## Comments
 
-Done 2026-08-01 against project 117415. Steps 1, 2, 3 and 5 are landed; step 4 is deferred by
-the ticket's own wording and one acceptance criterion needs a deploy — both below.
+Agent pass 2026-08-01 against project 117415. Steps 1, 2, 3 and 5 are landed; step 4 is
+deferred by the ticket's own wording.
+
+**Not `resolved`.** The first acceptance criterion needs credentials on Vercel and a preview
+deploy, neither of which an agent can do, and `## Acceptance` is the definition of done. Left
+`ready-for-human` — "requires human implementation" per `docs/agents/triage-labels.md` — the
+same state tickets 05 and 07 sit in. See "Left for the maintainer" at the bottom. Step 4's
+follow-up rides on this ticket staying open.
 
 ### posthog-js had to be upgraded first
 

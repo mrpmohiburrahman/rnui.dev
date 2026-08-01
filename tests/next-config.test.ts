@@ -1,13 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-// Source-map upload is wired into next.config.ts, and @posthog/nextjs-config
-// throws from `resolveConfig` the moment the config module is evaluated if the
-// upload is enabled without credentials. next.config.ts is evaluated by `next
-// dev` too, so an unguarded wrapper would stop a contributor who has no PostHog
-// personal API key from running the site at all. The guard is the whole reason
-// this file exists.
-
-const CREDENTIALS = ["POSTHOG_API_KEY", "POSTHOG_PROJECT_ID"] as const
+// The credentials guard in next.config.ts is the whole reason this file exists.
+// Both of its branches are pinned here, and so is the redirect the wrapper
+// takes apart and rebuilds on the way through.
 
 type LoadedConfig = {
   productionBrowserSourceMaps?: boolean
@@ -19,39 +14,39 @@ type ConfigFn = (
   ctx: { defaultConfig: Record<string, unknown> }
 ) => LoadedConfig | Promise<LoadedConfig>
 
+function withCredentials() {
+  vi.stubEnv("POSTHOG_API_KEY", "phx_test")
+  vi.stubEnv("POSTHOG_PROJECT_ID", "117415")
+}
+
 async function loadConfig(): Promise<LoadedConfig> {
   vi.resetModules()
+  // withPostHogConfig is typed as returning NextConfig but returns the function
+  // form of one, so neither branch of this can be reached by the declared type.
   const exported = (await import("@/next.config")).default as unknown as
     | ConfigFn
     | LoadedConfig
 
-  // withPostHogConfig returns the function form of a Next config; the bare
-  // object is what next.config.ts exports when the wrapper is not applied.
   return typeof exported === "function"
     ? await exported("phase-production-build", { defaultConfig: {} })
     : exported
 }
 
 describe("next.config", () => {
-  const saved: Record<string, string | undefined> = {}
-
+  // Cleared rather than left to the environment: whoever runs the suite may
+  // have the real credentials exported, which would quietly invert the
+  // no-credentials case into a second copy of the credentialled one.
   beforeEach(() => {
-    for (const key of CREDENTIALS) {
-      saved[key] = process.env[key]
-      delete process.env[key]
-    }
+    vi.stubEnv("POSTHOG_API_KEY", undefined)
+    vi.stubEnv("POSTHOG_PROJECT_ID", undefined)
   })
 
   afterEach(() => {
-    for (const key of CREDENTIALS) {
-      if (saved[key] === undefined) delete process.env[key]
-      else process.env[key] = saved[key]
-    }
+    vi.unstubAllEnvs()
   })
 
   it("uploads source maps when the build has PostHog credentials", async () => {
-    process.env.POSTHOG_API_KEY = "phx_test"
-    process.env.POSTHOG_PROJECT_ID = "117415"
+    withCredentials()
 
     const config = await loadConfig()
 
@@ -69,23 +64,19 @@ describe("next.config", () => {
     expect(config.compiler?.runAfterProductionCompile).toBeUndefined()
   })
 
-  it("keeps the /feedback redirect whether or not the upload is on", async () => {
-    for (const credentialled of [false, true]) {
-      if (credentialled) {
-        process.env.POSTHOG_API_KEY = "phx_test"
-        process.env.POSTHOG_PROJECT_ID = "117415"
-      }
+  it.each([
+    ["upload on", true],
+    ["upload off", false],
+  ])("keeps the /feedback redirect with the %s", async (_label, credentialled) => {
+    if (credentialled) withCredentials()
 
-      const config = await loadConfig()
-      const redirects = await config.redirects()
+    const redirects = await (await loadConfig()).redirects()
 
-      // The wrapper takes the whole user config apart and rebuilds it. A
-      // rebuild that dropped this would 404 a live URL, silently.
-      expect(redirects).toContainEqual({
-        source: "/feedback",
-        destination: "/contactus",
-        permanent: false,
-      })
-    }
+    // Dropping this would 404 a live URL, silently.
+    expect(redirects).toContainEqual({
+      source: "/feedback",
+      destination: "/contactus",
+      permanent: false,
+    })
   })
 })
