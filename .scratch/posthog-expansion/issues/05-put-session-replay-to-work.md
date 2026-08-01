@@ -7,6 +7,15 @@ Narrowed 2026-08-01. This ticket used to mix "watch recordings and form a judgem
 one sitting. The configuration — masking, minimum duration, the `$rageclick` trigger, the
 "Rage-clicks" playlist — moved to ticket 04. What is left is the part that needs eyes.
 
+Ticket 04 landed the same day. Two things there change what this ticket does:
+
+- **The `$rageclick` trigger was deliberately not set.** Event triggers restrict which sessions
+  record rather than adding to them, so setting it would have dropped every session without a
+  rage-click. Capture stays at 100%, which already includes every rage-click session — nothing
+  is missing here. See 04's `## Comments`.
+- **Open the playlist "Rage-clicks" (`aEGpGdxI`)**, not PostHog's seeded "Recordings with Rage
+  Clicks" (`SezPvgHU`). The latter looks identical and is not: 3-day window, crawlers included.
+
 Do this in one sitting with tickets 07 and 10, and step 4 of ticket 09. All four are the
 maintainer's judgement, and together they are about an hour.
 

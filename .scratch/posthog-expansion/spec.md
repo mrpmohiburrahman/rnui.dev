@@ -18,18 +18,18 @@ not have to re-measure the project to know what is already on.
 | Pageleave | on — 1,020 events | on |
 | Web vitals | on — 2,135 events | on |
 | Rageclick | on — 74 events / 50 people | on |
-| Session replay | on — 100% sample, 90d retention, console logs + network perf captured | on, still at defaults — ticket 04 |
+| Session replay | on — 100% sample, 90d retention, console logs + network perf captured | on, 100% kept; input masking pinned in code (was already the default, unchanged behaviour), 1,000ms minimum duration — ticket 04 |
 | Heatmaps | on (server side) | on |
 | Person profiles | `always` — a profile for every anonymous visitor | `always` — ticket 10 |
 | Exception autocapture | **off** | **on** — ticket 02, both project setting and `capture_exceptions` in `posthog.init` |
 | Source-map upload | not wired | wired, off until `POSTHOG_API_KEY` + `POSTHOG_PROJECT_ID` are on Vercel — ticket 02 |
-| Dead clicks | **off** | **off** — ticket 04 |
+| Dead clicks | **off** | on in `posthog.init`, live at next deploy — ticket 04 |
 | Surveys | **off** | **off** — ticket 07 |
 | Feature flags | **0 defined** | **0 defined** — ticket 08 |
 | Actions | **0 defined** | 0 defined |
-| Insights | 6 | 7 — "New error tracking issues" (`lQ52Apa4`) |
-| Alerts | 0 | 1 — daily email on `$error_tracking_issue_created` |
-| Dashboards | 1 (primary: 295272) | 1 — tickets 04 and 09 add two |
+| Insights | 6 | 20 — +1 error tracking (ticket 02), +13 web vitals (ticket 04) |
+| Alerts | 0 | 5 — daily on `$error_tracking_issue_created`, weekly on LCP (mobile + desktop), CLS (desktop), INP (mobile) p75 |
+| Dashboards | 1 (primary: 295272) | 2 — "Web performance — field" (`1937530`); ticket 09 adds one |
 | Custom events | **none — zero in 90 days** | **still none** — ticket 03 |
 | Test-account filter | localhost / 127.0.0.1 only | localhost, `*.vercel.app`, `$virt_is_bot` — ticket 01, default-checked |
 | Path cleaning rules | none | none, and now overdue — `/entry/<id>` shipped, 275 paths, ticket 10 |
@@ -123,15 +123,12 @@ carries exactly one kind. Numbers did not change — 08, 09 and ticket 02's note
 
 | # | Ticket | State |
 |---|---|---|
-| 04 | Field performance, dead clicks and replay config | **Take this first.** `ready-for-agent`, unblocked. Absorbed old 06 and 05's config steps |
-| 03 | Instrument the catalogue's real events | `ready-for-agent`, unblocked. Land ticket 09 steps 2–3 in the same pass |
+| 03 | Instrument the catalogue's real events | **Take this next.** `ready-for-agent`, unblocked. Land ticket 09 steps 2–3 in the same pass |
 | 09 | Redesign baseline dashboard | `ready-for-agent`, blocked by 03. Step 1 is already done; steps 2–3 ride with 03 |
 
-**Take 04 before 03, even though 03 is the lower number and the frontier rule in `CLAUDE.md`
-will offer 03 first.** 04 flips on dead-click capture and the replay triggers, which collect
-nothing until they are on and are not readable for two weeks (ticket 11). 03 is a day's work
-that would delay that clock for no reason. This is the only place in the effort where the
-number order and the right order disagree — say why in the commit.
+04 landed 2026-08-01 and is `ready-for-human` — its work is done, two acceptance bullets wait
+on a deploy. It was taken before 03 because it starts the dead-click clock ticket 11 reads;
+that ordering no longer applies, and 03 is now simply the frontier.
 
 ### The maintainer's judgement — one sitting, about an hour
 
@@ -149,6 +146,7 @@ Nothing else in the effort waits on any of these.
 | # | Ticket | Why |
 |---|---|---|
 | 02 | Turn on error tracking | `ready-for-human`. Code and project config are done; acceptance needs the Vercel credentials and a preview deploy |
+| 04 | Field performance, dead clicks and replay | `ready-for-human`. Dashboard, three firing alerts, playlist and project settings all landed; `$dead_click` arriving and input masking both need the deploy |
 | 08 | Feature-flag the autoplay rollout | `needs-triage`. Its premise is stale — autoplay and the card headline both already shipped, unflagged, in `ui-ux-overhaul` |
 | 11 | Post-deploy readout | `needs-triage`, blocked by 02 and 04. Fully specified, not yet due. Convert when the first reading is ripe |
 

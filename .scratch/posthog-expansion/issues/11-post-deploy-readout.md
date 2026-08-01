@@ -3,6 +3,13 @@
 Status: needs-triage
 Blocked by: 02, 04
 
+**Read that `Blocked by` line as "after 02 and 04 have deployed", not by the literal tracker
+rule.** `docs/agents/issue-tracker.md` says a ticket is unblocked when every file it lists is
+`resolved`; 02 and 04 are both `ready-for-human` and will stay that way until someone deploys
+and checks their last acceptance bullet, so the literal rule would keep this ticket blocked for
+ever. That is an artefact of tickets whose tail is a calendar entry — the exact thing this file
+exists to absorb. The triage action below is still a date check, done by a person.
+
 New on 2026-08-01. Every other ticket in this effort had a tail: do the thing now, come back in
 one to four weeks and read what it collected. Those tails are the reason ticket 02 could not go
 to `resolved` — the work was done, one step was a calendar entry, and the tracker has no way to
@@ -26,6 +33,11 @@ Ripe once `POSTHOG_API_KEY` and `POSTHOG_PROJECT_ID` are on Vercel, a build has 
 them, and a week of `$exception` events exists. Ticket 02's own acceptance is the gate.
 
 ### 2. Dead clicks — two weeks after ticket 04 lands
+
+**The clock starts at the deploy, not at ticket 04's commit.** `capture_dead_clicks` went into
+`posthog.init` on 2026-08-01, but no visitor runs that code until it ships. Count two weeks
+from the first production deploy carrying it; before that, `$dead_click` is necessarily zero
+and a zero is not a finding.
 
 From former ticket 06, steps 2 and 3, now ticket 04's `## Not in this ticket`:
 
