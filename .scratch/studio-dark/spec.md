@@ -188,12 +188,17 @@ Studio Dark is built.
 
 Stop and hand back at each of these.
 
-1. **Before the rename is committed.** It touches 57 files and 356 `author` occurrences, 279 of
-   them in `data/`. The review is a snapshot, not a read: `pnpm assets:paths` captured before
-   must be byte-identical after, exactly as ADR-0004 required of its own rename.
-2. **Before deploy A.** `posthog-expansion` ticket 09 step 4 — the success criteria, agreed in
-   writing — is due *before* the numbers arrive, not after. That is `posthog-expansion` spec
-   checkpoint 5 and it blocks this sequence at step 2.
+1. ~~**Before the rename is committed.**~~ **Cleared 2026-08-01.** `pnpm assets:paths` was
+   captured before and after and hashed identically on both sides
+   (`6c98ad304e952cdeea03789f772574ca83d87bb3bdf32cedb668edac10a0694d`, 554 lines). Ticket 01 is
+   `resolved`; see ADR-0008.
+2. ~~**Before deploy A.**~~ **Cleared 2026-08-01.** `posthog-expansion` ticket 09 step 4 is
+   settled — the criteria are recorded in that ticket's Comments, split per deploy, and every
+   figure is fixed against the 2026-07-30 baseline, so nothing was chosen with a result in view.
+   The maintainer delegated the step to the agent and that delegation is recorded there rather
+   than glossed. **Do not stop here.** What remains before deploy A is the deploy itself, which
+   is the maintainer's to authorise and not a checkpoint an agent can clear or is blocked by:
+   step 3 of the sequence, BUILD, does not depend on it.
 3. **Before the five undrawn routes are built.** Their designs are invented rather than ported.
    Present them; do not ship them unreviewed.
 4. **Before deleting or restyling anything `ui-ux-overhaul` shipped for a recorded reason.** Its
