@@ -91,6 +91,29 @@ The order is load-bearing and was decided deliberately. Nothing here is a prefer
 4  DEPLOY B    -> annotate
 ```
 
+*Amendment, 2026-08-01, at the maintainer's direction.* Two deliverables were added to the end of
+the effort, as tickets 14 and 15. Neither moves the four steps above.
+
+**The redesign has to be shown, so it has to be recorded — and "before" names three states, not
+two.** `main` is what visitors see; deploy A is behaviour and the rename with no restyle, seen by
+nobody; deploy B is Studio Dark. A single `main` → Studio Dark clip credits the restyle with all
+of `ui-ux-overhaul`'s behaviour work, which is the same conflation *Why two deploys* below spends
+two annotations avoiding. Ticket 14 captures all three from one script so the pairs stay honest.
+Nothing is time-critical: git holds every state, and ADR-0003 makes an Asset path identify bytes
+that are never reused, so an old checkout still renders against the live CDN. The two things that
+*do* drift are the live Firebase counts printed on every card, and whether `main` still builds —
+both are in ticket 14.
+
+**Deploy B does four things to PostHog that no surface ticket owns.** Tickets 04, 05, 08 and 11
+each instrument the surface they build and deliberately add no new event, which is correct and
+unchanged. Ticket 15 covers what is left over: the NOTIFY column is a conversion action with no
+event going from one route to ten (`components/newsletter-form.tsx` has no capture call at all);
+ticket 13's keyboard layer must route through the existing click handlers or `bookmark_added`
+silently narrows to mean mouse-only; autocapture, heatmaps and the dead-click stream all reset at
+deploy B while the thirteen custom events survive; and deploy B's annotation is named in the
+sequence above and in no ticket's acceptance. Only the first of those adds anything — a
+fourteenth event — and ticket 15 marks it as the maintainer's to veto.
+
 **Why the rename goes first.** Two names are on ADR-0004's migration boundary *right now and only
 right now* — `/recording/[id]` (277 addresses, prerendered by `ui-ux-overhaul` ticket 08 but not
 deployed, so not one has ever been served) and `recording_id` (the property on all thirteen events
@@ -200,6 +223,8 @@ number — so ascending order is a valid execution order.
 | 11 | Mobile: the bottom sheet and the phone header | 04, 05, 08 |
 | 12 | The five routes the mock does not draw | 02, 04 · checkpoint 3 |
 | 13 | Motion, reduced motion, accessibility and the performance measurement | 07, 08, 09, 10, 11, 12 · the merge gate |
+| 14 | The before-and-after recordings | 13 |
+| 15 | What deploy B does to PostHog | 04, 11, 13 |
 
 Three dependencies are not obvious from the titles and were found only by writing the tickets:
 
