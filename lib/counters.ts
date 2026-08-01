@@ -1,7 +1,7 @@
 // lib/counters.ts
 //
-// The counters: recording a view of an Entry, casting or withdrawing a vote, and
-// reading every Entry's counts back for the catalogue. Three functions over one
+// The counters: recording a view of a Recording, casting or withdrawing a vote, and
+// reading every Recording's counts back for the catalogue. Three functions over one
 // narrow store, so the rules can be exercised without credentials and without a
 // network — see inMemoryCounterStore below and tests/counters.test.ts.
 //
@@ -19,8 +19,8 @@ export type Counts = {
   vote_count: number
 }
 
-/** Every Entry's counts, keyed by Entry id. */
-export type CountsByEntry = Record<string, Counts>
+/** Every Recording's counts, keyed by Recording id. */
+export type CountsByRecording = Record<string, Counts>
 
 /**
  * The slice of a document store the counters need. Three operations and no query
@@ -28,30 +28,30 @@ export type CountsByEntry = Record<string, Counts>
  * plain object.
  */
 export interface CounterStore {
-  readAll(): Promise<CountsByEntry>
+  readAll(): Promise<CountsByRecording>
 
   /**
-   * Add `by` to one field of one Entry's document. Resolves `false` — rather than
+   * Add `by` to one field of one Recording's document. Resolves `false` — rather than
    * throwing — when there is no such document. That is what turns the
    * create-if-missing recovery into a single `if`, where it was written out
    * verbatim in all three writers.
    */
-  addTo(entryId: string, field: keyof Counts, by: number): Promise<boolean>
+  addTo(recordingId: string, field: keyof Counts, by: number): Promise<boolean>
 
-  create(entryId: string, counts: Counts): Promise<void>
+  create(recordingId: string, counts: Counts): Promise<void>
 }
 
 export type VoteChange = "cast" | "withdraw"
 
 export function createCounters(store: CounterStore) {
   async function addOrCreate(
-    entryId: string,
+    recordingId: string,
     field: keyof Counts,
     by: number,
     whenMissing: Counts
   ): Promise<void> {
-    if (!(await store.addTo(entryId, field, by))) {
-      await store.create(entryId, whenMissing)
+    if (!(await store.addTo(recordingId, field, by))) {
+      await store.create(recordingId, whenMissing)
     }
   }
 
@@ -61,9 +61,9 @@ export function createCounters(store: CounterStore) {
      * caller can act on, and every call site fires it without waiting — so there is
      * nothing left for a caller to handle rather than a handler at each one.
      */
-    async recordView(entryId: string): Promise<void> {
+    async recordView(recordingId: string): Promise<void> {
       try {
-        await addOrCreate(entryId, "view_count", 1, {
+        await addOrCreate(recordingId, "view_count", 1, {
           view_count: 1,
           vote_count: 0,
         })
@@ -72,20 +72,20 @@ export function createCounters(store: CounterStore) {
       }
     },
 
-    async changeVote(entryId: string, change: VoteChange): Promise<void> {
+    async changeVote(recordingId: string, change: VoteChange): Promise<void> {
       try {
         if (change === "cast") {
           // `view_count: 0`, and the zero is load-bearing. This payload used to
           // seed one view because a vote click recorded a view first, which made
           // it unreachable. ADR-0007 stops a vote counting as a view, so a
-          // first-ever vote on an Entry nobody has watched now reaches here — and
+          // first-ever vote on a Recording nobody has watched now reaches here — and
           // a 1 would invent a view that never happened.
-          await addOrCreate(entryId, "vote_count", 1, {
+          await addOrCreate(recordingId, "vote_count", 1, {
             vote_count: 1,
             view_count: 0,
           })
         } else {
-          await addOrCreate(entryId, "vote_count", -1, {
+          await addOrCreate(recordingId, "vote_count", -1, {
             vote_count: 0,
             view_count: 0,
           })
@@ -95,14 +95,14 @@ export function createCounters(store: CounterStore) {
       }
     },
 
-    readCounts(): Promise<CountsByEntry> {
+    readCounts(): Promise<CountsByRecording> {
       return store.readAll()
     },
   }
 }
 
 /**
- * A stand-in for the document store. `addTo` refuses an unknown Entry the way
+ * A stand-in for the document store. `addTo` refuses an unknown Recording the way
  * Firestore's `updateDoc` does, because that refusal is the only reason the
  * create-if-missing recovery exists.
  *
@@ -110,9 +110,9 @@ export function createCounters(store: CounterStore) {
  * `readAll`, and so it can assert on what a create actually wrote.
  */
 export function inMemoryCounterStore(
-  seed: CountsByEntry = {}
-): CounterStore & { documents: CountsByEntry } {
-  const documents: CountsByEntry = structuredClone(seed)
+  seed: CountsByRecording = {}
+): CounterStore & { documents: CountsByRecording } {
+  const documents: CountsByRecording = structuredClone(seed)
 
   return {
     documents,
@@ -121,15 +121,15 @@ export function inMemoryCounterStore(
       return structuredClone(documents)
     },
 
-    async addTo(entryId, field, by) {
-      const existing = documents[entryId]
+    async addTo(recordingId, field, by) {
+      const existing = documents[recordingId]
       if (!existing) return false
       existing[field] += by
       return true
     },
 
-    async create(entryId, counts) {
-      documents[entryId] = { ...counts }
+    async create(recordingId, counts) {
+      documents[recordingId] = { ...counts }
     },
   }
 }

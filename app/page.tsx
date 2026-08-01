@@ -4,15 +4,19 @@ import { CatalogueSearch } from "@/components/catalogue-search"
 import { Hero } from "@/components/hero"
 import NewsletterForm from "@/components/newsletter-form"
 
-import { getEntries } from "./actions/get-entries"
+import { getRecordings } from "./actions/get-recordings"
 
-async function Page({ searchParams }: { searchParams: Promise<{ search?: string }> }) {
+async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>
+}) {
   const params = await searchParams
-  const data = await getEntries(params.search)
+  const data = await getRecordings(params.search)
 
   return (
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
-      <CataloguePage entries={data} treatment="framed">
+      <CataloguePage recordings={data} treatment="framed">
         <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative">
           {/* First Column */}
           <div className="col-span-1 md:col-span-2 z-10">

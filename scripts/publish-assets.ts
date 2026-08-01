@@ -27,7 +27,12 @@ import { tmpdir } from "node:os"
 import { extname, join } from "node:path"
 
 import { allAssetPaths } from "../data/catalogue"
-import { CACHE_CONTROL, CONTENT_TYPES, narrow, stagingCopy } from "../lib/asset-path"
+import {
+  CACHE_CONTROL,
+  CONTENT_TYPES,
+  narrow,
+  stagingCopy,
+} from "../lib/asset-path"
 
 const CONCURRENCY = 6
 
@@ -51,9 +56,15 @@ if (!account || !token || !bucket) {
 
 const api = `https://api.cloudflare.com/client/v4/accounts/${account}/r2/buckets/${bucket}`
 const auth = { Authorization: `Bearer ${token}` }
-const encodeKey = (key: string) => key.split("/").map(encodeURIComponent).join("/")
+const encodeKey = (key: string) =>
+  key.split("/").map(encodeURIComponent).join("/")
 
-type Result = { path: string; state: "published" | "already" | "failed"; note?: string; bytes: number }
+type Result = {
+  path: string
+  state: "published" | "already" | "failed"
+  note?: string
+  bytes: number
+}
 
 /**
  * Is this key already published?
@@ -70,13 +81,20 @@ async function exists(path: string): Promise<boolean> {
   })
   if (res.status === 200) return true
   if (res.status === 404) return false
-  throw new Error(`HEAD ${path}: HTTP ${res.status} — refusing to guess whether it exists`)
+  throw new Error(
+    `HEAD ${path}: HTTP ${res.status} — refusing to guess whether it exists`
+  )
 }
 
 async function publish(path: string): Promise<Result> {
   const contentType = CONTENT_TYPES[extname(path).toLowerCase()]
   if (!contentType) {
-    return { path, state: "failed", note: `no content type for ${extname(path)}`, bytes: 0 }
+    return {
+      path,
+      state: "failed",
+      note: `no content type for ${extname(path)}`,
+      bytes: 0,
+    }
   }
   let body: Buffer
   try {
@@ -84,15 +102,30 @@ async function publish(path: string): Promise<Result> {
   } catch {
     return { path, state: "failed", note: "no Staging copy on disk", bytes: 0 }
   }
-  if (dryRun) return { path, state: "published", note: "would publish", bytes: body.byteLength }
+  if (dryRun)
+    return {
+      path,
+      state: "published",
+      note: "would publish",
+      bytes: body.byteLength,
+    }
 
   const res = await fetch(`${api}/objects/${encodeKey(path)}`, {
     method: "PUT",
-    headers: { ...auth, "Content-Type": contentType, "Cache-Control": CACHE_CONTROL },
+    headers: {
+      ...auth,
+      "Content-Type": contentType,
+      "Cache-Control": CACHE_CONTROL,
+    },
     body: new Uint8Array(body),
   })
   if (!res.ok) {
-    return { path, state: "failed", note: `HTTP ${res.status} ${await res.text()}`.slice(0, 200), bytes: 0 }
+    return {
+      path,
+      state: "failed",
+      note: `HTTP ${res.status} ${await res.text()}`.slice(0, 200),
+      bytes: 0,
+    }
   }
   return { path, state: "published", bytes: body.byteLength }
 }
@@ -119,12 +152,18 @@ async function main() {
   const listFile = join(listDir, "asset-paths.txt")
   writeFileSync(listFile, paths.join("\n") + "\n")
 
-  console.log(`Checking ${paths.length} Staging copies before publishing anything ...`)
+  console.log(
+    `Checking ${paths.length} Staging copies before publishing anything ...`
+  )
   let checked = true
   try {
-    execFileSync("bash", ["scripts/check-video-codecs.sh", "--paths-from", listFile], {
-      stdio: "inherit",
-    })
+    execFileSync(
+      "bash",
+      ["scripts/check-video-codecs.sh", "--paths-from", listFile],
+      {
+        stdio: "inherit",
+      }
+    )
   } catch {
     checked = false
   }
@@ -134,7 +173,9 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`\n${paths.length} Assets to consider${dryRun ? " (dry run)" : ""}\n`)
+  console.log(
+    `\n${paths.length} Assets to consider${dryRun ? " (dry run)" : ""}\n`
+  )
 
   const results: Result[] = []
   const queue = [...paths]
@@ -151,12 +192,15 @@ async function main() {
           : await publish(path)
         results.push(result)
         const mark = { published: "+", already: "=", failed: "!" }[result.state]
-        console.log(`${mark} ${result.path}${result.note ? ` — ${result.note}` : ""}`)
+        console.log(
+          `${mark} ${result.path}${result.note ? ` — ${result.note}` : ""}`
+        )
       }
     })
   )
 
-  const count = (state: Result["state"]) => results.filter((r) => r.state === state).length
+  const count = (state: Result["state"]) =>
+    results.filter((r) => r.state === state).length
   const bytes = results.reduce((sum, r) => sum + r.bytes, 0)
   console.log(
     `\n${count("published")} ${dryRun ? "would be published" : "published"} ` +

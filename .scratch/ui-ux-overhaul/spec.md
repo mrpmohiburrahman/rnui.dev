@@ -13,6 +13,34 @@ The generated material is kept for reference, not for building:
 
 **The site keeps looking exactly as it renders today.** Effort goes into behaviour and speed.
 
+> ### Correction, 2026-08-01 — the rejection above is overturned
+>
+> The maintainer reversed it. **Studio Dark is being built**, in both modes, across all ten
+> routes. The new effort is `.scratch/studio-dark/`, and `assets/new-ui/` is now material for
+> building rather than reference.
+>
+> This file is **not** reopened. Its fourteen tickets stay `resolved` and the behaviour work
+> they shipped — autoplay and the five-slot owner, `/entry/<id>` and the overlay, pagination,
+> the view signal, composing filters, the device theme — is all preserved by the new effort
+> and is its foundation, not its casualty.
+>
+> Two decisions below are superseded, and only these two:
+>
+> - **Decision 1** ("the look is frozen as it renders in the browser today"). Superseded
+>   outright.
+> - **Decision 14**'s clause "a frozen screenshot is identical before and after". The rest of
+>   14 — that motion may be repaired and no motion is added for its own sake — stands, and
+>   Studio Dark specifies its six moments rather than inventing them.
+>
+> Two things below get *settled* by it rather than superseded:
+>
+> - **Decision 17**, the per-mode Source-link colour, recorded that no single colour clears
+>   4.5:1 against both `#fafafa` and `#262626`. Studio Dark's per-mode accent (`#6FE3CC` dark,
+>   `#0E7062` light) clears it by construction — measured 12.69 and 5.43. The reluctant split
+>   is now simply the design.
+> - **Decision 15**'s 150ms poster-to-video cross-fade becomes 160ms, per the Studio Dark
+>   specimen. One number.
+
 ## Decisions
 
 | # | Decision | Consequence |

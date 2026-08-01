@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 
 // A CI run is not a site visit, and nothing in here has anything to say about
 // playback — letting the Demos run would bill views against the real catalogue.
@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
 // One bookmark button per card, as pagination.spec.ts counts them.
 const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 
-const NO_MATCHES = "No Entries match the current search or filters."
+const NO_MATCHES = "No recordings match the current search or filters."
 
 test.describe("the full catalogue is reachable from the nav", () => {
   // Wide enough for the desktop aside (`hidden sm:flex`), narrow enough that
@@ -25,14 +25,14 @@ test.describe("the full catalogue is reachable from the nav", () => {
 
     await page
       .locator("aside")
-      .getByRole("link", { name: "All Entries", exact: true })
+      .getByRole("link", { name: "All recordings", exact: true })
       .click()
 
     // No query string at all: the Category the visitor arrived with is dropped,
     // which is the whole point of a link to the *full* catalogue.
     await expect(page).toHaveURL(/\/products$/)
     await expect(page.getByText(/^Total Items: /)).toHaveText(
-      `Total Items: ${allEntries.length}`
+      `Total Items: ${allRecordings.length}`
     )
   })
 
@@ -46,7 +46,7 @@ test.describe("the full catalogue is reachable from the nav", () => {
     const aside = page.locator("aside")
 
     const link = await aside
-      .getByRole("link", { name: "All Entries", exact: true })
+      .getByRole("link", { name: "All recordings", exact: true })
       .getAttribute("class")
     // Accordions, not Buttons: Buttons is the active one and carries the
     // highlight.
@@ -66,12 +66,12 @@ test("the sheet carries the same link on a phone", async ({ page }) => {
   await page.getByRole("button", { name: "Toggle Menu" }).click()
   await page
     .getByRole("dialog")
-    .getByRole("link", { name: "All Entries", exact: true })
+    .getByRole("link", { name: "All recordings", exact: true })
     .click()
 
   await expect(page).toHaveURL(/\/products$/)
   await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allEntries.length}`
+    `Total Items: ${allRecordings.length}`
   )
 })
 
@@ -79,7 +79,7 @@ test.describe("something is rendered when there is nothing to render", () => {
   for (const path of [
     "/products?search=zzzzz",
     "/?search=zzzzz",
-    "/products?category=Buttons&author=zzzzz",
+    "/products?category=Buttons&contributor=zzzzz",
   ]) {
     test(`${path} says so`, async ({ page }) => {
       await page.goto(path)
@@ -92,11 +92,9 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
 
     // Under the heading the route already renders, not instead of it.
-    await expect(
-      page.getByRole("heading", { name: "Bookmarks" })
-    ).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
 
-    const sentence = page.getByText(/^No bookmarked Entries yet\./)
+    const sentence = page.getByText(/^No bookmarked recordings yet\./)
     await expect(sentence).toBeVisible()
 
     // Decision 18: the copy has to be plain that the set is local to this
@@ -108,10 +106,10 @@ test.describe("something is rendered when there is nothing to render", () => {
     expect(copy).not.toMatch(/sign in|log ?in|sync/i)
   })
 
-  // The bookmarks route mounts with no Entries and fetches them from an effect,
+  // The bookmarks route mounts with no Recordings and fetches them from an effect,
   // so for the length of that round trip the rendered list is empty while the
   // stored set is not. A message keyed on the rendered list said "No bookmarked
-  // Entries yet" to a visitor who had some. The stored set is what answers the
+  // Recordings yet" to a visitor who had some. The stored set is what answers the
   // question, so it is what the message is keyed on.
   test("a held fetch never claims the visitor has no bookmarks", async ({
     browser,
@@ -119,7 +117,7 @@ test.describe("something is rendered when there is nothing to render", () => {
     const context = await browser.newContext()
     await context.addInitScript((id) => {
       localStorage.setItem("bookmarkedItems", JSON.stringify([id]))
-    }, allEntries[0].id)
+    }, allRecordings[0].id)
 
     const page = await context.newPage()
     await page.route("**/*posthog.com/**", (route) => route.abort())
@@ -141,11 +139,15 @@ test.describe("something is rendered when there is nothing to render", () => {
     // false sentence used to appear in, not a moment before it.
     await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
     await expect(cards(page)).toHaveCount(0)
-    await expect(page.getByText(/^No bookmarked Entries yet\./)).toHaveCount(0)
+    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
+      0
+    )
 
     release()
     await expect(cards(page)).toHaveCount(1)
-    await expect(page.getByText(/^No bookmarked Entries yet\./)).toHaveCount(0)
+    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
+      0
+    )
 
     await context.close()
   })
@@ -154,7 +156,7 @@ test.describe("something is rendered when there is nothing to render", () => {
     const context = await browser.newContext()
     await context.addInitScript((id) => {
       localStorage.setItem("bookmarkedItems", JSON.stringify([id]))
-    }, allEntries[0].id)
+    }, allRecordings[0].id)
 
     const page = await context.newPage()
     await page.route("**/*posthog.com/**", (route) => route.abort())
@@ -162,7 +164,9 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
 
     await expect(cards(page)).toHaveCount(1)
-    await expect(page.getByText(/^No bookmarked Entries yet\./)).toHaveCount(0)
+    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
+      0
+    )
 
     await context.close()
   })
@@ -198,8 +202,13 @@ test.describe("a card fills its track instead of overflowing it", () => {
         })
 
         expect(measured).not.toBeNull()
-        const { track, cards: boxes, content, scrollWidth, clientWidth } =
-          measured!
+        const {
+          track,
+          cards: boxes,
+          content,
+          scrollWidth,
+          clientWidth,
+        } = measured!
         expect(boxes.length).toBeGreaterThan(0)
         for (const box of boxes) {
           expect(Math.abs(box.width - track)).toBeLessThanOrEqual(1)

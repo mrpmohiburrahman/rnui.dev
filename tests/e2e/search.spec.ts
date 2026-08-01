@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
-// Kept in step with PAGE_SIZE in components/entry-card-grid.tsx.
+// Kept in step with PAGE_SIZE in components/recording-card-grid.tsx.
 const PAGE_SIZE = 48
 
 // A CI run is not a site visit. Without this every test would post pageviews and

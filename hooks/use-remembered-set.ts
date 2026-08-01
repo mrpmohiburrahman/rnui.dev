@@ -1,6 +1,6 @@
 // hooks/use-remembered-set.ts
 //
-// A Remembered set (CONTEXT.md): the Entry ids one visitor's browser holds. This
+// A Remembered set (CONTEXT.md): the Recording ids one visitor's browser holds. This
 // was two files — hooks/use-bookmarks.ts and hooks/use-votes.ts — identical once
 // the identifiers were normalised, down to the emoji in the log prefixes. Every
 // bug in them had two homes and every fix needed applying twice.
@@ -19,10 +19,10 @@ export const BOOKMARKS_KEY = "bookmarkedItems"
  * Renaming this silently discards every vote a visitor has already cast.
  *
  * The stored string keeps "Items"; the constant does not. CONTEXT.md lists `item`
- * under Entry's _Avoid_, and ADR-0004's frozen boundary is the value in somebody's
+ * under Recording's _Avoid_, and ADR-0004's frozen boundary is the value in somebody's
  * browser, not the identifier beside it.
  */
-export const VOTED_ENTRY_IDS_KEY = "votedItems"
+export const VOTED_RECORDING_IDS_KEY = "votedItems"
 
 type Problem = "not-an-array" | "unreadable"
 
@@ -75,9 +75,11 @@ export function useRememberedSet(storedKey: string) {
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    const { ids: stored, problem, cause } = parseRememberedIds(
-      localStorage.getItem(storedKey)
-    )
+    const {
+      ids: stored,
+      problem,
+      cause,
+    } = parseRememberedIds(localStorage.getItem(storedKey))
 
     // The only signal that somebody's saved state was reset without them asking.
     // The cause is passed on, not swallowed: without it the report says something
@@ -87,10 +89,7 @@ export function useRememberedSet(storedKey: string) {
         `📄 Stored value at "${storedKey}" is not an array. Resetting to empty array.`
       )
     } else if (problem === "unreadable") {
-      console.error(
-        `❌ Error parsing "${storedKey}" from localStorage:`,
-        cause
-      )
+      console.error(`❌ Error parsing "${storedKey}" from localStorage:`, cause)
     }
 
     // Reading localStorage on mount is the only SSR-safe way to hydrate this. A

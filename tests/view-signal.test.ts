@@ -6,7 +6,7 @@ import {
   VIEW_THRESHOLD_SECONDS,
 } from "@/lib/view-signal"
 
-// ADR-0007 calls the two-second threshold and the once-per-Entry-per-session cap
+// ADR-0007 calls the two-second threshold and the once-per-Recording-per-session cap
 // load-bearing: remove either and view_count is an impression count again. They
 // live in one pure module so both can be pinned here, without a browser, a
 // playback owner or Firestore in the way.
@@ -77,7 +77,7 @@ describe("createPlayedWatcher", () => {
 })
 
 describe("countedThisSession", () => {
-  it("refuses a second billing for the same Entry and allows a different one", () => {
+  it("refuses a second billing for the same Recording and allows a different one", () => {
     // Ids rather than a reset hook: the set is module state seeded from
     // sessionStorage, and a test-only reset export would be a second way in.
     expect(countedThisSession("01ABCDEFGHJKMNPQRSTVWXYZ01")).toBe(false)

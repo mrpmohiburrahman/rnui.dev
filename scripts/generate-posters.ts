@@ -28,7 +28,7 @@ import { access, mkdir } from "node:fs/promises"
 import { dirname } from "node:path"
 import { promisify } from "node:util"
 
-import { allEntries } from "../data/catalogue"
+import { allRecordings } from "../data/catalogue"
 import { posterPathFor, stagingCopy } from "../lib/asset-path"
 
 const run = promisify(execFile)
@@ -73,13 +73,13 @@ async function main() {
   const absent: string[] = []
   const failed: string[] = []
 
-  for (const entry of allEntries) {
-    // Derived, not read off the Entry: this script's job is to put the Poster
+  for (const recording of allRecordings) {
+    // Derived, not read off the Recording: this script's job is to put the Poster
     // where the Asset path module says it goes. The data suite already asserts
-    // that every Entry's stored posterPath is that same derivation, so the two
+    // that every Recording's stored posterPath is that same derivation, so the two
     // cannot quietly differ.
-    const demo = stagingCopy(entry.demoPath)
-    const poster = stagingCopy(posterPathFor(entry.demoPath))
+    const demo = stagingCopy(recording.demoPath)
+    const poster = stagingCopy(posterPathFor(recording.demoPath))
 
     if (!(await exists(demo))) {
       absent.push(demo)
@@ -102,7 +102,7 @@ async function main() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message.trim() : String(error)
-      failed.push(`${entry.demoPath} — ${message}`)
+      failed.push(`${recording.demoPath} — ${message}`)
       console.error(`! ${poster}`)
     }
   }

@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const onboarding: Entry[] = [
+export const onboarding: Recording[] = [
   {
     id: "01JXY799CJQYANP6NGEGZ734NE",
     caption: "Onboarding by Thomino",
     demoPath: "demo/onboardings/onboarding_thomino.mp4",
     posterPath: "thumbnails/onboardings/onboarding_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/onboarding.tsx",
     twitterId: "ThominoDesign",
@@ -19,7 +19,7 @@ export const onboarding: Entry[] = [
     caption: "Onboarding Steps",
     demoPath: "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
     posterPath: "thumbnails/onboardings/onboarding_steps_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/onboarding-steps",
     twitterId: "hewad_mubariz",
@@ -32,9 +32,8 @@ export const onboarding: Entry[] = [
     id: "01JFP0N3B97VWS398W1REXSSKB",
     caption: "Onboarding Animation",
     demoPath: "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
-    posterPath:
-      "thumbnails/onboardings/onboarding_animation_alek_mikucki.avif",
-    author: "Alek Mikucki",
+    posterPath: "thumbnails/onboardings/onboarding_animation_alek_mikucki.avif",
+    contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/onboarding-animation-example",
     twitterId: "aleqsio",
     linkedInId: "aleqsio",
@@ -47,7 +46,7 @@ export const onboarding: Entry[] = [
     caption: "Bouncy Onboarding",
     demoPath: "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
     posterPath: "thumbnails/onboardings/bouncy_onboarding_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/BouncyOnboarding",
     twitterId: "hewad_mubariz",
@@ -60,9 +59,8 @@ export const onboarding: Entry[] = [
     id: "01JFP1C18WHQXTA557XRPXWWMR",
     caption: "Circular Onboarding",
     demoPath: "demo/onboardings/circular_onboarding_hewad_mubariz.mp4",
-    posterPath:
-      "thumbnails/onboardings/circular_onboarding_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    posterPath: "thumbnails/onboardings/circular_onboarding_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-onboarding",
     twitterId: "hewad_mubariz",
@@ -71,18 +69,20 @@ export const onboarding: Entry[] = [
     category: "Onboarding",
     created_at: "2024-12-23T06:01:08.132Z",
   },
-{
+  {
     id: "01KAY9AVAA84ZF3TYZZH7ZBB3N",
     caption: "Github Onboarding",
-    demoPath: "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
+    demoPath:
+      "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
     category: "Onboarding",
     created_at: "2025-11-25T19:54:48.000Z",
   },
-
 ]

@@ -32,7 +32,10 @@ describe("parseRememberedIds", () => {
       ids: [],
       problem: "not-an-array",
     })
-    expect(parseRememberedIds("42")).toEqual({ ids: [], problem: "not-an-array" })
+    expect(parseRememberedIds("42")).toEqual({
+      ids: [],
+      problem: "not-an-array",
+    })
   })
 
   it("reports state that does not parse, and hands back the reason why", () => {

@@ -29,7 +29,7 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       capture_exceptions: true,
       // A dead click is a click on something that looks interactive and does
       // nothing. Set here rather than in the project's remote config, for the
-      // same reasons as capture_exceptions above. EntryCard is a motion.div
+      // same reasons as capture_exceptions above. RecordingCard is a motion.div
       // and its bookmark control is pointer-events-none until hover, so a
       // finger tapping it on a phone produces exactly this.
       capture_dead_clicks: true,

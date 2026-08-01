@@ -1,4 +1,4 @@
-import type { Entry } from "@/data/entry"
+import type { Recording } from "@/data/recording"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import {
@@ -7,11 +7,11 @@ import {
   demoLoadFailed,
   demoPlayed,
   demoWatched,
-  entryFacts,
-  entryOpened,
   filterApplied,
   filterCleared,
   loadMoreClicked,
+  recordingFacts,
+  recordingOpened,
   repoClicked,
   searchPerformed,
   sortChanged,
@@ -30,12 +30,12 @@ vi.mock("posthog-js", () => ({ default: { capture } }))
 // rather than thirteen string literals spread over eight components. A renamed
 // property is silent in a dashboard: the tile just stops having data.
 
-const ENTRY: Entry = {
+const RECORDING: Recording = {
   id: "01ABCDEFGHJKMNPQRSTVWXYZ01",
   caption: "Split button",
   demoPath: "demo/buttons/split_button.mp4",
   posterPath: "poster/buttons/split_button.avif",
-  author: "Hewad Mubariz",
+  contributor: "Hewad Mubariz",
   source: "https://github.com/example/split-button",
   category: "Buttons",
 }
@@ -48,26 +48,26 @@ const onlyCapture = () => {
 
 beforeEach(() => capture.mockClear())
 
-describe("entryFacts", () => {
-  it("is the one place `id` becomes `entry_id`", () => {
-    expect(entryFacts(ENTRY)).toEqual({
-      entry_id: "01ABCDEFGHJKMNPQRSTVWXYZ01",
+describe("recordingFacts", () => {
+  it("is the one place `id` becomes `recording_id`", () => {
+    expect(recordingFacts(RECORDING)).toEqual({
+      recording_id: "01ABCDEFGHJKMNPQRSTVWXYZ01",
       caption: "Split button",
       category: "Buttons",
-      author: "Hewad Mubariz",
+      contributor: "Hewad Mubariz",
     })
   })
 
-  it("carries nothing else off the Entry", () => {
+  it("carries nothing else off the Recording", () => {
     // Asset paths, source URLs and the counts are not behaviour, and an event
     // that quietly grew a `source` would be describing the catalogue rather than
     // the visit. Four keys, checked as a set rather than by absence, so a fifth
     // one added later has to be added here too.
-    expect(Object.keys(entryFacts(ENTRY)).sort()).toEqual([
-      "author",
+    expect(Object.keys(recordingFacts(RECORDING)).sort()).toEqual([
       "caption",
       "category",
-      "entry_id",
+      "contributor",
+      "recording_id",
     ])
   })
 })
@@ -86,16 +86,16 @@ describe("search_performed", () => {
 })
 
 describe("the funnel's three events", () => {
-  // Ticket 09's funnel tile is demo_played → entry_opened → repo_clicked, in
+  // Ticket 09's funnel tile is demo_played → recording_opened → repo_clicked, in
   // that order, and it silently returns zero at any step whose name or property
   // set has drifted. Property names are written out here rather than spread from
   // `facts`, so a rename in @/lib/analytics has to be made twice on purpose.
-  const facts = entryFacts(ENTRY)
+  const facts = recordingFacts(RECORDING)
   const spelled = {
-    entry_id: "01ABCDEFGHJKMNPQRSTVWXYZ01",
+    recording_id: "01ABCDEFGHJKMNPQRSTVWXYZ01",
     caption: "Split button",
     category: "Buttons",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
   }
 
   it("step 1 — demo_played, with the surface and what started it", () => {
@@ -106,24 +106,24 @@ describe("the funnel's three events", () => {
     ])
   })
 
-  it("step 2 — entry_opened, with where the open came from", () => {
-    entryOpened(facts, "url")
+  it("step 2 — recording_opened, with where the open came from", () => {
+    recordingOpened(facts, "url")
     expect(onlyCapture()).toEqual([
-      "entry_opened",
-      { ...spelled, source: "url" },
+      "recording_opened",
+      { ...spelled, opened_from: "url" },
     ])
   })
 
   it("step 3 — repo_clicked, which carries no category", () => {
     repoClicked(facts, "detail")
-    // The Category is on entry_opened one step earlier; repeating it here would
+    // The Category is on recording_opened one step earlier; repeating it here would
     // count a Category twice per funnel.
     expect(onlyCapture()).toEqual([
       "repo_clicked",
       {
-        entry_id: spelled.entry_id,
+        recording_id: spelled.recording_id,
         caption: spelled.caption,
-        author: spelled.author,
+        contributor: spelled.contributor,
         surface: "detail",
       },
     ])
@@ -132,14 +132,14 @@ describe("the funnel's three events", () => {
 
 describe("the two Demo events that are not funnel steps", () => {
   it("demo_watched adds the seconds that actually played", () => {
-    demoWatched(entryFacts(ENTRY), "grid", "autoplay", 2.24)
+    demoWatched(recordingFacts(RECORDING), "grid", "autoplay", 2.24)
     expect(onlyCapture()).toEqual([
       "demo_watched",
       {
-        entry_id: ENTRY.id,
-        caption: ENTRY.caption,
-        category: ENTRY.category,
-        author: ENTRY.author,
+        recording_id: RECORDING.id,
+        caption: RECORDING.caption,
+        category: RECORDING.category,
+        contributor: RECORDING.contributor,
         surface: "grid",
         trigger: "autoplay",
         seconds: 2.24,
@@ -147,14 +147,14 @@ describe("the two Demo events that are not funnel steps", () => {
     ])
   })
 
-  it("demo_load_failed names the Asset path, not the Entry", () => {
+  it("demo_load_failed names the Asset path, not the Recording", () => {
     // ADR-0003: an Asset path identifies specific bytes. The failure is those
     // bytes being wrong, which is why this one event does not carry the facts —
     // and why "Failed demos" can be a replay playlist filtered on the path.
     demoLoadFailed(
-      ENTRY.demoPath,
+      RECORDING.demoPath,
       "decode",
-      `https://cdn.example/${ENTRY.demoPath}`
+      `https://cdn.example/${RECORDING.demoPath}`
     )
     expect(onlyCapture()).toEqual([
       "demo_load_failed",
@@ -169,10 +169,10 @@ describe("the two Demo events that are not funnel steps", () => {
 
 describe("the catalogue controls", () => {
   it("counts the facets in force after a filter is applied", () => {
-    filterApplied("author", "Hewad Mubariz", 2)
+    filterApplied("contributor", "Hewad Mubariz", 2)
     expect(onlyCapture()).toEqual([
       "filter_applied",
-      { facet: "author", value: "Hewad Mubariz", active_filter_count: 2 },
+      { facet: "contributor", value: "Hewad Mubariz", active_filter_count: 2 },
     ])
   })
 
@@ -195,15 +195,15 @@ describe("the catalogue controls", () => {
     loadMoreClicked(2, 96)
     expect(onlyCapture()).toEqual([
       "load_more_clicked",
-      { page: 2, entries_shown: 96 },
+      { page: 2, recordings_shown: 96 },
     ])
   })
 })
 
 describe("the two-property events", () => {
   it("save and vote carry the id and the caption, and no more", () => {
-    const facts = entryFacts(ENTRY)
-    const expected = { entry_id: ENTRY.id, caption: ENTRY.caption }
+    const facts = recordingFacts(RECORDING)
+    const expected = { recording_id: RECORDING.id, caption: RECORDING.caption }
 
     for (const [report, name] of [
       [bookmarkAdded, "bookmark_added"],

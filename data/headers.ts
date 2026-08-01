@@ -1,13 +1,13 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const headers: Entry[] = [
+export const headers: Recording[] = [
   {
     id: "01JFP0D28Z5F0CTFMV84C3JWJX",
     caption: "Apple Photos Inspired Header",
     demoPath: "demo/headers/apple_photos_inspired_header_arunabh_verma.mp4",
     posterPath:
       "thumbnails/headers/apple_photos_inspired_header_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/react-native-chrome-header",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -20,7 +20,7 @@ export const headers: Entry[] = [
     caption: "Chrome Header",
     demoPath: "demo/headers/chrome_header_arunabh_verma.mp4",
     posterPath: "thumbnails/headers/chrome_header_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/react-native-chrome-header",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -33,7 +33,7 @@ export const headers: Entry[] = [
     caption: "Sticky Header",
     demoPath: "demo/headers/sticky_header_hewad_mubariz.mp4",
     posterPath: "thumbnails/headers/sticky_header_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/sticky-header",
     twitterId: "hewad_mubariz",

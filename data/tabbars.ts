@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const tabbars: Entry[] = [
+export const tabbars: Recording[] = [
   {
     id: "01JXYAYHQYD8591EBDK9GRGVWQ",
     caption: "Bottom Bar",
     demoPath: "demo/tabbars/bottom_bar_thomino.mp4",
     posterPath: "thumbnails/tabbars/bottom_bar_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/bottom-bar.tsx",
     twitterId: "ThominoDesign",
@@ -19,7 +19,7 @@ export const tabbars: Entry[] = [
     id: "01JGQTNR7P58P5TNX8TBQSYAX5",
     created_at: "2025-01-04T04:55:19.212Z",
     caption: "Linear Tab",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
     githubId: "arunabhverma",
@@ -34,7 +34,7 @@ export const tabbars: Entry[] = [
       "demo/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/19-segmented-control",
     twitterId: "reactiive_",
@@ -49,7 +49,7 @@ export const tabbars: Entry[] = [
     demoPath: "demo/tabbars/detachable_bottom_tab_bar_arunabh_verma.mp4",
     posterPath:
       "thumbnails/tabbars/detachable_bottom_tab_bar_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-bottom-tab-anim",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -62,7 +62,7 @@ export const tabbars: Entry[] = [
     caption: "Spotify Tab",
     demoPath: "demo/tabbars/spotify_tab_alireza_hadjar.mp4",
     posterPath: "thumbnails/tabbars/spotify_tab_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source: "https://snack.expo.dev/@alirezahadjar/spotify-tab",
     twitterId: "alireza_hadjar",
     linkedInId: "alireza-hadjar-526590197",
@@ -75,7 +75,7 @@ export const tabbars: Entry[] = [
     caption: "Sticky Tabs",
     demoPath: "demo/tabbars/sticky_tabs_alireza_hadjar.mp4",
     posterPath: "thumbnails/tabbars/sticky_tabs_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source: "https://github.com/AlirezaHadjar/stickyTab",
     twitterId: "alireza_hadjar",
     linkedInId: "alireza-hadjar-526590197",
@@ -89,7 +89,7 @@ export const tabbars: Entry[] = [
     demoPath: "demo/tabbars/tab_bar_micro_interactions_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapusciak.avif",
-    author: "Kacper Kapuściak",
+    contributor: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-expo-router-tabs",
     twitterId: "kacperkapusciak",
     linkedInId: "kacperkapusciak",
@@ -102,7 +102,7 @@ export const tabbars: Entry[] = [
     caption: "Dynamic Tabs",
     demoPath: "demo/tabbars/dynamic_tabs_hewad_mubariz.mp4",
     posterPath: "thumbnails/tabbars/dynamic_tabs_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dynamic-tabs",
     twitterId: "hewad_mubariz",
@@ -116,7 +116,7 @@ export const tabbars: Entry[] = [
     caption: "Direction Aware Tabs",
     demoPath: "demo/tabbars/direction_aware_tabs_hewad_mubariz.mp4",
     posterPath: "thumbnails/tabbars/direction_aware_tabs_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/direction-aware-tabs",
     twitterId: "hewad_mubariz",
@@ -125,13 +125,16 @@ export const tabbars: Entry[] = [
     category: "Tab bars",
     created_at: "2024-12-23T06:01:05.164Z",
   },
-{
+  {
     id: "01KAY9AQNRBW52J7AAXXSTP4QG",
     caption: "Blurred Bottom Bar",
-    demoPath: "demo/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-bottom-bar",
+    demoPath:
+      "demo/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-bottom-bar",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -143,9 +146,11 @@ export const tabbars: Entry[] = [
     id: "01KAY9ARA9G35A2CGGQMPQ218A",
     caption: "Bottom Bar Skia",
     demoPath: "demo/tabbars/bottom-bar-skia_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/bottom-bar-skia_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bottom-bar-skia",
+    posterPath:
+      "thumbnails/tabbars/bottom-bar-skia_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bottom-bar-skia",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -156,10 +161,13 @@ export const tabbars: Entry[] = [
   {
     id: "01KAY9ASFW710AQ5X56H0BEAFX",
     caption: "Dynamic Blur Tabs",
-    demoPath: "demo/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-blur-tabs",
+    demoPath:
+      "demo/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-blur-tabs",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -170,10 +178,13 @@ export const tabbars: Entry[] = [
   {
     id: "01KAY9ASQHBJ71E93SHA11EM3S",
     caption: "Dynamic Tab Indicator",
-    demoPath: "demo/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-tab-indicator",
+    demoPath:
+      "demo/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-tab-indicator",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -185,9 +196,11 @@ export const tabbars: Entry[] = [
     id: "01KAY9AT65Q7HYV6M6JFXN89N2",
     caption: "Exclusion Tabs",
     demoPath: "demo/tabbars/exclusion-tabs_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/exclusion-tabs_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/exclusion-tabs",
+    posterPath:
+      "thumbnails/tabbars/exclusion-tabs_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/exclusion-tabs",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -198,10 +211,13 @@ export const tabbars: Entry[] = [
   {
     id: "01KAY9ATX66HE5QKYC60VRJ0VM",
     caption: "Floating Bottom Bar",
-    demoPath: "demo/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-bottom-bar",
+    demoPath:
+      "demo/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-bottom-bar",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -212,10 +228,13 @@ export const tabbars: Entry[] = [
   {
     id: "01KAY9AV0NQW7VCDEV9JV20B5G",
     caption: "Fluid Tab Interaction",
-    demoPath: "demo/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-tab-interaction",
+    demoPath:
+      "demo/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-tab-interaction",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -227,9 +246,11 @@ export const tabbars: Entry[] = [
     id: "01KAY9AX8BVDX6M06FX7DC4A0F",
     caption: "Metaball",
     demoPath: "demo/tabbars/metaball_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/metaball_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/metaball",
+    posterPath:
+      "thumbnails/tabbars/metaball_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/metaball",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -241,9 +262,11 @@ export const tabbars: Entry[] = [
     id: "01KAY9B1FDMK8ZR6A9JPSV4ADX",
     caption: "Tab Navigation",
     demoPath: "demo/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/tab-navigation",
+    posterPath:
+      "thumbnails/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/tab-navigation",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -255,14 +278,15 @@ export const tabbars: Entry[] = [
     id: "01KAY9B20B8PFZBJTBANJY6XFM",
     caption: "Twitter Tab Bar",
     demoPath: "demo/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twitter-tab-bar",
+    posterPath:
+      "thumbnails/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twitter-tab-bar",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
     category: "Tab bars",
     created_at: "2025-11-25T19:55:41.000Z",
   },
-
 ]

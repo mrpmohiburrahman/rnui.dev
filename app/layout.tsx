@@ -3,8 +3,8 @@ import type { ReactNode } from "react"
 
 import "./globals.css"
 
-import { getUniqueAuthors, getUniqueCategories } from "@/data/entry"
 import { metadata } from "@/data/meta-data"
+import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
 
 import { CDN_ORIGIN } from "@/lib/cdn"
@@ -21,7 +21,7 @@ export { metadata }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const categories = getUniqueCategories()
-  const authors = getUniqueAuthors()
+  const contributors = getUniqueContributors()
 
   return (
     // suppressHydrationWarning because next-themes inlines a blocking script
@@ -71,7 +71,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   is what clears the mobile sheet trigger. It was 64px at every
                   width, so the header painted over the top 19px of every page. */}
               <div className="flex flex-1 pt-16 md:pt-[83px]">
-                <NavSidebar categories={categories} authors={authors} />
+                <NavSidebar
+                  categories={categories}
+                  contributors={contributors}
+                />
                 {/* Add responsive left margin to main */}
                 <main className="p-4 sm:ml-[10.5rem] w-full">{children}</main>
               </div>

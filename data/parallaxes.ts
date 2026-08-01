@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const parallaxes: Entry[] = [
+export const parallaxes: Recording[] = [
   {
     category: "Parallaxes",
     id: "01JGQWKNN986FX3DQ254RT3GQ8",
     created_at: "2025-01-04T05:29:08.947Z",
     caption: "Parallax Carousel",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
     githubId: "arunabhverma",
@@ -19,7 +19,7 @@ export const parallaxes: Entry[] = [
     caption: "Parallax Effect",
     demoPath: "demo/parallaxes/parallax_cards_lucas_lima.mp4",
     posterPath: "thumbnails/parallaxes/parallax_cards_lucas_lima.avif",
-    author: "Lucas Lima",
+    contributor: "Lucas Lima",
     source: "https://github.com/lklima/rn-parallax-cards",
     twitterId: "lima_lucas3",
     linkedInId: "lucas-lima-5b9282182",
@@ -32,7 +32,7 @@ export const parallaxes: Entry[] = [
     caption: "Parallax Effect",
     demoPath: "demo/parallaxes/parallax_effect_kacper_kapusciak.mp4",
     posterPath: "thumbnails/parallaxes/parallax_effect_kacper_kapusciak.avif",
-    author: "Kacper Kapuściak",
+    contributor: "Kacper Kapuściak",
     source: "https://github.com/software-mansion-labs/reanimated-parallax",
     twitterId: "kacperkapusciak",
     linkedInId: "kacperkapusciak",
@@ -40,18 +40,20 @@ export const parallaxes: Entry[] = [
     category: "Parallaxes",
     created_at: "2024-12-23T06:01:10.142Z",
   },
-{
+  {
     id: "01KAY9APXG1CVZ7QR9VR4PQ9G3",
     caption: "Animated 3d Parallax",
-    demoPath: "demo/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
-    source: "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-3d-parallax",
+    demoPath:
+      "demo/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/parallaxes/animated-3d-parallax_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-3d-parallax",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
     category: "Parallaxes",
     created_at: "2025-11-25T19:54:03.000Z",
   },
-
 ]

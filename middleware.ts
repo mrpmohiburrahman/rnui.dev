@@ -1,7 +1,6 @@
 // middleware.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-
 import { LEGACY_REDIRECTS } from "@/data/categories"
 
 export function middleware(request: NextRequest) {

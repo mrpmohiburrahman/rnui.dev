@@ -12,7 +12,11 @@
 
 import { useCallback, useRef, useState, useSyncExternalStore } from "react"
 
-import { demoLoadFailed, demoPlayed, type EntryFacts } from "@/lib/analytics"
+import {
+  demoLoadFailed,
+  demoPlayed,
+  type RecordingFacts,
+} from "@/lib/analytics"
 import { getCdnUrl } from "@/lib/cdn"
 
 import { usePlaybackOwner } from "./playback-owner"
@@ -50,7 +54,7 @@ const usePrefersReducedMotion = () =>
   )
 
 // Asset paths in, not `src`/`poster` — ADR-0004 and CONTEXT.md's Asset path
-// entry, which lists `src` and `url` under _Avoid_. `interactive-video.tsx`
+// recording, which lists `src` and `url` under _Avoid_. `interactive-video.tsx`
 // still speaks the old vocabulary; a module written after the rename does not.
 export function DemoTile({
   facts,
@@ -59,11 +63,11 @@ export function DemoTile({
   caption,
   className = "",
 }: {
-  // The Entry's analytics facts rather than its id: this tile reports the play
+  // The Recording's analytics facts rather than its id: this tile reports the play
   // and the owner reports the watch, and both events name the Category and the
-  // author. Memoise it at the call site — it is a `register` dependency, and a
+  // contributor. Memoise it at the call site — it is a `register` dependency, and a
   // fresh object per render unobserves and re-observes the <video>.
-  facts: EntryFacts
+  facts: RecordingFacts
   demoPath: string
   posterPath?: string
   caption?: string

@@ -22,7 +22,7 @@ import {
   type ReactNode,
 } from "react"
 
-import { demoWatched, type EntryFacts } from "@/lib/analytics"
+import { demoWatched, type RecordingFacts } from "@/lib/analytics"
 import { countedThisSession, createPlayedWatcher } from "@/lib/view-signal"
 import { incrementViewCount } from "@/app/actions/increment-view-count"
 
@@ -39,7 +39,7 @@ const MAX_PLAYING = 5
  * here rather than importing the action a second time.
  *
  * Uncapped on purpose. The once-per-session cap belongs to the played signal
- * below, where it stops a scroll billing an impression; opening an Entry and
+ * below, where it stops a scroll billing an impression; opening a Recording and
  * following its source link are deliberate acts, and a visitor who does one of
  * them twice did look twice.
  *
@@ -47,8 +47,8 @@ const MAX_PLAYING = 5
  * this fires and forgets: a counter must never sit between a visitor and what
  * they are watching.
  */
-export function countView(entryId: string): void {
-  void incrementViewCount(entryId).catch(() => {})
+export function countView(recordingId: string): void {
+  void incrementViewCount(recordingId).catch(() => {})
 }
 
 type Tile = {
@@ -61,12 +61,12 @@ type PlaybackOwnerValue = {
   /**
    * Wire a <video> to the owner. Returns its own cleanup, for a React 19 ref.
    *
-   * The Entry's facts rather than its id alone, because the watched signal below
+   * The Recording's facts rather than its id alone, because the watched signal below
    * is now read by two consumers with different rules — Firestore's view_count,
    * capped once per session, and the `demo_watched` event, which is not — and
-   * the event carries the Category and the author.
+   * the event carries the Category and the contributor.
    */
-  register: (el: HTMLVideoElement, facts: EntryFacts) => () => void
+  register: (el: HTMLVideoElement, facts: RecordingFacts) => () => void
 }
 
 const PlaybackOwnerContext = createContext<PlaybackOwnerValue | null>(null)
@@ -139,10 +139,10 @@ export function PlaybackOwner({
   const getObserver = useCallback(() => {
     if (!observer.current) {
       observer.current = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            const tile = tiles.current.get(entry.target as HTMLVideoElement)
-            if (tile) tile.visible = entry.isIntersecting
+        (recordings) => {
+          for (const recording of recordings) {
+            const tile = tiles.current.get(recording.target as HTMLVideoElement)
+            if (tile) tile.visible = recording.isIntersecting
           }
           grant()
         },
@@ -159,7 +159,7 @@ export function PlaybackOwner({
   }, [grant])
 
   const register = useCallback(
-    (el: HTMLVideoElement, facts: EntryFacts) => {
+    (el: HTMLVideoElement, facts: RecordingFacts) => {
       // The view signal. The threshold, the cap and its storage key are all
       // @/lib/view-signal's; this file owns the slots and calls into it.
       const played = createPlayedWatcher()
@@ -174,7 +174,8 @@ export function PlaybackOwner({
         // a second watch in the same session is a second thing that happened.
         // `counted` still bounds it to once per tile per page.
         demoWatched(facts, "grid", "autoplay", played.seconds())
-        if (!countedThisSession(facts.entry_id)) countView(facts.entry_id)
+        if (!countedThisSession(facts.recording_id))
+          countView(facts.recording_id)
       }
       el.addEventListener("timeupdate", onTimeUpdate)
 

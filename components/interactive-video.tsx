@@ -7,7 +7,7 @@ import {
   demoLoadFailed,
   demoPlayed,
   demoWatched,
-  type EntryFacts,
+  type RecordingFacts,
 } from "@/lib/analytics"
 import { getCdnUrl } from "@/lib/cdn"
 import { createPlayedWatcher, type PlayedWatcher } from "@/lib/view-signal"
@@ -15,11 +15,11 @@ import { createPlayedWatcher, type PlayedWatcher } from "@/lib/view-signal"
 interface InteractiveVideoProps {
   src: string
   /**
-   * Which Entry this is, for the two playback events. The grid's tile takes the
+   * Which Recording this is, for the two playback events. The grid's tile takes the
    * same thing; this one is the `detail` surface, and its `trigger` is always a
    * click because the <video> below does not exist until one.
    */
-  facts: EntryFacts
+  facts: RecordingFacts
   caption?: string
   poster?: string
   className?: string
@@ -51,14 +51,14 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   const [failureReason, setFailureReason] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Both playback events fire once per opened Entry, not once per press. The
+  // Both playback events fire once per opened Recording, not once per press. The
   // <video> unmounts whenever the visitor pauses it, so these refs sit here
   // rather than in the element: a pause and a resume is one visit to one Demo.
   //
-  // Each holds the Entry it fired for rather than a bare boolean, exactly as
-  // entry-detail.tsx:59 keys its own count. This component instance survives
-  // being handed a second Entry — the overlay reopens over its own 100ms exit,
-  // and Back between two /entry/<id> pages is a client navigation — and a
+  // Each holds the Recording it fired for rather than a bare boolean, exactly as
+  // recording-detail.tsx:59 keys its own count. This component instance survives
+  // being handed a second Recording — the overlay reopens over its own 100ms exit,
+  // and Back between two /recording/<id> pages is a client navigation — and a
   // boolean would suppress every playback event for that second one, silently
   // dropping the funnel's first step.
   const played = useRef<string | null>(null)
@@ -67,8 +67,10 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   // The same watcher the grid uses, for the same reason — the two-second
   // threshold and what counts towards it are ADR-0007's, not this component's.
   // Built on the first timeupdate rather than at render, so a paused Demo
-  // allocates nothing and a new Entry gets a watcher with no seconds on it.
-  const watcher = useRef<{ entryId: string; tick: PlayedWatcher } | null>(null)
+  // allocates nothing and a new Recording gets a watcher with no seconds on it.
+  const watcher = useRef<{ recordingId: string; tick: PlayedWatcher } | null>(
+    null
+  )
 
   const videoSource = getCdnUrl(src)
   const posterImage =
@@ -76,22 +78,22 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
 
   const handleVideoPlay = () => {
     setIsPlaying(true)
-    if (played.current === facts.entry_id) return
-    played.current = facts.entry_id
+    if (played.current === facts.recording_id) return
+    played.current = facts.recording_id
     demoPlayed(facts, "detail", "click")
   }
 
   const handleTimeUpdate = useCallback(
     (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      if (watched.current === facts.entry_id) return
-      if (watcher.current?.entryId !== facts.entry_id) {
+      if (watched.current === facts.recording_id) return
+      if (watcher.current?.recordingId !== facts.recording_id) {
         watcher.current = {
-          entryId: facts.entry_id,
+          recordingId: facts.recording_id,
           tick: createPlayedWatcher(),
         }
       }
       if (!watcher.current.tick(e.currentTarget.currentTime)) return
-      watched.current = facts.entry_id
+      watched.current = facts.recording_id
       demoWatched(facts, "detail", "click", watcher.current.tick.seconds())
     },
     [facts]

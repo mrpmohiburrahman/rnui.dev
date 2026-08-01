@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const arcsliders: Entry[] = [
+export const arcsliders: Recording[] = [
   {
     id: "01JFFA7GMFB1HNDK0JH0ZEZHTW",
     caption: "Animated Gauge",
     demoPath: "demo/arcsliders/animated_gauge_hewad_mubariz.mp4",
     posterPath: "thumbnails/arcsliders/animated_gauge_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-gauge",
     twitterId: "hewad_mubariz",
@@ -20,7 +20,7 @@ export const arcsliders: Entry[] = [
     caption: "Arc Slider",
     demoPath: "demo/arcsliders/arc_slider_david_friyia.mp4",
     posterPath: "thumbnails/arcsliders/arc_slider_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ArcSlider",
     twitterId: "wa2goose",

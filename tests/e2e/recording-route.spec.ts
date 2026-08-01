@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/demo/**", (route) => route.abort())
 })
 
-const known = allEntries[0]
+const known = allRecordings[0]
 
 // The card heading, not the card itself: the bookmark button sits over the
 // top-right corner and the Demo fills the top. The heading is inside the div
@@ -82,7 +82,7 @@ async function readSamples(
   })
 }
 
-test("clicking a card opens the panel at the Entry's own address, without navigating", async ({
+test("clicking a card opens the panel at the Recording's own address, without navigating", async ({
   page,
 }) => {
   // Page 2, so the address carries a param the open has to keep. pushState
@@ -95,14 +95,14 @@ test("clicking a card opens the panel at the Entry's own address, without naviga
   // would re-run the server component and refetch the catalogue on the most
   // repeated action on the site.
   //
-  // Only requests for the Entry address count. The sidebar's <Link>s prefetch
+  // Only requests for the Recording address count. The sidebar's <Link>s prefetch
   // `?_rsc=` for /, /bookmarks and /subscribe on their own schedule, and those
   // fire whether or not a card is ever clicked.
   const navigations: string[] = []
   page.on("request", (request) => {
     const url = request.url()
     if (
-      url.includes("/entry/") &&
+      url.includes("/recording/") &&
       (request.isNavigationRequest() || url.includes("_rsc="))
     )
       navigations.push(url)
@@ -110,7 +110,7 @@ test("clicking a card opens the panel at the Entry's own address, without naviga
 
   await firstCard(page).click()
 
-  await expect(page).toHaveURL(/\/entry\/[0-9A-Za-z]{26}\?page=2$/)
+  await expect(page).toHaveURL(/\/recording\/[0-9A-Za-z]{26}\?page=2$/)
   await expect(page.getByRole("dialog")).toBeVisible()
   expect(navigations).toEqual([])
 
@@ -138,7 +138,7 @@ test("Escape, the close button, the tint and Back all take the same way out", as
     async () => page.goBack(),
   ]) {
     await firstCard(page).click()
-    await expect(page).toHaveURL(/\/entry\//)
+    await expect(page).toHaveURL(/\/recording\//)
     await expect(page.getByRole("dialog")).toBeVisible()
 
     await close()
@@ -171,20 +171,22 @@ test("the open panel traps focus and locks the page behind it", async ({
   ).toBe("hidden")
 })
 
-test("an Entry address opened cold is a page, not an overlay", async ({
+test("a Recording address opened cold is a page, not an overlay", async ({
   page,
 }) => {
-  await page.goto(`/entry/${known.id}`)
+  await page.goto(`/recording/${known.id}`)
 
   await expect(
     page.getByRole("heading", { level: 2, name: known.caption })
   ).toBeVisible()
-  await expect(page.getByText(known.author).first()).toBeVisible()
+  await expect(page.getByText(known.contributor).first()).toBeVisible()
   await expect(page.getByRole("dialog")).toHaveCount(0)
 })
 
-test("an id that is not an Entry is a 404", async ({ page }) => {
-  const response = await page.request.get("/entry/nope", { maxRedirects: 0 })
+test("an id that is not a Recording is a 404", async ({ page }) => {
+  const response = await page.request.get("/recording/nope", {
+    maxRedirects: 0,
+  })
   expect(response.status()).toBe(404)
 })
 
@@ -221,7 +223,9 @@ test.describe("reduced motion", () => {
     const closing = await readSamples(page)
 
     const scales = [...opening, ...closing].flatMap((frame) => {
-      const matrix = frame.transform.match(/matrix\(([-\d.]+), 0, 0, ([-\d.]+),/)
+      const matrix = frame.transform.match(
+        /matrix\(([-\d.]+), 0, 0, ([-\d.]+),/
+      )
       return matrix ? [Number(matrix[1]), Number(matrix[2])] : []
     })
     expect(scales.length).toBeGreaterThan(0)

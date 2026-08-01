@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 
-// Kept in step with PAGE_SIZE in components/entry-card-grid.tsx.
+// Kept in step with PAGE_SIZE in components/recording-card-grid.tsx.
 const PAGE_SIZE = 48
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 // One bookmark button per card.
 const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 
-test("the home page renders one page of Entries, not the whole catalogue", async ({
+test("the home page renders one page of Recordings, not the whole catalogue", async ({
   page,
 }) => {
   await page.goto("/")
@@ -23,7 +23,7 @@ test("the home page renders one page of Entries, not the whole catalogue", async
   // The count pill reports the whole set. Paginating the grid must not paginate
   // the arithmetic.
   await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allEntries.length}`
+    `Total Items: ${allRecordings.length}`
   )
 })
 
@@ -55,7 +55,7 @@ test("a page count in the URL is honoured cold", async ({ page }) => {
 
   // Past the end of the catalogue: everything, and nothing left to load.
   await page.goto("/?page=99")
-  await expect(cards(page)).toHaveCount(allEntries.length)
+  await expect(cards(page)).toHaveCount(allRecordings.length)
   await expect(page.getByRole("button", { name: "Load more" })).toHaveCount(0)
 })
 
@@ -74,8 +74,8 @@ test("toggling the sort reorders the cards without restarting a Demo", async ({
   expect(count).toBeLessThanOrEqual(PAGE_SIZE)
 
   // Identified by source, not by position: a sort is a reorder, so `.first()`
-  // after the toggle is a different Entry than `.first()` before it. The src is
-  // the Entry's own Demo and follows the element wherever it lands.
+  // after the toggle is a different Recording than `.first()` before it. The src is
+  // the Recording's own Demo and follows the element wherever it lands.
   const advanced = () =>
     page
       .locator("video")

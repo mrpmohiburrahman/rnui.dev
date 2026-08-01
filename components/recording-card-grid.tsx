@@ -1,17 +1,17 @@
-// components/entry-card-grid.tsx
+// components/recording-card-grid.tsx
 "use client"
 
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import type { Entry } from "@/data/entry"
+import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
-import { EntryCard } from "./entry-card"
 import LastUpdated from "./last-updated"
+import { RecordingCard } from "./recording-card"
 
-/** How many Entries one page of the grid renders. The catalogue is 277. */
+/** How many Recordings one page of the grid renders. The catalogue is 277. */
 const PAGE_SIZE = 48
 
 /**
@@ -32,8 +32,8 @@ const PILL_CLASS =
  */
 export type GridTreatment = "framed" | "plain"
 
-export interface EntryCardGridProps {
-  sortedData?: Entry[]
+export interface RecordingCardGridProps {
+  sortedData?: Recording[]
   treatment: GridTreatment
   /**
    * What to say when there is nothing to show, or null when the caller cannot
@@ -42,27 +42,27 @@ export interface EntryCardGridProps {
    * one.
    *
    * Required rather than defaulted: only the caller knows whether an empty list
-   * means "no Entry matches this filter" or "this visitor has bookmarked
+   * means "no Recording matches this filter" or "this visitor has bookmarked
    * nothing", and a default here would quietly show the wrong one of those.
    */
   emptyMessage: string | null
   children?: React.ReactNode
   bookmarks: string[]
   toggleBookmark: (id: string) => void
-  votedEntryIds: string[]
+  votedRecordingIds: string[]
   toggleVote: (id: string) => void
   setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void // New prop
   currentSort?: "recent" | "top-voted" | "top-viewed" // New prop
 }
 
-export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
+export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   sortedData,
   treatment,
   emptyMessage,
   children,
   bookmarks,
   toggleBookmark,
-  votedEntryIds,
+  votedRecordingIds,
   toggleVote,
   setSort, // Destructure new prop
   currentSort, // Destructure new prop
@@ -88,14 +88,14 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
     params.set("page", String(page + 1))
     window.history.pushState(null, "", `?${params}`)
     // The page and count the click arrives at, not the ones it left. The last
-    // page is short, so `entries_shown` is capped at what exists rather than
+    // page is short, so `recordings_shown` is capped at what exists rather than
     // being page × 48.
     loadMoreClicked(page + 1, Math.min((page + 1) * PAGE_SIZE, total))
   }
 
   // `search_performed` is reported from here rather than from the search box,
   // because only this component has the other half of it: the box knows the
-  // term and nothing else knows how many Entries came back. The URL is what the
+  // term and nothing else knows how many Recordings came back. The URL is what the
   // 300ms debounce settles into (components/catalogue-search.tsx:43), so one
   // settled search is exactly one change of this value.
   //
@@ -287,16 +287,18 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
                   every key changed when the list reordered and a sort toggle
                   unmounted and remounted all 277 cards, restarting every Demo.
                   Ids are unique — tests/data-integrity.test.ts enforces it. */}
-              {sortedData?.slice(0, shownCount).map((entry) => (
-                <EntryCard
-                  key={entry.id}
-                  entry={entry}
-                  isBookmarked={bookmarks.includes(entry.id)}
-                  toggleBookmark={toggleBookmark}
-                  isVoted={votedEntryIds.includes(entry.id)}
-                  toggleVote={toggleVote}
-                />
-              ))}
+              {sortedData
+                ?.slice(0, shownCount)
+                .map((recording) => (
+                  <RecordingCard
+                    key={recording.id}
+                    recording={recording}
+                    isBookmarked={bookmarks.includes(recording.id)}
+                    toggleBookmark={toggleBookmark}
+                    isVoted={votedRecordingIds.includes(recording.id)}
+                    toggleVote={toggleVote}
+                  />
+                ))}
             </div>
           )}
         </div>

@@ -78,7 +78,10 @@ export function demoPathFor(category: Category, base: string): string {
  * a Demo path would be published under a key that can never be corrected.
  */
 export function posterPathFor(demoPath: string): string {
-  if (!demoPath.startsWith(`${DEMO_PREFIX}/`) || !demoPath.endsWith(DEMO_EXTENSION)) {
+  if (
+    !demoPath.startsWith(`${DEMO_PREFIX}/`) ||
+    !demoPath.endsWith(DEMO_EXTENSION)
+  ) {
     throw new Error(
       `not a Demo path, so no Poster can be derived from it: ${demoPath}`
     )
@@ -103,7 +106,9 @@ export function posterPathFor(demoPath: string): string {
  */
 export function narrow(paths: string[], fragments: string[]): string[] {
   if (fragments.length === 0) return [...paths]
-  return paths.filter((path) => fragments.some((fragment) => path.includes(fragment)))
+  return paths.filter((path) =>
+    fragments.some((fragment) => path.includes(fragment))
+  )
 }
 
 /** The local, unpublished copy of the Asset at this path. */
