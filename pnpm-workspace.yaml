@@ -20,6 +20,7 @@ overrides:
   zod-validation-error: "^4.0.0"
 
 allowBuilds:
+  "@posthog/cli": true   # postinstall fetches the Rust binary that uploads source maps
   core-js: false         # postinstall only prints a funding notice
   esbuild: true          # unpacks a platform binary; vitest and tsx need it
   protobufjs: false      # postinstall only rebuilds for git installs; arrives via @grpc/proto-loader
