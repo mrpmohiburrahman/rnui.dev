@@ -183,3 +183,20 @@ once ticket 03 is live, and **step 4 — agreeing the success criteria in writin
 redesign ships.** That last one is the whole reason this ticket is time-sensitive, and it is the
 one thing here that cannot be done after seeing the numbers. The proposal in step 4 above is
 unchanged and still needs a yes or a counter-proposal.
+
+### 2026-08-01 — Funnel tile repaired after the rename
+
+The step-2 event on insight `10646182` was `entry_opened`, which `studio-dark` ticket 01 renamed
+to `recording_opened` the same day. Left alone the tile would have converted at 0% at step 2
+forever, and it is the tile this ticket's own step 2 lists and that `posthog-expansion` ticket
+03's fourth acceptance criterion checks — a permanently empty tile reading as "nobody opens a
+Recording" rather than as "this query names an event that does not exist".
+
+Repaired in place: step 2 is now `recording_opened`, step 3's label is `Source link followed`
+rather than `Repo followed` to match the glossary, and the description records the rename. No
+data was lost or migrated — `lib/analytics.ts` has never been deployed, so nothing was ever
+ingested under either spelling.
+
+This is the general case ADR-0008 warns about and `studio-dark` ticket 15 exists to sweep: a
+saved query naming an event or a selector goes on returning a plausible number after the thing
+it names has moved. Step 4 is still the maintainer's.
