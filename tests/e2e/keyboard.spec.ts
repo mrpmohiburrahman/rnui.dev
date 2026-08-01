@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -27,7 +27,7 @@ for (const route of ["/", "/products", "/bookmarks"]) {
   test(`${route} nests no anchor inside another`, async ({ page }) => {
     await page.addInitScript(
       ([key, id]) => localStorage.setItem(key, JSON.stringify([id])),
-      [BOOKMARKS_KEY, allEntries[0].id]
+      [BOOKMARKS_KEY, allRecordings[0].id]
     )
     await page.goto(route)
     await expect(page.getByRole("heading", { level: 3 }).first()).toBeVisible()
@@ -39,7 +39,7 @@ for (const route of ["/", "/products", "/bookmarks"]) {
 // Before the headline became a link, the detail view had no keyboard route at
 // all: the poster area held one focusable thing, a play button, and that played
 // the Demo. Demos autoplay now, so it holds none.
-test("the headline opens the Entry from the keyboard", async ({ page }) => {
+test("the headline opens the Recording from the keyboard", async ({ page }) => {
   await page.goto("/")
 
   const headline = page
@@ -51,7 +51,7 @@ test("the headline opens the Entry from the keyboard", async ({ page }) => {
   await headline.focus()
   await page.keyboard.press("Enter")
 
-  await expect(page).toHaveURL(/\/entry\/[0-9A-Za-z]{26}/)
+  await expect(page).toHaveURL(/\/recording\/[0-9A-Za-z]{26}/)
   await expect(page.getByRole("dialog")).toBeVisible()
 })
 
@@ -116,12 +116,12 @@ test.describe("touch", () => {
       "1"
     )
 
-    // A tap toggles the bookmark and does not open the Entry behind it.
+    // A tap toggles the bookmark and does not open the Recording behind it.
     await bookmark.tap()
     await expect(
       page.getByRole("button", { name: "Remove Bookmark" }).first()
     ).toBeVisible()
-    await expect(page).not.toHaveURL(/\/entry\//)
+    await expect(page).not.toHaveURL(/\/recording\//)
   })
 })
 

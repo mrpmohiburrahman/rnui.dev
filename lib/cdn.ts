@@ -12,7 +12,7 @@
 const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL || ""
 
 if (!CDN_URL) {
-    console.warn("NEXT_PUBLIC_CDN_URL is not defined in .env")
+  console.warn("NEXT_PUBLIC_CDN_URL is not defined in .env")
 }
 
 /**
@@ -23,12 +23,12 @@ if (!CDN_URL) {
  * resource hint.
  */
 export const CDN_ORIGIN = (() => {
-    try {
-        return CDN_URL ? new URL(CDN_URL).origin : ""
-    } catch {
-        console.warn(`NEXT_PUBLIC_CDN_URL is not a valid URL: ${CDN_URL}`)
-        return ""
-    }
+  try {
+    return CDN_URL ? new URL(CDN_URL).origin : ""
+  } catch {
+    console.warn(`NEXT_PUBLIC_CDN_URL is not a valid URL: ${CDN_URL}`)
+    return ""
+  }
 })()
 
 /**
@@ -38,6 +38,6 @@ export const CDN_ORIGIN = (() => {
  *   callers outside the catalogue may still pass one.
  */
 export function getCdnUrl(path: string): string {
-    const cleanPath = path.startsWith("/") ? path.slice(1) : path
-    return `${CDN_URL}/${cleanPath}`
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path
+  return `${CDN_URL}/${cleanPath}`
 }

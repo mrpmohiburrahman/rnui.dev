@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 import { truncateString } from "../../lib/utils"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -24,16 +24,18 @@ const firstCaption = (page: Page) =>
 // wrong count.
 const CATEGORY = "Buttons"
 const AUTHOR = "Hewad Mubariz"
-const inCategory = allEntries.filter((e) => e.category === CATEGORY).length
-const byAuthor = allEntries.filter((e) => e.author === AUTHOR).length
-const inBoth = allEntries.filter(
-  (e) => e.category === CATEGORY && e.author === AUTHOR
+const inCategory = allRecordings.filter((e) => e.category === CATEGORY).length
+const byContributor = allRecordings.filter(
+  (e) => e.contributor === AUTHOR
+).length
+const inBoth = allRecordings.filter(
+  (e) => e.category === CATEGORY && e.contributor === AUTHOR
 ).length
 
 // A link in the desktop facet list, by the name it is filtered under. Scoped to
 // the aside, because the mobile drawer renders a second copy of the same links,
 // and truncated the way catalogue-nav.tsx truncates every label — so the
-// accessible name of an author link is not the author's name.
+// accessible name of a contributor link is not the contributor's name.
 const facet = (page: Page, name: string) =>
   page
     .locator("aside")
@@ -43,22 +45,22 @@ test("a facet link keeps the params it did not set", async ({ page }) => {
   await page.goto(`/products?category=${CATEGORY}`)
   await expect(cards(page)).toHaveCount(inCategory)
 
-  // The author link used to be written whole, so it discarded the Category.
+  // The contributor link used to be written whole, so it discarded the Category.
   await facet(page, AUTHOR).click()
 
   await expect(page).toHaveURL(new RegExp(`category=${CATEGORY}`))
-  await expect(page).toHaveURL(/author=Hewad\+Mubariz/)
+  await expect(page).toHaveURL(/contributor=Hewad\+Mubariz/)
 
   // The intersection, not either half of it.
   await expect(cards(page)).toHaveCount(inBoth)
   expect(inBoth).toBeLessThan(inCategory)
-  expect(inBoth).toBeLessThan(byAuthor)
+  expect(inBoth).toBeLessThan(byContributor)
 })
 
 test("clicking the facet that is already on clears it and leaves the other", async ({
   page,
 }) => {
-  await page.goto(`/products?category=${CATEGORY}&author=Hewad+Mubariz`)
+  await page.goto(`/products?category=${CATEGORY}&contributor=Hewad+Mubariz`)
 
   // Both chips carry the active treatment, so the visitor can see which link
   // would clear what.
@@ -67,9 +69,9 @@ test("clicking the facet that is already on clears it and leaves the other", asy
 
   await facet(page, CATEGORY).click()
 
-  await expect(page).toHaveURL(/author=Hewad\+Mubariz/)
+  await expect(page).toHaveURL(/contributor=Hewad\+Mubariz/)
   await expect(page).not.toHaveURL(/category=/)
-  await expect(cards(page)).toHaveCount(byAuthor)
+  await expect(cards(page)).toHaveCount(byContributor)
 })
 
 test("the search term survives a facet click", async ({ page }) => {
@@ -132,7 +134,7 @@ test("an unknown sort renders Recent order, not an empty grid", async ({
 
   await page.goto("/products?sort=banana")
   await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allEntries.length}`
+    `Total Items: ${allRecordings.length}`
   )
   expect(await firstCaption(page)).toBe(firstRecent)
 })
@@ -176,7 +178,7 @@ test.describe("on a phone", () => {
     expect(swallowsWhatIsBesideIt).toBe(false)
   })
 
-  test("the drawer carries Authors, and its last row can be reached", async ({
+  test("the drawer carries Contributors, and its last row can be reached", async ({
     page,
   }) => {
     await page.goto("/products")
@@ -186,17 +188,37 @@ test.describe("on a phone", () => {
     const drawer = page.getByRole("dialog")
     await expect(drawer).toBeVisible()
 
-    // The author facet used to be passed only to the desktop call.
-    await expect(drawer.getByText("Authors")).toBeVisible()
+    // The contributor facet used to be passed only to the desktop call.
+    await expect(drawer.getByText("Contributors")).toBeVisible()
 
     // The last row of the list, which is what the ScrollArea's fixed height puts
     // at risk: a box taller than the panel never scrolls to its own bottom, and
     // the drawer is `fixed` with body scroll locked, so there is no outer scroll
     // to fall back on.
-    const last = drawer.locator('a[href*="author="]').last()
+    const last = drawer.locator('a[href*="contributor="]').last()
     await last.scrollIntoViewIfNeeded()
     await expect(last).toBeInViewport()
     await last.click()
-    await expect(page).toHaveURL(/author=/)
+    await expect(page).toHaveURL(/contributor=/)
   })
+})
+
+// `?author=` is the spelling `main` hands out on all 24 contributor links (23 people plus the trailing-space duplicate ticket 10 trims), so a
+// visitor can have bookmarked one and a rendering crawler can have indexed one.
+// ADR-0008 keeps it alive as a permanent redirect rather than a second reader, so
+// there is one canonical address for a filtered catalogue instead of two that
+// render identically. This asserts both halves: the redirect happens, and it
+// lands on the same Recordings.
+test("the legacy ?author= spelling redirects to ?contributor=", async ({
+  page,
+}) => {
+  await page.goto(`/products?contributor=${encodeURIComponent(AUTHOR)}`)
+  const canonical = await cards(page).count()
+  expect(canonical).toBeGreaterThan(0)
+
+  await page.goto(`/products?author=${encodeURIComponent(AUTHOR)}`)
+
+  await expect(page).toHaveURL(/contributor=Hewad\+Mubariz/)
+  await expect(page).not.toHaveURL(/author=/)
+  await expect(cards(page)).toHaveCount(canonical)
 })

@@ -12,7 +12,7 @@ import { cn, truncateString } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 type CatalogueNavProps = {
-  authors?: string[]
+  contributors?: string[]
   categories?: string[]
   handleLinkClick?: () => void
   children?: ReactNode
@@ -20,8 +20,8 @@ type CatalogueNavProps = {
 
 /**
  * The chip treatment every link in this list wears at rest, following
- * `PILL_CLASS` in components/entry-card-grid.tsx. Named rather than spelled a
- * third time so the All Entries link cannot drift from the facets it sits
+ * `PILL_CLASS` in components/recording-card-grid.tsx. Named rather than spelled a
+ * third time so the All recordings link cannot drift from the facets it sits
  * above: decision 13 authorises it to exist, not to introduce an appearance of
  * its own.
  */
@@ -34,14 +34,14 @@ const CHIP_CLASS = [
 
 /**
  * Added on top of CHIP_CLASS by the facet that is currently applied, so the
- * visitor can see which link would clear what. The All Entries link carries no
+ * visitor can see which link would clear what. The All recordings link carries no
  * facet, so it never wears this.
  */
 const ACTIVE_CHIP_CLASS = "bg-yellow-400 text-black dark:text-black"
 
 /**
  * A facet link that keeps every param it did not set, so filters compose — the
- * server has always intersected them (app/actions/get-entries.ts:54-72); only
+ * server has always intersected them (app/actions/get-recordings.ts:54-72); only
  * these hrefs, written whole, discarded what the visitor already had.
  *
  * Clicking the facet that is already on removes it. Without that there is no way
@@ -71,7 +71,7 @@ function facetHref(current: URLSearchParams, key: string, value: string) {
  * deliberately not one: it has an event of its own, and a visitor who searched
  * and then narrowed by Category did two different things.
  */
-const FACETS: Facet[] = ["category", "author"]
+const FACETS: Facet[] = ["category", "contributor"]
 
 /**
  * What a facet click reports, decided by the same test `facetHref` navigates on:
@@ -125,7 +125,7 @@ function ActiveCatalogueNav(props: CatalogueNavProps) {
 }
 
 function CatalogueNavList({
-  authors,
+  contributors,
   categories,
   handleLinkClick,
   // Absent means "the URL has not been read yet", and every `.get` below returns
@@ -149,7 +149,7 @@ function CatalogueNavList({
           className={cn(CHIP_CLASS)}
           prefetch={false}
         >
-          <span className="px-1">All Entries</span>
+          <span className="px-1">All recordings</span>
         </Link>
         {/* Categories Section */}
         {categories && categories.length > 0 && (
@@ -169,7 +169,9 @@ function CatalogueNavList({
                 }}
                 className={cn(
                   CHIP_CLASS,
-                  searchParams.get("category") === category ? ACTIVE_CHIP_CLASS : ""
+                  searchParams.get("category") === category
+                    ? ACTIVE_CHIP_CLASS
+                    : ""
                 )}
                 prefetch={false}
               >
@@ -178,29 +180,31 @@ function CatalogueNavList({
             </li>
           ))}
         </ul>
-        {/* Authors */}
-        {authors && authors.length > 0 && (
+        {/* Contributors */}
+        {contributors && contributors.length > 0 && (
           <div className="flex items-center gap-2 mt-6 text-muted-foreground">
             <User className="size-5 stroke-pink-400" />
-            <p className="text-sm md:hidden">Authors</p>
+            <p className="text-sm md:hidden">Contributors</p>
           </div>
         )}
         <ul className="mt-2 w-36 flex flex-col gap-2 items-start justify-center py-2">
-          {authors?.map((author, index) => (
-            <li key={`category-${index}-${author}`}>
+          {contributors?.map((contributor, index) => (
+            <li key={`category-${index}-${contributor}`}>
               <Link
-                href={facetHref(searchParams, "author", author)}
+                href={facetHref(searchParams, "contributor", contributor)}
                 onClick={() => {
-                  reportFacetClick(searchParams, "author", author)
+                  reportFacetClick(searchParams, "contributor", contributor)
                   handleLinkClick?.()
                 }}
                 className={cn(
                   CHIP_CLASS,
-                  searchParams.get("author") === author ? ACTIVE_CHIP_CLASS : ""
+                  searchParams.get("contributor") === contributor
+                    ? ACTIVE_CHIP_CLASS
+                    : ""
                 )}
                 prefetch={false}
               >
-                <span className="px-1">{truncateString(author, 12)}</span>
+                <span className="px-1">{truncateString(contributor, 12)}</span>
               </Link>
             </li>
           ))}

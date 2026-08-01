@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const misc: Entry[] = [
+export const misc: Recording[] = [
   {
     id: "01JXYAFB21MCEYBNSEGN4GB68A",
     caption: "Masonry Grid",
     demoPath: "demo/misc/masonry_grid_thomino.mp4",
     posterPath: "thumbnails/misc/masonry_grid_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/masonry.tsx",
     twitterId: "ThominoDesign",
@@ -19,7 +19,7 @@ export const misc: Entry[] = [
     caption: "Journal Cards",
     demoPath: "demo/misc/journal_cards_thomino.mp4",
     posterPath: "thumbnails/misc/journal_cards_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/journal-cards.tsx",
     twitterId: "ThominoDesign",
@@ -32,7 +32,7 @@ export const misc: Entry[] = [
     caption: "Counter Card",
     demoPath: "demo/misc/counter_card_thomino.mp4",
     posterPath: "thumbnails/misc/counter_card_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/card.tsx",
     twitterId: "ThominoDesign",
@@ -45,7 +45,7 @@ export const misc: Entry[] = [
     caption: "Weather",
     demoPath: "demo/misc/weather_thomino.mp4",
     posterPath: "thumbnails/misc/weather_thomino.avif",
-    author: "Thomino",
+    contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/weather.tsx",
     twitterId: "ThominoDesign",
@@ -58,7 +58,7 @@ export const misc: Entry[] = [
     caption: "Star Rating",
     demoPath: "demo/misc/star_rating_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/star_rating_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/ratings",
     twitterId: "hewad_mubariz",
@@ -72,7 +72,7 @@ export const misc: Entry[] = [
     caption: "Transitions",
     demoPath: "demo/misc/transitions_william_candillon.mp4",
     posterPath: "thumbnails/misc/transitions_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Transitions",
     twitterId: "wcandillon",
@@ -86,7 +86,7 @@ export const misc: Entry[] = [
     caption: "Pizza Challenge",
     demoPath: "demo/misc/pizza_challenge_william_candillon.mp4",
     posterPath: "thumbnails/misc/pizza_challenge_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
     twitterId: "wcandillon",
@@ -100,7 +100,7 @@ export const misc: Entry[] = [
     caption: "Stroke Animation",
     demoPath: "demo/misc/stroke_animation_william_candillon.mp4",
     posterPath: "thumbnails/misc/stroke_animation_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/StrokeAnimation",
     twitterId: "wcandillon",
@@ -114,7 +114,7 @@ export const misc: Entry[] = [
     caption: "Masked View",
     demoPath: "demo/misc/masked_view_william_candillon.mp4",
     posterPath: "thumbnails/misc/masked_view_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/MaskedView",
     twitterId: "wcandillon",
@@ -127,7 +127,7 @@ export const misc: Entry[] = [
     category: "Misc",
     id: "01JGQS6F1PBCNQS6P7ZBZ157S1",
     created_at: "2025-01-04T04:29:33.667Z",
-    author: "Pushkar Tandon",
+    contributor: "Pushkar Tandon",
     caption: "Expanding Search Bar",
     twitterId: "tandonpushkar0",
     linkedInId: "tandonpushkar",
@@ -142,7 +142,7 @@ export const misc: Entry[] = [
     id: "01JGQQEQM69PC3W6G9X2EMSD65",
     created_at: "2025-01-04T03:59:03.266Z",
     caption: "Animated Letter Text",
-    author: "Aswin C",
+    contributor: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
     demoPath: "demo/misc/animated_letter_text_aswin_c.mp4",
@@ -155,7 +155,7 @@ export const misc: Entry[] = [
     id: "01JGQPWW4HX6SY4KP7XMJD6CM2",
     created_at: "2025-01-04T03:49:18.477Z",
     caption: "App Walkthrough",
-    author: "Aswin C",
+    contributor: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
     demoPath: "demo/misc/app_walkthrough_aswin_c.mp4",
@@ -168,7 +168,7 @@ export const misc: Entry[] = [
     id: "01JGQN328M2YTQ9WGXE9V6CWYF",
     created_at: "2025-01-04T03:17:44.251Z",
     caption: "Coons patch",
-    author: "Aswin C",
+    contributor: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
     demoPath: "demo/misc/coons_patch_aswin_c.mp4",
@@ -181,7 +181,7 @@ export const misc: Entry[] = [
     id: "01JGQMM1QQ47GS37YMW13R12AS",
     created_at: "2025-01-04T03:09:37.731Z",
     caption: "Particles",
-    author: "Aswin C",
+    contributor: "Aswin C",
     linkedInId: "aswincheriyala",
     githubId: "aswincheriyala",
     demoPath: "demo/misc/particles_aswin_c.mp4",
@@ -194,7 +194,7 @@ export const misc: Entry[] = [
     caption: "Number Flow",
     demoPath: "demo/misc/number_flow_wahab_balogun.mp4",
     posterPath: "thumbnails/misc/number_flow_wahab_balogun.avif",
-    author: "Wahab Balogun",
+    contributor: "Wahab Balogun",
     source: "https://github.com/03balogun/rn-number-flow",
     linkedInId: "03balogun",
     githubId: "03balogun",
@@ -207,7 +207,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/neural_network_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/neural_network_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source: "https://github.com/enzomanuelmangano/mnist-expo",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
@@ -220,7 +220,7 @@ export const misc: Entry[] = [
     caption: "Task Calendar",
     demoPath: "demo/misc/task_calendar_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/task_calendar_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/TaskCalendarScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -233,7 +233,7 @@ export const misc: Entry[] = [
     caption: "Spin Wheel",
     demoPath: "demo/misc/spin_wheel_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/spin_wheel_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/Lottery/LotteryScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -246,7 +246,7 @@ export const misc: Entry[] = [
     caption: "Action Menu",
     demoPath: "demo/misc/action_menu_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/action_menu_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-action-menu",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -261,7 +261,7 @@ export const misc: Entry[] = [
       "demo/misc/circular_animated_text_screen_konstantinos_efkarpidis.mp4",
     posterPath:
       "thumbnails/misc/circular_animated_text_screen_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b9b4ec750ad2ed172db4badcfa0164f95517fd82/src/screens/CircularAnimatedTextScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -274,7 +274,7 @@ export const misc: Entry[] = [
     caption: "iOS Search Bar",
     demoPath: "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/ios_search_bar_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b91bcc460cdccf1b7290bcacac8abb7606622494/src/screens/TranslateSearchIOSScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -287,7 +287,7 @@ export const misc: Entry[] = [
     caption: "NFC Reader",
     demoPath: "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/nfc_reader_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/master/src/screens/NFCReaderScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -301,7 +301,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
     posterPath:
       "thumbnails/misc/airbnb_search_component_konstantinos_efkarpidis.avif",
-    author: "Konstantinos Efkarpidis",
+    contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/AirbnbScreen.tsx",
     linkedInId: "konstantinos-efkarpidis",
@@ -314,7 +314,7 @@ export const misc: Entry[] = [
     caption: "Flash Cards",
     demoPath: "demo/misc/flash_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/flash_cards_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flash-cards",
     twitterId: "hewad_mubariz",
@@ -330,7 +330,7 @@ export const misc: Entry[] = [
       "demo/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/22-stacked-cards",
     twitterId: "reactiive_",
@@ -344,7 +344,7 @@ export const misc: Entry[] = [
     caption: "Transitions",
     demoPath: "demo/misc/rn_transitions_lucas_lima.mp4",
     posterPath: "thumbnails/misc/rn_transitions_lucas_lima.avif",
-    author: "Lucas Lima",
+    contributor: "Lucas Lima",
     source: "https://github.com/lklima/rn-transitions",
     twitterId: "lima_lucas3",
     linkedInId: "lucas-lima-5b9282182",
@@ -357,7 +357,7 @@ export const misc: Entry[] = [
     caption: "Spinning Circle",
     demoPath: "demo/misc/spinning_circle_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/spinning_circle_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/spinning-circle",
     twitterId: "hewad_mubariz",
@@ -371,7 +371,7 @@ export const misc: Entry[] = [
     caption: "Flight Animation",
     demoPath: "demo/misc/flight_animation_lucas_lima.mp4",
     posterPath: "thumbnails/misc/flight_animation_lucas_lima.avif",
-    author: "Lucas Lima",
+    contributor: "Lucas Lima",
     source: "https://github.com/lklima/rn-flight-animation",
     twitterId: "lima_lucas3",
     linkedInId: "lucas-lima-5b9282182",
@@ -384,7 +384,7 @@ export const misc: Entry[] = [
     caption: "Heart Beat Animation",
     demoPath: "demo/misc/heart_beat_animation_william_candillon.mp4",
     posterPath: "thumbnails/misc/heart_beat_animation_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Heartrate",
     twitterId: "wcandillon",
@@ -398,7 +398,7 @@ export const misc: Entry[] = [
     caption: "iOS UI",
     demoPath: "demo/misc/ios_ui_enes_ozturk.mp4",
     posterPath: "thumbnails/misc/ios_ui_enes_ozturk.avif",
-    author: "Enes Öztürk",
+    contributor: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-ios",
     twitterId: "enesozturkdev",
     linkedInId: "enes-ozturk",
@@ -411,7 +411,7 @@ export const misc: Entry[] = [
     caption: "Instagram iOS Page Transitions",
     demoPath: "demo/misc/instagram_ios_page_transitions_enes.mp4",
     posterPath: "thumbnails/misc/instagram_ios_page_transitions_enes.avif",
-    author: "Enes Öztürk",
+    contributor: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-instagram",
     twitterId: "enesozturkdev",
     linkedInId: "enes-ozturk",
@@ -424,7 +424,7 @@ export const misc: Entry[] = [
     caption: "Cards Swap",
     demoPath: "demo/misc/cards_swap_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/cards_swap_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/cards_swap/src/cards_swap",
     twitterId: "aashudubey_ad",
@@ -437,7 +437,7 @@ export const misc: Entry[] = [
     caption: "Custom Cursor/Caret",
     demoPath: "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/custom_cursor_caret_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_caret",
     twitterId: "aashudubey_ad",
@@ -450,7 +450,7 @@ export const misc: Entry[] = [
     caption: "Rope Physics",
     demoPath: "demo/misc/rope_physics_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/rope_physics_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/rope_physics",
     twitterId: "aashudubey_ad",
@@ -463,7 +463,7 @@ export const misc: Entry[] = [
     caption: "Spread Cards Effect ( Color Swatch )",
     demoPath: "demo/misc/color_swatch_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/color_swatch_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/color_swatch",
     twitterId: "aashudubey_ad",
@@ -476,7 +476,7 @@ export const misc: Entry[] = [
     caption: "Animated Toolbar",
     demoPath: "demo/misc/animated_toolbar_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/animated_toolbar_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_toolbar",
     twitterId: "aashudubey_ad",
@@ -489,7 +489,7 @@ export const misc: Entry[] = [
     caption: "Sphere Animation",
     demoPath: "demo/misc/sphere_animation_andreev_danila.mp4",
     posterPath: "thumbnails/misc/sphere_animation_andreev_danila.avif",
-    author: "Andreev Danila",
+    contributor: "Andreev Danila",
     source: "https://github.com/andreev-danila/sphere-svg-animation",
     twitterId: "dan_w1d1",
     githubId: "andreev-danila",
@@ -502,7 +502,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/skia_gesture_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/react-native-skia-gesture/tree/main/example",
     twitterId: "reactiive_",
@@ -516,7 +516,7 @@ export const misc: Entry[] = [
     caption: "Skeleton",
     demoPath: "demo/misc/skeleton_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/skeleton_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/18-skeleton-animation",
     twitterId: "reactiive_",
@@ -531,7 +531,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/shake_animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shake_animation_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/20-shake-animation",
     twitterId: "reactiive_",
@@ -545,7 +545,7 @@ export const misc: Entry[] = [
     caption: "Grid Magnification",
     demoPath: "demo/misc/grid_magnification_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/grid_magnification_aashu_dubey.avif",
-    author: "Aashu Dubey",
+    contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
     twitterId: "aashudubey_ad",
@@ -559,7 +559,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/grid_magnification_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/grid-magnification",
     twitterId: "reactiive_",
@@ -574,7 +574,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/metaball_animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/metaball_animation_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/metaball",
     twitterId: "reactiive_",
@@ -589,7 +589,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated_gradient_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/animated-gradient",
     twitterId: "reactiive_",
@@ -604,7 +604,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
     posterPath:
       "thumbnails/misc/text_input_inspired_by_x_twitter_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-x-input",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -617,7 +617,7 @@ export const misc: Entry[] = [
     caption: "Mention Input",
     demoPath: "demo/misc/mention_input_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/mention_input_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-mention",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -630,7 +630,7 @@ export const misc: Entry[] = [
     caption: "Custom Menu",
     demoPath: "demo/misc/custom_menu_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/custom_menu_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-menu",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -644,7 +644,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/gallery_inspired_image_carousel_arunabh_verma.mp4",
     posterPath:
       "thumbnails/misc/gallery_inspired_image_carousel_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-selection",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -657,7 +657,7 @@ export const misc: Entry[] = [
     caption: "Edge Panel",
     demoPath: "demo/misc/edge_panel_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/edge_panel_arunabh_verma.avif",
-    author: "Arunabh Verma",
+    contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-edge-panel",
     twitterId: "iamarunabh",
     linkedInId: "arunabhv",
@@ -670,7 +670,7 @@ export const misc: Entry[] = [
     caption: "Masked Text",
     demoPath: "demo/misc/masked_text_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/masked_text_yassire_mtioui.avif",
-    author: "Yassire Mtioui",
+    contributor: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/MaskedText",
     linkedInId: "yassire-mtioui-908950277",
@@ -684,7 +684,7 @@ export const misc: Entry[] = [
     caption: "Speech Visualization",
     demoPath: "demo/misc/speech_visualization_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/speech_visualization_yassire_mtioui.avif",
-    author: "Yassire Mtioui",
+    contributor: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/SpeechVisualization",
     linkedInId: "yassire-mtioui-908950277",
@@ -698,7 +698,7 @@ export const misc: Entry[] = [
     caption: "Rotary Phone",
     demoPath: "demo/misc/rotary_phone_rn_skia_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/rotary_phone_rn_skia_yassire_mtioui.avif",
-    author: "Yassire Mtioui",
+    contributor: "Yassire Mtioui",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
     linkedInId: "yassire-mtioui-908950277",
@@ -714,7 +714,7 @@ export const misc: Entry[] = [
       "demo/misc/shared_elements_transition_evening_kid_arnaud_dellinger.mp4",
     posterPath:
       "thumbnails/misc/shared_elements_transition_evening_kid_arnaud_dellinger.avif",
-    author: "Arnaud Dellinger ( evening kid )",
+    contributor: "Arnaud Dellinger ( evening kid )",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
     linkedInId: "arnaud-dellinger",
@@ -730,7 +730,7 @@ export const misc: Entry[] = [
       "demo/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.mp4",
     posterPath:
       "thumbnails/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.avif",
-    author: "Arnaud Dellinger ( evening kid )",
+    contributor: "Arnaud Dellinger ( evening kid )",
     source:
       "https://gist.github.com/eveningkid/a894c86db4ee1091611e9dc6a2470348",
     linkedInId: "arnaud-dellinger",
@@ -744,7 +744,7 @@ export const misc: Entry[] = [
     caption: "react-native-snow-bg",
     demoPath: "demo/misc/react-native-snow-bg-epicode.mp4",
     posterPath: "thumbnails/misc/react-native-snow-bg-epicode.avif",
-    author: "Epicode | 0xV",
+    contributor: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-snow-bg",
     twitterId: "epicode_",
     githubId: "msadura",
@@ -756,7 +756,7 @@ export const misc: Entry[] = [
     caption: "Color Pixelated",
     demoPath: "demo/misc/color_pixelated_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/color_pixelated_daehyeon_mun.avif",
-    author: "Daehyeon Mun (문대현)",
+    contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/color-pixelated",
     twitterId: "DaehyeonMun",
@@ -770,7 +770,7 @@ export const misc: Entry[] = [
     caption: "Typography Metaball",
     demoPath: "demo/misc/typography_metaball_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/typography_metaball_daehyeon_mun.avif",
-    author: "Daehyeon Mun (문대현)",
+    contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/typography-metaball",
     twitterId: "DaehyeonMun",
@@ -784,7 +784,7 @@ export const misc: Entry[] = [
     caption: "Pixelated Image",
     demoPath: "demo/misc/pixelated_image_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/pixelated_image_daehyeon_mun.avif",
-    author: "Daehyeon Mun (문대현)",
+    contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/pixelated-image",
     twitterId: "DaehyeonMun",
@@ -798,7 +798,7 @@ export const misc: Entry[] = [
     caption: "Ripple Effect With React Native Skia",
     demoPath: "demo/misc/ripple_effect_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/ripple_effect_daehyeon_mun.avif",
-    author: "Daehyeon Mun (문대현)",
+    contributor: "Daehyeon Mun (문대현)",
     source:
       "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
     twitterId: "DaehyeonMun",
@@ -812,7 +812,7 @@ export const misc: Entry[] = [
     caption: "Phyllotaxis Spiral",
     demoPath: "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/phyllotaxis_spiral_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Phyllotaxis",
     twitterId: "alireza_hadjar",
@@ -826,7 +826,7 @@ export const misc: Entry[] = [
     caption: "Flappy Bird",
     demoPath: "demo/misc/flappy_bird_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/flappy_bird_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FlappyBird",
     twitterId: "alireza_hadjar",
@@ -840,7 +840,7 @@ export const misc: Entry[] = [
     caption: "Firework",
     demoPath: "demo/misc/firework_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/firework_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Firework",
     twitterId: "alireza_hadjar",
@@ -854,7 +854,7 @@ export const misc: Entry[] = [
     caption: "Fractal Tree",
     demoPath: "demo/misc/fractal_tree_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/fractal_tree_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FractalTree",
     twitterId: "alireza_hadjar",
@@ -868,7 +868,7 @@ export const misc: Entry[] = [
     caption: "Starfield Simulation",
     demoPath: "demo/misc/starfield_simulation_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/starfield_simulation_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Starfield",
     twitterId: "alireza_hadjar",
@@ -882,7 +882,7 @@ export const misc: Entry[] = [
     caption: "Double Pendulum",
     demoPath: "demo/misc/double_pendulum_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/double_pendulum_alireza_hadjar.avif",
-    author: "Alireza Hadjar",
+    contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/DoublePendulum",
     twitterId: "alireza_hadjar",
@@ -898,7 +898,7 @@ export const misc: Entry[] = [
       "demo/misc/shared_element_transitions_example_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/misc/shared_element_transitions_example_kacper_kapusciak.avif",
-    author: "Kacper Kapuściak",
+    contributor: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion/react-native-reanimated/blob/4fcda2939cf70c9bb83efe08b8814e48653b1fa3/app/src/examples/SharedElementTransitions/Profiles.tsx",
     twitterId: "kacperkapusciak",
@@ -913,7 +913,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/gradient_shared_transition_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/misc/gradient_shared_transition_kacper_kapusciak.avif",
-    author: "Kacper Kapuściak",
+    contributor: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/gradient-shared-transitions-example",
     twitterId: "kacperkapusciak",
@@ -927,7 +927,7 @@ export const misc: Entry[] = [
     caption: "Magic Curtain Effect",
     demoPath: "demo/misc/magic_curtain_effect_kacper_kapusciak.mp4",
     posterPath: "thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif",
-    author: "Kacper Kapuściak",
+    contributor: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/expo-magic-curtain",
     twitterId: "kacperkapusciak",
     linkedInId: "kacperkapusciak",
@@ -941,7 +941,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/fake_shared_element_transition_alek_mikucki.mp4",
     posterPath:
       "thumbnails/misc/fake_shared_element_transition_alek_mikucki.avif",
-    author: "Alek Mikucki",
+    contributor: "Alek Mikucki",
     source:
       "https://github.com/aleqsio/sharedelement/blob/master/SharedElement.tsx",
     twitterId: "aleqsio",
@@ -955,7 +955,7 @@ export const misc: Entry[] = [
     caption: "View Transition using Skia",
     demoPath: "demo/misc/view_transition_using_skia_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
-    author: "Alek Mikucki",
+    contributor: "Alek Mikucki",
     source: "https://gist.github.com/aleqsio/754b3a2b664b928f5c65d715b9452d77",
     twitterId: "aleqsio",
     linkedInId: "aleqsio",
@@ -968,7 +968,7 @@ export const misc: Entry[] = [
     caption: "Townscaper",
     demoPath: "demo/misc/townscaper_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/townscaper_alek_mikucki.avif",
-    author: "Alek Mikucki",
+    contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/expo-image-and-gesture-handler-demo",
     twitterId: "aleqsio",
     linkedInId: "aleqsio",
@@ -981,7 +981,7 @@ export const misc: Entry[] = [
     caption: "Gradient Picker",
     demoPath: "demo/misc/gradient_picker_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/gradient_picker_alek_mikucki.avif",
-    author: "Alek Mikucki",
+    contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/gradient-picker-reanimated",
     twitterId: "aleqsio",
     linkedInId: "aleqsio",
@@ -994,7 +994,7 @@ export const misc: Entry[] = [
     caption: "Animated Cards",
     demoPath: "demo/misc/animated_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/animated_cards_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-cards",
     twitterId: "hewad_mubariz",
@@ -1008,7 +1008,7 @@ export const misc: Entry[] = [
     caption: "Animated Shapes",
     demoPath: "demo/misc/animated_shapes_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/animated_shapes_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-shapes",
     twitterId: "hewad_mubariz",
@@ -1022,7 +1022,7 @@ export const misc: Entry[] = [
     caption: "Audio Input Visualizer",
     demoPath: "demo/misc/audio_input_visualizer_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/audio_input_visualizer_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/audio-input-visualizer",
     twitterId: "hewad_mubariz",
@@ -1036,7 +1036,7 @@ export const misc: Entry[] = [
     caption: "Flippy Card",
     demoPath: "demo/misc/flippy_card_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/flippy_card_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flippy-card",
     twitterId: "hewad_mubariz",
@@ -1050,7 +1050,7 @@ export const misc: Entry[] = [
     caption: "Playing Cards",
     demoPath: "demo/misc/playing_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/playing_cards_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
     twitterId: "hewad_mubariz",
@@ -1064,7 +1064,7 @@ export const misc: Entry[] = [
     caption: "Rating Wave",
     demoPath: "demo/misc/rating_wave_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/rating_wave_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
     twitterId: "hewad_mubariz",
@@ -1078,7 +1078,7 @@ export const misc: Entry[] = [
     caption: "Expandable FAB",
     demoPath: "demo/misc/expandable_fab_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/expandable_fab_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expandable-fab",
     twitterId: "hewad_mubariz",
@@ -1092,7 +1092,7 @@ export const misc: Entry[] = [
     caption: "Micro Swipe Actions",
     demoPath: "demo/misc/micro_swipe_actions_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/micro_swipe_actions_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/micro-swipe-actions",
     twitterId: "hewad_mubariz",
@@ -1106,7 +1106,7 @@ export const misc: Entry[] = [
     caption: "Genetic AI",
     demoPath: "demo/misc/geneticai_david_friyia.mp4",
     posterPath: "thumbnails/misc/geneticai_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source: "https://github.com/friyiajr/GeneticAI",
     twitterId: "wa2goose",
     linkedInId: "thefriyia",
@@ -1119,7 +1119,7 @@ export const misc: Entry[] = [
     caption: "Bending Circle",
     demoPath: "demo/misc/bending_circle_david_friyia.mp4",
     posterPath: "thumbnails/misc/bending_circle_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
     twitterId: "wa2goose",
@@ -1133,7 +1133,7 @@ export const misc: Entry[] = [
     caption: "Chasing Bubble",
     demoPath: "demo/misc/chasing_bubble_david_friyia.mp4",
     posterPath: "thumbnails/misc/chasing_bubble_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
     twitterId: "wa2goose",
@@ -1147,7 +1147,7 @@ export const misc: Entry[] = [
     caption: "Expo Pulse",
     demoPath: "demo/misc/expo_pulse_david_friyia.mp4",
     posterPath: "thumbnails/misc/expo_pulse_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ExpoPulse",
     twitterId: "wa2goose",
@@ -1161,7 +1161,7 @@ export const misc: Entry[] = [
     caption: "Morphing Circle",
     demoPath: "demo/misc/morphing_circle_david_friyia.mp4",
     posterPath: "thumbnails/misc/morphing_circle_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/MorphingCircle",
     twitterId: "wa2goose",
@@ -1175,7 +1175,7 @@ export const misc: Entry[] = [
     caption: "Vital Sign Monitor",
     demoPath: "demo/misc/vital_sign_monitor_david_friyia.mp4",
     posterPath: "thumbnails/misc/vital_sign_monitor_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/VitalSignMonitor",
     twitterId: "wa2goose",
@@ -1189,7 +1189,7 @@ export const misc: Entry[] = [
     caption: "Confetti",
     demoPath: "demo/misc/confetti_david_friyia.mp4",
     posterPath: "thumbnails/misc/confetti_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
     twitterId: "wa2goose",
@@ -1203,7 +1203,7 @@ export const misc: Entry[] = [
     caption: "Gran Turismo Countdown",
     demoPath: "demo/misc/gran_turismo_countdown_david_friyia.mp4",
     posterPath: "thumbnails/misc/gran_turismo_countdown_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/GranTurismo",
     twitterId: "wa2goose",
@@ -1217,7 +1217,7 @@ export const misc: Entry[] = [
     caption: "Metaball Shader",
     demoPath: "demo/misc/metaball_shader_david_friyia.mp4",
     posterPath: "thumbnails/misc/metaball_shader_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/MetaballShader",
     twitterId: "wa2goose",
@@ -1231,7 +1231,7 @@ export const misc: Entry[] = [
     caption: "Random Circle Shader",
     demoPath: "demo/misc/random_circle_shader_david_friyia.mp4",
     posterPath: "thumbnails/misc/random_circle_shader_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/RandomCircles",
     twitterId: "wa2goose",
@@ -1245,7 +1245,7 @@ export const misc: Entry[] = [
     caption: "Focus Animation",
     demoPath: "demo/misc/focus_animation_david_friyia.mp4",
     posterPath: "thumbnails/misc/focus_animation_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
     twitterId: "wa2goose",
@@ -1259,7 +1259,7 @@ export const misc: Entry[] = [
     caption: "Gradient Clock",
     demoPath: "demo/misc/gradient_clock_david_friyia.mp4",
     posterPath: "thumbnails/misc/gradient_clock_david_friyia.avif",
-    author: "Daniel Friyia",
+    contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
     twitterId: "wa2goose",
@@ -1274,7 +1274,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/action-tray_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/action-tray_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/action-tray",
     twitterId: "reactiive_",
@@ -1290,7 +1290,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/add-to-cart_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/add-to-cart",
     twitterId: "reactiive_",
@@ -1307,7 +1307,7 @@ export const misc: Entry[] = [
       "demo/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-flip-interaction",
     twitterId: "reactiive_",
@@ -1323,7 +1323,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/animated-clip-box_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated-clip-box_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-clip-box",
     twitterId: "reactiive_",
@@ -1339,7 +1339,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/animated-count-text_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-count-text",
     twitterId: "reactiive_",
@@ -1355,7 +1355,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/audio-player_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/audio-player",
     twitterId: "reactiive_",
@@ -1372,7 +1372,7 @@ export const misc: Entry[] = [
       "demo/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bezier-curve-outline",
     twitterId: "reactiive_",
@@ -1388,7 +1388,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/blur-circles_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/blur-circles_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-circles",
     twitterId: "reactiive_",
@@ -1405,7 +1405,7 @@ export const misc: Entry[] = [
       "demo/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/card-shader-reflections",
     twitterId: "reactiive_",
@@ -1422,7 +1422,7 @@ export const misc: Entry[] = [
       "demo/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/checkbox-interactions",
     twitterId: "reactiive_",
@@ -1438,7 +1438,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/clerk-toast_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clerk-toast",
     twitterId: "reactiive_",
@@ -1454,7 +1454,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/composable-text_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/composable-text",
     twitterId: "reactiive_",
@@ -1470,7 +1470,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/draggable-panel_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/draggable-panel",
     twitterId: "reactiive_",
@@ -1485,7 +1485,7 @@ export const misc: Entry[] = [
     caption: "Email Demo",
     demoPath: "demo/misc/email-demo_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
     twitterId: "reactiive_",
@@ -1501,7 +1501,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
     twitterId: "reactiive_",
@@ -1517,7 +1517,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/everybody-can-cook",
     twitterId: "reactiive_",
@@ -1534,7 +1534,7 @@ export const misc: Entry[] = [
       "demo/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/expandable-mini-player",
     twitterId: "reactiive_",
@@ -1550,7 +1550,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/family-number-input_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/family-number-input",
     twitterId: "reactiive_",
@@ -1566,7 +1566,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader",
     twitterId: "reactiive_",
@@ -1583,7 +1583,7 @@ export const misc: Entry[] = [
       "demo/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader-grid",
     twitterId: "reactiive_",
@@ -1599,7 +1599,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fourier-visualizer",
     twitterId: "reactiive_",
@@ -1615,7 +1615,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/fractal-glass_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fractal-glass_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fractal-glass",
     twitterId: "reactiive_",
@@ -1632,7 +1632,7 @@ export const misc: Entry[] = [
       "demo/misc/github-contributions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/github-contributions_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-contributions",
     twitterId: "reactiive_",
@@ -1648,7 +1648,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/gl-transitions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/gl-transitions",
     twitterId: "reactiive_",
@@ -1664,7 +1664,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/grid-visualizer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/grid-visualizer",
     twitterId: "reactiive_",
@@ -1680,7 +1680,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/image-cropper_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/image-cropper_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/image-cropper",
     twitterId: "reactiive_",
@@ -1697,7 +1697,7 @@ export const misc: Entry[] = [
       "demo/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/inner-shared-transition",
     twitterId: "reactiive_",
@@ -1714,7 +1714,7 @@ export const misc: Entry[] = [
       "demo/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/instagram-shared-transition",
     twitterId: "reactiive_",
@@ -1731,7 +1731,7 @@ export const misc: Entry[] = [
       "demo/misc/interaction-appearance_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/interaction-appearance_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/interaction-appearance",
     twitterId: "reactiive_",
@@ -1747,7 +1747,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-bouncy",
     twitterId: "reactiive_",
@@ -1763,7 +1763,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/ios-home-grid_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-grid",
     twitterId: "reactiive_",
@@ -1779,7 +1779,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/mobile-input_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/mobile-input_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/mobile-input",
     twitterId: "reactiive_",
@@ -1795,7 +1795,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/motion-blur_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/motion-blur",
     twitterId: "reactiive_",
@@ -1811,7 +1811,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/online-offline_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/online-offline",
     twitterId: "reactiive_",
@@ -1827,7 +1827,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/paper-folding_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/paper-folding",
     twitterId: "reactiive_",
@@ -1843,7 +1843,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/pomodoro-timer",
     twitterId: "reactiive_",
@@ -1859,7 +1859,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/popup-handler_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/popup-handler_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/popup-handler",
     twitterId: "reactiive_",
@@ -1875,7 +1875,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
     twitterId: "reactiive_",
@@ -1891,7 +1891,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/shake-to-delete_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shake-to-delete",
     twitterId: "reactiive_",
@@ -1907,7 +1907,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/shared-transitions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shared-transitions_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shared-transitions",
     twitterId: "reactiive_",
@@ -1923,7 +1923,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/slide-to-reveal",
     twitterId: "reactiive_",
@@ -1939,7 +1939,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/smooth-dropdown",
     twitterId: "reactiive_",
@@ -1954,7 +1954,7 @@ export const misc: Entry[] = [
     caption: "Snake",
     demoPath: "demo/misc/snake_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/snake_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
     twitterId: "reactiive_",
@@ -1969,7 +1969,7 @@ export const misc: Entry[] = [
     caption: "Spiral",
     demoPath: "demo/misc/spiral_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/spiral_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
     twitterId: "reactiive_",
@@ -1986,7 +1986,7 @@ export const misc: Entry[] = [
       "demo/misc/staggered-card-number_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/staggered-card-number",
     twitterId: "reactiive_",
@@ -2001,7 +2001,7 @@ export const misc: Entry[] = [
     caption: "Steps",
     demoPath: "demo/misc/steps_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/steps_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
     twitterId: "reactiive_",
@@ -2016,7 +2016,7 @@ export const misc: Entry[] = [
     caption: "Sudoku",
     demoPath: "demo/misc/sudoku_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/sudoku_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
     twitterId: "reactiive_",
@@ -2032,7 +2032,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/swipe-cards_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/swipe-cards_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/swipe-cards",
     twitterId: "reactiive_",
@@ -2049,7 +2049,7 @@ export const misc: Entry[] = [
       "demo/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/telegram-theme-switch",
     twitterId: "reactiive_",
@@ -2066,7 +2066,7 @@ export const misc: Entry[] = [
       "demo/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/theme-canvas-animation",
     twitterId: "reactiive_",
@@ -2082,7 +2082,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/threads-holo-ticket",
     twitterId: "reactiive_",
@@ -2098,7 +2098,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/time-machine_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/time-machine",
     twitterId: "reactiive_",
@@ -2113,7 +2113,7 @@ export const misc: Entry[] = [
     caption: "Toast",
     demoPath: "demo/misc/toast_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
     twitterId: "reactiive_",
@@ -2129,7 +2129,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/twodos-slide_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/twodos-slide_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twodos-slide",
     twitterId: "reactiive_",
@@ -2145,7 +2145,7 @@ export const misc: Entry[] = [
     demoPath: "demo/misc/verification-code_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code",
     twitterId: "reactiive_",
@@ -2162,7 +2162,7 @@ export const misc: Entry[] = [
       "demo/misc/verification-code-face_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code-face",
     twitterId: "reactiive_",

@@ -1,12 +1,12 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const accordions: Entry[] = [
+export const accordions: Recording[] = [
   {
     id: "01JHCYVTTEX13MBTN0J187Z4EQ",
     caption: "Accordion",
     demoPath: "demo/accordions/accordion_william_candillon.mp4",
     posterPath: "thumbnails/accordions/accordion_william_candillon.avif",
-    author: "William Candillon",
+    contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Accordion",
     twitterId: "wcandillon",
@@ -20,7 +20,7 @@ export const accordions: Entry[] = [
     caption: "Dynamic Accordion",
     demoPath: "demo/accordions/dynamic_accordion_hewad_mubariz.mp4",
     posterPath: "thumbnails/accordions/dynamic_accordion_hewad_mubariz.avif",
-    author: "Hewad Mubariz",
+    contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/accordion",
     twitterId: "hewad_mubariz",

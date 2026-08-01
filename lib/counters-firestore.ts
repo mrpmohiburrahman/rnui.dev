@@ -16,7 +16,7 @@ import {
   createCounters,
   type CounterStore,
   type Counts,
-  type CountsByEntry,
+  type CountsByRecording,
 } from "@/lib/counters"
 import { db } from "@/lib/firebase"
 
@@ -39,16 +39,16 @@ const firestoreCounterStore: CounterStore = {
   async readAll() {
     const snapshot = await getDocs(collection(db, COLLECTION_NAME))
 
-    const counts: CountsByEntry = {}
+    const counts: CountsByRecording = {}
     snapshot.forEach((counted) => {
       counts[counted.id] = counted.data() as Counts
     })
     return counts
   },
 
-  async addTo(entryId, field, by) {
+  async addTo(recordingId, field, by) {
     try {
-      await updateDoc(doc(db, COLLECTION_NAME, entryId), {
+      await updateDoc(doc(db, COLLECTION_NAME, recordingId), {
         [field]: increment(by),
       })
       return true
@@ -63,8 +63,8 @@ const firestoreCounterStore: CounterStore = {
     }
   },
 
-  async create(entryId, counts) {
-    await setDoc(doc(db, COLLECTION_NAME, entryId), counts)
+  async create(recordingId, counts) {
+    await setDoc(doc(db, COLLECTION_NAME, recordingId), counts)
   },
 }
 

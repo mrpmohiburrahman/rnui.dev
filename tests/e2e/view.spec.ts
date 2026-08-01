@@ -1,19 +1,22 @@
 import { expect, test } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
-import { expectOneEntryTargeted, recordServerActions } from "./server-actions"
+import { allRecordings } from "../../data/catalogue"
+import {
+  expectOneRecordingTargeted,
+  recordServerActions,
+} from "./server-actions"
 
 // A view is a recording watched, not a button pressed (ADR-0007). There is no
 // play control left to press on the grid: a Demo counts once it has actually
 // advanced two seconds while holding one of the five playback slots, at most
-// once per Entry per browser session. Two deliberate acts count as well and are
-// uncapped — opening an Entry, and following its source link out (ADR-0007:3).
+// once per Recording per browser session. Two deliberate acts count as well and are
+// uncapped — opening a Recording, and following its source link out (ADR-0007:3).
 //
 // This file used to assert the opposite — that playing the Demo *in the modal*
 // was the one view. Both halves of the autoplay rule it now pins are called
 // load-bearing by ADR-0007's own consequences: drop the threshold and this is an
 // impression count, drop the cap and it is a scroll counter.
-test("a page of autoplaying Demos bills each Entry once, and a reload bills none", async ({
+test("a page of autoplaying Demos bills each Recording once, and a reload bills none", async ({
   browser,
 }) => {
   let beforeReload = 0
@@ -47,14 +50,14 @@ test("a page of autoplaying Demos bills each Entry once, and a reload bills none
   expect(beforeReload).toBeGreaterThan(0)
   expect(beforeReload).toBeLessThanOrEqual(5)
 
-  // One per Entry. The body is the only place the id appears — the address is
+  // One per Recording. The body is the only place the id appears — the address is
   // the page's and the Next-Action header is opaque.
-  const entries = new Set(fired.map((action) => action.body))
-  expect(entries.size).toBe(fired.length)
-  for (const body of entries) expect(body).toMatch(/^\["[0-9A-Z]{26}"\]$/)
+  const recordings = new Set(fired.map((action) => action.body))
+  expect(recordings.size).toBe(fired.length)
+  for (const body of recordings) expect(body).toMatch(/^\["[0-9A-Z]{26}"\]$/)
 
   // The reload replayed every one of those Demos past two seconds and billed
-  // nothing, which is the once-per-Entry-per-session cap.
+  // nothing, which is the once-per-Recording-per-session cap.
   expect(fired).toHaveLength(beforeReload)
 })
 
@@ -62,7 +65,7 @@ test("a page of autoplaying Demos bills each Entry once, and a reload bills none
 // can ever produce — no Demo is mounted for them at all. Demos are aborted here
 // so the autoplay signal cannot land in the middle of the claim; what is left is
 // exactly the deliberate acts.
-test("opening an Entry and following its Source link bill one view each", async ({
+test("opening a Recording and following its Source link bill one view each", async ({
   browser,
 }) => {
   const fired = await recordServerActions(browser, "/", async (page) => {
@@ -74,27 +77,27 @@ test("opening an Entry and following its Source link bill one view each", async 
       .route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort())
 
     // The heading, not the card: the bookmark button sits over the top-right
-    // corner and the Demo fills the top. Both open the Entry the same way.
+    // corner and the Demo fills the top. Both open the Recording the same way.
     await page.getByRole("heading", { level: 3 }).first().click()
     await expect(page.getByRole("dialog")).toBeVisible()
     await page.getByRole("link", { name: "GitHub Repository" }).click()
   })
 
-  // Two, from one Entry. expectNoActionRepeated is deliberately not used: this
+  // Two, from one Recording. expectNoActionRepeated is deliberately not used: this
   // is the same action id twice, which is the thing being asserted rather than a
   // double billing. Three would mean the panel's Demo counted a press as well.
   expect(fired).toHaveLength(2)
-  expectOneEntryTargeted(fired)
+  expectOneRecordingTargeted(fired)
 })
 
-// Two claims about the standalone Entry page, which is the one place they can be
+// Two claims about the standalone Recording page, which is the one place they can be
 // seen apart: it has no grid, so no playback owner and no autoplay, and nothing
 // clicked a card to get here. Every action recorded is therefore attributable.
 //
 // The open is counted from an effect rather than a click because there is no
 // click — the visitor arrived from a shared link or a cmd-clicked headline, and
 // ADR-0007:3 counts that as an open all the same.
-test("an Entry opened cold counts one view, and playing its Demo adds none", async ({
+test("a Recording opened cold counts one view, and playing its Demo adds none", async ({
   page,
 }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
@@ -105,10 +108,10 @@ test("an Entry opened cold counts one view, and playing its Demo adds none", asy
       fired.push(request.postData() ?? "")
   })
 
-  const entry = allEntries[0]
-  await page.goto(`/entry/${entry.id}`)
+  const recording = allRecordings[0]
+  await page.goto(`/recording/${recording.id}`)
 
-  // Exactly one, and it names this Entry. Polled rather than slept: the effect
+  // Exactly one, and it names this Recording. Polled rather than slept: the effect
   // fires after hydration, and how long that takes is not this test's to guess.
   await expect
     .poll(() => fired.length, {
@@ -116,7 +119,7 @@ test("an Entry opened cold counts one view, and playing its Demo adds none", asy
       message: "the cold open billed no view",
     })
     .toBe(1)
-  expect(fired[0]).toBe(JSON.stringify([entry.id]))
+  expect(fired[0]).toBe(JSON.stringify([recording.id]))
 
   await page.getByRole("button", { name: "Play video" }).click()
 

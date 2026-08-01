@@ -77,15 +77,15 @@ export function expectNoActionRepeated(fired: FiredAction[]) {
 }
 
 /**
- * Every action a single click produces carries the same Entry id. Recorded from the
+ * Every action a single click produces carries the same Recording id. Recorded from the
  * bodies rather than inferred: the bodies are the only place the id appears, since
  * the address is the page's and the header is opaque.
  */
-export function expectOneEntryTargeted(fired: FiredAction[]) {
+export function expectOneRecordingTargeted(fired: FiredAction[]) {
   const bodies = new Set(fired.map((action) => action.body))
   expect(
     bodies.size,
-    `one click addressed more than one Entry: ${[...bodies].join(" | ")}`
+    `one click addressed more than one Recording: ${[...bodies].join(" | ")}`
   ).toBe(1)
   // A body Next did not fill in would make the assertion above pass vacuously.
   expect([...bodies][0]).toMatch(/^\["[0-9A-Z]{26}"\]$/)

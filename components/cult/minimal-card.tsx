@@ -3,8 +3,8 @@
 import * as React from "react"
 import Image from "next/image"
 
-import { cn } from "@/lib/utils"
 import { getCdnUrl } from "@/lib/cdn"
+import { cn } from "@/lib/utils"
 
 const MinimalCard = React.forwardRef<
   HTMLDivElement,

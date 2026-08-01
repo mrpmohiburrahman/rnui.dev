@@ -13,7 +13,11 @@ import { allAssetPaths } from "../data/catalogue"
 import { DEMO_PREFIX, POSTER_PREFIX } from "../lib/asset-path"
 
 const kind = process.argv[2] ?? "all"
-const prefix = { all: "", demo: `${DEMO_PREFIX}/`, posters: `${POSTER_PREFIX}/` }[kind]
+const prefix = {
+  all: "",
+  demo: `${DEMO_PREFIX}/`,
+  posters: `${POSTER_PREFIX}/`,
+}[kind]
 
 if (prefix === undefined) {
   console.error(`unknown kind "${kind}" — expected all, demo or posters`)

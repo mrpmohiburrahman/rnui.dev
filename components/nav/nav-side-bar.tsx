@@ -15,10 +15,10 @@ import { CatalogueNav } from "./catalogue-nav"
 
 type NavSidebarProps = {
   categories: string[]
-  authors?: string[]
+  contributors?: string[]
 }
 
-export function NavSidebar({ authors, categories }: NavSidebarProps) {
+export function NavSidebar({ contributors, categories }: NavSidebarProps) {
   // No useSearchParams here. Reading it opts every ancestor out of prerendering,
   // and the nearest boundary was the root layout's — so eleven prerendered routes
   // served "Loading sidebar..." as their sidebar until React ran. The read now
@@ -37,7 +37,7 @@ export function NavSidebar({ authors, categories }: NavSidebarProps) {
       >
         {/* Navigation Section */}
         <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          <CatalogueNav categories={categories} authors={authors} />
+          <CatalogueNav categories={categories} contributors={contributors} />
         </nav>
 
         {/* Bottom Controls: Avatar and ModeToggle */}
@@ -96,11 +96,11 @@ export function NavSidebar({ authors, categories }: NavSidebarProps) {
               <nav className="flex flex-col justify-between h-full">
                 {/* Navigation Links */}
                 <div className="flex flex-col items-start gap-4 px-2 py-1">
-                  {/* `authors` too, matching the desktop call above: the author
+                  {/* `contributors` too, matching the desktop call above: the contributor
                       facet used to be desktop-only. */}
                   <CatalogueNav
                     categories={categories}
-                    authors={authors}
+                    contributors={contributors}
                     handleLinkClick={handleLinkClick}
                   />
                   <div className="my-4 space-y-3">

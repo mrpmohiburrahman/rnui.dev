@@ -1,13 +1,13 @@
-import type { Entry } from "./entry"
+import type { Recording } from "./recording"
 
-export const drop_down: Entry[] = [
+export const drop_down: Recording[] = [
   {
     id: "01ARZ3NDEKTSV4RRFFQ69G5FAV", // Replace with a unique ULID
     caption: "Dropdown Menu",
     demoPath: "demo/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.avif",
-    author: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/16-smooth-dropdown",
     twitterId: "reactiive_",

@@ -1,6 +1,6 @@
-// components/entry-overlay.tsx
+// components/recording-overlay.tsx
 //
-// The Entry detail overlay. It replaces components/modal.tsx, which declared
+// The Recording detail overlay. It replaces components/modal.tsx, which declared
 // `role="dialog" aria-modal="true"` while behaving as though it were not modal:
 // no portal, no focus trap, no Escape handler, no scroll lock, so focus stayed
 // reachable in the 277 cards behind it. Radix Dialog supplies all four —
@@ -14,21 +14,21 @@
 // — and travelled 50px on open. Both are gone with it.
 "use client"
 
-import type { Entry } from "@/data/entry"
+import type { Recording } from "@/data/recording"
 import * as Dialog from "@radix-ui/react-dialog"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { X } from "lucide-react"
 
-import { EntryDetail } from "./entry-detail"
+import { RecordingDetail } from "./recording-detail"
 
 /** A strong ease-out: arrives almost immediately, then settles. Both directions. */
 const EASE = [0.19, 1, 0.22, 1] as const
 
-export function EntryOverlay({
-  entry,
+export function RecordingOverlay({
+  recording,
   onClose,
 }: {
-  entry: Entry | null
+  recording: Recording | null
   onClose: () => void
 }) {
   // Under reduced motion the fade survives and the scale does not.
@@ -43,7 +43,7 @@ export function EntryOverlay({
 
   return (
     <Dialog.Root
-      open={!!entry}
+      open={!!recording}
       onOpenChange={(open) => {
         if (!open) onClose()
       }}
@@ -52,7 +52,7 @@ export function EntryOverlay({
           queue behind the exit and add latency to the most repeated action
           on the site. */}
       <AnimatePresence>
-        {entry && (
+        {recording && (
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
               <motion.div
@@ -106,7 +106,7 @@ export function EntryOverlay({
 
                 {/* Dialog.Title renders an h2, so the panel's heading is
                     unchanged and no hidden text is added. */}
-                <EntryDetail entry={entry} Title={Dialog.Title} />
+                <RecordingDetail recording={recording} Title={Dialog.Title} />
               </motion.div>
             </Dialog.Content>
           </Dialog.Portal>

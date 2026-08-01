@@ -2,7 +2,7 @@ import { expect, test, type Browser } from "@playwright/test"
 
 import {
   expectNoActionRepeated,
-  expectOneEntryTargeted,
+  expectOneRecordingTargeted,
   recordServerActions,
 } from "./server-actions"
 
@@ -26,7 +26,7 @@ test("a vote click fires each server action exactly once", async ({
   const fired = await oneVoteClick(browser, "/")
 
   expectNoActionRepeated(fired)
-  expectOneEntryTargeted(fired)
+  expectOneRecordingTargeted(fired)
   expect(fired).toHaveLength(1) // the vote, and nothing else
 })
 
@@ -37,6 +37,6 @@ test("the Category listing records the same count as the home page", async ({
   const category = await oneVoteClick(browser, "/products?category=Buttons")
 
   expectNoActionRepeated(category)
-  expectOneEntryTargeted(category)
+  expectOneRecordingTargeted(category)
   expect(category.length).toBe(home.length)
 })

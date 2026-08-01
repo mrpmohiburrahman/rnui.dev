@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest"
 
-import { config as middlewareConfig } from "../middleware"
-import { CATEGORIES, CATEGORY_NAMES, LEGACY_REDIRECTS } from "../data/categories"
-import { allEntries } from "../data/catalogue"
-import type { Entry } from "../data/entry"
+import { allRecordings } from "../data/catalogue"
+import {
+  CATEGORIES,
+  CATEGORY_NAMES,
+  LEGACY_REDIRECTS,
+} from "../data/categories"
+import type { Recording } from "../data/recording"
 import { demoPathFor, narrow, posterPathFor } from "../lib/asset-path"
+import { config as middlewareConfig } from "../middleware"
 
 // The category directory is lowercase with no spaces, and basenames avoid
 // anything needing percent-encoding. A space survives the local filesystem
@@ -20,33 +24,51 @@ const POSTER_PATH = /^thumbnails\/[a-z0-9_-]+\/[A-Za-z0-9._-]+\.avif$/
 
 describe("catalog data integrity", () => {
   it("has items", () => {
-    expect(allEntries.length).toBeGreaterThan(0)
+    expect(allRecordings.length).toBeGreaterThan(0)
   })
 
   it("no duplicate IDs", () => {
-    const ids = allEntries.map((entry) => entry.id)
+    const ids = allRecordings.map((recording) => recording.id)
     const unique = new Set(ids)
     const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i)
-    expect(duplicates, `duplicate IDs: ${duplicates.join(", ")}`).toHaveLength(0)
+    expect(duplicates, `duplicate IDs: ${duplicates.join(", ")}`).toHaveLength(
+      0
+    )
     expect(unique.size).toBe(ids.length)
   })
 
-  it("all entries have required fields", () => {
-    const required = ["id", "caption", "demoPath", "posterPath", "author", "source", "category"] as const
-    for (const entry of allEntries) {
+  it("all recordings have required fields", () => {
+    const required = [
+      "id",
+      "caption",
+      "demoPath",
+      "posterPath",
+      "contributor",
+      "source",
+      "category",
+    ] as const
+    for (const recording of allRecordings) {
       for (const field of required) {
-        expect(entry[field], `${entry.id} missing field "${field}"`).toBeTruthy()
+        expect(
+          recording[field],
+          `${recording.id} missing field "${field}"`
+        ).toBeTruthy()
       }
     }
   })
 
   it("all source URLs match https?://", () => {
-    const bad = allEntries.filter((entry) => !entry.source.match(/^https?:\/\//))
+    const bad = allRecordings.filter(
+      (recording) => !recording.source.match(/^https?:\/\//)
+    )
     expect(bad.map((b) => `${b.id}: ${b.source}`)).toHaveLength(0)
   })
 
   it("all IDs are non-empty strings", () => {
-    const bad = allEntries.filter((entry) => typeof entry.id !== "string" || entry.id.trim() === "")
+    const bad = allRecordings.filter(
+      (recording) =>
+        typeof recording.id !== "string" || recording.id.trim() === ""
+    )
     expect(bad).toHaveLength(0)
   })
 })
@@ -58,50 +80,57 @@ describe("catalog data integrity", () => {
 describe("asset paths", () => {
   const duplicatesBy = (field: "demoPath" | "posterPath") => {
     const seen = new Map<string, string[]>()
-    for (const entry of allEntries) {
-      const path = entry[field]
+    for (const recording of allRecordings) {
+      const path = recording[field]
       if (!path) continue
-      seen.set(path, [...(seen.get(path) ?? []), entry.id])
+      seen.set(path, [...(seen.get(path) ?? []), recording.id])
     }
     return [...seen.entries()]
       .filter(([, ids]) => ids.length > 1)
       .map(([path, ids]) => `${path} <- ${ids.join(", ")}`)
   }
 
-  it("no two entries share a Demo path", () => {
+  it("no two recordings share a Demo path", () => {
     const dupes = duplicatesBy("demoPath")
     expect(dupes, `duplicate Demo paths:\n${dupes.join("\n")}`).toHaveLength(0)
   })
 
-  it("no two entries share a Poster path", () => {
+  it("no two recordings share a Poster path", () => {
     const dupes = duplicatesBy("posterPath")
-    expect(dupes, `duplicate Poster paths:\n${dupes.join("\n")}`).toHaveLength(0)
+    expect(dupes, `duplicate Poster paths:\n${dupes.join("\n")}`).toHaveLength(
+      0
+    )
   })
 
   // macOS stores filenames decomposed (NFD) while these strings are composed
   // (NFC). macOS is normalization-insensitive so the mismatch is invisible
   // locally, but byte-exact object storage 404s on it. This previously broke
-  // 16 assets whose author's name contained "ś".
+  // 16 assets whose contributor's name contained "ś".
   it("all asset paths are printable ASCII", () => {
-    const bad = allEntries.flatMap((entry) =>
-      [entry.demoPath, entry.posterPath]
+    const bad = allRecordings.flatMap((recording) =>
+      [recording.demoPath, recording.posterPath]
         .filter((path) => path && !/^[\x20-\x7E]+$/.test(path))
-        .map((path) => `${entry.id}: ${path}`)
+        .map((path) => `${recording.id}: ${path}`)
     )
     expect(bad, `non-ASCII asset paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 
   it("all Demo paths are well-formed", () => {
-    const bad = allEntries
-      .filter((entry) => entry.demoPath && !DEMO_PATH.test(entry.demoPath))
-      .map((entry) => `${entry.id}: ${entry.demoPath}`)
+    const bad = allRecordings
+      .filter(
+        (recording) => recording.demoPath && !DEMO_PATH.test(recording.demoPath)
+      )
+      .map((recording) => `${recording.id}: ${recording.demoPath}`)
     expect(bad, `malformed Demo paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 
   it("all Poster paths are well-formed", () => {
-    const bad = allEntries
-      .filter((entry) => entry.posterPath && !POSTER_PATH.test(entry.posterPath))
-      .map((entry) => `${entry.id}: ${entry.posterPath}`)
+    const bad = allRecordings
+      .filter(
+        (recording) =>
+          recording.posterPath && !POSTER_PATH.test(recording.posterPath)
+      )
+      .map((recording) => `${recording.id}: ${recording.posterPath}`)
     expect(bad, `malformed Poster paths:\n${bad.join("\n")}`).toHaveLength(0)
   })
 })
@@ -115,9 +144,12 @@ describe("asset path construction", () => {
     expect(demoPathFor(name, base)).toMatch(DEMO_PATH)
   })
 
-  it.each(CATEGORY_NAMES)("derives a well-formed Poster path for %s", (name) => {
-    expect(posterPathFor(demoPathFor(name, base))).toMatch(POSTER_PATH)
-  })
+  it.each(CATEGORY_NAMES)(
+    "derives a well-formed Poster path for %s",
+    (name) => {
+      expect(posterPathFor(demoPathFor(name, base))).toMatch(POSTER_PATH)
+    }
+  )
 
   it("a Poster differs from its Demo only in prefix and extension", () => {
     expect(posterPathFor("demo/buttons/split_button_hewad_mubariz.mp4")).toBe(
@@ -126,17 +158,30 @@ describe("asset path construction", () => {
   })
 
   it("refuses to derive a Poster from anything that is not a Demo path", () => {
-    expect(() => posterPathFor("thumbnails/buttons/split_button.avif")).toThrow()
+    expect(() =>
+      posterPathFor("thumbnails/buttons/split_button.avif")
+    ).toThrow()
     expect(() => posterPathFor("demo/buttons/split_button.mov")).toThrow()
   })
 
-  // Every Entry in the catalogue already obeys the derivation, so a new one
+  // Every Recording in the catalogue already obeys the derivation, so a new one
   // that does not is a hand-typed path rather than a generated one.
-  it("every Entry's Poster path is the derivation of its Demo path", () => {
-    const bad = allEntries
-      .filter((entry) => entry.demoPath && entry.posterPath && posterPathFor(entry.demoPath) !== entry.posterPath)
-      .map((entry) => `${entry.id}: ${entry.posterPath} — expected ${posterPathFor(entry.demoPath)}`)
-    expect(bad, `Poster paths that are not derived from their Demo:\n${bad.join("\n")}`).toHaveLength(0)
+  it("every Recording's Poster path is the derivation of its Demo path", () => {
+    const bad = allRecordings
+      .filter(
+        (recording) =>
+          recording.demoPath &&
+          recording.posterPath &&
+          posterPathFor(recording.demoPath) !== recording.posterPath
+      )
+      .map(
+        (recording) =>
+          `${recording.id}: ${recording.posterPath} — expected ${posterPathFor(recording.demoPath)}`
+      )
+    expect(
+      bad,
+      `Poster paths that are not derived from their Demo:\n${bad.join("\n")}`
+    ).toHaveLength(0)
   })
 })
 
@@ -167,7 +212,10 @@ describe("narrowing a set of Asset paths", () => {
   })
 
   it("selects both the Demo and the Poster directory of a Category", () => {
-    expect(narrow(paths, ["misc"])).toEqual(["demo/misc/two.mp4", "thumbnails/misc/two.avif"])
+    expect(narrow(paths, ["misc"])).toEqual([
+      "demo/misc/two.mp4",
+      "thumbnails/misc/two.avif",
+    ])
   })
 
   it("selects the union of several fragments", () => {
@@ -181,30 +229,43 @@ describe("narrowing a set of Asset paths", () => {
 
 // The two lists a table cannot generate, because the framework requires both
 // be written out statically: the catalogue merge and the middleware matcher.
-// Forget the merge and the Category's Entries vanish from the site with no
+// Forget the merge and the Category's Recordings vanish from the site with no
 // error, no warning and nothing failing. These are the tests that make the
 // silent failure loud.
 describe("catalogue wiring", () => {
-  const merged = new Set(allEntries.map((entry) => entry.id))
+  const merged = new Set(allRecordings.map((recording) => recording.id))
 
-  it.each(CATEGORY_NAMES)("every Entry in %s reaches the merged catalogue", async (name) => {
-    const row = CATEGORIES[name]
-    const file = (await import(`../data/${row.file}.ts`)) as Record<string, Entry[] | undefined>
-    const entries = file[row.exportName]
+  it.each(CATEGORY_NAMES)(
+    "every Recording in %s reaches the merged catalogue",
+    async (name) => {
+      const row = CATEGORIES[name]
+      const file = (await import(`../data/${row.file}.ts`)) as Record<
+        string,
+        Recording[] | undefined
+      >
+      const recordings = file[row.exportName]
 
-    expect(entries, `data/${row.file}.ts exports no "${row.exportName}"`).toBeDefined()
+      expect(
+        recordings,
+        `data/${row.file}.ts exports no "${row.exportName}"`
+      ).toBeDefined()
 
-    // An empty Category is legal: a row may exist before its first Entry does.
-    const missing = (entries ?? []).filter((entry) => !merged.has(entry.id)).map((entry) => entry.id)
-    expect(
-      missing,
-      `${name}: ${missing.length} Entries in data/${row.file}.ts never reached data/catalogue.ts — ${missing.join(", ")}`
-    ).toHaveLength(0)
-  })
+      // An empty Category is legal: a row may exist before its first Recording does.
+      const missing = (recordings ?? [])
+        .filter((recording) => !merged.has(recording.id))
+        .map((recording) => recording.id)
+      expect(
+        missing,
+        `${name}: ${missing.length} Recordings in data/${row.file}.ts never reached data/catalogue.ts — ${missing.join(", ")}`
+      ).toHaveLength(0)
+    }
+  )
 
   // The redirect map is generated from the table; the matcher beside it cannot
   // be, so it is checked here instead. See the comment in middleware.ts.
   it("the middleware matcher lists exactly the table's legacy paths", () => {
-    expect([...middlewareConfig.matcher].sort()).toEqual(Object.keys(LEGACY_REDIRECTS).sort())
+    expect([...middlewareConfig.matcher].sort()).toEqual(
+      Object.keys(LEGACY_REDIRECTS).sort()
+    )
   })
 })

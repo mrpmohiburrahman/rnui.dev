@@ -1,15 +1,15 @@
 import { expect, test } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 
 // The stored keys are written out as literals here on purpose. The claim under
 // test is that state written by the *previous* build still loads, so importing the
 // constants the code now uses would make the test agree with whatever the code
 // says rather than with what is already sitting in visitors' browsers.
 const BOOKMARKS_KEY = "bookmarkedItems"
-const VOTED_ENTRY_IDS_KEY = "votedItems"
+const VOTED_RECORDING_IDS_KEY = "votedItems"
 
-const remembered = allEntries[0]
+const remembered = allRecordings[0]
 
 test("a set stored by the previous build still loads after the hook merge", async ({
   browser,
@@ -22,7 +22,7 @@ test("a set stored by the previous build still loads after the hook merge", asyn
     },
     {
       bookmarksKey: BOOKMARKS_KEY,
-      votedKey: VOTED_ENTRY_IDS_KEY,
+      votedKey: VOTED_RECORDING_IDS_KEY,
       id: remembered.id,
     }
   )
@@ -35,10 +35,10 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   await page.route("**/demo/**", (route) => route.abort())
   await page.goto("/bookmarks")
 
-  // Exactly the one Entry the stored set names — so the set was read, and the
+  // Exactly the one Recording the stored set names — so the set was read, and the
   // route's filter ran against it.
   await expect(page.getByTestId("demo")).toHaveCount(1)
-  await expect(page.getByText(remembered.author)).toBeVisible()
+  await expect(page.getByText(remembered.contributor)).toBeVisible()
 
   // Both labels are the flipped ones, so both sets hydrated rather than only one.
   await expect(

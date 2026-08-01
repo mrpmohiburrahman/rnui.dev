@@ -46,7 +46,7 @@ export type PlayedWatcher = ((currentTime: number) => boolean) & {
  * - A tile can hold a playback slot for two seconds while its Demo stalls,
  *   buffers or fails to decode. A timer bills that; a Demo that never advanced
  *   contradicts the ADR's own first line.
- * - Demos loop (`components/entry-card.tsx`), so `currentTime` wraps back to 0
+ * - Demos loop (`components/recording-card.tsx`), so `currentTime` wraps back to 0
  *   and `now - last` goes negative. Discarding the negative delta costs the one
  *   tick the wrap straddles, ~250ms.
  *
@@ -73,7 +73,7 @@ export function createPlayedWatcher(): PlayedWatcher {
  * expire with the tab — a visitor who comes back tomorrow watches again, and
  * that is a second view.
  */
-const VIEWED_ENTRY_IDS_KEY = "viewedEntryIds"
+const VIEWED_RECORDING_IDS_KEY = "viewedEntryIds"
 
 let counted: Set<string> | null = null
 
@@ -85,29 +85,29 @@ function seed(): Set<string> {
     // be unavailable outright — Safari's private mode, a blocked third-party
     // frame, a Node test runner — and `sessionStorage` is then not even a
     // binding, so the read is inside the try rather than guarded by a typeof.
-    const raw = sessionStorage.getItem(VIEWED_ENTRY_IDS_KEY)
+    const raw = sessionStorage.getItem(VIEWED_RECORDING_IDS_KEY)
     for (const id of parseRememberedIds(raw).ids) counted.add(id)
   } catch {
-    // An unreadable cap is an empty cap: at worst this session counts an Entry
+    // An unreadable cap is an empty cap: at worst this session counts a Recording
     // it already counted. A throw here would stop playback.
   }
   return counted
 }
 
 /**
- * The once-per-Entry-per-session cap. A test-and-set despite the name: it
- * answers whether this Entry has already been billed **and** records it if it
+ * The once-per-Recording-per-session cap. A test-and-set despite the name: it
+ * answers whether this Recording has already been billed **and** records it if it
  * has not, so the question and the record cannot drift apart. Named for the
  * question because that is what the caller branches on.
  */
-export function countedThisSession(entryId: string): boolean {
+export function countedThisSession(recordingId: string): boolean {
   const seen = seed()
-  if (seen.has(entryId)) return true
+  if (seen.has(recordingId)) return true
 
-  seen.add(entryId)
+  seen.add(recordingId)
   try {
     sessionStorage.setItem(
-      VIEWED_ENTRY_IDS_KEY,
+      VIEWED_RECORDING_IDS_KEY,
       serialiseRememberedIds([...seen])
     )
   } catch {

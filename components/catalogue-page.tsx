@@ -5,32 +5,35 @@
 // modules repeating the same four-hook preamble, the same hydration guard, the
 // same grid call and the same modal tail.
 //
-// It does not fetch. Each route hands it Entries — two from a server component
+// It does not fetch. Each route hands it Recordings — two from a server component
 // above them, and the bookmarks route from its own effect, because it has no
 // server component above it.
 "use client"
 
 import { useMemo, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
-import type { Entry } from "@/data/entry"
+import type { Recording } from "@/data/recording"
 
 import {
   BOOKMARKS_KEY,
   useRememberedSet,
-  VOTED_ENTRY_IDS_KEY,
+  VOTED_RECORDING_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
-import { EntryCardGrid, type GridTreatment } from "@/components/entry-card-grid"
-import { EntryOverlay } from "@/components/entry-overlay"
 import { PlaybackOwner } from "@/components/playback-owner"
+import {
+  RecordingCardGrid,
+  type GridTreatment,
+} from "@/components/recording-card-grid"
+import { RecordingOverlay } from "@/components/recording-overlay"
 
 interface CataloguePageProps {
-  entries: Entry[]
+  recordings: Recording[]
   treatment: GridTreatment
   /**
-   * Show only the Entries this visitor has bookmarked. The bookmarks route is
+   * Show only the Recordings this visitor has bookmarked. The bookmarks route is
    * handed the whole catalogue and sets this, rather than filtering before it
-   * hands the Entries over: the saved set lives in here, and a route filtering
+   * hands the Recordings over: the saved set lives in here, and a route filtering
    * against its own second copy of that set would keep showing a card after the
    * visitor un-bookmarked it, until a reload.
    */
@@ -40,28 +43,29 @@ interface CataloguePageProps {
 }
 
 export function CataloguePage({
-  entries,
+  recordings,
   treatment,
   bookmarkedOnly = false,
   children,
 }: CataloguePageProps) {
   const { ids: bookmarks, toggle: toggleBookmark } =
     useRememberedSet(BOOKMARKS_KEY)
-  const { ids: votedEntryIds, toggle: toggleVote } =
-    useRememberedSet(VOTED_ENTRY_IDS_KEY)
+  const { ids: votedRecordingIds, toggle: toggleVote } = useRememberedSet(
+    VOTED_RECORDING_IDS_KEY
+  )
 
-  // Which Entry is open is the address, not state. The card pushes /entry/<id>
+  // Which Recording is open is the address, not state. The card pushes /recording/<id>
   // with the History API, which the App Router reflects back through
   // usePathname — no server render, no Firestore read, and Back closes the
   // panel because Back is the only close path there is.
   //
-  // Searched against `entries`, not the filtered or sorted list: un-bookmarking
-  // the open Entry from inside the panel must not make the panel vanish
+  // Searched against `recordings`, not the filtered or sorted list: un-bookmarking
+  // the open Recording from inside the panel must not make the panel vanish
   // mid-interaction.
   const pathname = usePathname()
-  const openEntry =
-    (pathname.startsWith("/entry/") &&
-      entries.find((e) => e.id === pathname.slice("/entry/".length))) ||
+  const openRecording =
+    (pathname.startsWith("/recording/") &&
+      recordings.find((e) => e.id === pathname.slice("/recording/".length))) ||
     null
 
   // A set that has not been read yet means "nothing remembered so far", not
@@ -71,9 +75,11 @@ export function CataloguePage({
   const visible = useMemo(
     () =>
       bookmarkedOnly
-        ? entries.filter((entry) => bookmarks?.includes(entry.id) ?? false)
-        : entries,
-    [bookmarkedOnly, bookmarks, entries]
+        ? recordings.filter(
+            (recording) => bookmarks?.includes(recording.id) ?? false
+          )
+        : recordings,
+    [bookmarkedOnly, bookmarks, recordings]
   )
   const { sortedData, sort, setSort } = useSortedData(visible)
 
@@ -81,28 +87,28 @@ export function CataloguePage({
   // the only place that knows. null means "not known yet, so say nothing".
   //
   // On the bookmarks route the question is answered by the stored set, not by the
-  // rendered list: that route mounts with no Entries and fills them from an
+  // rendered list: that route mounts with no Recordings and fills them from an
   // effect (app/bookmarks/page.tsx:27-44), so a message keyed on the rendered
   // list would tell a visitor who does have bookmarks that they have none, for as
   // long as the fetch takes. `bookmarks` is null until localStorage has been
   // read, which is the same "not known yet".
   //
-  // The other routes are handed their Entries by a server component, so an empty
+  // The other routes are handed their Recordings by a server component, so an empty
   // list there is an answer rather than a gap.
   const emptyMessage = !bookmarkedOnly
-    ? "No Entries match the current search or filters."
+    ? "No recordings match the current search or filters."
     : bookmarks?.length === 0
-      ? "No bookmarked Entries yet. Bookmarks are kept in this browser on this device — there are no accounts, so they do not follow you to another browser or another device."
+      ? "No bookmarked recordings yet. Bookmarks are kept in this browser on this device — there are no accounts, so they do not follow you to another browser or another device."
       : null
 
   return (
     <>
       {/* One owner for every Demo on the page, and the only thing that records a
-          view. `suspended` reads the same open-Entry binding the overlay does —
+          view. `suspended` reads the same open-Recording binding the overlay does —
           not a boolean of its own — so five Demos cannot keep decoding behind
           the tint, and closing re-grants whatever is still in view. */}
-      <PlaybackOwner suspended={openEntry !== null}>
-        <EntryCardGrid
+      <PlaybackOwner suspended={openRecording !== null}>
+        <RecordingCardGrid
           sortedData={sortedData}
           treatment={treatment}
           emptyMessage={emptyMessage}
@@ -111,24 +117,27 @@ export function CataloguePage({
           // render both see an empty set, so there is no hydration mismatch, and the
           // effect fills it on the next render. Waiting instead meant the served HTML
           // of every catalogue route was a bare `<div />` — no heading, no sort
-          // controls, no Entries.
+          // controls, no Recordings.
           bookmarks={bookmarks ?? []}
           toggleBookmark={toggleBookmark}
-          votedEntryIds={votedEntryIds ?? []}
+          votedRecordingIds={votedRecordingIds ?? []}
           toggleVote={toggleVote}
           setSort={setSort}
           currentSort={sort}
         >
           {children}
-        </EntryCardGrid>
+        </RecordingCardGrid>
       </PlaybackOwner>
 
       {/* history.back() is the whole close path, so Escape, the close button,
           the tint and the browser's own Back button all do one identical thing.
-          Safe because the overlay only opens on an /entry/… pathname this page
-          pushed itself; a cold /entry/… renders app/entry/[id]/page.tsx, which
+          Safe because the overlay only opens on an /recording/… pathname this page
+          pushed itself; a cold /recording/… renders app/recording/[id]/page.tsx, which
           has no overlay. */}
-      <EntryOverlay entry={openEntry} onClose={() => window.history.back()} />
+      <RecordingOverlay
+        recording={openRecording}
+        onClose={() => window.history.back()}
+      />
     </>
   )
 }

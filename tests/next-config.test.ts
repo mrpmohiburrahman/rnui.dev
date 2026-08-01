@@ -67,16 +67,19 @@ describe("next.config", () => {
   it.each([
     ["upload on", true],
     ["upload off", false],
-  ])("keeps the /feedback redirect with the %s", async (_label, credentialled) => {
-    if (credentialled) withCredentials()
+  ])(
+    "keeps the /feedback redirect with the %s",
+    async (_label, credentialled) => {
+      if (credentialled) withCredentials()
 
-    const redirects = await (await loadConfig()).redirects()
+      const redirects = await (await loadConfig()).redirects()
 
-    // Dropping this would 404 a live URL, silently.
-    expect(redirects).toContainEqual({
-      source: "/feedback",
-      destination: "/contactus",
-      permanent: false,
-    })
-  })
+      // Dropping this would 404 a live URL, silently.
+      expect(redirects).toContainEqual({
+        source: "/feedback",
+        destination: "/contactus",
+        permanent: false,
+      })
+    }
+  )
 })

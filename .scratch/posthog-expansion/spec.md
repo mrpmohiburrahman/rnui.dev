@@ -83,7 +83,25 @@ click-to-play. Nothing was broken. Ticket 03 `## Comments` has the detail.*
 - Paid PostHog features. Current volume (~5.5k pageviews / 90d) sits far inside every free
   allowance, and nothing here should change that.
 - Identifying visitors. The site has no accounts and gains none here.
-- Anything that changes what the site looks like.
+- ~~Anything that changes what the site looks like.~~ **Superseded 2026-08-01.** The maintainer
+  overturned the rejection of the Studio Dark redesign recorded at
+  `.scratch/ui-ux-overhaul/spec.md:7-14`, and it is now being built as `.scratch/studio-dark/`.
+  Nothing in *this* effort changes the appearance — the non-goal still binds every ticket here —
+  but it no longer describes the site's future, and two consequences land on this file:
+
+  1. **`entry_id` becomes `recording_id`, and `entry_opened` becomes `recording_opened` with
+     `opened_from` in place of `source`.** Studio Dark ticket 01 renames the domain, and it does
+     so *before* deploy A precisely because these thirteen events have not yet been ingested in
+     production. Renaming an event property is free until the first event arrives. Ticket 03's
+     `## Comments` raised the `source` collision as a question; the rename is the answer.
+  2. **Ticket 09's before/after boundary is now two boundaries, not one.** Deploy A carries the
+     behaviour work and the instrumentation; deploy B carries Studio Dark. Each gets its own
+     annotation, so movement in LCP, CLS, rage-clicks and `repo_clicked` per session stays
+     attributable. A single combined deploy would have moved every metric and explained none.
+
+  **Ticket 09 step 4 is now the critical path.** It was already checkpoint 5 — success criteria
+  agreed in writing, before the numbers arrive. It is now the one thing standing between here
+  and deploy A.
 
 ## Constraints
 

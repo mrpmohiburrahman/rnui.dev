@@ -59,7 +59,10 @@ export function TopNavBar() {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href="/subscribe" className={navigationMenuTriggerStyle()}>
+                <Link
+                  href="/subscribe"
+                  className={navigationMenuTriggerStyle()}
+                >
                   Subscribe
                 </Link>
               </NavigationMenuLink>

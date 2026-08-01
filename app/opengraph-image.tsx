@@ -1,16 +1,17 @@
-import { ImageResponse } from "next/og";
+import { ImageResponse } from "next/og"
 
-export const runtime = "edge";
-export const alt = "rnui.dev — Curated React Native UI & Animation Catalog";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const runtime = "edge"
+export const alt = "rnui.dev — Curated React Native UI & Animation Catalog"
+export const size = { width: 1200, height: 630 }
+export const contentType = "image/png"
 
 export default function OgImage() {
   return new ImageResponse(
     (
       <div
         style={{
-          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -22,7 +23,14 @@ export default function OgImage() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <div style={{ color: "#38bdf8", fontSize: "28px", fontWeight: 600, letterSpacing: "0.05em" }}>
+          <div
+            style={{
+              color: "#38bdf8",
+              fontSize: "28px",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+            }}
+          >
             rnui.dev
           </div>
           <div
@@ -45,14 +53,17 @@ export default function OgImage() {
               lineHeight: 1.5,
             }}
           >
-            343+ animations across Reanimated, Skia, Moti, Gesture Handler, and Lottie.
+            343+ animations across Reanimated, Skia, Moti, Gesture Handler, and
+            Lottie.
           </div>
         </div>
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
-          <div style={{ color: "#475569", fontSize: "20px" }}>github.com/mrpmohiburrahman/rnui.dev</div>
+          <div style={{ color: "#475569", fontSize: "20px" }}>
+            github.com/mrpmohiburrahman/rnui.dev
+          </div>
         </div>
       </div>
     ),
-    { ...size },
-  );
+    { ...size }
+  )
 }

@@ -3,5 +3,5 @@
 
 import { counters } from "@/lib/counters-firestore"
 
-export const decrementVoteCount = async (entryId: string) =>
-  counters.changeVote(entryId, "withdraw")
+export const decrementVoteCount = async (recordingId: string) =>
+  counters.changeVote(recordingId, "withdraw")

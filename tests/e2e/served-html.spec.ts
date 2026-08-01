@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-import { allEntries } from "../../data/catalogue"
+import { allRecordings } from "../../data/catalogue"
 import { BOOKMARKS_KEY } from "../../hooks/use-remembered-set"
 
 // Everything here reads the HTML the server actually sent. `request.get` rather
@@ -13,12 +13,12 @@ import { BOOKMARKS_KEY } from "../../hooks/use-remembered-set"
 
 const ROUTES = ["/", "/products", "/bookmarks"] as const
 
-// Kept in step with PAGE_SIZE in components/entry-card-grid.tsx. Restated rather
+// Kept in step with PAGE_SIZE in components/recording-card-grid.tsx. Restated rather
 // than imported: that module is a "use client" component and pulling it into a
 // Playwright process would drag the whole card tree in with it.
 const PAGE_SIZE = 48
 
-const remembered = allEntries[0]
+const remembered = allRecordings[0]
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project. A test that builds its own
@@ -57,7 +57,7 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
   // And the rest of the catalogue is reachable without running any of it.
   const everything = await (await request.get("/?page=99")).text()
   expect(everything.match(/data-testid="demo"/g) ?? []).toHaveLength(
-    allEntries.length
+    allRecordings.length
   )
 })
 
@@ -134,7 +134,7 @@ test("the active filter is highlighted in the served HTML, not after hydration",
   expect(html).toContain("bg-yellow-400")
 })
 
-test("/bookmarks never shows more than the bookmarked Entries, at any frame", async ({
+test("/bookmarks never shows more than the bookmarked Recordings, at any frame", async ({
   browser,
 }) => {
   const context = await browser.newContext()
