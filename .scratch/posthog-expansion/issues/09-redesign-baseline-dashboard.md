@@ -50,7 +50,15 @@ One dashboard exists today (primary: 295272) with six insights. It is not a base
 ## Depends on
 
 Tickets 01 and 03. Step 1 can and should happen immediately regardless — the existing data is
-enough for it, and it stops being available if anything changes.
+enough for it, and it stops being available if anything changes. It is done; see `## Comments`.
+
+**Steps 2 and 3 belong in ticket 03's pass, not a separate one.** Every tile on this dashboard
+is made of 03's events, and the funnel tile is 03's own fourth acceptance criterion. Whoever
+lands 03 should land them, then resolve this ticket down to step 4.
+
+**Step 4 is the maintainer's**, not an agent's — agreeing what counts as success is the one
+thing that cannot be done after seeing the numbers. Do it in the same sitting as tickets 05,
+07 and 10.
 
 ## Comments
 

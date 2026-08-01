@@ -21,10 +21,10 @@ Single-context — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents
 Active effort: `.scratch/posthog-expansion/`.
 
 1. Read `spec.md` in that directory first. Its Goals, Non-goals and Constraints are binding — in particular `api_host` stays `https://us.i.posthog.com`, Firebase not PostHog owns view and vote counts, and nothing here changes what the site looks like.
-2. Scan `issues/`. A ticket is available when its `Status:` is `ready-for-agent` and every number on its `Blocked by:` line is `resolved`. Lowest number wins. No `Blocked by:` line means nothing blocks it.
+2. Scan `issues/`. A ticket is available when its `Status:` is `ready-for-agent` and every number on its `Blocked by:` line is `resolved`. Lowest number wins. No `Blocked by:` line means nothing blocks it. **If `spec.md` names a ticket to take first, that beats the lowest number** — some orderings are about a data-collection clock rather than a dependency, and cannot be written as `Blocked by:` without lying.
 3. Set that ticket's `Status:` to `claimed` and save before writing any code.
 4. Implement only that ticket. Its `## Acceptance` is the definition of done.
-5. On finish: set `Status: resolved`, append what you did under `## Comments`, and commit the code and the ticket together.
+5. On finish: append what you did under `## Comments`, and commit the code and the ticket together. Set `Status: resolved` only when every `## Acceptance` bullet is actually met. If one needs a deploy, a person's judgement, or data that does not exist yet, set `ready-for-human` instead and name what is left and who does it — `resolved` is terminal, and claiming it early is how the remainder gets lost.
 
 Stop and hand back to the maintainer at the checkpoints listed in `spec.md`.
 

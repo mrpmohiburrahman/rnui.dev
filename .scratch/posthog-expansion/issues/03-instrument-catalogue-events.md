@@ -53,6 +53,19 @@ Add a single `lib/analytics.ts` exporting one typed function per event, so no co
 - No event carries a raw search string, an email, or any visitor-entered text.
 - A funnel `demo_played → entry_opened → repo_clicked` returns non-zero at every step.
 
+## Do these in the same pass
+
+- **Ticket 09, steps 2 and 3** — the "Redesign — before / after" dashboard is built entirely
+  out of the events above, and its funnel tile *is* this ticket's fourth acceptance criterion.
+  Building it here means the events and the dashboard verify each other; building it in a later
+  session means discovering a missing property twice.
+- **The "Failed demos" playlist** that ticket 05 asks for — filtered to `demo_load_failed`, and
+  only possible once this ticket has proved that event fires.
+
 ## Depends on
 
 Ticket 01 — otherwise the first week of funnel data is 41% crawlers.
+
+Ticket 04 is not a dependency, but should land first anyway: it flips on dead-click capture and
+the replay triggers, and those collect nothing until they are on. See the note at the top of
+ticket 04.
