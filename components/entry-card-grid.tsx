@@ -1,10 +1,11 @@
 // components/entry-card-grid.tsx
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Entry } from "@/data/entry"
 
+import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
 import { EntryCard } from "./entry-card"
@@ -74,9 +75,10 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
   // is what makes a search reset to the first page.
   const searchParams = useSearchParams()
   const page = Math.max(1, Number(searchParams.get("page")) || 1)
+  const total = sortedData?.length ?? 0
   const shownCount = page * PAGE_SIZE
-  const hasMore = (sortedData?.length ?? 0) > shownCount
-  const isEmpty = (sortedData?.length ?? 0) === 0
+  const hasMore = total > shownCount
+  const isEmpty = total === 0
 
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
@@ -85,7 +87,31 @@ export const EntryCardGrid: React.FC<EntryCardGridProps> = ({
     const params = new URLSearchParams(window.location.search)
     params.set("page", String(page + 1))
     window.history.pushState(null, "", `?${params}`)
+    // The page and count the click arrives at, not the ones it left. The last
+    // page is short, so `entries_shown` is capped at what exists rather than
+    // being page × 48.
+    loadMoreClicked(page + 1, Math.min((page + 1) * PAGE_SIZE, total))
   }
+
+  // `search_performed` is reported from here rather than from the search box,
+  // because only this component has the other half of it: the box knows the
+  // term and nothing else knows how many Entries came back. The URL is what the
+  // 300ms debounce settles into (components/catalogue-search.tsx:43), so one
+  // settled search is exactly one change of this value.
+  //
+  // The term itself never leaves this closure — `searchPerformed` takes a
+  // length. `null` means nothing has been reported yet, which is how a page
+  // arriving at /?search=slider from a shared link stays silent: nobody typed.
+  const search = searchParams.get("search") ?? ""
+  const reported = useRef<string | null>(null)
+  useEffect(() => {
+    if (reported.current === search) return
+    const first = reported.current === null
+    reported.current = search
+    // Clearing the box is not a search, and neither is the first paint.
+    if (first || !search) return
+    searchPerformed(search.length, total)
+  }, [search, total])
 
   return (
     <div

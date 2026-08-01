@@ -22,6 +22,7 @@ import {
   type ReactNode,
 } from "react"
 
+import { demoWatched, type EntryFacts } from "@/lib/analytics"
 import { countedThisSession, createPlayedWatcher } from "@/lib/view-signal"
 import { incrementViewCount } from "@/app/actions/increment-view-count"
 
@@ -57,8 +58,15 @@ type Tile = {
 }
 
 type PlaybackOwnerValue = {
-  /** Wire a <video> to the owner. Returns its own cleanup, for a React 19 ref. */
-  register: (el: HTMLVideoElement, entryId: string) => () => void
+  /**
+   * Wire a <video> to the owner. Returns its own cleanup, for a React 19 ref.
+   *
+   * The Entry's facts rather than its id alone, because the watched signal below
+   * is now read by two consumers with different rules — Firestore's view_count,
+   * capped once per session, and the `demo_watched` event, which is not — and
+   * the event carries the Category and the author.
+   */
+  register: (el: HTMLVideoElement, facts: EntryFacts) => () => void
 }
 
 const PlaybackOwnerContext = createContext<PlaybackOwnerValue | null>(null)
@@ -151,7 +159,7 @@ export function PlaybackOwner({
   }, [grant])
 
   const register = useCallback(
-    (el: HTMLVideoElement, entryId: string) => {
+    (el: HTMLVideoElement, facts: EntryFacts) => {
       // The view signal. The threshold, the cap and its storage key are all
       // @/lib/view-signal's; this file owns the slots and calls into it.
       const played = createPlayedWatcher()
@@ -160,7 +168,13 @@ export function PlaybackOwner({
         if (counted) return
         if (!played(el.currentTime)) return
         counted = true
-        if (!countedThisSession(entryId)) countView(entryId)
+        // The event first, and outside the session cap. Firestore's view_count
+        // is a number on a card and must not double-count a visitor who scrolls
+        // past the same tile twice; the analytics event describes behaviour, and
+        // a second watch in the same session is a second thing that happened.
+        // `counted` still bounds it to once per tile per page.
+        demoWatched(facts, "grid", "autoplay", played.seconds())
+        if (!countedThisSession(facts.entry_id)) countView(facts.entry_id)
       }
       el.addEventListener("timeupdate", onTimeUpdate)
 

@@ -7,9 +7,9 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { BoxIcon, User } from "lucide-react"
 
+import { filterApplied, filterCleared, type Facet } from "@/lib/analytics"
 import { cn, truncateString } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
-
 
 type CatalogueNavProps = {
   authors?: string[]
@@ -64,6 +64,32 @@ function facetHref(current: URLSearchParams, key: string, value: string) {
   params.delete("page")
   const query = params.toString()
   return query ? `/products?${query}` : "/products"
+}
+
+/**
+ * The two facets, in the order `active_filter_count` counts them. `search` is
+ * deliberately not one: it has an event of its own, and a visitor who searched
+ * and then narrowed by Category did two different things.
+ */
+const FACETS: Facet[] = ["category", "author"]
+
+/**
+ * What a facet click reports, decided by the same test `facetHref` navigates on:
+ * the link that clears is the link that is already applied. Written next to that
+ * function because the two disagreeing means every clear is logged as an apply.
+ */
+function reportFacetClick(
+  current: URLSearchParams,
+  facet: Facet,
+  value: string
+) {
+  if (current.get(facet) === value) {
+    filterCleared(facet, value)
+    return
+  }
+  const next = new URLSearchParams(current)
+  next.set(facet, value)
+  filterApplied(facet, value, FACETS.filter((f) => next.get(f)).length)
 }
 
 /**
@@ -137,7 +163,10 @@ function CatalogueNavList({
             <li key={`category-${index}-${category}`}>
               <Link
                 href={facetHref(searchParams, "category", category)}
-                onClick={handleLinkClick}
+                onClick={() => {
+                  reportFacetClick(searchParams, "category", category)
+                  handleLinkClick?.()
+                }}
                 className={cn(
                   CHIP_CLASS,
                   searchParams.get("category") === category ? ACTIVE_CHIP_CLASS : ""
@@ -161,7 +190,10 @@ function CatalogueNavList({
             <li key={`category-${index}-${author}`}>
               <Link
                 href={facetHref(searchParams, "author", author)}
-                onClick={handleLinkClick}
+                onClick={() => {
+                  reportFacetClick(searchParams, "author", author)
+                  handleLinkClick?.()
+                }}
                 className={cn(
                   CHIP_CLASS,
                   searchParams.get("author") === author ? ACTIVE_CHIP_CLASS : ""

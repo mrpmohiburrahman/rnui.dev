@@ -11,8 +11,10 @@
 // an event handler at all.
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useMemo, useRef } from "react"
 import type { Entry } from "@/data/entry"
+
+import { entryFacts, entryOpened, repoClicked } from "@/lib/analytics"
 
 import InteractiveVideo from "./interactive-video"
 import { countView } from "./playback-owner"
@@ -48,12 +50,19 @@ export function EntryDetail({
   // and remounts this, and the effect would bill the real Firestore twice every
   // time the maintainer opened an Entry page. Keyed on the id rather than a bare
   // boolean so a client navigation between two Entries still counts the second.
+  const facts = useMemo(() => entryFacts(entry), [entry])
+
+  // `entry_opened` rides the same guard, and only on this path: the overlay's
+  // open is reported by the card that pushed the address, with `source: card`.
+  // Reaching this branch means there was no card — a shared link or a
+  // cmd-clicked headline — which is what `source: url` names.
   const counted = useRef<string | null>(null)
   useEffect(() => {
     if (!countsOwnOpen || counted.current === entry.id) return
     counted.current = entry.id
     countView(entry.id)
-  }, [countsOwnOpen, entry.id])
+    entryOpened(facts, "url")
+  }, [countsOwnOpen, entry.id, facts])
 
   return (
     <div className="flex flex-col md:flex-row md:h-[80vh] space-y-4 md:space-y-0 md:space-x-6 p-4">
@@ -63,6 +72,7 @@ export function EntryDetail({
           <div className="w-full h-full">
             <InteractiveVideo
               src={entry.demoPath}
+              facts={facts}
               className="w-full h-full object-contain rounded-lg shadow-md"
               controls
               poster={entry.posterPath}
@@ -99,7 +109,10 @@ export function EntryDetail({
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 hover:underline"
-            onClick={() => countView(entry.id)}
+            onClick={() => {
+              countView(entry.id)
+              repoClicked(facts, "detail")
+            }}
           >
             GitHub Repository
           </a>
