@@ -3,6 +3,8 @@ import type { ReactNode } from "react"
 
 import "./globals.css"
 
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google"
+
 import { metadata } from "@/data/meta-data"
 import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
@@ -18,6 +20,32 @@ import { SiteFooter } from "@/components/site-footer"
 import { ThemeProvider } from "./providers"
 
 export { metadata }
+
+// Both families, self-hosted at build time and served from this origin — no
+// third-party font CDN hop, so no preconnect for them (the only preconnect on
+// the page stays the CDN one below, which exists for Demos and Posters). The
+// `variable` names are the strings tailwind.config.ts's fontFamily keys read,
+// and the design-tokens test pins the two together.
+//
+// No `weight` key: that requests the variable font, one file per family
+// covering Space Grotesk's wght 300-700 and JetBrains Mono's wght 100-800,
+// rather than five static instances for the five weights the design uses.
+// `display: "swap"` and `adjustFontFallback: true` are next/font's defaults;
+// the latter synthesises a metric-matched fallback face so the swap moves no
+// pixel, which is what lets two webfonts into a site with a 0.549 field CLS.
+const grotesk = Space_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  adjustFontFallback: true,
+  variable: "--font-grotesk",
+})
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  adjustFontFallback: true,
+  variable: "--font-jetbrains",
+})
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const categories = getUniqueCategories()
@@ -36,7 +64,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // reference, which Radix's `asChild` Slot drops on the floor. The header is
     // a client component now (components/nav/top-nav-bar.tsx) so nothing in it
     // is Flight-serialized and the size stops mattering.
-    <html lang="en" className="font-sans" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${grotesk.variable} ${jetbrains.variable} font-sans`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Every Demo and Poster comes from here, so warm the connection early. */}
         {CDN_ORIGIN && (

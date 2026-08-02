@@ -66,13 +66,116 @@
   }
 }
 
+/* Studio Dark — the design system, assets/new-ui/Specimen.dc.html:101-167.
+   Tokens are the mocks' own keys, kebab-cased, so a reader can diff the
+   Specimen's PAL against this block by eye. The thirteen shadcn tokens above
+   keep dressing components/ui/ and are deliberately not repointed: that would
+   restyle every Radix primitive at once with no mock to check it against.
+
+   Text contrast on their own backgrounds, measured 2026-08-01 (spec.md):
+     dark  acc on canvas 12.69, t3 on panel 6.15
+     light t1 on canvas 16.44, t3 on canvas 4.86, acc on canvas 5.43
+   The Specimen prints its own slightly different figures for the same pairs —
+   16.8/9.5/5.7/11.9 dark and 15.4/7.5/5.1/4.9 light, both sets clearing 4.5:1.
+   The numbers above are the ones actually measured, and are the budget an edit
+   to any text token spends. */
+@layer base {
+  :root {
+    --canvas: #F4F4F1;
+    --panel: #FFFFFF;
+    --rail: #EFEFEB;
+    --header: rgba(244,244,241,0.94);
+    --line: rgba(16,18,22,0.13);
+    --line2: rgba(16,18,22,0.24);
+    --t1: #14161A;
+    --t2: #4F545C;
+    --t3: #666B74;
+    --acc: #0E7062;
+    --acc-soft: rgba(14,112,98,0.09);
+    --on-acc: #FFFFFF;
+    --field: #FFFFFF;
+    --filter-bar: #FFFFFF;
+    --empty: #FBFBF9;
+    --x-bg: rgba(16,18,22,0.10);
+    --scrim: rgba(24,26,30,0.52);
+    --skel: rgba(16,18,22,0.07);
+    --new-fg: #5C4204;
+    --raise: #FFFFFF;
+    --plinth: #080A0E;
+    --ctrl: #FFFFFF;
+    --well: #FBFBF9;
+    --bar-track: rgba(16,18,22,0.10);
+    --bar-fill: rgba(16,18,22,0.34);
+    --new-bg: rgba(255,238,190,0.94);
+    --dock: rgba(239,239,235,0.96);
+
+    /* The tile's own fallback hue, Tile.dc.html:75. Not mode-dependent: an
+       unmeasured Recording glows the site's own green rather than an arbitrary
+       colour. Ticket 07 overwrites it per tile from the hue ticket 03 writes. */
+    --tile-hue: 175;
+
+    --e0: 0 0 0 1px rgba(16,18,22,0.10);
+    --e1: 0 0 0 1px rgba(16,18,22,0.10),
+      0 20px 44px -22px hsla(var(--tile-hue),55%,40%,0.55);
+    --e2: 0 40px 100px -30px rgba(16,18,22,0.45);
+  }
+
+  .dark {
+    --canvas: #0A0B0D;
+    --panel: #101216;
+    --rail: #0C0D11;
+    --header: rgba(10,11,13,0.92);
+    --line: rgba(255,255,255,0.11);
+    --line2: rgba(255,255,255,0.22);
+    --t1: #F1F2F4;
+    --t2: #B2B8C2;
+    --t3: #8E949F;
+    --acc: #6FE3CC;
+    --acc-soft: rgba(111,227,204,0.13);
+    --on-acc: #06120F;
+    --field: rgba(255,255,255,0.045);
+    --filter-bar: rgba(255,255,255,0.03);
+    --empty: rgba(255,255,255,0.02);
+    --x-bg: rgba(255,255,255,0.13);
+    --scrim: rgba(4,5,8,0.74);
+    --skel: rgba(255,255,255,0.07);
+    --new-fg: #F3DEA6;
+    --raise: #15181D;
+    --plinth: #05060A;
+    --ctrl: rgba(255,255,255,0.04);
+    --well: rgba(255,255,255,0.03);
+    --bar-track: rgba(255,255,255,0.09);
+    --bar-fill: rgba(255,255,255,0.34);
+    --new-bg: rgba(235,208,138,0.22);
+    --dock: rgba(12,13,17,0.94);
+
+    --e0: 0 0 0 1px rgba(255,255,255,0.07);
+    --e1: 0 0 0 1px hsla(var(--tile-hue),60%,60%,0.24),
+      0 22px 60px -20px hsla(var(--tile-hue),70%,55%,0.45);
+    --e2: 0 40px 120px -30px rgba(0,0,0,0.9);
+  }
+}
+
+/* The Specimen's "all durations 0ms" (Specimen.dc.html:95) applied to CSS
+   transitions and animations. components/demo-tile.tsx already ships the
+   harder half of that rule — no <video> is mounted at all under reduced
+   motion — and is unmodified here. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-[#FAFAFA] dark:bg-background text-foreground;
+    @apply bg-canvas text-t1;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-tap-highlight-color: transparent;
