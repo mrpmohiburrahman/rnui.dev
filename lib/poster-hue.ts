@@ -79,5 +79,8 @@ export function dominantHue(rgb: Buffer): number | null {
   }
 
   const degrees = (Math.atan2(sumY[heaviest], sumX[heaviest]) * 180) / Math.PI
-  return Math.round((degrees + 360) % 360)
+  // Round first, then normalise. Rounding the normalised value — as the
+  // ticket's formula draws it — yields 360 when the mean sits just below the
+  // wrap (degrees ≈ -0.4), and the contract is [0, 360).
+  return (Math.round(degrees) + 360) % 360
 }

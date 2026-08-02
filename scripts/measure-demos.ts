@@ -129,7 +129,11 @@ async function probeDemo(demoPath: string): Promise<ProbeResult> {
 // no colour returns null, which is not a failure: the tile glows at its
 // fallback hue, and `hue` is simply omitted from the data.
 async function posterHue(posterPath: string): Promise<number | null> {
-  const response = await fetch(assetUrl(posterPath))
+  // The same stall guard as ffprobe below: a read that never completes must
+  // not hang a 277-Recording run.
+  const response = await fetch(assetUrl(posterPath), {
+    signal: AbortSignal.timeout(60_000),
+  })
   if (!response.ok) {
     throw new Error(`Poster HTTP ${response.status}`)
   }

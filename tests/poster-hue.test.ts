@@ -82,4 +82,11 @@ describe("dominantHue", () => {
     expect(hue).not.toBeNull()
     expect(Math.abs(hue! - 210)).toBeLessThan(2)
   })
+
+  // A colour just below the wrap (255, 0, 1 has hue ≈ 359.76) must come back
+  // as 0, not 360: the contract is [0, 360), and the data-integrity range case
+  // guards the committed values against exactly this.
+  it("returns 0, not 360, for a hue just below the wrap", () => {
+    expect(dominantHue(rgbFill(255, 0, 1, 8, 8))).toBe(0)
+  })
 })
