@@ -6,6 +6,9 @@ export const accordions: Recording[] = [
     caption: "Accordion",
     demoPath: "demo/accordions/accordion_william_candillon.mp4",
     posterPath: "thumbnails/accordions/accordion_william_candillon.avif",
+    durationMs: 8817,
+    aspect: 0.4688,
+    hue: 150,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Accordion",
@@ -20,6 +23,9 @@ export const accordions: Recording[] = [
     caption: "Dynamic Accordion",
     demoPath: "demo/accordions/dynamic_accordion_hewad_mubariz.mp4",
     posterPath: "thumbnails/accordions/dynamic_accordion_hewad_mubariz.avif",
+    durationMs: 28317,
+    aspect: 0.5926,
+    hue: 86,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/accordion",

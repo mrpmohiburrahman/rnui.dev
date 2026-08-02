@@ -6,6 +6,9 @@ export const arcsliders: Recording[] = [
     caption: "Animated Gauge",
     demoPath: "demo/arcsliders/animated_gauge_hewad_mubariz.mp4",
     posterPath: "thumbnails/arcsliders/animated_gauge_hewad_mubariz.avif",
+    durationMs: 16183,
+    aspect: 0.7524,
+    hue: 44,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-gauge",
@@ -20,6 +23,9 @@ export const arcsliders: Recording[] = [
     caption: "Arc Slider",
     demoPath: "demo/arcsliders/arc_slider_david_friyia.mp4",
     posterPath: "thumbnails/arcsliders/arc_slider_david_friyia.avif",
+    durationMs: 3650,
+    aspect: 0.6727,
+    hue: 37,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ArcSlider",

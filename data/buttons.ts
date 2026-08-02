@@ -12,6 +12,9 @@ export const buttons: Recording[] = [
     githubId: "tandonpushkar",
     demoPath: "demo/buttons/add_to_cart_pushkar_tandon.mp4",
     posterPath: "thumbnails/buttons/add_to_cart_pushkar_tandon.avif",
+    durationMs: 5613,
+    aspect: 0.4802,
+    hue: 26,
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/add-to-cart-animation",
   },
@@ -20,6 +23,9 @@ export const buttons: Recording[] = [
     caption: "Radial FAB",
     demoPath: "demo/buttons/radial_fab_hewad_mubariz.mp4",
     posterPath: "thumbnails/buttons/radial_fab_hewad_mubariz.avif",
+    durationMs: 9373,
+    aspect: 1.2333,
+    hue: 353,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/radial-fab",
@@ -34,6 +40,9 @@ export const buttons: Recording[] = [
     caption: "Split Button",
     demoPath: "demo/buttons/split_button_hewad_mubariz.mp4",
     posterPath: "thumbnails/buttons/split_button_hewad_mubariz.avif",
+    durationMs: 4042,
+    aspect: 0.7619,
+    hue: 355,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/split-button",
@@ -50,6 +59,9 @@ export const buttons: Recording[] = [
       "demo/buttons/animated_split_button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/animated_split_button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 5167,
+    aspect: 1,
+    hue: 348,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/21-animated-split-button",
@@ -64,6 +76,9 @@ export const buttons: Recording[] = [
     caption: "Interpolation Button",
     demoPath: "demo/buttons/interpolation_button_andreev_danila.mp4",
     posterPath: "thumbnails/buttons/interpolation_button_andreev_danila.avif",
+    durationMs: 7550,
+    aspect: 1.2049,
+    hue: 263,
     contributor: "Andreev Danila",
     source: "https://github.com/andreev-danila/interpolation-button",
     twitterId: "dan_w1d1",
@@ -76,6 +91,9 @@ export const buttons: Recording[] = [
     caption: "Morph Button",
     demoPath: "demo/buttons/morph_button_arunabh_verma.mp4",
     posterPath: "thumbnails/buttons/morph_button_arunabh_verma.avif",
+    durationMs: 12150,
+    aspect: 1.363,
+    hue: 45,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/rn-text-edit-menu-ui",
     twitterId: "iamarunabh",
@@ -89,6 +107,9 @@ export const buttons: Recording[] = [
     caption: "react-native-cyberpunk-button",
     demoPath: "demo/buttons/react-native-cyberpunk-button_epicode.mp4",
     posterPath: "thumbnails/buttons/react-native-cyberpunk-button_epicode.avif",
+    durationMs: 3380,
+    aspect: 1.5686,
+    hue: 60,
     contributor: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-cyberpunk-button",
     twitterId: "epicode_",
@@ -101,6 +122,9 @@ export const buttons: Recording[] = [
     caption: "Jelly button",
     demoPath: "demo/buttons/jelly_button_kacper_kapusciak.mp4",
     posterPath: "thumbnails/buttons/jelly_button_kacper_kapusciak.avif",
+    durationMs: 6400,
+    aspect: 1.3611,
+    hue: 357,
     contributor: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-squishy-button",
     twitterId: "kacperkapusciak",
@@ -114,6 +138,9 @@ export const buttons: Recording[] = [
     caption: "Dial Button",
     demoPath: "demo/buttons/dial_button_hewad_mubariz.mp4",
     posterPath: "thumbnails/buttons/dial_button_hewad_mubariz.avif",
+    durationMs: 12550,
+    aspect: 0.9091,
+    hue: 34,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dial-button",
@@ -128,6 +155,9 @@ export const buttons: Recording[] = [
     caption: "Floating Button",
     demoPath: "demo/buttons/floating_button_hewad_mubariz.mp4",
     posterPath: "thumbnails/buttons/floating_button_hewad_mubariz.avif",
+    durationMs: 22300,
+    aspect: 1.453,
+    hue: 214,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/floating-button",
@@ -142,6 +172,8 @@ export const buttons: Recording[] = [
     caption: "Runny Border",
     demoPath: "demo/buttons/runny_border_hewad_mubariz.mp4",
     posterPath: "thumbnails/buttons/runny_border_hewad_mubariz.avif",
+    durationMs: 20400,
+    aspect: 1.0305,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/runny-border",
@@ -156,6 +188,8 @@ export const buttons: Recording[] = [
     caption: "Neumorphic Button",
     demoPath: "demo/buttons/neumorphic_button_david_friyia.mp4",
     posterPath: "thumbnails/buttons/neumorphic_button_david_friyia.avif",
+    durationMs: 3650,
+    aspect: 1.1411,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/NeumorphicButton",
@@ -170,6 +204,9 @@ export const buttons: Recording[] = [
     caption: "Micro Interactoins",
     demoPath: "demo/buttons/micro_interactions_alek_mikucki.mp4",
     posterPath: "thumbnails/buttons/micro_interactions_alek_mikucki.avif",
+    durationMs: 10583,
+    aspect: 1.6963,
+    hue: 205,
     contributor: "Alek Mikucki",
     source: "https://x.com/aleqsio/status/1701164940629815741/photo/1",
     twitterId: "aleqsio",
@@ -184,6 +221,8 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/atlas-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/atlas-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 2992,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/atlas-button",
@@ -200,6 +239,9 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/delete-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/delete-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 2606,
+    aspect: 0.4611,
+    hue: 358,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/delete-button",
@@ -216,6 +258,8 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/geometry-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/geometry-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 1721,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/geometry-button",
@@ -232,6 +276,9 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/loading-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/loading-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4792,
+    aspect: 0.4611,
+    hue: 206,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/loading-button",
@@ -248,6 +295,8 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/particles-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/particles-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 2436,
+    aspect: 0.4583,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/particles-button",
@@ -264,6 +313,8 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/record-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/record-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 5858,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/record-button",
@@ -280,6 +331,8 @@ export const buttons: Recording[] = [
     demoPath: "demo/buttons/split-button_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/buttons/split-button_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3699,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/split-button",

@@ -8,6 +8,9 @@ export const circular_progress_bars: Recording[] = [
       "demo/circular-progress-bars/heart_progress_circle_hewad_mubariz.mp4",
     posterPath:
       "thumbnails/circular-progress-bars/heart_progress_circle_hewad_mubariz.avif",
+    durationMs: 18318,
+    aspect: 1.7778,
+    hue: 267,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/heart-progress-circle",
@@ -24,6 +27,9 @@ export const circular_progress_bars: Recording[] = [
       "demo/circular-progress-bars/circular_progress_bars_hewad_mubariz.mp4",
     posterPath:
       "thumbnails/circular-progress-bars/circular_progress_bars_hewad_mubariz.avif",
+    durationMs: 6664,
+    aspect: 0.7571,
+    hue: 355,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-progress",
@@ -39,6 +45,9 @@ export const circular_progress_bars: Recording[] = [
     demoPath: "demo/circular-progress-bars/donut_chart_david_friyia.mp4",
     posterPath:
       "thumbnails/circular-progress-bars/donut_chart_david_friyia.avif",
+    durationMs: 1800,
+    aspect: 1.0027,
+    hue: 37,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/DonutChart",

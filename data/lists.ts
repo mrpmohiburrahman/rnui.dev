@@ -12,6 +12,8 @@ export const list: Recording[] = [
     githubId: "arunabhverma",
     demoPath: "demo/lists/activities_list_arunabh_verma.mp4",
     posterPath: "thumbnails/lists/activities_list_arunabh_verma.avif",
+    durationMs: 8293,
+    aspect: 0.4651,
     source: "https://github.com/arunabhverma/expo-activities-list-animation",
   },
   {
@@ -19,6 +21,9 @@ export const list: Recording[] = [
     caption: "Samsung scroll indicator",
     demoPath: "demo/lists/samsung_scroll_indicator.mp4",
     posterPath: "thumbnails/lists/samsung_scroll_indicator.avif",
+    durationMs: 45850,
+    aspect: 1,
+    hue: 285,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-anim-scroll-indicator",
     twitterId: "iamarunabh",
@@ -32,6 +37,9 @@ export const list: Recording[] = [
     caption: "Stack List",
     demoPath: "demo/lists/stack_list_arunabh_verma.mp4",
     posterPath: "thumbnails/lists/stack_list_arunabh_verma.avif",
+    durationMs: 5317,
+    aspect: 0.8511,
+    hue: 6,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-stack-list",
     twitterId: "iamarunabh",
@@ -45,6 +53,9 @@ export const list: Recording[] = [
     caption: "Double List",
     demoPath: "demo/lists/double_list_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/lists/double_list_konstantinos_efkarpidis.avif",
+    durationMs: 12367,
+    aspect: 0.4665,
+    hue: 48,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b3563eca0c68b34ace412dec30b7f63d8a7e4aef/src/screens/DoubleListScreen.tsx",
@@ -58,6 +69,9 @@ export const list: Recording[] = [
     caption: "Swipable List",
     demoPath: "demo/lists/swipable_list_arunabh_verma.mp4",
     posterPath: "thumbnails/lists/swipable_list_arunabh_verma.avif",
+    durationMs: 8077,
+    aspect: 1.4389,
+    hue: 226,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-swipable-list-item",
     twitterId: "iamarunabh",
@@ -72,6 +86,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/animated_flatList_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/animated_flatList_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 17083,
+    aspect: 0.4731,
+    hue: 179,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/15-animated-flatlist",
@@ -86,6 +103,9 @@ export const list: Recording[] = [
     caption: "Swipeable Rows",
     demoPath: "demo/lists/swipeable_rows_hewad_mubariz.mp4",
     posterPath: "thumbnails/lists/swipeable_rows_hewad_mubariz.avif",
+    durationMs: 24717,
+    aspect: 0.9091,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/swipeable-rows",
@@ -100,6 +120,9 @@ export const list: Recording[] = [
     caption: "Expandable List",
     demoPath: "demo/lists/expandable_list_hewad_mubariz.mp4",
     posterPath: "thumbnails/lists/expandable_list_hewad_mubariz.avif",
+    durationMs: 19450,
+    aspect: 0.9756,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expanding-list",
@@ -115,6 +138,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/animated-grid-list_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/animated-grid-list_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3936,
+    aspect: 0.4611,
+    hue: 25,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-grid-list",
@@ -132,6 +158,8 @@ export const list: Recording[] = [
       "demo/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4795,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-indicator-list",
@@ -148,6 +176,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/drag-to-sort_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/drag-to-sort_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4557,
+    aspect: 0.4611,
+    hue: 244,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/drag-to-sort",
@@ -164,6 +195,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/imessage-stack_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/imessage-stack_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4033,
+    aspect: 0.4611,
+    hue: 32,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/imessage-stack",
@@ -181,6 +215,9 @@ export const list: Recording[] = [
       "demo/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/selectable-grid-list_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10202,
+    aspect: 0.4611,
+    hue: 197,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/selectable-grid-list",
@@ -198,6 +235,8 @@ export const list: Recording[] = [
       "demo/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4980,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-bottom-sheet",
@@ -214,6 +253,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/stacked-list_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/stacked-list_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 6297,
+    aspect: 0.4611,
+    hue: 197,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-list",
@@ -230,6 +272,8 @@ export const list: Recording[] = [
     demoPath: "demo/lists/stacked-modals_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/stacked-modals_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 12696,
+    aspect: 0.4583,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-modals",
@@ -246,6 +290,9 @@ export const list: Recording[] = [
     demoPath: "demo/lists/story-list_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/lists/story-list_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3601,
+    aspect: 0.4611,
+    hue: 4,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/story-list",

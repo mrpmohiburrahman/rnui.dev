@@ -6,6 +6,9 @@ export const tabbars: Recording[] = [
     caption: "Bottom Bar",
     demoPath: "demo/tabbars/bottom_bar_thomino.mp4",
     posterPath: "thumbnails/tabbars/bottom_bar_thomino.avif",
+    durationMs: 6293,
+    aspect: 1.5455,
+    hue: 15,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/bottom-bar.tsx",
@@ -25,6 +28,8 @@ export const tabbars: Recording[] = [
     githubId: "arunabhverma",
     demoPath: "demo/tabbars/linear_tab_arunabh_verma.mp4",
     posterPath: "thumbnails/tabbars/linear_tab_arunabh_verma.avif",
+    durationMs: 5320,
+    aspect: 0.4698,
     source: "https://github.com/arunabhverma/expo-linear-tab-demo",
   },
   {
@@ -34,6 +39,8 @@ export const tabbars: Recording[] = [
       "demo/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 9567,
+    aspect: 1.4361,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/19-segmented-control",
@@ -49,6 +56,9 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/detachable_bottom_tab_bar_arunabh_verma.mp4",
     posterPath:
       "thumbnails/tabbars/detachable_bottom_tab_bar_arunabh_verma.avif",
+    durationMs: 16967,
+    aspect: 1.6,
+    hue: 24,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-bottom-tab-anim",
     twitterId: "iamarunabh",
@@ -62,6 +72,9 @@ export const tabbars: Recording[] = [
     caption: "Spotify Tab",
     demoPath: "demo/tabbars/spotify_tab_alireza_hadjar.mp4",
     posterPath: "thumbnails/tabbars/spotify_tab_alireza_hadjar.avif",
+    durationMs: 17090,
+    aspect: 0.4638,
+    hue: 137,
     contributor: "Alireza Hadjar",
     source: "https://snack.expo.dev/@alirezahadjar/spotify-tab",
     twitterId: "alireza_hadjar",
@@ -75,6 +88,9 @@ export const tabbars: Recording[] = [
     caption: "Sticky Tabs",
     demoPath: "demo/tabbars/sticky_tabs_alireza_hadjar.mp4",
     posterPath: "thumbnails/tabbars/sticky_tabs_alireza_hadjar.avif",
+    durationMs: 18367,
+    aspect: 0.5,
+    hue: 354,
     contributor: "Alireza Hadjar",
     source: "https://github.com/AlirezaHadjar/stickyTab",
     twitterId: "alireza_hadjar",
@@ -89,6 +105,9 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/tab_bar_micro_interactions_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/tabbars/tab_bar_micro_interactions_kacper_kapusciak.avif",
+    durationMs: 3917,
+    aspect: 1,
+    hue: 208,
     contributor: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/reanimated-expo-router-tabs",
     twitterId: "kacperkapusciak",
@@ -102,6 +121,9 @@ export const tabbars: Recording[] = [
     caption: "Dynamic Tabs",
     demoPath: "demo/tabbars/dynamic_tabs_hewad_mubariz.mp4",
     posterPath: "thumbnails/tabbars/dynamic_tabs_hewad_mubariz.avif",
+    durationMs: 9417,
+    aspect: 0.9091,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/dynamic-tabs",
@@ -116,6 +138,9 @@ export const tabbars: Recording[] = [
     caption: "Direction Aware Tabs",
     demoPath: "demo/tabbars/direction_aware_tabs_hewad_mubariz.mp4",
     posterPath: "thumbnails/tabbars/direction_aware_tabs_hewad_mubariz.avif",
+    durationMs: 10217,
+    aspect: 1.6901,
+    hue: 216,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/direction-aware-tabs",
@@ -132,6 +157,9 @@ export const tabbars: Recording[] = [
       "demo/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/blurred-bottom-bar_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4188,
+    aspect: 0.4611,
+    hue: 24,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-bottom-bar",
@@ -148,6 +176,9 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/bottom-bar-skia_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/bottom-bar-skia_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3668,
+    aspect: 0.4611,
+    hue: 250,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bottom-bar-skia",
@@ -165,6 +196,9 @@ export const tabbars: Recording[] = [
       "demo/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3754,
+    aspect: 0.4611,
+    hue: 114,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-blur-tabs",
@@ -182,6 +216,9 @@ export const tabbars: Recording[] = [
       "demo/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/dynamic-tab-indicator_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3292,
+    aspect: 0.4611,
+    hue: 25,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-tab-indicator",
@@ -198,6 +235,9 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/exclusion-tabs_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/exclusion-tabs_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 2232,
+    aspect: 0.4611,
+    hue: 219,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/exclusion-tabs",
@@ -215,6 +255,8 @@ export const tabbars: Recording[] = [
       "demo/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4969,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-bottom-bar",
@@ -232,6 +274,8 @@ export const tabbars: Recording[] = [
       "demo/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3606,
+    aspect: 0.4583,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-tab-interaction",
@@ -248,6 +292,9 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/metaball_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/metaball_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 4902,
+    aspect: 0.4611,
+    hue: 208,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/metaball",
@@ -264,6 +311,8 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3097,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/tab-navigation",
@@ -280,6 +329,8 @@ export const tabbars: Recording[] = [
     demoPath: "demo/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3605,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twitter-tab-bar",

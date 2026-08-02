@@ -7,6 +7,9 @@ export const loaders: Recording[] = [
     demoPath: "demo/loaders/star_falling_loading_animation_zakaria_kerkeb.mp4",
     posterPath:
       "thumbnails/loaders/star_falling_loading_animation_zakaria_kerkeb.avif",
+    durationMs: 17712,
+    aspect: 0.4667,
+    hue: 248,
     contributor: "Zakaria Kerkeb",
     source: "https://github.com/zkerkeb/showcase-app",
     twitterId: "akhi_html5",
@@ -20,6 +23,9 @@ export const loaders: Recording[] = [
     caption: "Generators",
     demoPath: "demo/loaders/generators_william_candillon.mp4",
     posterPath: "thumbnails/loaders/generators_william_candillon.avif",
+    durationMs: 16133,
+    aspect: 0.4828,
+    hue: 173,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Generators",
@@ -34,6 +40,9 @@ export const loaders: Recording[] = [
     caption: "Animated Loader",
     demoPath: "demo/loaders/animated_loader_hewad_mubariz.mp4",
     posterPath: "thumbnails/loaders/animated_loader_hewad_mubariz.avif",
+    durationMs: 2387,
+    aspect: 0.9091,
+    hue: 34,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-loader",
@@ -48,6 +57,9 @@ export const loaders: Recording[] = [
     caption: "Morphing Loader",
     demoPath: "demo/loaders/morphingLoader.mp4",
     posterPath: "thumbnails/loaders/morphingLoader.avif",
+    durationMs: 3100,
+    aspect: 0.4633,
+    hue: 163,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",

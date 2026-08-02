@@ -26,6 +26,12 @@ export type Recording = {
   caption: string
   demoPath: string
   posterPath: string
+  /** Written by pnpm assets:measure from the Published Demo. Absent until measured. */
+  durationMs?: number
+  /** Demo width ÷ height, from the Published Demo. Absent until measured. */
+  aspect?: number
+  /** Dominant hue of the Poster in degrees, 0–359. Absent when the Poster has no colour. */
+  hue?: number
   contributor: string
   source: string
   twitterId?: string
