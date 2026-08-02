@@ -8,15 +8,15 @@ import type { Recording } from "@/data/recording"
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 
-import LastUpdated from "./last-updated"
 import { RecordingCard } from "./recording-card"
 
 /** How many Recordings one page of the grid renders. The catalogue is 277. */
 const PAGE_SIZE = 48
 
 /**
- * The pill treatment, verbatim from the Last updated and Total items controls
- * below. Shared so the new Load more control introduces no colour, radius or
+ * The pill treatment for the Load more control. It used to be shared by the
+ * Last updated and Total items pills, which moved into the site header (ticket
+ * 04); the class is kept here so Load more introduces no colour, radius or
  * shadow value that was not already on the page.
  */
 const PILL_CLASS =
@@ -51,8 +51,16 @@ export interface RecordingCardGridProps {
   toggleBookmark: (id: string) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
-  setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void // New prop
-  currentSort?: "recent" | "top-voted" | "top-viewed" // New prop
+  /**
+   * The phone's only sort control. The desktop pills this grid used to render
+   * moved into the header (ticket 04 step 7), and below `md` the header draws no
+   * sort control at all (step 10) — so this dropdown, `flex sm:hidden`, is the
+   * only one there is on a phone until ticket 11 replaces it with the filter
+   * dock's sort. It writes the same `?sort=` the header writes, through the same
+   * hook.
+   */
+  setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void
+  currentSort?: "recent" | "top-voted" | "top-viewed"
 }
 
 export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
@@ -64,11 +72,10 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   toggleBookmark,
   votedRecordingIds,
   toggleVote,
-  setSort, // Destructure new prop
-  currentSort, // Destructure new prop
+  setSort,
+  currentSort,
 }) => {
   const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
-
   // Pagination lives in the URL, not in state, so a page is shareable and Back
   // returns to the previous count. `page` is the only reader of the param that
   // catalogue-search.tsx has been deleting on every keystroke all along, which
@@ -128,133 +135,76 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
       >
         {children}
       </div>
-      {/* Wraps, and spaces its lines with `gap-y` rather than `space-y`.
-          The three sort pills have a 278px min-content and the two status pills
-          191px; together 470px, against the 440px `main` actually has at 640px
-          (a 640px viewport less the sidebar's 168px margin and this column's
-          32px of padding). A flex item cannot shrink below its min-content, so
-          `main` was floored at 502px and the document scrolled sideways for the
-          640-670px band — the band where the sidebar appears and this row turns
-          horizontal, but nothing is wide enough for both yet.
-
-          `gap-y-4` in place of `space-y-4 sm:space-y-0` because `space-y` is a
-          margin on every child but the first, which lands on the first item of
-          a wrapped line too. The two spell the same 16px in the column layout
-          and in the unwrapped row, so nothing moves where it already fitted. */}
-      <div className="flex flex-wrap flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-y-4">
-        {setSort && currentSort && (
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            {/* Desktop Sorting Buttons */}
-            <div className="hidden sm:flex flex-row space-x-4 w-full">
-              <button
-                type="button"
-                className={` px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "recent" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("recent")}
-              >
-                <span className="w-full text-center">Recent</span>
-              </button>
-
-              <button
-                type="button"
-                className={`px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "top-viewed" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("top-viewed")}
-              >
-                <span className="w-full text-center">Top Viewed</span>
-              </button>
-              <button
-                type="button"
-                className={`px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "top-voted" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("top-voted")}
-              >
-                <span className="w-full text-center">Top Voted</span>
-              </button>
-            </div>
+      {/* The desktop sort pills, the counter line and the Last updated / Total
+          items pills all moved into the site header (ticket 04 steps 7 and 4);
+          the only sort control left here is the phone dropdown below, `flex
+          sm:hidden`, which the header below `md` does not replace. */}
+      <div className="flex sm:hidden flex-col w-full">
+        <button
+          type="button"
+          className="w-full px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-inner border-2 border-transparent flex justify-between items-center transition-colors duration-200"
+          onClick={() => setSortDropdownOpen(!isSortDropdownOpen)}
+          aria-haspopup="true"
+          aria-expanded={isSortDropdownOpen}
+        >
+          <span>
+            {currentSort === "recent"
+              ? "Recent"
+              : currentSort === "top-viewed"
+                ? "Top Viewed"
+                : "Top Voted"}
+          </span>
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${
+              isSortDropdownOpen ? "transform rotate-180" : ""
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+        {isSortDropdownOpen && (
+          <div className="mt-2 w-full bg-white dark:bg-[#1E1E1E] rounded-[1rem] shadow-inner border border-transparent">
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-t-[1rem] transition-colors duration-200"
+              onClick={() => {
+                setSort?.("recent")
+                setSortDropdownOpen(false)
+              }}
+            >
+              Recent
+            </button>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] transition-colors duration-200"
+              onClick={() => {
+                setSort?.("top-viewed")
+                setSortDropdownOpen(false)
+              }}
+            >
+              Top Viewed
+            </button>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-b-[1rem] transition-colors duration-200"
+              onClick={() => {
+                setSort?.("top-voted")
+                setSortDropdownOpen(false)
+              }}
+            >
+              Top Voted
+            </button>
           </div>
         )}
-
-        <div className="flex sm:hidden flex-col w-full">
-          <button
-            type="button"
-            className="w-full px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-inner border-2 border-transparent flex justify-between items-center transition-colors duration-200"
-            onClick={() => setSortDropdownOpen(!isSortDropdownOpen)}
-            aria-haspopup="true"
-            aria-expanded={isSortDropdownOpen}
-          >
-            <span>
-              {currentSort === "recent"
-                ? "Recent"
-                : currentSort === "top-viewed"
-                  ? "Top Viewed"
-                  : "Top Voted"}
-            </span>
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${
-                isSortDropdownOpen ? "transform rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {isSortDropdownOpen && (
-            <div className="mt-2 w-full bg-white dark:bg-[#1E1E1E] rounded-[1rem] shadow-inner border border-transparent">
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-t-[1rem] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("recent")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Recent
-              </button>
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("top-viewed")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Top Viewed
-              </button>
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-b-[1rem] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("top-voted")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Top Voted
-              </button>
-            </div>
-          )}
-        </div>
-        {/* last updade and total number of ites */}
-        <div className="flex flex-row space-x-4">
-          <button type="button" className={PILL_CLASS}>
-            <LastUpdated />
-          </button>
-          {/* Counts the whole set, not the rendered slice. */}
-          <button type="button" className={PILL_CLASS}>
-            <span>Total Items: {sortedData?.length}</span>
-          </button>
-        </div>
       </div>
       <div
         className={cn(

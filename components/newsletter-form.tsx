@@ -1,125 +1,87 @@
 // components/newsletter-form.tsx
+//
+// The footer's NOTIFY form (not drawn in any mock — the mock's footer is
+// CONTRIBUTE and THIS DEVICE, Catalogue.dc.html:151-158). Decision 9 derives
+// it: the column label lives in site-footer.tsx, this is the input plus button,
+// using the search field's own metrics (h-9, rounded-[10px], border-line,
+// bg-field) and the primary button (bg-acc, text-on-acc). The Firestore write
+// is a single server action, app/actions/subscribe-email.ts — this component
+// keeps only its client concerns: the controlled input, the localStorage
+// already-subscribed gate, and the three transient states.
+
 "use client"
 
-import { useEffect, useState } from "react"
-import { addDoc, collection, Timestamp } from "firebase/firestore"
+import { useEffect, useState, useTransition } from "react"
 
-import { db } from "@/lib/firebase"
-import { Input } from "@/components/ui/input"
-
-import { Label } from "./ui/label"
-
-// Determine the collection name based on the environment
-const COLLECTION_NAME =
-  process.env.NEXT_PUBLIC_FIRESTORE_EMAIL_COLLECTION || "emails"
+import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const NewsletterForm: React.FC = () => {
   const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
-  // Check localStorage on component mount
+  // Check localStorage on component mount.
   useEffect(() => {
     const subscribed = localStorage.getItem("newsletterSubscribed")
-    if (subscribed === "true") {
-      setIsSubscribed(true)
-    }
+    if (subscribed !== "true") return
+    // Reading localStorage on mount is the only SSR-safe way to hydrate this —
+    // the same reasoning hooks/use-remembered-set.ts:95-100 gives.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsSubscribed(true)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
     setError(null)
-    setSuccess(false)
 
-    try {
-      if (!email) {
-        throw new Error("Email is required")
+    startTransition(async () => {
+      const result = await subscribeEmail(new FormData(e.currentTarget))
+      if (result.ok) {
+        setEmail("")
+        setIsSubscribed(true)
+        localStorage.setItem("newsletterSubscribed", "true")
+      } else {
+        setError(result.message)
       }
-
-      // Reference to the 'emails' collection
-      const emailsRef = collection(db, COLLECTION_NAME)
-
-      // Add a new document with the email and timestamp
-      await addDoc(emailsRef, {
-        email: email,
-        createdAt: Timestamp.now(),
-      })
-
-      setSuccess(true)
-      setEmail("")
-      setIsSubscribed(true)
-      localStorage.setItem("newsletterSubscribed", "true")
-    } catch (err: any) {
-      console.error("Error storing email:", err)
-      setError(err.message || "An unexpected error occurred")
-    } finally {
-      setLoading(false)
-    }
+    })
   }
 
-  // if (isSubscribed) {
-  //   return <div />
-  // }
+  if (isSubscribed) {
+    return (
+      <p className="text-[11.5px] leading-[1.5] text-t2">
+        You are on the list — watch your inbox for new recordings.
+      </p>
+    )
+  }
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4 text-foreground dark:text-secondary-foreground">
-        Get notified when new animation is being added
-      </h2>
-      {isSubscribed ? (
-        <Label htmlFor="email">You have been added to the email list.</Label>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col space-y-4">
-            {/* Inline Input and Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 w-full">
-              <Input
-                id="email"
-                placeholder="youremail@email.com"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="flex-1 w-full sm:w-auto" // Ensures input can grow
-              />
-              <button
-                className={`mt-4 sm:mt-0 bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 text-white rounded-md h-10 px-4 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${
-                  loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? "Submitting..." : "Sign up →"}
-                <BottomGradient />
-              </button>
-            </div>
-
-            {/* Error and Success Messages */}
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            {success && (
-              <p className="text-green-500 text-sm">
-                Thank you for signing up!
-              </p>
-            )}
-          </div>
-        </form>
+    <form onSubmit={handleSubmit}>
+      <div className="flex items-center gap-[9px]">
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="youremail@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          aria-label="Email address"
+          className="h-[34px] w-full min-w-0 max-w-[220px] rounded-[10px] border border-line bg-field px-[11px] text-[12px] text-t1 placeholder:text-t3 focus:outline-none focus-visible:ring-2 focus-visible:ring-acc"
+        />
+        <button
+          type="submit"
+          disabled={isPending}
+          className="h-[34px] shrink-0 rounded-[9px] bg-acc px-[14px] text-[11.5px] font-medium text-on-acc transition-opacity duration-160 hover:opacity-80 disabled:opacity-60"
+        >
+          {isPending ? "Subscribing…" : "Subscribe"}
+        </button>
+      </div>
+      {error && (
+        <p className="mt-[6px] text-[11px] text-destructive">{error}</p>
       )}
-    </div>
+    </form>
   )
 }
 
 export default NewsletterForm
-
-// Helper Components
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  )
-}

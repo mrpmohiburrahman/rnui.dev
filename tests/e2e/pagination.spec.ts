@@ -19,12 +19,6 @@ test("the home page renders one page of Recordings, not the whole catalogue", as
 }) => {
   await page.goto("/")
   await expect(cards(page)).toHaveCount(PAGE_SIZE)
-
-  // The count pill reports the whole set. Paginating the grid must not paginate
-  // the arithmetic.
-  await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allRecordings.length}`
-  )
 })
 
 test("Load more appends a page, records it in the URL, and Back undoes it", async ({
@@ -93,7 +87,8 @@ test("toggling the sort reorders the cards without restarting a Demo", async ({
     .not.toHaveLength(0)
   const before = await advanced()
 
-  await page.getByRole("button", { name: "Top Voted" }).click()
+  // The sort control is the header's segment now (ticket 04 step 7).
+  await page.getByRole("button", { name: "MOST VOTED" }).click()
 
   // Read straight after the click, with no poll: a remount hands back a fresh
   // <video> at currentTime 0, and a poll would wait for the owner to grant it a

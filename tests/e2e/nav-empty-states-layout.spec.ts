@@ -15,9 +15,10 @@ const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 const NO_MATCHES = "No recordings match the current search or filters."
 
 test.describe("the full catalogue is reachable from the nav", () => {
-  // Wide enough for the desktop aside (`hidden sm:flex`), narrow enough that
-  // TopNavBar (`hidden md:block`) is still absent — the band where the aside is
-  // the only nav there is.
+  // Wide enough for the desktop aside (`hidden sm:flex`). The header draws its
+  // desktop row at `md` and up and its two-row phone block below that, so at
+  // 700px the aside is the desktop-width rail under a phone-width header — the
+  // point is that the aside is present and reachable here at all.
   test.use({ viewport: { width: 700, height: 900 } })
 
   test("the aside link lands on the unfiltered catalogue", async ({ page }) => {
@@ -31,9 +32,6 @@ test.describe("the full catalogue is reachable from the nav", () => {
     // No query string at all: the Category the visitor arrived with is dropped,
     // which is the whole point of a link to the *full* catalogue.
     await expect(page).toHaveURL(/\/products$/)
-    await expect(page.getByText(/^Total Items: /)).toHaveText(
-      `Total Items: ${allRecordings.length}`
-    )
   })
 
   // The class attribute, not a screenshot: the link is authorised by decision 13
@@ -70,9 +68,6 @@ test("the sheet carries the same link on a phone", async ({ page }) => {
     .click()
 
   await expect(page).toHaveURL(/\/products$/)
-  await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allRecordings.length}`
-  )
 })
 
 test.describe("something is rendered when there is nothing to render", () => {
@@ -250,24 +245,22 @@ test.describe("the content clears the header instead of sitting under it", () =>
     page.evaluate(
       () => document.querySelector("main")!.getBoundingClientRect().top
     )
+  const headerBottom = (page: Page) =>
+    page.evaluate(
+      () => document.querySelector("header")!.getBoundingClientRect().bottom
+    )
 
-  // TopNavBar is `h-[83px] fixed top-0` and renders at `md` and up. The offset
-  // was 64px, so the top 19px of every page was painted over.
-  for (const width of [768, 1440]) {
+  // The header is in flow now (ticket 04), sticky rather than fixed, so `main`
+  // starts exactly where the header ends at every width. It used to be
+  // `h-[83px] fixed top-0` paid for with a 64px spacer that let it paint over
+  // the top 19px of every page at `md` and up.
+  for (const width of [390, 768, 1440]) {
     for (const path of ["/", "/products", "/bookmarks"]) {
       test(`${path} at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 })
         await page.goto(path)
-        expect(await mainTop(page)).toBeGreaterThanOrEqual(83)
+        expect(await mainTop(page)).toBe(await headerBottom(page))
       })
     }
   }
-
-  // Below `md` no header renders and the 64px is what clears the mobile sheet
-  // trigger, so it has to stay exactly where it was.
-  test("/ at 390px is unchanged", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto("/")
-    expect(await mainTop(page)).toBe(64)
-  })
 })

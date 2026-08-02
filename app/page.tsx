@@ -1,8 +1,6 @@
 // app/page.tsx
 import { CataloguePage } from "@/components/catalogue-page"
-import { CatalogueSearch } from "@/components/catalogue-search"
 import { Hero } from "@/components/hero"
-import NewsletterForm from "@/components/newsletter-form"
 
 import { getRecordings } from "./actions/get-recordings"
 
@@ -18,17 +16,12 @@ async function Page({
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
       <CataloguePage recordings={data} treatment="framed">
         <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-2 relative">
-          {/* First Column */}
           <div className="col-span-1 md:col-span-2 z-10">
-            <Hero title="Awesome React Native UI">
-              <CatalogueSearch />
-            </Hero>
-          </div>
-
-          {/* Second Column */}
-          {/* Newsletter Subscription Form */}
-          <div className=" col-span-1 md:col-span-4 mt-6 md:mt-0 min-w-[300px] p-6 bg-card dark:bg-secondary rounded-lg shadow-elevationLight">
-            <NewsletterForm />
+            {/* The search field moved into the site header (ticket 04 step 5),
+                which is the only one now — two boxes on one page would not agree
+                with each other. The Hero stays for now: ticket 06 rewrites it,
+                and tests/e2e/home.spec.ts:48 pins its h1 in the meantime. */}
+            <Hero title="Awesome React Native UI" />
           </div>
         </div>
       </CataloguePage>
