@@ -1,6 +1,6 @@
 # 04 — The shell: header and footer
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 02
 
 ## Problem
@@ -423,3 +423,48 @@ One conflict to settle, not to guess at: `line2` is drawn three different ways �
 `fieldBg`: `rgba(255,255,255,0.045)` desktop (`Catalogue.dc.html:175`) against
 `rgba(255,255,255,0.05)` on the phone (`CatalogueMobile.dc.html:85`). Ticket 02's token table is
 the single answer; this ticket consumes it and spells neither value itself.
+
+## Comments
+
+### 2026-08-02 — Shell built and verified. Committed with the ticket.
+
+All fifteen steps done. The header, the footer and the newsletter server action replace what the
+ticket describes; the acceptance bullets were run against a built server, not just read.
+
+| Check | Result |
+|---|---|
+| `pnpm check-types` | clean |
+| `pnpm test` | 198 / 198 |
+| `pnpm lint` | 0 errors, 7 warnings — stash-verified as pre-existing, none introduced |
+| `pnpm format:check` | clean (6 files prettier-write touched) |
+| `pnpm build` | compiled, 290 pages |
+| Playwright | **55 / 55** |
+| `grep -nE '#[0-9A-Fa-f]{3,8}' site-header site-footer` | no matches |
+| `grep -n '24' components/site-header.tsx` | no matches |
+| `grep -rn "Total Items" tests/` | no matches |
+
+**Acceptance run live, `curl localhost:3000/products`:** `RECENT` / `MOST VIEWED` / `MOST VOTED`,
+`recordings ·`, `Search 277 recordings`, `STUDIO LIGHT · #F4F4F1`, `Updated:`, `Manage
+subscription` and both `◑ Light` / `◐ Dark` labels (with the `dark:inline` switch) are all in the
+served document; no `Loading sidebar`. A stale `next start` from a previous session was holding
+port 3000 during the first check and served the old header — kill-and-restart was the fix, not a
+code change.
+
+**Firebase in the client bundle:** `/products` and `/` serve no firebase module. The one
+`fire-core`-shaped chunk ships only on `/subscribe` and `/contactus`, the routes whose pages
+still import `@/lib/firebase` directly (the ticket leaves `/subscribe` alone and `contactus` is
+ticket 12's). The shared layout chunk did not grow by the Firestore SDK; the newsletter write is
+now the single `app/actions/subscribe-email.ts` action.
+
+**The build failure this ticket caught, for the record:** `CatalogueSearch` originally called
+`useSearchParams` itself, and the header renders it inside the Suspense *fallback* — a fallback
+renders instead of inside the boundary, so the hook bailed every page out of static prerendering
+(`useSearchParams() should be wrapped in a suspense boundary` at `/recording/[id]`). The fix is
+the ticket's own shape (step 2): the component takes `searchParams` as a prop from `SiteHeaderBar`
+and never touches the hook.
+
+**Checks that left artifacts:** `pnpm build` re-runs next-sitemap, which re-stamps
+`public/sitemap-0.xml` lastmod; reverted before committing. Prettier's plugin options
+(`importOrder*`) warn as unknown in this environment but the baseline and the tree both pass
+`format:check`, so the six files it touched are in the commit.
+

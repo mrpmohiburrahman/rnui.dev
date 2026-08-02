@@ -43,17 +43,20 @@ test("home page renders catalog and search", async ({ page }) => {
   await page.goto("/")
   await expect(page).not.toHaveTitle(/error/i)
 
-  // Hero / title visible. By role, because the footer repeats the name twice.
+  // Hero / title visible. By role, because it is the one h1 on the page — the
+  // comment that used to justify this ("the footer repeats the name twice") was
+  // retired with the old footer, which the ticket 04 footer replaced.
   await expect(
     page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
   ).toBeVisible()
 
-  // Search input present. By its accessible name, which it did not have when
-  // this was written — `input[placeholder]` used to identify it by being the
-  // only input on the page without one, and matched the newsletter's once the
-  // search box gained a placeholder of its own.
+  // Search input present, in the header now (ticket 04 step 5), named with the
+  // catalogue size. By its accessible name, which it did not have when this was
+  // written — `input[placeholder]` used to identify it by being the only input
+  // on the page without one, and matched the newsletter's once the search box
+  // gained a placeholder of its own.
   await expect(
-    page.getByRole("textbox", { name: "Search the catalogue" })
+    page.getByRole("textbox", { name: /Search \d+ recordings/ })
   ).toBeVisible()
 })
 

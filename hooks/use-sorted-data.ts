@@ -5,15 +5,35 @@ import type { Recording } from "@/data/recording"
 
 import { sortChanged } from "@/lib/analytics"
 
-type SortType = "recent" | "top-voted" | "top-viewed"
+export type SortType = "recent" | "top-voted" | "top-viewed"
+
+// The sort is the address, not component state. Held in useState it was reset
+// by every facet link — a real navigation, which remounts the tree — and no
+// URL described "Top Voted", so the order could not be shared or reloaded.
+//
+// Exported so the header's sort segment (components/site-header.tsx) and the
+// hook below write the same URL and report the same event; the header has no
+// collection to sort, only the control that re-sorts the grid's, and they meet
+// at this one function.
+export function applySort(next: SortType): void {
+  // Reported on every use of the control: pressing the item that is already
+  // active is a visitor looking for something a re-sort was not going to give
+  // them, and a control that answers nothing is worth seeing in the numbers.
+  sortChanged(next)
+  const params = new URLSearchParams(window.location.search)
+  if (next === "recent") params.delete("sort")
+  else params.set("sort", next)
+  // `page` survives: sorting changes the order of the visible cards, not which
+  // Recordings match, and dropping it would collapse a loaded grid back to 48.
+  const query = params.toString()
+  window.history.replaceState(
+    null,
+    "",
+    query ? `?${query}` : window.location.pathname
+  )
+}
 
 const useSortedData = (initialData: Recording[]) => {
-  // The sort is the address, not component state. Held in useState it was reset
-  // by every facet link — a real navigation, which remounts the tree — and no
-  // URL described "Top Voted", so the order could not be shared or reloaded.
-  //
-  // The returned shape is unchanged, so catalogue-page.tsx and recording-card-grid.tsx
-  // are untouched.
   const searchParams = useSearchParams()
   const param = searchParams.get("sort")
   const sort: SortType =
@@ -24,23 +44,7 @@ const useSortedData = (initialData: Recording[]) => {
   // for a reorder of cards already in hand. This is the pattern the grid's
   // `page` already uses. Replace rather than push because a sort is a mode, not
   // a step — Back should leave the page, not undo three toggles.
-  const setSort = (next: SortType) => {
-    // Reported on use, not on change: pressing the pill that is already active
-    // is a visitor looking for something a re-sort was not going to give them,
-    // and a control that answers nothing is worth seeing in the numbers.
-    sortChanged(next)
-    const params = new URLSearchParams(window.location.search)
-    if (next === "recent") params.delete("sort")
-    else params.set("sort", next)
-    // `page` survives: sorting changes the order of the visible cards, not which
-    // Recordings match, and dropping it would collapse a loaded grid back to 48.
-    const query = params.toString()
-    window.history.replaceState(
-      null,
-      "",
-      query ? `?${query}` : window.location.pathname
-    )
-  }
+  const setSort = (next: SortType) => applySort(next)
 
   // Derived rather than held in state and written from an effect. The effect
   // painted the unsorted list and corrected it on the next tick, and

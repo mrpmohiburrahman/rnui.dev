@@ -96,11 +96,11 @@ test("the sort is in the URL, applied without a document request", async ({
     if (r.resourceType() === "document") documents.push(r.url())
   })
 
-  await page.getByRole("button", { name: "Top Voted" }).click()
+  await page.getByRole("button", { name: "MOST VOTED" }).click()
   await expect(page).toHaveURL(/sort=top-voted/)
 
   // Recent is the absence of the param, not `sort=recent`.
-  await page.getByRole("button", { name: "Recent" }).click()
+  await page.getByRole("button", { name: "RECENT" }).click()
   await expect(page).not.toHaveURL(/sort=/)
 
   expect(documents).toEqual([])
@@ -116,10 +116,12 @@ test("a sort survives a facet click, and reloads cold in the same order", async 
   await expect(page).toHaveURL(/sort=top-voted/)
   await expect(page).toHaveURL(new RegExp(`category=${CATEGORY}`))
 
-  // The button still reads as selected — the sort used to reset silently,
-  // because a facet link is a real navigation and the state remounted.
-  await expect(page.getByRole("button", { name: "Top Voted" })).toHaveClass(
-    /border-gray-100/
+  // The segment still reads as selected — the sort used to reset silently,
+  // because a facet link is a real navigation and the state remounted. The
+  // control is the header's now (ticket 04 step 7), whose active item paints
+  // acc-soft rather than the grid pill's gray border.
+  await expect(page.getByRole("button", { name: "MOST VOTED" })).toHaveClass(
+    /bg-acc-soft/
   )
 
   await page.goto("/products?sort=top-voted")
@@ -133,9 +135,8 @@ test("an unknown sort renders Recent order, not an empty grid", async ({
   const firstRecent = await firstCaption(page)
 
   await page.goto("/products?sort=banana")
-  await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allRecordings.length}`
-  )
+  // The count pill that used to verify the grid was full is gone (ticket 04
+  // step 15); the order itself is the subject, so it alone is asserted.
   expect(await firstCaption(page)).toBe(firstRecent)
 })
 

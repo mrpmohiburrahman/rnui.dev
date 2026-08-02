@@ -122,7 +122,9 @@ test.describe("a stored preference still wins", () => {
     await page.route("**/demo/**", (r) => r.abort())
     await page.goto("/")
 
-    await page.getByRole("button", { name: "Toggle theme" }).click()
+    // The trigger now carries visible text (`◐ Dark` / `◑ Light`, ticket 04
+    // step 9), so the accessible name is "Dark Toggle theme", not "Toggle theme".
+    await page.getByRole("button", { name: /Toggle theme/ }).click()
     await page.getByRole("menuitem", { name: "Dark" }).click()
 
     await expect
@@ -147,7 +149,7 @@ test("picking System follows the device without a reload", async ({
   await page.route("**/demo/**", (r) => r.abort())
   await page.goto("/")
 
-  await page.getByRole("button", { name: "Toggle theme" }).click()
+  await page.getByRole("button", { name: /Toggle theme/ }).click()
   await page.getByRole("menuitem", { name: "System" }).click()
   await expect.poll(() => htmlClass(page)).toContain("light")
 
@@ -161,14 +163,16 @@ test("picking System follows the device without a reload", async ({
 // for the theme is what exposed it. Those few extra bytes pushed the last nav
 // item past the point where React outlines an element into its own RSC row, and
 // Radix's `asChild` Slot erases a lazy reference — so the <li> was served empty.
-// components/nav/top-nav-bar.tsx is a client component now, which keeps its
-// subtree out of Flight entirely.
+// components/nav/top-nav-bar.tsx is gone now, deleted by ticket 04, and the link
+// it carried lives on as the footer's Repository ↗ anchor, a plain <a> with no
+// Radix in the path — but the assertion is worth keeping as a served-HTML check
+// for the repository link all the same.
 //
 // It is a size threshold, so it can be tripped again by anything that grows the
 // tree, and it fails silently: no error, no warning, just a missing link.
 // Asserted against the served markup, because that is where it went missing —
 // before any hydration.
-test("the header still carries the GitHub link, server-rendered", async ({
+test("the footer still carries the repository link, server-rendered", async ({
   page,
 }) => {
   const response = await page.goto("/")
@@ -177,9 +181,7 @@ test("the header still carries the GitHub link, server-rendered", async ({
     'href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"'
   )
 
-  await expect(
-    page.getByRole("link", { name: /Star us on GitHub/ })
-  ).toBeVisible()
+  await expect(page.getByRole("link", { name: /Repository/ })).toBeVisible()
 })
 
 test("the console carries no hydration warning under either emulation", async ({

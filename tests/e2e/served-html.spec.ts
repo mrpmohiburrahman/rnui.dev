@@ -37,10 +37,12 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
 
   expect(html).toMatch(/<h1[^>]*>Awesome React Native UI<\/h1>/)
 
-  // All three desktop sort buttons. They are what the guard dropped along with
-  // the grid, since the heading is passed through the grid as children.
-  for (const label of ["Recent", "Top Viewed", "Top Voted"]) {
-    expect(html).toContain(`>${label}</span>`)
+  // All three sort controls, now the header's segment (ticket 04 step 7). They
+  // are what the guard dropped along with the grid, since the heading is passed
+  // through the grid as children; the header is served from its Suspense
+  // fallback, which carries the whole control set unhighlighted.
+  for (const label of ["RECENT", "MOST VIEWED", "MOST VOTED"]) {
+    expect(html).toContain(`>${label}<`)
   }
 
   // One full page of cards, in the document rather than added by script. This

@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import "./globals.css"
 
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google"
+import { allRecordings } from "@/data/catalogue"
 import { metadata } from "@/data/meta-data"
 import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
@@ -13,8 +14,8 @@ import { PostHogProvider } from "@/lib/posthog-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { NavSidebar } from "@/components/nav/nav-side-bar"
-import { TopNavBar } from "@/components/nav/top-nav-bar"
 import { SiteFooter } from "@/components/site-footer"
+import { SiteHeader } from "@/components/site-header"
 
 import { ThemeProvider } from "./providers"
 
@@ -55,14 +56,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // that writes `class` and `style="color-scheme"` onto this element before
     // React hydrates, so the served html and the hydrated html cannot match. It
     // emits no attribute and moves no pixel.
-    //
-    // Adding it here also, on its own, deleted the "Star us on GitHub" item
-    // from the server-rendered header. Not a coincidence and not about this
-    // element: the extra props lengthen the RSC payload row, and past a
-    // threshold React outlines a later element into its own row as a lazy
-    // reference, which Radix's `asChild` Slot drops on the floor. The header is
-    // a client component now (components/nav/top-nav-bar.tsx) so nothing in it
-    // is Flight-serialized and the size stops mattering.
     <html
       lang="en"
       className={`${grotesk.variable} ${jetbrains.variable} font-sans`}
@@ -93,21 +86,23 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             disableTransitionOnChange
           >
             <TooltipProvider>
-              <div className="hidden md:block">
-                <TopNavBar />
-              </div>
-              {/* Mirrors the header's own height, components/nav/top-nav-bar.tsx:18
-                  (`h-[83px] fixed`), which only renders at `md` and up — so the
-                  base pt-16 stays: below `md` there is no header, and that 64px
-                  is what clears the mobile sheet trigger. It was 64px at every
-                  width, so the header painted over the top 19px of every page. */}
-              <div className="flex flex-1 pt-16 md:pt-[83px]">
+              <SiteHeader
+                recordingCount={allRecordings.length}
+                contributorCount={contributors.length}
+                categories={categories}
+                contributors={contributors}
+              />
+              <div className="flex flex-1 items-stretch">
                 <NavSidebar
                   categories={categories}
                   contributors={contributors}
                 />
-                {/* Add responsive left margin to main */}
-                <main className="p-4 sm:ml-[10.5rem] w-full">{children}</main>
+                {/* The mock's main gutter: 22px top, 26px sides, 34px bottom
+                    (Catalogue.dc.html:59). `min-w-0` so a wide child cannot push
+                    the document past the viewport. */}
+                <main className="w-full flex-1 min-w-0 p-[22px_26px_34px]">
+                  {children}
+                </main>
               </div>
             </TooltipProvider>
             <Toaster richColors />

@@ -12,8 +12,12 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/demo/**", (route) => route.abort())
 })
 
+// The search box now lives in the site header (ticket 04 step 5) and is named
+// with the catalogue size ("Search 277 recordings"), so the count matches loosely.
+// Two boxes exist in the DOM — one per header, one CSS-hidden at any given width —
+// and getByRole's visibility filter leaves exactly the visible one.
 const searchBox = (page: Page) =>
-  page.getByRole("textbox", { name: "Search the catalogue" })
+  page.getByRole("textbox", { name: /Search \d+ recordings/ })
 
 const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
 
