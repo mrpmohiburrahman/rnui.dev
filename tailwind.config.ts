@@ -165,13 +165,34 @@ const config = {
         // drift from the specimen; all samples are drawn at line-height 1.1.
         // The two mono steps (metric, label) cannot name a family inside a
         // fontSize tuple, so they are written with `font-mono` alongside.
-        detail: ["36px", { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.025em" }],
-        hero: ["29px", { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.02em" }],
-        section: ["17px", { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" }],
-        "tile-title": ["14.5px", { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" }],
-        "body-sm": ["12px", { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" }],
-        metric: ["10px", { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" }],
-        label: ["9px", { lineHeight: "1.1", fontWeight: "500", letterSpacing: "0.14em" }],
+        detail: [
+          "36px",
+          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.025em" },
+        ],
+        hero: [
+          "29px",
+          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.02em" },
+        ],
+        section: [
+          "17px",
+          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" },
+        ],
+        "tile-title": [
+          "14.5px",
+          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" },
+        ],
+        "body-sm": [
+          "12px",
+          { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" },
+        ],
+        metric: [
+          "10px",
+          { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" },
+        ],
+        label: [
+          "9px",
+          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "0.14em" },
+        ],
       },
       // Spacing is deliberately not extended. The Specimen's seven steps
       // (4, 8, 12, 16, 24, 28, 40 — Specimen.dc.html:155-159) all exist in

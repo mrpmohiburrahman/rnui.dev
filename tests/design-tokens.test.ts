@@ -1,5 +1,4 @@
 import { readFileSync } from "node:fs"
-
 import { describe, expect, it } from "vitest"
 
 import config from "../tailwind.config"
@@ -130,7 +129,10 @@ describe("studio dark tokens", () => {
 describe("tailwind surfaces the tokens", () => {
   const colors = config.theme!.extend!.colors as Record<string, unknown>
   const colorVar = (key: string) => colors[key]
-  const declaredVars = new Set([...Object.keys(rootVars), ...Object.keys(darkVars)])
+  const declaredVars = new Set([
+    ...Object.keys(rootVars),
+    ...Object.keys(darkVars),
+  ])
 
   it("every theme.extend.colors key that references a var() points at a declared variable", () => {
     const referencing = Object.entries(colors).filter(
@@ -140,8 +142,14 @@ describe("tailwind surfaces the tokens", () => {
     for (const [key, value] of referencing) {
       if (typeof value !== "string") continue
       const name = value.match(/^var\((--[a-z0-9-]+)\)$/)?.[1]
-      expect(name, `theme.extend.colors.${key} = "${value}" is not a var()`).toBeTruthy()
-      expect(declaredVars, `"${name}" is not declared in globals.css`).toContain(name)
+      expect(
+        name,
+        `theme.extend.colors.${key} = "${value}" is not a var()`
+      ).toBeTruthy()
+      expect(
+        declaredVars,
+        `"${name}" is not declared in globals.css`
+      ).toContain(name)
     }
   })
 

@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 import "./globals.css"
 
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google"
-
 import { metadata } from "@/data/meta-data"
 import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
