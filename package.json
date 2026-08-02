@@ -11,6 +11,7 @@
     "check:videos:production": "bash scripts/check-video-codecs.sh --production",
     "assets:paths": "tsx scripts/asset-paths.ts",
     "assets:publish": "tsx scripts/publish-assets.ts",
+    "assets:measure": "tsx scripts/measure-demos.ts",
     "posters:generate": "tsx scripts/generate-posters.ts",
     "check-types": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",

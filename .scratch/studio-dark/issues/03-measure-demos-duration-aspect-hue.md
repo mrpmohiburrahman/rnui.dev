@@ -1,6 +1,6 @@
 # 03 — assets:measure — duration, aspect and hue per Recording
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01
 
 ## Problem
@@ -340,3 +340,69 @@ those same files makes that review worthless.
 Nothing else blocks it. It touches no component and no route, so it can run in parallel with
 ticket 02. Tickets 07 and 09 depend on it, not the other way round — the spec's table already
 records 07 as needing 02 and 03.
+
+## Comments
+
+### 2026-08-02 — Built and resolved. One run, 277 measured, 0 failed; 203 carry a hue.
+
+**The commit.** `package.json` gains `assets:measure`; `lib/poster-hue.ts` is the testable
+chroma-weighted hue function; `scripts/measure-demos.ts` follows the `generate-posters.ts`
+shape (env first, catalogue not filesystem, skip what is done, name failures, exit non-zero);
+`data/recording.ts` gains the three optional fields; `tests/poster-hue.test.ts` (4 cases) and a
+`data-integrity` range case are added. The measured data is committed with the code — 18 category
+files.
+
+**The run, as the acceptance asks.** `pnpm assets:measure` against the CDN reported
+`277 measured, 0 already recorded, 0 failed` (exit 0). A second run reported
+`0 measured, 277 already recorded, 0 failed` and left the data files byte-identical.
+`pnpm assets:paths` is byte-identical before and after (same `6c98ad30…694d`, 554 lines).
+With `NEXT_PUBLIC_CDN_URL` unset and no env files present the script exits 1 with a message
+naming the variable and writes nothing.
+
+**The 404 acceptance, demonstrated rather than assumed.** I pointed `data/pickers.ts` at a
+non-existent Demo path and ran: the script exited non-zero, named the Recording and its Asset
+path in the failure list, and still wrote the measurements of every other Recording (276 that
+run). The poster still measured, so that Recording got a `hue` and no `durationMs`/`aspect`;
+after restoring the path, a completion run measured it (`1 measured, 276 already recorded,
+0 failed`) with no duplicate fields.
+
+**Hue split, for the maintainer at checkpoint 5.** **203 of 277 Recordings carry a hue; 74 do
+not (73% / 27%).** The sixteen-Poster sample predicted "roughly half"; the real catalogue is
+closer to the mock's field of colours than that sample suggested — three quarters of tiles glow
+in their own measured colour, a quarter at the fallback 175. Every committed hue is a real
+chroma-weighted mean (none is a bin centre or a multiple of ten). The one `aspect: 0.5625` in
+the data is a real measurement (`google_gemini_hubert_ryan`, a genuine 16:9 Demo — its probe
+succeeded; the run reported 0 failures), so no Recording carries a fabricated fallback ratio.
+
+**Three defects found and fixed during the run, none of which the acceptance anticipated.**
+
+1. **The posterPath anchor as a whole trimmed line matches 136 of 277 Recordings.** Prettier
+   wraps a long path onto its own line (`posterPath:` then the value), so the letter of the
+   ticket's step 7 fails for nearly half the catalogue. The anchor now matches both the one-line
+   and wrapped forms, with the same zero-and-more-than-once abort.
+2. **A no-colour Poster was initially counted as a failure.** The first run exited 1 naming
+   roughly a quarter of the catalogue with "Poster has no colour to glow in". A missing hue is
+   the designed fallback (the mock's `e.hue == null` branch), not a defect: `posterHue` now
+   returns `null` and the field is simply omitted. Only HTTP and decode failures fail the run.
+3. **A partial write followed by a completion run duplicated a field.** The 404 demonstration
+   wrote `hue` (poster fine, Demo 404), and the next run added `hue` again — the ticket's own
+   "fields are independent" claim permits exactly this. The write-back now drops any measurement
+   field already sitting after the Poster path before inserting fresh ones. The data was then
+   re-run from a clean checkout so the committed numbers all come from the fixed code.
+
+**Two things the acceptance could not have predicted, recorded rather than glossed.**
+
+- `pnpm format:check` required formatting three files ticket 02 committed unformatted
+  (`app/layout.tsx`, `tailwind.config.ts`, `tests/design-tokens.test.ts` — its Comments listed
+  every other check but not this one). The diff is whitespace only, and lands as a separate
+  chore commit so this one stays reviewable, on ticket 02's own precedent for the sitemap.
+- `grep -rn "assets:measure"` returns the command in `lib/poster-hue.ts`, `data/recording.ts`
+  and both new test files as well as `package.json` and the script. That is the ticket's own
+  step-4 doc-comment text; the operative clause — it appears in no `build`, `prebuild`,
+  `postbuild` or test script — holds. The numbers are committed, never derived at build time.
+
+**Checks.** `pnpm check-types`, `pnpm test` (197/197, up from 192 — the five new cases),
+`pnpm lint` (0 errors, 8 pre-existing warnings in files this ticket does not touch),
+`pnpm format:check`, `pnpm build` and Playwright **49/49** all pass. `public/sitemap-0.xml`
+regenerates under `pnpm build` but its diff is only `lastmod` timestamps, so it was reverted
+rather than committed.

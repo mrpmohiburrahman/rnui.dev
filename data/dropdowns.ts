@@ -7,6 +7,8 @@ export const drop_down: Recording[] = [
     demoPath: "demo/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/dropdowns/dropdowns_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 9300,
+    aspect: 0.8041,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/16-smooth-dropdown",

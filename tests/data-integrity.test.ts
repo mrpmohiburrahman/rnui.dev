@@ -73,6 +73,45 @@ describe("catalog data integrity", () => {
   })
 })
 
+// The three fields `pnpm assets:measure` writes. Absent is legal — a Recording
+// that has not been measured yet has none — but where a field is present it has
+// to be sane: this is what catches a write-back that landed a value in the
+// wrong object, or a hue formula that regressed.
+describe("measured fields", () => {
+  it("where present, durationMs, aspect and hue are in range", () => {
+    const bad = allRecordings.flatMap((recording) => {
+      const problems: string[] = []
+      if (
+        recording.durationMs !== undefined &&
+        (!Number.isInteger(recording.durationMs) || recording.durationMs <= 0)
+      ) {
+        problems.push(
+          `durationMs ${recording.durationMs} is not a positive integer`
+        )
+      }
+      if (
+        recording.aspect !== undefined &&
+        (recording.aspect < 0.2 || recording.aspect > 5)
+      ) {
+        problems.push(`aspect ${recording.aspect} is outside [0.2, 5]`)
+      }
+      if (
+        recording.hue !== undefined &&
+        (!Number.isInteger(recording.hue) ||
+          recording.hue < 0 ||
+          recording.hue >= 360)
+      ) {
+        problems.push(`hue ${recording.hue} is outside [0, 360)`)
+      }
+      return problems.map((problem) => `${recording.id}: ${problem}`)
+    })
+    expect(
+      bad,
+      `out-of-range measured fields:\n${bad.join("\n")}`
+    ).toHaveLength(0)
+  })
+})
+
 // Asset paths are immutable: a path identifies specific bytes, never a Demo.
 // See docs/adr/0003-asset-paths-are-immutable.md. Published Assets are written
 // once, cached for a year and never overwritten, so a duplicated or

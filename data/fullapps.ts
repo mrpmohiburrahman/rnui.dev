@@ -6,6 +6,9 @@ export const full_apps: Recording[] = [
     caption: "Nokia Snake",
     demoPath: "demo/fullapps/nokia_snake_william_candillon.mp4",
     posterPath: "thumbnails/fullapps/nokia_snake_william_candillon.avif",
+    durationMs: 16033,
+    aspect: 0.4744,
+    hue: 94,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
@@ -20,6 +23,9 @@ export const full_apps: Recording[] = [
     caption: "Snake",
     demoPath: "demo/fullapps/snake_pushkar_tandon.mp4",
     posterPath: "thumbnails/fullapps/snake_pushkar_tandon.avif",
+    durationMs: 3455,
+    aspect: 0.477,
+    hue: 356,
     contributor: "Pushkar Tandon ",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/snake-game",
@@ -34,6 +40,8 @@ export const full_apps: Recording[] = [
     caption: "Google Gemini Clone",
     demoPath: "demo/fullapps/google_gemini_hubert_ryan.mp4",
     posterPath: "thumbnails/fullapps/google_gemini_hubert_ryan.avif",
+    durationMs: 46633,
+    aspect: 0.5625,
     contributor: "Hubert Ryan",
     source: "https://github.com/HubertRyanOfficial/google-gemini-app-clone",
     twitterId: "hubertryanoff",
@@ -48,6 +56,9 @@ export const full_apps: Recording[] = [
     demoPath: "demo/fullapps/screen_transition_konstantinos_efkarpidis.mp4",
     posterPath:
       "thumbnails/fullapps/screen_transition_konstantinos_efkarpidis.avif",
+    durationMs: 25400,
+    aspect: 0.4763,
+    hue: 237,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ScreenTransition/ScreenTransitionWelcome.tsx",
@@ -61,6 +72,9 @@ export const full_apps: Recording[] = [
     caption: "Furniture App",
     demoPath: "demo/fullapps/furniture_app_hewad_mubariz.mp4",
     posterPath: "thumbnails/fullapps/furniture_app_hewad_mubariz.avif",
+    durationMs: 28583,
+    aspect: 1.15,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source: "https://github.com/hewad-mubariz/Furniture_App",
     twitterId: "hewad_mubariz",

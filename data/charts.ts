@@ -6,6 +6,9 @@ export const charts: Recording[] = [
     caption: "Chart Counter",
     demoPath: "demo/charts/chart_counter_thomino.mp4",
     posterPath: "thumbnails/charts/chart_counter_thomino.avif",
+    durationMs: 4347,
+    aspect: 0.4781,
+    hue: 341,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/chart.tsx",
@@ -19,6 +22,9 @@ export const charts: Recording[] = [
     caption: "Coinbase Charts",
     demoPath: "demo/charts/coinbase_charts_william_candillon.mp4",
     posterPath: "thumbnails/charts/coinbase_charts_william_candillon.avif",
+    durationMs: 7417,
+    aspect: 0.4767,
+    hue: 346,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Coinbase",
@@ -33,6 +39,9 @@ export const charts: Recording[] = [
     caption: "Group Stack Charts",
     demoPath: "demo/charts/group_chart_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/charts/group_chart_konstantinos_efkarpidis.avif",
+    durationMs: 8850,
+    aspect: 1.1728,
+    hue: 86,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/GroupStackCharts.tsx",
@@ -47,6 +56,9 @@ export const charts: Recording[] = [
     caption: "Pie Chart",
     demoPath: "demo/charts/pie_chart_hewad_mubariz.mp4",
     posterPath: "thumbnails/charts/pie_chart_hewad_mubariz.avif",
+    durationMs: 9545,
+    aspect: 0.7643,
+    hue: 234,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/piechart",
@@ -61,6 +73,9 @@ export const charts: Recording[] = [
     caption: "Line Chart",
     demoPath: "demo/charts/lineChart_david_friyia.mp4",
     posterPath: "thumbnails/charts/lineChart_david_friyia.avif",
+    durationMs: 4833,
+    aspect: 1.0723,
+    hue: 257,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/LineChart",
@@ -75,6 +90,9 @@ export const charts: Recording[] = [
     caption: "Bar Chart",
     demoPath: "demo/charts/barchart_david_friyia.mp4",
     posterPath: "thumbnails/charts/barchart_david_friyia.avif",
+    durationMs: 2067,
+    aspect: 0.9275,
+    hue: 298,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/BarChart",
@@ -90,6 +108,8 @@ export const charts: Recording[] = [
     demoPath: "demo/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 5651,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/miles-bar-chart",
@@ -106,6 +126,9 @@ export const charts: Recording[] = [
     demoPath: "demo/charts/radar-chart_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/charts/radar-chart_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3724,
+    aspect: 0.4611,
+    hue: 182,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/radar-chart",
@@ -123,6 +146,8 @@ export const charts: Recording[] = [
       "demo/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3235,
+    aspect: 0.4611,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steddy-graph-interaction",

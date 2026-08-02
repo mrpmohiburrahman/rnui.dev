@@ -6,6 +6,9 @@ export const onboarding: Recording[] = [
     caption: "Onboarding by Thomino",
     demoPath: "demo/onboardings/onboarding_thomino.mp4",
     posterPath: "thumbnails/onboardings/onboarding_thomino.avif",
+    durationMs: 10867,
+    aspect: 0.4781,
+    hue: 224,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/onboarding.tsx",
@@ -19,6 +22,9 @@ export const onboarding: Recording[] = [
     caption: "Onboarding Steps",
     demoPath: "demo/onboardings/onboarding_steps_hewad_mubariz.mp4",
     posterPath: "thumbnails/onboardings/onboarding_steps_hewad_mubariz.avif",
+    durationMs: 4940,
+    aspect: 1.2944,
+    hue: 355,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/onboarding-steps",
@@ -33,6 +39,9 @@ export const onboarding: Recording[] = [
     caption: "Onboarding Animation",
     demoPath: "demo/onboardings/onboarding_animation_alek_mikucki.mp4",
     posterPath: "thumbnails/onboardings/onboarding_animation_alek_mikucki.avif",
+    durationMs: 7317,
+    aspect: 1,
+    hue: 35,
     contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/onboarding-animation-example",
     twitterId: "aleqsio",
@@ -46,6 +55,9 @@ export const onboarding: Recording[] = [
     caption: "Bouncy Onboarding",
     demoPath: "demo/onboardings/bouncy_onboarding_hewad_mubariz.mp4",
     posterPath: "thumbnails/onboardings/bouncy_onboarding_hewad_mubariz.avif",
+    durationMs: 20333,
+    aspect: 1.15,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/BouncyOnboarding",
@@ -60,6 +72,9 @@ export const onboarding: Recording[] = [
     caption: "Circular Onboarding",
     demoPath: "demo/onboardings/circular_onboarding_hewad_mubariz.mp4",
     posterPath: "thumbnails/onboardings/circular_onboarding_hewad_mubariz.avif",
+    durationMs: 14050,
+    aspect: 1.15,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/circular-onboarding",
@@ -76,6 +91,9 @@ export const onboarding: Recording[] = [
       "demo/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/onboardings/github-onboarding_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 3351,
+    aspect: 0.4611,
+    hue: 212,
     contributor: "Enzo Manuel Mangano ( Reactiive )",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
