@@ -406,3 +406,17 @@ succeeded; the run reported 0 failures), so no Recording carries a fabricated fa
 `pnpm format:check`, `pnpm build` and Playwright **49/49** all pass. `public/sitemap-0.xml`
 regenerates under `pnpm build` but its diff is only `lastmod` timestamps, so it was reverted
 rather than committed.
+
+**Follow-up from the code review** (committed separately, after the checks above):
+
+- The ticket's hue formula — `Math.round(((atan2 * 180 / π) + 360) % 360)` — yields **360**
+  when the chroma-weighted mean sits just below the wrap (degrees ≈ -0.4), which contradicts
+  the ticket's own `[0, 360)` contract and would fail the data-integrity range case it was
+  written to guard. `lib/poster-hue.ts` now rounds first and then normalises, and a regression
+  case pins the wrap: `(255, 0, 1)`, hue ≈ 359.76, must return `0` — the old formula returned
+  `360` for it. No committed value changed: none of the 203 hues sat in the affected window.
+- The Poster `fetch` in `posterHue` gained the same `AbortSignal.timeout(60_000)` stall guard
+  the ticket's rationale demanded for ffprobe — "a stalled read cannot hang a 277-Recording run"
+  applies to the poster fetches identically.
+
+With that, all checks are 198/198.
