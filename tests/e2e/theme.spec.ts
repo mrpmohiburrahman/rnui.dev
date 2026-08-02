@@ -86,8 +86,11 @@ test.describe("a first visit follows the device", () => {
         ).__atPaint
     )
     expect(atPaint).not.toBeNull()
-    // #FAFAFA is the light body (app/globals.css:75); #0A0A0A is the dark one.
-    expect(atPaint!.background).toBe("rgb(10, 10, 10)")
+    // The body now paints the canvas token (app/globals.css, `--canvas`): the
+    // light value #F4F4F1, the dark one #0A0B0D. This test used to hardcode
+    // the old dark background (#0A0A0A); step 10 of the design-system ticket
+    // repointed body to the token, and the token is the assertion now.
+    expect(atPaint!.background).toBe("rgb(10, 11, 13)")
     expect(atPaint!.html).toContain("dark")
 
     await context.close()

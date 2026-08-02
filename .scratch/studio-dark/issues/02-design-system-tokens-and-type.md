@@ -1,6 +1,6 @@
 # 02 — The design system: tokens, type, spacing, radius, elevation, fonts
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 01
 
 The foundation tickets 04 to 12 build on. Nothing here draws a surface; it puts every number the
@@ -468,3 +468,91 @@ starting before it lands will hardcode hex codes that then have to be unpicked.
    `rnui Studio Dark.dc.html:10` sets `a{color:#6FE3CC}a:hover{color:#9BEEDD}` in the composite's
    own inline stylesheet. No light-mode hover is drawn anywhere. Not declared here rather than
    invent the light half; ticket 04 owns links and can name it if it needs one.
+
+## Comments
+
+### 2026-08-02 — Built. All checks pass except the LCP bullet, which the acceptance's own stop condition fires on. `ready-for-human`.
+
+Everything in Work steps 1-11 is done and verified. Step 12's checks all pass. The one acceptance
+bullet that cannot resolve is the font LCP measurement: **the median mobile LCP delta exceeds the
+spread of the five runs, so per the acceptance this is `ready-for-human`, not `resolved`.** The
+numbers are below, all written from Lighthouse 12 on a production build of this repo, five runs
+per cell, median and spread, same machine and Chrome throughout.
+
+**What the commit is.** The 27 palette tokens in both modes plus `--tile-hue`/`--e0`/`--e1`/`--e2`
+in `app/globals.css` (new `@layer base` block after the shadcn one; lines 6-66 untouched), the
+reduced-motion zero-duration rule, all tokens surfaced as raw-`var()` `theme.extend.colors` keys,
+`boxShadow` e0/e1/e2, the four radii, the seven-step type scale, the five `duration-*` keys and
+`ease-rise`, the two `next/font/google` families self-hosted in `app/layout.tsx`, and the body
+repoint to `bg-canvas text-t1`. The `borderRadius` lg/md/sm block and `--radius` are byte-identical.
+
+**Tests.** `tests/design-tokens.test.ts` (8 cases) pins all 27 values in both modes by hand, both
+directions between `globals.css` and `theme.extend.colors`, and the `--font-*` names against
+`app/layout.tsx`. Each mutation the acceptance asks to demonstrate fails as designed and was
+reverted: one hex changed (`#F4F4F1`→`#F4F4F0`), one colors key deleted, one font variable renamed
+in one file only. `pnpm check-types`, `pnpm test` (192/192), `pnpm lint` (0 errors, 8 pre-existing
+warnings in files this ticket does not touch), `pnpm build`, and Playwright **119/119** all pass.
+
+**The font build.** No `.woff2` files before (0 bytes — the dead Haskoy face is gone and nothing
+replaced it until now). After: **9 files, 134,336 bytes (~131KB)** under `.next/static/media/`, two
+families (Space Grotesk 3 files, JetBrains Mono 6 — per-unicode-range latin subsets). Per page the
+two preloaded faces are `0c89a48…woff2` (22,320 B) + `70bc3e1…woff2` (40,480 B) = 62,800 B
+(~61KB), both listed in `next-font-manifest.json`. The emitted CSS has a `Space Grotesk Fallback`
+and `JetBrains Mono Fallback` `@font-face` per family carrying `size-adjust`/`ascent-override`/
+`descent-override`/`line-gap-override` — the observable artefact of `adjustFontFallback`. On a
+running production build, `getComputedStyle(document.body).fontFamily` resolves to
+`"Space Grotesk", "Space Grotesk Fallback", …` and `var(--font-jetbrains)` resolves to
+`"JetBrains Mono", "JetBrains Mono Fallback"`, on `/` and `/products`, both modes. `grep
+"fonts.gstatic.com\|fonts.googleapis.com" .next/` returns only the two pre-existing matches in the
+`@vercel_og` edge chunk (Satori's OG-image runtime, present before this ticket, byte-identical
+after); `app/layout.tsx` gained no preconnect. Under `prefers-reduced-motion: reduce` the built
+CSS zeroes every transition and animation duration; `components/demo-tile.tsx` is unmodified.
+
+**The LCP measurement — why this is ready-for-human.**
+
+| cell | before median | after median | Δ median | before spread | after spread | CLS |
+|---|---|---|---|---|---|---|
+| home mobile | LCP 3,718ms | 4,076ms | **+358ms** | 3.65–5.29s | 3.94–4.11s | 0 → 0 |
+| products mobile | LCP 3,320ms | 3,635ms | **+315ms** | 3.18–3.33s | 2.79–3.73s | 0 → 0 |
+| home desktop | LCP 780ms | 867ms | +87ms | 0.76–0.80s | 0.73–0.90s | 0 → 0 |
+| products desktop | LCP 713ms | 852ms | +139ms | 0.71–0.73s | 0.74–0.92s | 0 → 0 |
+
+FCP barely moved (917→915, 922→935ms); total transferred bytes rose 624→688KB (home mobile) and
+550→614KB (products mobile). A second five-run mobile session confirms the new medians are stable:
+home 4,029ms, products 3,706ms. The per-run mobile clusters are tight and non-overlapping
+(before ≈3.65–3.83s, after ≈3.94–4.11s), so the rise is a real font effect, not session noise: the
+two preloaded woff2s sit on the throttled mobile connection before the poster fetches start. The
+acceptance's stop condition — *"the median mobile LCP delta exceeds the spread of the five runs"* —
+fires on home mobile (358ms > 170ms after-spread), so this is handed to the maintainer rather than
+resolved. Field LCP p75 was already 4,515ms mobile (Google's poor band), so the question is whether
++~330ms median on the lab mobile build is a price spec decision 4 is willing to pay, and whether a
+per-route `preload={false}` or dropping the mono face from first paint would buy it back. **What is
+left: the maintainer reads the two numbers above and says ship or trim.** Everything else in the
+acceptance is met.
+
+**Two acceptance bullets met with a caveat, recorded here rather than silently.**
+
+1. *"No colour moves."* The bullet as written contradicts step 10: step 10 repoints `body` to
+   `bg-canvas text-t1`, so `getComputedStyle(document.body)` necessarily changes — light
+   `rgb(250,250,250)`→`rgb(244,244,241)`, dark `rgb(10,10,10)`→`rgb(10,11,13)`. Its intent (no
+   component consumes a token yet) holds: no component does. `main`'s background is
+   `rgba(0,0,0,0)` before and after; main and a tile have no colour declaration of their own, so
+   their computed color inherits body and moves with it. Body is the one deliberate exception and
+   is step 10's own point. Flagged rather than "met".
+2. *"A built stylesheet contains a rule for each of `bg-canvas` … `ease-rise`"* (and the
+   `.font-mono` half of the next bullet). Tailwind tree-shakes classes no component uses, and none
+   of these is used yet — tickets 04-12 are what consume them. Verified instead with a standalone
+   Tailwind compile of exactly those classes against this `tailwind.config.ts`: every one resolves
+   to the token value (`bg-canvas`→`var(--canvas)`, `text-hero`→29px/1.1/-0.02em/500,
+   `duration-160`→160ms, `ease-rise`→`cubic-bezier(.2,.8,.2,1)`, `shadow-e2`→`var(--e2)`, etc.).
+   The values cannot be dead-wrong and dead-CSS simultaneously; the site build only proves it once
+   a surface uses them.
+
+**One test updated in scope.** `tests/e2e/theme.spec.ts` hardcoded the old dark body
+`rgb(10,10,10)`; step 10 makes it `rgb(10,11,13)`. Updated with a comment pointing at `--canvas`.
+The acceptance names this file explicitly.
+
+**Two file sets intentionally not in this commit.** `tests/e2e/theme.spec.ts` is the only test
+change. The regenerated `public/sitemap-0.xml` (which had gone stale with pre-rename `/entry/`
+URLs and new timestamps, produced by this ticket's own `pnpm build`) lands as a separate chore
+commit so the token commit stays reviewable.
