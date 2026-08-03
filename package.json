@@ -28,8 +28,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^1.0.5",
-    "@ai-sdk/openai": "^1.0.10",
+    "@ai-sdk/anthropic": "^4.0.25",
+    "@ai-sdk/openai": "^4.0.25",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.3",
@@ -49,7 +49,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "@vercel/analytics": "^1.4.1",
-    "ai": "^4.0.20",
+    "ai": "^7.0.44",
     "autoprefixer": "10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
