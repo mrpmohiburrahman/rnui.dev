@@ -1,6 +1,6 @@
 # 06 — The hero, the stats row and the headings
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 02, 04
 
 Decision 6 and decision 10 (`.scratch/studio-dark/spec.md:117,121`). The surface is
@@ -343,3 +343,46 @@ Not blocking, but contended:
   The mock's `48 OF 277 · STILLS ONLY` result line (`Catalogue.dc.html:216`) is a branch of
   this ticket's `catalogueResultLine` (step 1), because one function owns that line on every
   route; 13 passes the flag in and asserts the string.
+
+## Comments
+
+### 2026-08-03 — Built. All acceptance met, one e2e failure is pre-existing.
+
+Everything in Work steps 1-8 and 10 is done. `tests/catalogue-heading.test.ts`
+(16 cases) covers both functions row-by-row; `tests/e2e/headings.spec.ts` (7
+cases) pins the computed hero style, the heading/result-line pair on every
+route, the `1 FILTER` singular, `No matches`, `Misc, by one contributor`, and
+the `min-width`/tabular-nums the CLS argument rests on.
+
+**The two bugs the ticket predicted were both confirmed on `main`:** the
+`categoryAuthor` eyebrow and the h3/xxl `GradientHeading` on a page with no `h1`
+are gone; the resultant `gradient-heading.tsx` was deleted with no remaining
+references (`grep -rn "GradientHeading|gradient-heading|headingVariants"` is
+empty) and its two shared dependencies are still used by `components/ui/*`.
+
+**Counts.** Derived in the server component the way `app/layout.tsx` already
+does. `/` renders `277`/`getUniqueContributors().length`/`18`, never a literal —
+`grep -rn "\b277\b|24 CONTRIBUTORS|18 CATEGORIES" app components lib` returns
+nothing.
+
+**Checked.** `pnpm check-types` clean; `pnpm test` 217/217; `pnpm lint` 0 errors
+in the changed files; `pnpm build` succeeds; Playwright 129/131 (the two fails
+are `nav-empty-states-layout.spec.ts:175` `/` and `/products at 768px` `fills
+its track`, both reproduced identically on committed HEAD with this change
+stashed — pre-existing and not the hero/headings' doing; nothing in this ticket
+touches the grid track).
+
+**Three specs updated beyond `home.spec.ts` for copy, not behaviour.** The ticket
+names `home.spec.ts` as the only edited spec, but `served-html.spec.ts` and
+`nav-empty-states-layout.spec.ts` also asserted the old strings ("Awesome React
+Native UI", "Bookmarks"), and the hero rewires both. Their edits swap the string
+for the new one and make the served-HTML check use a literal `\u00a0` (React
+emits the non-breaking `&nbsp;` as an actual U+00A0). No assertion about the
+grid track, `Total Items:` or pagination numbers was touched except as named
+by the ticket's own acceptance items.
+
+`components/recording-card-grid.tsx` still carries eight `bg-[#...]`/`dark:[#...]`
+literals, but they are the retained `PILL_CLASS` and the framed-panel shadow
+(ticket 04's), none introduced here; the two new colour-bearing surfaces in this
+ticket (`components/hero.tsx`, the heading row) use only ticket 02 tokens.
+

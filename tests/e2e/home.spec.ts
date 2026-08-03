@@ -45,10 +45,18 @@ test("home page renders catalog and search", async ({ page }) => {
 
   // Hero / title visible. By role, because it is the one h1 on the page — the
   // comment that used to justify this ("the footer repeats the name twice") was
-  // retired with the old footer, which the ticket 04 footer replaced.
+  // retired with the old footer, which the ticket 04 footer replaced. The copy
+  // changed with the Studio Dark hero (ticket 06).
   await expect(
-    page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
+    page.getByRole("heading", {
+      level: 1,
+      name: "A dark room full of React Native interfaces, playing quietly.",
+    })
   ).toBeVisible()
+
+  // Exactly one h1 on the route: the hero is it, and the heading row renders as
+  // an h2 beneath it (recording-card-grid.tsx).
+  await expect(page.locator("h1")).toHaveCount(1)
 
   // Search input present, in the header now (ticket 04 step 5), named with the
   // catalogue size. By its accessible name, which it did not have when this was

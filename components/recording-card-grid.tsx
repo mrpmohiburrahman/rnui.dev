@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
+import { catalogueResultLine } from "@/lib/catalogue-heading"
 import { cn } from "@/lib/utils"
 
 import { RecordingCard } from "./recording-card"
@@ -51,8 +52,7 @@ export interface RecordingCardGridProps {
   toggleBookmark: (id: string) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
-  /**
-   * The phone's only sort control. The desktop pills this grid used to render
+  /** The phone's only sort control. The desktop pills this grid used to render
    * moved into the header (ticket 04 step 7), and below `md` the header draws no
    * sort control at all (step 10) — so this dropdown, `flex sm:hidden`, is the
    * only one there is on a phone until ticket 11 replaces it with the filter
@@ -61,6 +61,25 @@ export interface RecordingCardGridProps {
    */
   setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void
   currentSort?: "recent" | "top-voted" | "top-viewed"
+  /**
+   * The catalogue hero, rendered above the heading row and outside the framed
+   * panel. Absent on `/products` and `/bookmarks`, which show only the heading.
+   * When present, the heading below is an `h2` so the page keeps exactly one
+   * `h1` (the hero's).
+   */
+  hero?: React.ReactNode
+  /**
+   * The section head text. This grid owns the heading element but not the
+   * string — a route computes it from the filter state.
+   */
+  heading: string
+  /** The whole catalogue size, always 277 — never the filtered set. Used as the
+   * denominator of the result line. Absent on `/bookmarks`, whose saved view has
+   * no denominator. */
+  catalogueTotal?: number
+  /** Show only bookmarked Recordings; selects the `N SAVED · THIS BROWSER` form
+   * of the result line. */
+  bookmarkedOnly?: boolean
 }
 
 export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
@@ -74,6 +93,10 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   toggleVote,
   setSort,
   currentSort,
+  hero,
+  heading,
+  catalogueTotal,
+  bookmarkedOnly,
 }) => {
   const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
   // Pagination lives in the URL, not in state, so a page is shareable and Back
@@ -86,6 +109,28 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   const shownCount = page * PAGE_SIZE
   const hasMore = total > shownCount
   const isEmpty = total === 0
+  const shown = Math.min(shownCount, total)
+
+  // The number of category / contributor / search filters that are on, read
+  // from the same useSearchParams already in hand. It drives the FILTERS tail of
+  // the result line, not any heading logic — a search term never enters the
+  // heading (lib/catalogue-heading.ts).
+  const activeCategory = searchParams.get("category") ?? ""
+  const activeContributor = searchParams.get("contributor") ?? ""
+  const search = searchParams.get("search") ?? ""
+  const filterCount = [activeCategory, activeContributor, search].filter(
+    Boolean
+  ).length
+
+  const resultLine = catalogueResultLine({
+    shown,
+    // The saved view's form has no denominator, so `total` is the safe
+    // fallback when a route (bookmarks) supplies none.
+    catalogueTotal: catalogueTotal ?? total,
+    filterCount,
+    savedView: bookmarkedOnly,
+    sort: currentSort ?? "recent",
+  })
 
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
@@ -109,7 +154,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   // The term itself never leaves this closure — `searchPerformed` takes a
   // length. `null` means nothing has been reported yet, which is how a page
   // arriving at /?search=slider from a shared link stays silent: nobody typed.
-  const search = searchParams.get("search") ?? ""
   const reported = useRef<string | null>(null)
   useEffect(() => {
     if (reported.current === search) return
@@ -125,6 +169,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
       // style={{ borderWidth: 1, borderColor: "purple" }}
       className="flex flex-col md:items-start gap-4 overflow-hidden pb-4 md:mx-4 mx-0  relative"
     >
+      {hero && <div className="w-full">{hero}</div>}
       <div
         className={cn(
           "px-4",
@@ -205,6 +250,23 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
             </button>
           </div>
         )}
+      </div>
+      {/* The heading row, Catalogue.dc.html:85-88: the section head on the
+          left and the mono result line right-aligned on a reserved width. The
+          heading is an h2 when the hero is present and an h1 when it is not, so
+          every route carries exactly one h1 — /products has none without this.
+          The `min-width:180px` and tabular-nums are not decoration: the result
+          count occupies its exact reserved width as tabular monospace so
+          nothing reflows when the real number replaces an estimate. */}
+      <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">
+        {hero ? (
+          <h2 className="text-section m-0 text-t1">{heading}</h2>
+        ) : (
+          <h1 className="text-section m-0 text-t1">{heading}</h1>
+        )}
+        <span className="text-[10px] font-mono tracking-[0.1em] text-t3 min-w-[180px] text-right tabular-nums">
+          {resultLine}
+        </span>
       </div>
       <div
         className={cn(

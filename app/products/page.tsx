@@ -2,10 +2,11 @@
 
 import type { ReactElement } from "react"
 import { permanentRedirect } from "next/navigation"
-import { BoxIcon, Search, User } from "lucide-react"
+import { allRecordings } from "@/data/catalogue"
+import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 
+import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
-import { GradientHeading } from "@/components/cult/gradient-heading"
 
 // Adjust the import path if necessary
 import { getRecordings } from "../actions/get-recordings"
@@ -49,32 +50,26 @@ const RecordingsPage = async ({
   const { search, category, contributor } = params
   const data = await getRecordings(search, category, contributor)
 
+  const stats = {
+    recordings: allRecordings.length,
+    contributors: getUniqueContributors().length,
+    categories: getUniqueCategories().length,
+  }
+
   return (
     <div className="flex">
       <div className=" max-w-full pt-4">
-        <CataloguePage recordings={data} treatment="plain">
-          {(search || category || contributor) && (
-            <div className="md:mr-auto mx-auto flex flex-col items-center md:items-start">
-              <div className="flex mb-1 justify-center md:justify-start">
-                {search && (
-                  <Search className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {category && (
-                  <BoxIcon className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {contributor && (
-                  <User className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {search && "search"}
-                {category && "category"}
-                {contributor && "Contributor"}
-              </div>
-              <GradientHeading size="xxl">
-                {search || category || contributor}
-              </GradientHeading>
-            </div>
-          )}
-        </CataloguePage>
+        <CataloguePage
+          recordings={data}
+          treatment="plain"
+          stats={stats}
+          showHero={false}
+          heading={catalogueHeading({
+            category,
+            contributor,
+            total: data.length,
+          })}
+        />
       </div>
     </div>
   )

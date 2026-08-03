@@ -35,7 +35,10 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
 }) => {
   const html = await (await request.get("/")).text()
 
-  expect(html).toMatch(/<h1[^>]*>Awesome React Native UI<\/h1>/)
+  // React renders the hero's `&nbsp;` as an actual U+00A0, not the literal text.
+  expect(html).toMatch(
+    /<h1[^>]*>A dark room full of React\u00A0Native interfaces, playing quietly\.<\/h1>/
+  )
 
   // All three sort controls, now the header's segment (ticket 04 step 7). They
   // are what the guard dropped along with the grid, since the heading is passed
@@ -67,7 +70,7 @@ test("the served HTML of /bookmarks carries its heading", async ({
   request,
 }) => {
   const html = await (await request.get("/bookmarks")).text()
-  expect(html).toMatch(/<h1[^>]*>Bookmarks<\/h1>/)
+  expect(html).toMatch(/<h1[^>]*>Saved on this device<\/h1>/)
 })
 
 for (const route of ROUTES) {
@@ -93,7 +96,10 @@ test("/ is readable with JavaScript turned off", async ({ browser }) => {
   await page.goto("/")
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
+    page.getByRole("heading", {
+      level: 1,
+      name: "A dark room full of React Native interfaces, playing quietly.",
+    })
   ).toBeVisible()
   await expect(page.getByTestId("demo").first()).toBeVisible()
 
