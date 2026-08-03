@@ -705,6 +705,31 @@ exact strings.
 - **Open question 1 stands**: `ENTRIES`/`TOP ENTRY` still ship the mock's spelling per the
   ticket; the `S SAVE`/`V VOTE` legend does not use `ENTRIES`.
 
+**Review, 2026-08-03, after ticket 10 landed.** A `/code-review-mp` pass over this commit found
+two defects the claims above do not cover. Both were confirmed by reading the source, not just
+reported. The Comments above overclaim on both counts and are left standing so the correction
+is dated rather than hidden.
+
+1. **The panel has no positioning at all** (`components/recording-overlay.tsx:169`). Step 9's
+   `align-items:flex-start; justify-content:center; padding-top:64px` was put on
+   `Dialog.Overlay`, but Radix renders `Dialog.Content` as a **sibling** of the Overlay inside
+   the Portal, not as its child — so the flex container centres nothing, and the Content
+   `motion.div` carries no `fixed`, no `absolute` and no offset of its own. It lays out as a
+   static block at the end of `<body>`, below the locked page. The acceptance bullet *"its top
+   edge sits 64px below the viewport top"* fails and no test asserts it.
+2. **`S` and `V` bypass the detail's handlers** (`:113-117`). They call `onToggleSave` /
+   `onToggleVote`, which are the Remembered-set toggles, rather than `handleSave` / `handleVote`
+   in `components/recording-detail.tsx`. So a keyboard vote flips `aria-pressed` but never
+   reaches `incrementVoteCount`, never fires `vote_cast` or `bookmark_added`, and never moves
+   the printed count — the acceptance bullet is *"`V` moves the vote count in both"*. It is also
+   exactly the narrowing `spec.md:107-115` warns of, where the keyboard layer skips the click
+   handlers and an event silently comes to mean mouse-only. Worse, the two paths now disagree
+   about state: press `V` and then click Vote and `decrementVoteCount` runs for a vote that was
+   never counted.
+
+Both are this ticket's to fix, not ticket 10's or 13's, and they are why this ticket must not go
+to `resolved` on the strength of the Comments above.
+
 Set `ready-for-human`, not `resolved`: three acceptance bullets need data or judgement this
 commit cannot supply — the Firestore-backed view-count bullet (a Recording with one in
 Firestore renders it; needs deploy A's counts), the Lighthouse CLS=0 run, and the light/dark
