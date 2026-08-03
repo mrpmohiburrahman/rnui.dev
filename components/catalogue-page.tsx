@@ -44,6 +44,17 @@ interface CataloguePageProps {
    * because `/bookmarks` cannot supply them — this route is a client component
    * and counting here would pull the catalogue into a client chunk. */
   stats?: { recordings: number; contributors: number; categories: number }
+  /** Whole-catalogue Recordings per Contributor — `RECORDINGS_PER_CONTRIBUTOR`,
+   * step 1's `catalogueFacts.perContributor`, folded in beside `stats` rather
+   * than added as a second facts object. Both server routes pass it because
+   * both hand over a filtered set, and a count derived from a filtered set is
+   * the size of the filter. `/bookmarks` omits it: that route fetches the whole
+   * catalogue and filters in here, so deriving is exact.
+   *
+   * Passing the map as a prop value does not put data/catalogue in a client
+   * chunk — it travels as RSC payload data, 23 entries, exactly as `stats`
+   * already does. */
+  perContributor?: Record<string, number>
   /** The whole catalogue's top view count, the denominator of every tile's
    * views bar. Threaded from the routes, like the Recordings themselves. */
   topViewCount: number
@@ -67,6 +78,7 @@ export function CataloguePage({
   bookmarkedOnly = false,
   showHero = false,
   stats,
+  perContributor,
   heading,
   diagnosis,
   children,
@@ -132,27 +144,38 @@ export function CataloguePage({
       ? { kind: "saved" }
       : null
 
-  // What the open Recording's detail draws. Derived here, from `recordings` in
-  // hand — never by importing data/catalogue into a client chunk (ticket 09
-  // step 8) — so `/products?category=Buttons` narrows them to their other
-  // Buttons, which is narrower than the heading but never untrue. On `/` and
-  // `/bookmarks` the whole 277 are in hand, so the Contributor count is exactly
-  // RECORDINGS_PER_CONTRIBUTOR and `more` is their true other Recordings.
+  // What the open Recording's detail draws.
+  //
+  // `contributorTotal` is the route's whole-catalogue map when it supplies one,
+  // and only falls back to counting the Recordings in hand when it does not
+  // (/bookmarks, where the two are the same answer). It used to always count the
+  // set in hand, which on /products?category=X is the *filtered* set — so the
+  // panel read "3 of the 277 recordings here are theirs" with a `See all 3 →`
+  // that landed on a page showing 124. The numerator was of the filter and the
+  // denominator was of the catalogue.
+  //
+  // `more` stays derived from the set in hand, deliberately: step 8 wants the
+  // Recordings themselves and getting those from anywhere else means importing
+  // data/catalogue into a client chunk. So on a filtered route the See-all link
+  // can now name a bigger number than the strip below it shows, which is the
+  // honest pair — the link goes where it says it goes.
   const sameCategory = useMemo(
-    () =>
-      recordings.filter((r) => r.category === openRecording?.category),
+    () => recordings.filter((r) => r.category === openRecording?.category),
     [recordings, openRecording]
   )
   const catalogueTotalProvided = stats?.recordings ?? recordings.length
   const contributorTotal = openRecording
-    ? recordings.filter((r) => r.contributor === openRecording.contributor).length
+    ? (perContributor?.[openRecording.contributor] ??
+      recordings.filter((r) => r.contributor === openRecording.contributor)
+        .length)
     : 0
   const more = useMemo(() => {
     if (!openRecording) return []
     return recordings
       .filter(
         (r) =>
-          r.contributor === openRecording.contributor && r.id !== openRecording.id
+          r.contributor === openRecording.contributor &&
+          r.id !== openRecording.id
       )
       .slice(0, 2)
   }, [recordings, openRecording])
@@ -202,7 +225,11 @@ export function CataloguePage({
         contributorTotal={contributorTotal}
         more={more}
         sequence={sameCategory}
-        saved={openRecording ? (bookmarks?.includes(openRecording.id) ?? false) : false}
+        saved={
+          openRecording
+            ? (bookmarks?.includes(openRecording.id) ?? false)
+            : false
+        }
         voted={
           openRecording
             ? (votedRecordingIds?.includes(openRecording.id) ?? false)

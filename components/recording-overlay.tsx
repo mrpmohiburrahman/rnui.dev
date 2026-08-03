@@ -91,34 +91,53 @@ export function RecordingOverlay({
   // an open (ADR-0007:3 reach), so it counts a view and flags `opened_from:
   // keyboard` (see ## Comments: a third value beside `card` and `url`).
   const moveTo = (next: Recording) => {
-    window.history.replaceState(null, "", `/recording/${next.id}${window.location.search}`)
+    window.history.replaceState(
+      null,
+      "",
+      `/recording/${next.id}${window.location.search}`
+    )
     countView(next.id)
     recordingOpened(recordingFacts(next), "keyboard")
   }
 
-  // One keydown listeners on window, added while a Recording is open and removed
+  // The arrows, on a window listener added while a Recording is open and removed
   // when it closes. Escape is not in it: Radix owns Escape through onOpenChange.
   // ArrowLeft/Right move within the sequence, clamped at both ends rather than
-  // wrapping; s/S and v/V toggle save and vote; a command or alt key returns
-  // early so ⌘← (browser Back) keeps working — it is the one close path there is.
+  // wrapping; a command or alt key returns early so ⌘← (browser Back) keeps
+  // working — it is the one close path there is.
+  //
+  // S and V are NOT here, though step 10 wrote them here. Step 10 says they
+  // "call `onToggleSave`" / "`onToggleVote`", and they did — but those props are
+  // the bare Remembered-set toggles (catalogue-page.tsx:211-212), while the
+  // click path is handleSave/handleVote inside components/recording-detail.tsx,
+  // which also fire bookmark_added / vote_cast and call
+  // increment/decrementVoteCount. So the keyboard flipped aria-pressed and
+  // nothing else: no Firestore, no PostHog, and no movement in the count the
+  // panel prints — against the acceptance's "V moves the vote count in both",
+  // and the exact narrowing spec.md:107-115 warns the keyboard layer must not
+  // cause. Worse, the two paths disagreed about state, so V then a click ran
+  // decrementVoteCount for a vote never counted.
+  //
+  // The fix is to put the keys on the component that owns what they do rather
+  // than to rebuild its handlers here: RecordingDetail holds the optimistic
+  // count as well as the handlers, so lifting them would have moved that state
+  // too, and duplicated it again for the standalone route. It takes
+  // `keyboardControls` and listens for S and V itself. The cost is a second
+  // window listener while the overlay is open, which is the one thing here that
+  // departs from step 10 as written.
   useEffect(() => {
     if (!recording) return
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return
-      const key = e.key
-      if (key === "ArrowLeft") {
+      if (e.key === "ArrowLeft") {
         if (index > 0) moveTo(sequence[index - 1])
-      } else if (key === "ArrowRight") {
+      } else if (e.key === "ArrowRight") {
         if (index < sequence.length - 1) moveTo(sequence[index + 1])
-      } else if (key === "s" || key === "S") {
-        onToggleSave()
-      } else if (key === "v" || key === "V") {
-        onToggleVote()
       }
     }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [recording, sequence, index, onToggleSave, onToggleVote])
+  }, [recording, sequence, index])
 
   const position = sequence.length > 0 ? index + 1 : 0
 
@@ -132,16 +151,30 @@ export function RecordingOverlay({
       <AnimatePresence>
         {recording && (
           <Dialog.Portal forceMount>
-            {/* The scrim: top-aligned, canvas-tinted, blurred. The token carries
-                its own alpha, so there is no opacity sublayer and no bg-black.
+            {/* The scrim: canvas-tinted, blurred. The token carries its own
+                alpha, so there is no opacity sublayer and no bg-black.
                 Full-viewport backdrop blur is the one thing added here with a
-                real cost on a low-end phone — ticket 13 measures it. */}
+                real cost on a low-end phone — ticket 13 measures it.
+
+                It carries no flex. Step 9 quotes the mock's
+                `align-items:flex-start; justify-content:center; padding-top:64px`
+                from Catalogue.dc.html:167, where the Detail really is a child of
+                the scrim div — but Radix gives every Dialog.Portal child its own
+                portal, so Overlay and Content are siblings on <body> and a flex
+                container here has nothing to lay out. The panel positions
+                itself instead, which is what the rest of step 9 describes. */}
             <Dialog.Overlay asChild forceMount>
               <motion.div
-                className="fixed inset-0 z-50 bg-scrim backdrop-blur-[3px] flex items-start justify-center pt-16"
+                className="fixed inset-0 z-50 bg-scrim backdrop-blur-[3px]"
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { duration: enter, ease: RISE } }}
-                exit={{ opacity: 0, transition: { duration: exit, ease: "easeIn" } }}
+                animate={{
+                  opacity: 1,
+                  transition: { duration: enter, ease: RISE },
+                }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: exit, ease: "easeIn" },
+                }}
               />
             </Dialog.Overlay>
             <Dialog.Content
@@ -164,24 +197,54 @@ export function RecordingOverlay({
                 }
               }}
             >
-              {/* Top-aligned panel. The bar (context, legend, close) is first in
-                  the DOM so Radix focuses the close button on open. */}
+              {/* Top-aligned panel, positioned by itself: `top-16` is step 9's
+                  64px, and `left-1/2` with `x: "-50%"` is its horizontal centre.
+                  The `x` is repeated across all three motion states for the
+                  reason step 9 records — framer writes `transform` wholesale, so
+                  a Tailwind `-translate-x-1/2` would be wiped the moment `y`
+                  animates. What went, and only what went, is the vertical
+                  centring: `top-1/2` and `y: "-50%"`.
+
+                  `max-h` plus the body's own scroll keeps a tall Recording
+                  reachable without the panel losing its 18px corners; Radix
+                  already whitelists this subtree for wheel and touch while the
+                  page behind it is locked.
+
+                  The bar (context, legend, close) is first in the DOM so Radix
+                  focuses the close button on open. */}
               <motion.div
-                className="w-[1080px] max-w-[calc(100vw-32px)] rounded-[18px] border border-line2 bg-panel shadow-e2 overflow-hidden z-50 flex flex-col"
-                initial={{ opacity: 0, y: rise }}
-                animate={{ opacity: 1, y: 0, transition: { duration: enter, ease: RISE } }}
-                exit={{ opacity: 0, y: rise, transition: { duration: exit, ease: "easeIn" } }}
+                className="fixed left-1/2 top-16 z-50 w-[1080px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-64px)] rounded-[18px] border border-line2 bg-panel shadow-e2 overflow-hidden flex flex-col"
+                initial={{ opacity: 0, x: "-50%", y: rise }}
+                animate={{
+                  opacity: 1,
+                  x: "-50%",
+                  y: 0,
+                  transition: { duration: enter, ease: RISE },
+                }}
+                exit={{
+                  opacity: 0,
+                  x: "-50%",
+                  y: rise,
+                  transition: { duration: exit, ease: "easeIn" },
+                }}
               >
                 {/* The chrome bar, Detail.dc.html:22-26. rail bg, border-b. */}
                 <div className="flex items-center gap-3.5 px-[18px] py-3.5 border-b border-line bg-rail">
                   <span className="font-mono text-[9.5px] tracking-[0.13em] text-t3">
-                    {recording.category.toUpperCase()} · {position} OF {sequence.length}
+                    {recording.category.toUpperCase()} · {position} OF{" "}
+                    {sequence.length}
                   </span>
                   <span className="ml-auto flex items-center gap-[9px] font-mono text-[9px] tracking-[0.1em] text-t3">
                     <span aria-hidden>←</span>
                     <span aria-hidden>→</span> PREV / NEXT
-                    <span aria-hidden className="text-line2">|</span> S SAVE
-                    <span aria-hidden className="text-line2">|</span> V VOTE
+                    <span aria-hidden className="text-line2">
+                      |
+                    </span>{" "}
+                    S SAVE
+                    <span aria-hidden className="text-line2">
+                      |
+                    </span>{" "}
+                    V VOTE
                   </span>
                   <Dialog.Close asChild>
                     <button
@@ -194,10 +257,15 @@ export function RecordingOverlay({
                   </Dialog.Close>
                 </div>
 
-                <div className="px-7 py-[26px]" >
+                {/* min-h-0 or this flex child refuses to shrink and gets
+                    clipped by the panel's overflow-hidden instead of scrolling. */}
+                <div className="px-7 py-[26px] overflow-y-auto min-h-0">
                   <RecordingDetail
                     recording={recording}
                     Title={Dialog.Title}
+                    // S and V belong to the body, because the controls they
+                    // operate do. See the comment on the keydown effect above.
+                    keyboardControls
                     topViewCount={topViewCount}
                     catalogueTotal={catalogueTotal}
                     contributorTotal={contributorTotal}

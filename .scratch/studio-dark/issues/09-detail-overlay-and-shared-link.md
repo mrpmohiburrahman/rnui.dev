@@ -730,6 +730,78 @@ is dated rather than hidden.
 Both are this ticket's to fix, not ticket 10's or 13's, and they are why this ticket must not go
 to `resolved` on the strength of the Comments above.
 
+**Fixed, same day, at the maintainer's direction.** Every claim below was verified against this
+ticket and the source before anything was edited; three of the ten reported turned out to be
+wrong or already handled and are recorded as such. `pnpm check-types` clean, `pnpm lint` 0
+errors, `pnpm test` 245/245, `pnpm build` compiled, Playwright **174/174 with no flake**.
+
+- **The panel positions itself** (`components/recording-overlay.tsx`). `fixed left-1/2 top-16`
+  with `x: "-50%"` repeated across all three motion states, which is step 9 as written — the
+  `x` is there for step 9's own reason, that framer writes `transform` wholesale and would wipe
+  a Tailwind `-translate-x-1/2` the moment `y` animates. The dead flex came off the scrim, and
+  the panel gained `max-h-[calc(100vh-64px)]` with `overflow-y-auto min-h-0` on the body so a
+  tall Recording scrolls inside its own corners. Measured: the panel's top edge is **64px**,
+  width 1080px at 1440px, centred on 720. It was **6396px** — a static block below the locked
+  page. There is now a test for the acceptance bullet, which never had one.
+- **`S` and `V` call the handlers the buttons call.** They moved into
+  `components/recording-detail.tsx` behind a `keyboardControls` prop, because that is where
+  `handleSave`/`handleVote` and the optimistic count already live; lifting them into the overlay
+  would have moved that state too and duplicated it again for the standalone route. This is the
+  one place the fix departs from step 10, which put every key on one window listener: there are
+  now two while the overlay is open, arrows in the overlay and S/V in the body. The new test
+  compares the server actions a keyboard vote fires against the ones the button fires and
+  requires the same set — the old test asserted `aria-pressed` alone, which is exactly what a
+  keyboard path that wrote nothing could satisfy.
+- **`perContributor` is threaded, so step 1's `catalogueFacts` finally exists** in the form the
+  step asked for, folded in beside `stats` rather than as a second facts object. `/` and
+  `/products` both pass `RECORDINGS_PER_CONTRIBUTOR`; `/bookmarks` omits it and deriving there
+  is exact. On `/products?category=Charts` the line read *"3 of the 277 recordings here are
+  theirs"* with a `See all 3 →` that landed on 124. `more` stays derived from the set in hand,
+  per step 8 — so on a filtered route the link can name a bigger number than the strip shows,
+  which is the honest pair, because the link goes where it says it goes.
+- **The standalone route stopped adding a Firestore read.** It now awaits the cached
+  `getRecordings()` and `getTopViewCount()` together instead of calling `getRecordingsWithCounts()`
+  and reducing `Math.max` over the array itself — step 6's "do not reduce over the array a second
+  time" and step 13's "await ticket 07's `getTopViewCount()` here". `catalogueTotal` and
+  `contributorTotal` now come from `allRecordings` and `RECORDINGS_PER_CONTRIBUTOR`, so a
+  Firestore outage — which `getRecordings()` answers with `[]` rather than a throw — cannot make
+  the page print *"0 of the 0 recordings here"*, and the two surfaces cannot give one Recording
+  two different Contributor totals.
+- **An absent social id states the absence for all three networks**, not LinkedIn only. The
+  guard moved into `profileLink`, where all three pass through it, and `profileUrlFor` now
+  matches on the network name rather than on the rendered copy — it read `label.startsWith("X")`
+  against the display string, so renaming a link would have silently repointed it. 17 Recordings
+  have a `githubId` and no `twitterId`; all of them showed a gap where the mock draws a sentence.
+- **The page form's title is an `h1`** (step 4). The route shipped no `h1` at all, and the
+  existing test pinned the defect by asserting level 2.
+- **The desktop vote button reads `▲ Vote`** (step 7). Only the accessible name carried the word.
+- **The reduced-motion matcher reads `ty`.** It matched group 2 of
+  `matrix\(([-\d.]+), 0, 0, ([-\d.]+),` — that is `d`, the y-scale — and never matched
+  `matrix3d(` at all. It passed only because the panel had no horizontal centring to write, so
+  every frame was `transform: none`; adding `x: "-50%"` made the matrix branch live and it had
+  to be right. It now parses the list and indexes `ty` per form, and asserts the scale the
+  acceptance names, which the old matcher only enforced by accident.
+
+Three reported problems were **not** defects and nothing was changed for them:
+
+- **The empty `MORE FROM THIS CONTRIBUTOR` strip is already handled** — named at step 8, asserted
+  in the acceptance, and implemented. Ticket 10 step 7 asked that it be named here; it was.
+- **`ENTRIES` / `TOP ENTRY` is Open question 1, not an oversight.** The strings are mandated by
+  this ticket in normative steps *and* in the acceptance, so the code is not off-spec. But the
+  conflict is real and unexempted: ADR-0008 renames the domain "in code and in copy", `CONTEXT.md`
+  lists **entry** under Recording's *Avoid*, and ticket 04 already broke this tie against the mock
+  once — `components/site-footer.tsx` ships "Every recording belongs to its contributor." Of the
+  four strings, one now says recording, one still says entry (`components/hero.tsx`, ticket 06's
+  own open question) and these two are here. **This is the maintainer's call and it should be made
+  in one pass over all four**; patching two of them would leave the site disagreeing with itself.
+- **The strip does not reuse ticket 07's tile at `state="paused"`** (step 8). Left as it is,
+  deliberately: reuse means making the playback owner optional in
+  `components/playback-owner.tsx` and `components/demo-tile.tsx`, which are what every tile in
+  the grid depends on, to change something no acceptance bullet measures — the bullet asks for
+  two tiles at 140px, neither the open Recording, no `↳` marker, absent for a Contributor with
+  one Recording, and the hand-rolled block satisfies all four. Named here rather than done, so
+  the choice is visible.
+
 Set `ready-for-human`, not `resolved`: three acceptance bullets need data or judgement this
 commit cannot supply — the Firestore-backed view-count bullet (a Recording with one in
 Firestore renders it; needs deploy A's counts), the Lighthouse CLS=0 run, and the light/dark

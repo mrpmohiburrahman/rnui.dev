@@ -76,6 +76,7 @@ export function RecordingDetail({
   // after components/recording-card.tsx has already counted, so a component that
   // decided for itself would double-bill every open from the grid.
   countsOwnOpen = false,
+  keyboardControls = false,
   topViewCount,
   catalogueTotal,
   contributorTotal,
@@ -88,6 +89,16 @@ export function RecordingDetail({
   recording: Recording
   Title?: React.ElementType
   countsOwnOpen?: boolean
+  /** Listen for `S` and `V` while mounted. The overlay sets it, because the
+   * overlay is the surface that draws the `S SAVE | V VOTE` legend; the
+   * standalone route does not, and neither does anything else.
+   *
+   * The keys live here rather than in the overlay's own keydown effect because
+   * this is where the handlers they have to be — the ones that fire the events
+   * and move Firestore — already are, alongside the optimistic count they move.
+   * Driving them from outside is what made a keyboard vote a no-op that still
+   * flipped `aria-pressed` (ticket 09 review, 2026-08-03). */
+  keyboardControls?: boolean
   /** The whole catalogue's top view count — the view bar's denominator
    * (ticket 07 step 8), threaded rather than recomputed here so the tile and
    * the detail cannot disagree. */
@@ -137,7 +148,10 @@ export function RecordingDetail({
   // can never claim PLAYING over a box that is not. `aspect` measured by
   // assets:measure; the 9/16 fallback keeps an unmeasured Recording from
   // colliding with its label (which selects by the same measured aspect).
-  const [media, setMedia] = useState<MediaState>({ playing: false, failed: false })
+  const [media, setMedia] = useState<MediaState>({
+    playing: false,
+    failed: false,
+  })
 
   // The displayed vote count follows the Recording with this visitor's clicks
   // added on top, the same pattern the tile works out in full
@@ -179,6 +193,23 @@ export function RecordingDetail({
     onToggleSave()
   }, [saved, facts, onToggleSave])
 
+  // `S` and `V`, the two keys the overlay's legend promises. They call exactly
+  // the handlers the buttons call, which is the whole point of them being here:
+  // the acceptance is "`V` moves the vote count in both", and only handleVote
+  // moves a count. A modified key returns early for the same reason the arrows
+  // do — ⌘← is browser Back and closing is what it must keep doing.
+  useEffect(() => {
+    if (!keyboardControls) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      const key = e.key.toLowerCase()
+      if (key === "s") handleSave()
+      else if (key === "v") void handleVote()
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [keyboardControls, handleSave, handleVote])
+
   const aspectStr =
     recording.aspect && recording.aspect > 0
       ? formatAspect(recording.aspect)
@@ -195,7 +226,11 @@ export function RecordingDetail({
     topViewCount > 0 ? Math.round((viewCount / topViewCount) * 100) : 0
   const fillWidth = Math.max(4, viewPct)
 
-  const mediaState = media.failed ? "failed" : media.playing ? "playing" : "still"
+  const mediaState = media.failed
+    ? "failed"
+    : media.playing
+      ? "playing"
+      : "still"
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 lg:gap-10">
@@ -225,9 +260,7 @@ export function RecordingDetail({
           {/* Chrome over the media. pointer-events-none so it never sits between
               a visitor and the play control. */}
           <div className="pointer-events-none absolute inset-0">
-            <span className="detail-media-center font-mono">
-              {aspectStr}
-            </span>
+            <span className="detail-media-center font-mono">{aspectStr}</span>
             <span className="detail-pip font-mono" aria-hidden />
             <span className="detail-noaudio font-mono" aria-hidden>
               NO AUDIO TRACK
@@ -250,9 +283,7 @@ export function RecordingDetail({
               // site with no event — same hole as the See-all link below, one
               // line away, so it is closed here rather than left for whoever
               // notices the funnel is short.
-              onClick={() =>
-                filterApplied("category", recording.category, 1)
-              }
+              onClick={() => filterApplied("category", recording.category, 1)}
               className="font-mono text-[9.5px] tracking-[0.12em] text-acc underline underline-offset-3 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 focus-visible:rounded-[3px]"
             >
               {recording.category.toUpperCase()}
@@ -265,7 +296,7 @@ export function RecordingDetail({
           </div>
           <Title
             className="text-[24px] lg:text-[30px] xl:text-detail font-medium leading-[1.12] tracking-[-0.025em] text-t1 text-pretty m-0"
-            style={{ "textWrap": "pretty" } as React.CSSProperties}
+            style={{ textWrap: "pretty" } as React.CSSProperties}
           >
             {recording.caption}
           </Title>
@@ -283,19 +314,13 @@ export function RecordingDetail({
             <div className="font-mono text-[8.5px] tracking-[0.14em] text-t3 pb-[3px]">
               CONTRIBUTED BY
             </div>
-            <div
-              className="text-[14px] leading-[1.3] text-t1 [overflow-wrap:anywhere]"
-            >
+            <div className="text-[14px] leading-[1.3] text-t1 [overflow-wrap:anywhere]">
               {recording.contributor}
             </div>
             <div className="flex flex-wrap gap-2.5 pt-[7px]">
-              {profileLink(recording.twitterId, "X ↗")}
-              {profileLink(recording.githubId, "GitHub ↗")}
-              {recording.linkedInId ? (
-                profileLink(recording.linkedInId, "LinkedIn ↗")
-              ) : (
-                <span className="text-xs text-t3">LinkedIn not listed</span>
-              )}
+              {profileLink(recording.twitterId, "X")}
+              {profileLink(recording.githubId, "GitHub")}
+              {profileLink(recording.linkedInId, "LinkedIn")}
             </div>
             <div className="pt-2 text-[11.5px] leading-[1.45] text-t2">
               {contributorTotal} of the {catalogueTotal} recordings here{" "}
@@ -354,7 +379,11 @@ export function RecordingDetail({
                 "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
               )}
             >
-              <span aria-hidden>▲</span>{" "}
+              {/* Glyph and word in one flex item, so the button's gap-2 is the
+                  mock's 8px between `▲ Vote` and the count and nowhere else. */}
+              <span>
+                <span aria-hidden>▲</span> Vote
+              </span>{" "}
               <span className="font-mono text-[11px] text-t2 tabular-nums">
                 {voteCount}
               </span>
@@ -372,7 +401,8 @@ export function RecordingDetail({
                 "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
               )}
             >
-              <span aria-hidden>{saved ? "◆" : "◇"}</span> {saved ? "Saved" : "Save"}
+              <span aria-hidden>{saved ? "◆" : "◇"}</span>{" "}
+              {saved ? "Saved" : "Save"}
             </button>
             {/* Repo */}
             <a
@@ -447,7 +477,8 @@ export function RecordingDetail({
                         />
                       </div>
                       <span className="font-mono text-[10px] text-t3 tabular-nums whitespace-nowrap">
-                        {(related.view_count ?? 0).toLocaleString("en-US")} views
+                        {(related.view_count ?? 0).toLocaleString("en-US")}{" "}
+                        views
                       </span>
                     </div>
                   </div>
@@ -497,23 +528,32 @@ export function RecordingDetail({
 }
 
 /** A Contributor profile link, built the way the tile builds its three URLs
- * (recording-card.tsx:330,343,355) so the label changes but the host does not. */
-function profileLink(id: string | undefined, label: string): React.ReactNode {
-  if (!id) return null
+ * (recording-card.tsx:330,343,355) so the label changes but the host does not.
+ *
+ * An absent id states the absence rather than rendering nothing — step 5, and
+ * `rnui Studio Dark.dc.html:81`'s stated intent. It was doing that for LinkedIn
+ * only, at the call site; the guard belongs in here, where all three networks
+ * pass through it. The parameter is now the bare network name, so the `↗` and
+ * the "not listed" wording are both built from one string. */
+function profileLink(id: string | undefined, name: string): React.ReactNode {
+  if (!id) return <span className="text-xs text-t3">{name} not listed</span>
   return (
     <a
-      href={profileUrlFor(id, label)}
+      href={profileUrlFor(id, name)}
       target="_blank"
       rel="noopener noreferrer"
       className="text-xs text-acc underline underline-offset-3 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 focus-visible:rounded-[3px]"
     >
-      {label}
+      {name} ↗
     </a>
   )
 }
 
-function profileUrlFor(id: string, label: string): string {
-  if (label.startsWith("X")) return `https://twitter.com/${id}`
-  if (label.startsWith("GitHub")) return `https://github.com/${id}`
+// Matched on the network name rather than the display copy. It used to read
+// `label.startsWith("X")` against the rendered string, so changing what a link
+// says would have silently repointed where it goes.
+function profileUrlFor(id: string, name: string): string {
+  if (name === "X") return `https://twitter.com/${id}`
+  if (name === "GitHub") return `https://github.com/${id}`
   return `https://linkedin.com/in/${id}`
 }

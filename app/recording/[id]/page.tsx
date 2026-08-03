@@ -2,7 +2,7 @@
 //
 // One Recording, at its own address. 277 of these are prerendered at build time
 // from data/catalogue.ts — what is static is static. What the body draws is not:
-// this form reads the Recording from getRecordingsWithCounts() so the view bar,
+// this form reads the Recording from getRecordings() so the view bar,
 // the vote count and MORE FROM THIS CONTRIBUTOR's tiles have the counts steps 6
 // and 7 need, and it revalidates on the same 300-second clock the grid's counts
 // cache on (app/actions/get-recordings.ts:23-29), so the tile on / and the body
@@ -14,9 +14,11 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { allRecordings } from "@/data/catalogue"
-import { getRecordingsWithCounts } from "@/data/recording"
+import { RECORDINGS_PER_CONTRIBUTOR } from "@/data/recording"
 
 import { getCdnUrl } from "@/lib/cdn"
+
+import { getRecordings, getTopViewCount } from "../../actions/get-recordings"
 import { RecordingBody } from "./recording-body"
 
 // The page's counts refresh on the same clock as the grid's.
@@ -60,22 +62,37 @@ export default async function RecordingPage(props: Params) {
   // this runs. Kept because it is also what narrows `recording` to a Recording.
   if (!recording) notFound()
 
-  const withCounts = await getRecordingsWithCounts()
-  const current =
-    withCounts.find((r) => r.id === recording.id) ?? { ...recording, view_count: 0, vote_count: 0 }
+  // The cached readers both routes already use, awaited together the way
+  // app/bookmarks/page.tsx does. getRecordings() with no argument is the whole
+  // unfiltered catalogue out of the same unstable_cache entry the grid reads,
+  // so this route adds no Firestore read of its own — which is what the header
+  // comment above claims and, calling getRecordingsWithCounts() directly, did
+  // not do.
+  const [withCounts, topViewCount] = await Promise.all([
+    getRecordings(),
+    getTopViewCount(),
+  ])
+  const current = withCounts.find((r) => r.id === recording.id) ?? {
+    ...recording,
+    view_count: 0,
+    vote_count: 0,
+  }
 
   // The body's counts, computed here where the whole catalogue with counts is in
   // hand (ticket 09 step 13). catalogueTotal is never the mock's 148 and never a
   // filtered page: this route has no filter to hand.
-  const catalogueTotal = withCounts.length
-  const topViewCount = Math.max(0, ...withCounts.map((r) => r.view_count ?? 0))
-  const contributorTotal = withCounts.filter(
-    (r) => r.contributor === current.contributor
-  ).length
+  // Never reduced over the array a second time: the tile's bar needs the
+  // identical number, and two derivations are two chances to disagree
+  // (ticket 09 step 6).
+  // Both from the catalogue itself rather than from the counts read, so a
+  // Firestore outage — which getRecordings() answers with [] rather than a
+  // throw — cannot make the page print "0 of the 0 recordings here". They are
+  // also the same two sources the overlay now reads, so the two surfaces cannot
+  // give one Recording two different Contributor totals.
+  const catalogueTotal = allRecordings.length
+  const contributorTotal = RECORDINGS_PER_CONTRIBUTOR[current.contributor] ?? 0
   const more = withCounts
-    .filter(
-      (r) => r.contributor === current.contributor && r.id !== current.id
-    )
+    .filter((r) => r.contributor === current.contributor && r.id !== current.id)
     .slice(0, 2)
 
   return (

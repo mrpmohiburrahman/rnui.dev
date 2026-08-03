@@ -3,7 +3,11 @@
 import type { ReactElement } from "react"
 import { permanentRedirect } from "next/navigation"
 import { allRecordings } from "@/data/catalogue"
-import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
+import {
+  getUniqueCategories,
+  getUniqueContributors,
+  RECORDINGS_PER_CONTRIBUTOR,
+} from "@/data/recording"
 
 import { catalogueDiagnosis } from "@/lib/catalogue-filters"
 import { catalogueHeading } from "@/lib/catalogue-heading"
@@ -75,6 +79,10 @@ const RecordingsPage = async ({
         <CataloguePage
           recordings={data}
           stats={stats}
+          // Required here, not optional: this route is always handed a filtered
+          // set (ticket 09 step 1), so deriving the count would give the size
+          // of the filter.
+          perContributor={RECORDINGS_PER_CONTRIBUTOR}
           showHero={false}
           topViewCount={topViewCount}
           diagnosis={diagnosis}

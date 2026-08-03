@@ -2,6 +2,11 @@ import { expect, test } from "@playwright/test"
 
 import { allRecordings } from "../../data/catalogue"
 import { RECORDINGS_PER_CONTRIBUTOR } from "../../data/recording"
+import {
+  expectNoActionRepeated,
+  expectOneRecordingTargeted,
+  recordServerActions,
+} from "./server-actions"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -130,12 +135,10 @@ test("Escape, the close button, the tint and Back all take the same way out", as
 
   for (const close of [
     async () => page.keyboard.press("Escape"),
-    async () => page.getByRole("button", { name: "Close, or press Escape" }).click(),
-    // Away from the panel, which is top-aligned and 1080px wide at this viewport.
     async () =>
-      page
-        .locator(".bg-scrim")
-        .click({ position: { x: 10, y: 10 } }),
+      page.getByRole("button", { name: "Close, or press Escape" }).click(),
+    // Away from the panel, which is top-aligned and 1080px wide at this viewport.
+    async () => page.locator(".bg-scrim").click({ position: { x: 10, y: 10 } }),
     async () => page.goBack(),
   ]) {
     await firstCard(page).click()
@@ -177,9 +180,13 @@ test("a Recording address opened cold is a page, not an overlay", async ({
 }) => {
   await page.goto(`/recording/${known.id}`)
 
+  // An h1 on the page form, step 4 — the overlay's copy of this same body is an
+  // h2, because there it is Radix's DialogTitle. Before this the route shipped
+  // no h1 at all.
   await expect(
-    page.getByRole("heading", { level: 2, name: known.caption })
+    page.getByRole("heading", { level: 1, name: known.caption })
   ).toBeVisible()
+  await expect(page.locator("h1")).toHaveCount(1)
   await expect(page.getByText(known.contributor).first()).toBeVisible()
   await expect(page.getByRole("dialog")).toHaveCount(0)
 })
@@ -231,9 +238,7 @@ test("a Contributor with one Recording renders 1 ... is theirs and no See-all li
       exact: false,
     })
   ).toBeVisible()
-  await expect(
-    page.getByRole("link", { name: /^See all/ })
-  ).toHaveCount(0)
+  await expect(page.getByRole("link", { name: /^See all/ })).toHaveCount(0)
 })
 
 test("the arrows walk the Category without wrapping and without growing history", async ({
@@ -291,6 +296,115 @@ test("S and V drive the tile's save and vote behind the scrim", async ({
   expect(await save.getAttribute("aria-pressed")).not.toBe(before)
   await page.keyboard.press("V")
   expect(await vote.getAttribute("aria-pressed")).not.toBe(votesBefore)
+
+  // And the count moves with it. aria-pressed alone is what this test used to
+  // assert, and it was true of a keyboard path that called the Remembered-set
+  // toggle and nothing else — no write, no event, no number. The panel's own
+  // button is named `Vote, N` / `Unvote, N`, so the name carries the count.
+  const panelVote = page
+    .getByRole("dialog")
+    .locator('[aria-label^="Vote"], [aria-label^="Unvote"]')
+    .first()
+  await expect(panelVote).toHaveAttribute("aria-label", /^Unvote, \d+$/)
+})
+
+// The other half of the same claim, and the half aria-pressed cannot make: the
+// keyboard has to reach the server on the same path the mouse does. Compared
+// against a click rather than against a number, so it stays true however many
+// actions opening the panel costs — and counting actions rather than the
+// rendered count keeps it true whether or not Firestore answers, which is the
+// reading tests/e2e/vote.spec.ts takes for the same reason.
+//
+// The unfixed keyboard fired nothing at all here: `v` called the Remembered-set
+// toggle, so this recorded the open's view and stopped.
+test("a keyboard vote fires the same server action the button does", async ({
+  browser,
+}) => {
+  const open = async (page: import("@playwright/test").Page) => {
+    await page.getByRole("heading", { level: 3 }).first().click()
+    await expect(page.getByRole("dialog")).toBeVisible()
+  }
+
+  const byKey = await recordServerActions(browser, "/", async (page) => {
+    await open(page)
+    await page.keyboard.press("v")
+  })
+  const byClick = await recordServerActions(browser, "/", async (page) => {
+    await open(page)
+    await page
+      .getByRole("dialog")
+      .locator('[aria-label^="Vote"], [aria-label^="Unvote"]')
+      .first()
+      .click()
+  })
+
+  expectNoActionRepeated(byKey)
+  expectOneRecordingTargeted(byKey)
+  expect(byKey.map((a) => a.id).sort()).toEqual(byClick.map((a) => a.id).sort())
+})
+
+// The acceptance bullet that had no test, and the one the panel was failing:
+// the flex that was supposed to place it sat on Dialog.Overlay, which Radix
+// portals as a sibling of Dialog.Content, so the panel laid out as a static
+// block at the end of <body> instead of 64px below the viewport top.
+test("the panel sits 64px down, 1080px wide, horizontally centred", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto("/")
+  await firstCard(page).click()
+
+  const panel = page.getByRole("dialog")
+  await expect(panel).toBeVisible()
+
+  // Polled, not read once: the panel enters from 8px below over 240ms, so a
+  // single reading takes whatever y the animation is passing through.
+  await expect
+    .poll(async () => Math.round((await panel.boundingBox())!.y))
+    .toBe(64)
+
+  const box = (await panel.boundingBox())!
+  expect(Math.round(box.width)).toBe(1080)
+  expect(Math.round(box.x + box.width / 2)).toBe(720)
+  await expect(panel).toHaveCSS("border-radius", "18px")
+})
+
+// A filtered route hands CataloguePage a filtered set, so a Contributor total
+// counted from it is the size of the filter. It read "N of the 277" with an N
+// of the filter and a See-all link that landed on a different number.
+test("the Contributor total is the whole catalogue's on a filtered route", async ({
+  page,
+}) => {
+  const enzo = "Enzo Manuel Mangano ( Reactiive )"
+  const theirs = RECORDINGS_PER_CONTRIBUTOR[enzo]
+  const category = allRecordings.find(
+    (r) => r.contributor === enzo && r.category === "Charts"
+  )!
+
+  await page.goto(`/products?category=${encodeURIComponent(category.category)}`)
+  await page.locator(`[data-recording-id="${category.id}"]`).first().click()
+
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
+  await expect(
+    dialog.getByText(
+      `${theirs} of the ${allRecordings.length} recordings here are theirs.`
+    )
+  ).toBeVisible()
+  await expect(
+    dialog.getByRole("link", { name: `See all ${theirs} →` })
+  ).toBeVisible()
+})
+
+// An absent social id states the absence. It was doing that at the call site for
+// LinkedIn only, so a Contributor with no twitterId got a gap where the mock
+// draws a sentence.
+test("an absent social id reads `<network> not listed`", async ({ page }) => {
+  const noTwitter = allRecordings.find((r) => !r.twitterId && r.githubId)!
+
+  await page.goto(`/recording/${noTwitter.id}`)
+  await expect(page.getByText("X not listed")).toBeVisible()
+  await expect(page.getByRole("link", { name: "GitHub ↗" })).toBeVisible()
 })
 
 test("Escape leaves focus on the tile that was open", async ({ page }) => {
@@ -304,7 +418,9 @@ test("Escape leaves focus on the tile that was open", async ({ page }) => {
   expect(
     await page.evaluate((id) => {
       const el = document.querySelector(`[data-recording-id="${id}"]`)
-      return document.activeElement === el || el?.contains(document.activeElement)
+      return (
+        document.activeElement === el || el?.contains(document.activeElement)
+      )
     }, openId)
   ).toBe(true)
 })
@@ -342,7 +458,9 @@ test.describe("reduced motion", () => {
   // transforms rather than dropping them, so a panel that started at translateY
   // 8px would still paint one frame risen and jump. Sampled across the whole
   // open and the whole close, because one frame is all it took.
-  test("the panel fades under reduced motion and stays put", async ({ page }) => {
+  test("the panel fades under reduced motion and stays put", async ({
+    page,
+  }) => {
     await page.goto("/")
 
     await startSampling(page)
@@ -355,14 +473,23 @@ test.describe("reduced motion", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0)
     const closing = await readSamples(page)
 
-    // The transform is a translate now, not a scale: matrix(1, 0, 0, 1, tx, ty).
-    // Under reduced motion the 8px rise is gated off, so framer writes
-    // `transform: none` (ty snaps to 0) — both that and an on-paint matrix must
-    // read as a constant ty of 0.
+    // The transform is a translate now, not a scale. `ty` is the 6th value of
+    // matrix(a, b, c, d, tx, ty) and the 14th — m42 — of matrix3d(m11…m44). The
+    // matcher this replaces read group 2 of `matrix\(([-\d.]+), 0, 0, ([-\d.]+),`,
+    // which is `d`, the y-scale, and never matched matrix3d at all. It passed
+    // only because the panel had no horizontal centring to write, so every
+    // reduced-motion frame was `transform: none`; the panel now carries
+    // x: "-50%", so the matrix branch is live and had to be right.
     const tys = [...opening, ...closing].flatMap((frame) => {
-      if (frame.transform.trim().toLowerCase() === "none") return [0]
-      const matrix = frame.transform.match(/matrix\(([-\d.]+), 0, 0, ([-\d.]+),/)
-      return matrix ? [Number(matrix[2])] : []
+      const t = frame.transform.trim()
+      if (t === "" || t.toLowerCase() === "none") return [0]
+      const parsed = t.match(/^matrix(3d)?\(([^)]+)\)$/i)
+      if (!parsed) return []
+      const v = parsed[2].split(",").map(Number)
+      // The acceptance's "constant scale of exactly 1 in both directions",
+      // which the old matcher only enforced by accident.
+      expect(parsed[1] ? [v[0], v[5]] : [v[0], v[3]]).toEqual([1, 1])
+      return [parsed[1] ? v[13] : v[5]]
     })
     expect(tys.length).toBeGreaterThan(0)
     expect([...new Set(tys)]).toEqual([0])
@@ -428,7 +555,9 @@ test.describe("phone layout", () => {
     ] as const) {
       const control = page.getByRole(role, { name }).last()
       await expect(control).toBeVisible()
-      const height = await control.evaluate((el) => el.getBoundingClientRect().height)
+      const height = await control.evaluate(
+        (el) => el.getBoundingClientRect().height
+      )
       expect(height).toBeGreaterThanOrEqual(44)
     }
   })
