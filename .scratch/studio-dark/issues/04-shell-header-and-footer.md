@@ -388,7 +388,8 @@ these files** — no literal hex belongs in either component.
 - The client bundle for `/products` contains no `firebase` module. Check the build output before
   and after: the shared layout chunk must not have grown by the Firestore SDK.
 - At 390px the header matches `CatalogueMobile.dc.html:12-23` — two rows, 36px controls, the
-  compact `277 · 24 · 13H AGO` counter, no sort control, no `/` chip — and nothing in the page
+  compact `277 · 23 · 13H AGO` counter (the mock draws `24`; ticket 10 deleted the trailing space
+  that made one person count twice), no sort control, no `/` chip — and nothing in the page
   is painted over by it at any scroll position. Both counters, desktop and phone, print
   `contributors.length`: `grep -n '24' components/site-header.tsx` finds no count.
 - `/aboutus`, `/contactus`, `/termsofservice`, `/privacypolicy` and `/subscribe` are each

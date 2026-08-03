@@ -276,8 +276,8 @@ link by `truncateString(name, 12)`, and `:65-66` asserts the active facet has cl
   overlap.
 - The `CATEGORIES` list has 18 rows and their numbers read 2, 2, 6, 20, 10, 9, 3, 1, 5, 3, 17, 4,
   148, 6, 4, 1, 17, 19 from top to bottom, summing to 277.
-- The second label reads `CONTRIBUTORS · ${contributors.length}` — `24` on today's data, `23` once
-  ticket 10 deletes the trailing space in `data/fullapps.ts:23` — and the link below reads
+- The second label reads `CONTRIBUTORS · ${contributors.length}` — `23`, since ticket 10 deleted
+  the trailing space in `data/fullapps.ts` that made one person count twice — and the link below reads
   `All ${contributors.length} contributors →` with the same number in it, never a literal, and its
   `href` is `/contributors`. Four Contributor rows follow, in the order
   `Enzo Manuel Mangano ( Reactiive )` 124, `Hewad Mubariz` 31, `Daniel Friyia` 19,

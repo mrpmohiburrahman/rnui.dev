@@ -17,6 +17,7 @@ import type { Recording } from "@/data/recording"
 import {
   bookmarkAdded,
   bookmarkRemoved,
+  filterApplied,
   recordingFacts,
   recordingOpened,
   repoClicked,
@@ -245,6 +246,13 @@ export function RecordingDetail({
           <div className="flex items-center gap-2 pb-[9px]">
             <a
               href={`/products?${new URLSearchParams({ category: recording.category }).toString()}`}
+              // The Category link sets a filter too, and was the second call
+              // site with no event — same hole as the See-all link below, one
+              // line away, so it is closed here rather than left for whoever
+              // notices the funnel is short.
+              onClick={() =>
+                filterApplied("category", recording.category, 1)
+              }
               className="font-mono text-[9.5px] tracking-[0.12em] text-acc underline underline-offset-3 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 focus-visible:rounded-[3px]"
             >
               {recording.category.toUpperCase()}
@@ -297,6 +305,14 @@ export function RecordingDetail({
                   {" "}
                   <a
                     href={`/products?${new URLSearchParams({ contributor: recording.contributor }).toString()}`}
+                    // The same event /contributors' rows fire, and the same
+                    // literal 1: this link's destination carries `contributor`
+                    // and nothing else. Without it, every Contributor filter set
+                    // from a detail is missing from filter_applied and the funnel
+                    // reads as though nobody uses them (ticket 10 step 4).
+                    onClick={() =>
+                      filterApplied("contributor", recording.contributor, 1)
+                    }
                     className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 focus-visible:rounded-[3px]"
                   >
                     See all {contributorTotal} →
