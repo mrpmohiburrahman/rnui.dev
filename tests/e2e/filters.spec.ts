@@ -1,7 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
 import { allRecordings } from "../../data/catalogue"
-import { truncateString } from "../../lib/utils"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -33,13 +32,11 @@ const inBoth = allRecordings.filter(
 ).length
 
 // A link in the desktop facet list, by the name it is filtered under. Scoped to
-// the aside, because the mobile drawer renders a second copy of the same links,
-// and truncated the way catalogue-nav.tsx truncates every label — so the
-// accessible name of a contributor link is not the contributor's name.
+// the aside, because the mobile drawer renders a second copy of the same links.
+// The row's count is `aria-hidden`, so the link's accessible name is the full
+// name — never truncated (ticket 05) and never "name count".
 const facet = (page: Page, name: string) =>
-  page
-    .locator("aside")
-    .getByRole("link", { name: truncateString(name, 12), exact: true })
+  page.locator("aside").getByRole("link", { name, exact: true })
 
 test("a facet link keeps the params it did not set", async ({ page }) => {
   await page.goto(`/products?category=${CATEGORY}`)
@@ -63,9 +60,9 @@ test("clicking the facet that is already on clears it and leaves the other", asy
   await page.goto(`/products?category=${CATEGORY}&contributor=Hewad+Mubariz`)
 
   // Both chips carry the active treatment, so the visitor can see which link
-  // would clear what.
-  await expect(facet(page, CATEGORY)).toHaveClass(/bg-yellow-400/)
-  await expect(facet(page, AUTHOR)).toHaveClass(/bg-yellow-400/)
+  // would clear what — the soft accent fill, not the old yellow pill.
+  await expect(facet(page, CATEGORY)).toHaveClass(/bg-acc-soft/)
+  await expect(facet(page, AUTHOR)).toHaveClass(/bg-acc-soft/)
 
   await facet(page, CATEGORY).click()
 
@@ -158,25 +155,22 @@ test.describe("on a phone", () => {
       page.getByRole("button", { name: "Toggle Menu" })
     ).toBeInViewport()
 
-    // …and it floats over the grid without eating it. The wrapper's padding is
-    // an 80×48px box where the pill paints 56×40, so a quarter of it is
-    // invisible and sits at z-30 over a card. Harmless while it scrolled away;
-    // a permanent dead strip once it stopped, which is what `pointer-events`
-    // undoes. Hit-tested rather than read off the class, because the class is
-    // the declaration and this is the behaviour.
-    const swallowsWhatIsBesideIt = await page.evaluate(() => {
-      const button = [...document.querySelectorAll("span")]
-        .find((s) => s.textContent === "Toggle Menu")
-        ?.closest("button")
-      if (!button) return null
-      const box = button.getBoundingClientRect()
-      const under = document.elementFromPoint(
-        box.right + 8,
-        box.y + box.height / 2
-      )
-      return under !== null && under.contains(button)
-    })
-    expect(swallowsWhatIsBesideIt).toBe(false)
+    // …and it stays inside the header instead of floating over the grid. The
+    // old check — hit-test 8px right of the pill and expect the card, not the
+    // wrapper's dead strip — guarded a `position: fixed` pill with a padded
+    // wrapper that the redesign removed: the trigger is now a 36px inline
+    // button in the sticky header (CatalogueMobile.dc.html:16), so nothing of
+    // it hangs over a card to eat taps. In-flow is the geometry that replaced
+    // the pointer-events fix, and it is asserted the same way.
+    const trigger = page.getByRole("button", { name: "Toggle Menu" })
+    const [box, header] = await Promise.all([
+      trigger.boundingBox(),
+      page.locator("header").boundingBox(),
+    ])
+    expect(box).not.toBeNull()
+    expect(header).not.toBeNull()
+    expect(box!.x + box!.width).toBeLessThanOrEqual(header!.x + header!.width)
+    expect(box!.y + box!.height).toBeLessThanOrEqual(header!.y + header!.height)
   })
 
   test("the drawer carries Contributors, and its last row can be reached", async ({
@@ -189,8 +183,10 @@ test.describe("on a phone", () => {
     const drawer = page.getByRole("dialog")
     await expect(drawer).toBeVisible()
 
-    // The contributor facet used to be passed only to the desktop call.
-    await expect(drawer.getByText("Contributors")).toBeVisible()
+    // The contributor facet used to be passed only to the desktop call. The
+    // label carries the count (`CONTRIBUTORS · 24`) and the "All … contributors"
+    // link below it contains the same word, so the match is exact.
+    await expect(drawer.getByText(/^CONTRIBUTORS · \d+$/)).toBeVisible()
 
     // The last row of the list, which is what the ScrollArea's fixed height puts
     // at risk: a box taller than the panel never scrolls to its own bottom, and
@@ -222,4 +218,63 @@ test("the legacy ?author= spelling redirects to ?contributor=", async ({
   await expect(page).toHaveURL(/contributor=Hewad\+Mubariz/)
   await expect(page).not.toHaveURL(/author=/)
   await expect(cards(page)).toHaveCount(canonical)
+})
+
+// The decision in (b): the rail counts the whole catalogue, so no filter moves a
+// number. Misc is 148 and Hewad Mubariz 31 no matter what is applied. A later
+// "improvement" that made the counts filter-aware would quietly reverse this,
+// which is why it is asserted rather than described.
+test("the rail counts the whole catalogue, not the filtered result set", async ({
+  page,
+}) => {
+  await page.goto(
+    "/products?category=Misc&contributor=Hewad+Mubariz&search=ticket"
+  )
+  await expect(facet(page, "Misc")).toContainText("148")
+  await expect(facet(page, AUTHOR)).toContainText("31")
+})
+
+// Four of twenty-four contributors is the design, not a placeholder — and a
+// filter on any of the other twenty would draw a rail with no row showing it and
+// no row to click to clear it. The active Contributor is pinned as a fifth row.
+test("a filter on a Contributor outside the top four pins that row to the rail", async ({
+  page,
+}) => {
+  await page.goto(
+    `/products?contributor=${encodeURIComponent("Kacper Kapuściak")}`
+  )
+
+  const aside = page.locator("aside")
+  // The contributors are the second list — top four plus the pin. The pinned
+  // row is the applied one, so its href clears `contributor=` rather than
+  // carrying it; count the links themselves, not the ones that carry the facet.
+  const rows = aside.locator("ul").nth(1).locator("a")
+  await expect(rows).toHaveCount(5)
+
+  const pinned = aside.getByRole("link", {
+    name: "Kacper Kapuściak",
+    exact: true,
+  })
+  await expect(pinned).toHaveClass(/bg-acc-soft/)
+  // The pin is the fifth row, and being applied it is the one link that clears
+  // the filter — /products with no `contributor=`.
+  await expect(rows.nth(4)).toHaveAttribute("href", "/products")
+})
+
+test("the rail is 232px wide and main starts exactly beside it", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto("/products")
+
+  const box = await page.locator("aside").evaluate(() => {
+    const rail = document.querySelector("aside")!.getBoundingClientRect()
+    const main = document.querySelector("main")!.getBoundingClientRect()
+    return { railLeft: rail.left, width: rail.width, mainLeft: main.left }
+  })
+
+  expect(box.railLeft).toBe(0)
+  expect(box.width).toBe(232)
+  // No gap or overlap: main starts where the rail ends.
+  expect(box.mainLeft).toBe(box.railLeft + 232)
 })

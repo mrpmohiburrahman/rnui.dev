@@ -12,6 +12,7 @@
 import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
+import type { FacetCount } from "@/data/recording"
 import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -29,11 +30,11 @@ import { CatalogueNav } from "./nav/catalogue-nav"
 export type SiteHeaderProps = {
   /** allRecordings.length, computed in the root layout — never imported here. */
   recordingCount: number
-  /** getUniqueContributors().length — likewise a prop, not a data import. */
+  /** contributors.length — likewise a prop, not a data import. */
   contributorCount: number
-  /** The two facet lists, for the phone sheet's CatalogueNav. */
-  categories: string[]
-  contributors: string[]
+  /** The two count-bearing facet lists, for the phone sheet's CatalogueNav. */
+  categories: FacetCount[]
+  contributors: FacetCount[]
 }
 
 type SortValue = SortType
