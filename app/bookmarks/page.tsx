@@ -6,7 +6,6 @@ import type { Recording } from "@/data/recording"
 
 import { BOOKMARKS_KEY, parseRememberedIds } from "@/hooks/use-remembered-set"
 import { CataloguePage } from "@/components/catalogue-page"
-import { Hero } from "@/components/hero"
 
 import { getRecordings } from "../actions/get-recordings"
 
@@ -40,10 +39,12 @@ const BookmarksPage = () => {
     })()
   }, [])
 
-  const hero = (
-    <div className="grid grid-cols-1 md:grid-cols-6 lg:gap-16 py-8 relative">
-      <Hero title="Bookmarks" />
-    </div>
+  // The heading row, mirroring CataloguePage's own (RecordingCardGrid renders it
+  // once the page settles). No stats here: this route is a client component and
+  // computing the three counts would pull the whole catalogue into the client
+  // chunk. The saved view's result line has no denominator to cite.
+  const heading = (
+    <h1 className="text-section m-0 text-t1">Saved on this device</h1>
   )
 
   // The grid reads `page` from the URL, and useSearchParams() opts every
@@ -55,14 +56,19 @@ const BookmarksPage = () => {
   // grid itself was never going to be in that HTML.
   return (
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
-      <Suspense fallback={hero}>
+      <Suspense
+        fallback={
+          <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">
+            {heading}
+          </div>
+        }
+      >
         <CataloguePage
           recordings={recordings}
           treatment="framed"
           bookmarkedOnly
-        >
-          {hero}
-        </CataloguePage>
+          heading="Saved on this device"
+        />
       </Suspense>
     </div>
   )

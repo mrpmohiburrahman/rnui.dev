@@ -20,6 +20,7 @@ import {
   VOTED_RECORDING_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
+import { Hero } from "@/components/hero"
 import { PlaybackOwner } from "@/components/playback-owner"
 import {
   RecordingCardGrid,
@@ -38,6 +39,18 @@ interface CataloguePageProps {
    * visitor un-bookmarked it, until a reload.
    */
   bookmarkedOnly?: boolean
+  /** Render the hero above the heading row. `/` sets it, `/products` and
+   * `/bookmarks` do not (decision 10). */
+  showHero?: boolean
+  /** The three whole-catalogue counts the hero's stats row draws. Optional
+   * because `/bookmarks` cannot supply them — this route is a client component
+   * and counting here would pull the catalogue into a client chunk. */
+  stats?: { recordings: number; contributors: number; categories: number }
+  /** The section head under the hero, computed by the route from the filter
+   * state (lib/catalogue-heading.ts). This component does not derive it:
+   * CataloguePage is a client component and the counts it would need are not
+   * in the client graph. */
+  heading: string
   /** Rendered above the sort controls: a heading, a hero, a newsletter form. */
   children?: ReactNode
 }
@@ -46,6 +59,9 @@ export function CataloguePage({
   recordings,
   treatment,
   bookmarkedOnly = false,
+  showHero = false,
+  stats,
+  heading,
   children,
 }: CataloguePageProps) {
   const { ids: bookmarks, toggle: toggleBookmark } =
@@ -112,6 +128,10 @@ export function CataloguePage({
           sortedData={sortedData}
           treatment={treatment}
           emptyMessage={emptyMessage}
+          hero={showHero && stats ? <Hero {...stats} /> : undefined}
+          heading={heading}
+          catalogueTotal={stats?.recordings}
+          bookmarkedOnly={bookmarkedOnly}
           // Both stored sets are still null until an effect has read localStorage.
           // `[]` rather than a placeholder render: the server and the first client
           // render both see an empty set, so there is no hydration mismatch, and the

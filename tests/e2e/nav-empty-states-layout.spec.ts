@@ -87,7 +87,9 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
 
     // Under the heading the route already renders, not instead of it.
-    await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Saved on this device" })
+    ).toBeVisible()
 
     const sentence = page.getByText(/^No bookmarked recordings yet\./)
     await expect(sentence).toBeVisible()
@@ -132,7 +134,9 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
     // The heading is up, so the route has rendered — this is the window the
     // false sentence used to appear in, not a moment before it.
-    await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Saved on this device" })
+    ).toBeVisible()
     await expect(cards(page)).toHaveCount(0)
     await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
       0
