@@ -46,6 +46,9 @@ interface CataloguePageProps {
    * because `/bookmarks` cannot supply them — this route is a client component
    * and counting here would pull the catalogue into a client chunk. */
   stats?: { recordings: number; contributors: number; categories: number }
+  /** The whole catalogue's top view count, the denominator of every tile's
+   * views bar. Threaded from the routes, like the Recordings themselves. */
+  topViewCount: number
   /** The section head under the hero, computed by the route from the filter
    * state (lib/catalogue-heading.ts). This component does not derive it:
    * CataloguePage is a client component and the counts it would need are not
@@ -63,6 +66,7 @@ export function CataloguePage({
   stats,
   heading,
   children,
+  topViewCount,
 }: CataloguePageProps) {
   const { ids: bookmarks, toggle: toggleBookmark } =
     useRememberedSet(BOOKMARKS_KEY)
@@ -144,6 +148,7 @@ export function CataloguePage({
           toggleVote={toggleVote}
           setSort={setSort}
           currentSort={sort}
+          topViewCount={topViewCount}
         >
           {children}
         </RecordingCardGrid>

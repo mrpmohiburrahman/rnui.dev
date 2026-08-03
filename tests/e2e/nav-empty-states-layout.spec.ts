@@ -9,8 +9,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/demo/**", (route) => route.abort())
 })
 
-// One bookmark button per card, as pagination.spec.ts counts them.
-const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
+// One save button per card, as pagination.spec.ts counts them.
+const cards = (page: Page) => page.getByRole("button", { name: /^Saved?$/ })
 
 const NO_MATCHES = "No recordings match the current search or filters."
 

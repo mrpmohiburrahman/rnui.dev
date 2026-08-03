@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
 const searchBox = (page: Page) =>
   page.getByRole("textbox", { name: /Search \d+ recordings/ })
 
-const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
+const cards = (page: Page) => page.getByRole("button", { name: /^Saved?$/ })
 
 const searchParam = (page: Page) =>
   new URL(page.url()).searchParams.get("search")

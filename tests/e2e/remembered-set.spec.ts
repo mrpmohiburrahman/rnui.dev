@@ -42,9 +42,9 @@ test("a set stored by the previous build still loads after the hook merge", asyn
 
   // Both labels are the flipped ones, so both sets hydrated rather than only one.
   await expect(
-    page.getByRole("button", { name: "Remove Bookmark" })
+    page.getByRole("button", { name: "Saved" })
   ).toBeVisible()
-  await expect(page.getByRole("button", { name: "Unvote" })).toBeVisible()
+  await expect(page.getByRole("button", { name: /^Unvote/ })).toBeVisible()
 
   // Un-bookmarking drops the card from the list immediately. Two copies of the set
   // — one in the route, one in the Catalogue page — would leave it there until a
@@ -56,7 +56,7 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   // heading rather than the button keeps the whole card group hovered while the
   // pointer travels to it.
   await page.getByRole("heading", { level: 3 }).hover()
-  await page.getByRole("button", { name: "Remove Bookmark" }).click()
+  await page.getByRole("button", { name: "Saved" }).click()
   await expect(page.getByTestId("demo")).toHaveCount(0)
 
   await context.close()

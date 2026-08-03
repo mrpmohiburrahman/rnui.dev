@@ -11,8 +11,8 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 })
 
-// One bookmark button per card.
-const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
+// One save button per card.
+const cards = (page: Page) => page.getByRole("button", { name: /^Saved?$/ })
 
 test("the home page renders one page of Recordings, not the whole catalogue", async ({
   page,

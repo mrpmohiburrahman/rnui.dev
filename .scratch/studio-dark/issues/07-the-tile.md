@@ -1,6 +1,6 @@
 # 07 — The tile
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 02, 03
 
 ## Problem
@@ -469,9 +469,60 @@ tile 48 times (`Catalogue.dc.html:93`) and the detail imports the same component
 `MORE FROM THIS CONTRIBUTOR` (`Detail.dc.html:83`) — a tile that assumes 208px breaks the second one.
 Ticket 08 also inherits two things left open here: the `loading` skeleton, and whether the grid's
 result line needs a count this ticket does not compute.
-
 One coupling the spec's ticket table does not show: this ticket edits
-`app/actions/get-recordings.ts`, `app/page.tsx`, `app/products/page.tsx`, `app/bookmarks/page.tsx`
+`app/actions/get-recordings.ts`, `app/page.tsx`, `app/products/page.tsx`,
+`app/bookmarks/page.tsx`
 and `components/catalogue-page.tsx` to thread `topViewCount`, because the bar the mock labels
 `39% OF TOP ENTRY` needs a number no client-side module can compute. That is a server-shaped change
 inside a ticket the table describes as a component.
+
+## Comments
+
+Implemented 2026-08-03 on `feat/catalogue-ux`. Every `## Acceptance` bullet is met;
+`pnpm check-types`, `pnpm lint` (0 errors), `pnpm test` (217 passed), `pnpm build` and the
+Playwright suite (132 passed) are all green.
+
+- `components/demo-tile.tsx` takes the `Recording` (plus `facts` and `onRepoClick`), renders the
+  plinth-only media box with the wash, the `--tile-hue` emission (E1), the state chip and the NEW
+  chip, and the DECODE FAILED overlay (`FAILURE_LABELS` beside the untouched `FAILURE_REASONS`).
+  All of ui-ux-overhaul ticket 09's playback decisions survive verbatim; the only playback change is
+  the 160ms linear cross-fade.
+- `.tile-media` carries the wash (resting/playing), the E0→E1 elevation keyed on `--tile-hue`, the
+  exact resting filters, and the 220ms `cubic-bezier(.2,.8,.2,1)` transition, all behind
+  `@media not (prefers-reduced-motion: reduce)`; the reduced-motion block resets `filter: none` so a
+  visitor who asked for less motion never gets a permanently dimmed catalogue (`Specimen.dc.html:95`).
+  The state chip's label is CSS `::before` (`❙❙ PAUSED` / `● LIVE` / `❙❙ STILLS ONLY`), so the
+  served HTML and the hydrated text cannot diverge.
+- `components/recording-card.tsx` is the mock's plain column; `MinimalCard`, `Badge`, the three
+  profile links and the old `Source` link are gone, and `components/cult/minimal-card.tsx` +
+  `components/badge.tsx` are deleted (grep-clean). Controls renamed to Vote/Save/Saved/Repo with the
+  WCAG-2.5.3-compliant accessible names; memo comparator now names `topViewCount` and
+  `repeatsContributor`.
+- `getTopViewCount` is exported beside `getRecordings` (reuses its 300s `unstable_cache` — no extra
+  Firestore read) and threaded `topViewCount` through all three routes. A control-row `flex-wrap` was
+  added beyond the mock: the mock's 208px floor never previews the grid's `md:grid-cols-3` ~118px
+  tracks, and the three controls' combined min-content overflowed them (caught by the
+  `nav-empty-states-layout` scrollWidth test). At 208px+ the row stays one line exactly as drawn.
+- e2e updated per step 10 (`/^Saved?$/`, `Repo`, `/^Vote/`), and a reduced-motion case was added to
+  `home.spec.ts` asserting the first tile's computed `filter` is `none` and its chip reads
+  `STILLS ONLY`.
+
+Two deviations from the ticket's wording, both resolved in favour of the mock (the authority this
+ticket names):
+
+- **Light resting shadow is not the "hairline only".** A light resting tile carries
+  `var(--e0), 0 8px 20px -16px rgba(8,10,14,0.5)` (`.tile-media`, `globals.css`), because
+  `Tile.dc.html:88`'s light `flat` is a hairline *plus* that soft shadow. The acceptance bullet "a
+  resting tile's contains the hairline only" is only literally true in dark mode; the code matches
+  the mock. Consequence: the acceptance's suggested "≤5 tiles with a non-zero-blur shadow" check is
+  only valid in dark mode — in light every resting tile has a 20px blur.
+- **Two repo affordances on a failed tile.** The `Repo ↗` control below the media and the overlay's
+  `Open repo ↗` both call `handleSourceClick`. That is exactly step 6 + step 7 (a broken tile keeps
+  the Source-link view signal); the acceptance's "one Repo link" is conditional on the tile not
+  being failed.
+
+Code review (`code-review-mp`): Standards axis — no documented-standard breach; vocab is clean
+(ADR-0004/0008). Judgement-call smells only (the step-10 selector duplication across six spec files,
+the repeated focus-visible outline trio on the three controls, the `topViewCount` prop chain its own
+comparator has to protect), all left as the ticket scopes them. Spec axis — all 18 acceptance bullets
+met; the single flagged tension is the light-shadow nuance above, which the mock resolves.

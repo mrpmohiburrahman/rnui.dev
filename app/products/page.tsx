@@ -9,7 +9,7 @@ import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
 
 // Adjust the import path if necessary
-import { getRecordings } from "../actions/get-recordings"
+import { getRecordings, getTopViewCount } from "../actions/get-recordings"
 
 interface PageProps {
   searchParams: Promise<{
@@ -49,6 +49,7 @@ const RecordingsPage = async ({
 
   const { search, category, contributor } = params
   const data = await getRecordings(search, category, contributor)
+  const topViewCount = await getTopViewCount()
 
   const stats = {
     recordings: allRecordings.length,
@@ -64,6 +65,7 @@ const RecordingsPage = async ({
           treatment="plain"
           stats={stats}
           showHero={false}
+          topViewCount={topViewCount}
           heading={catalogueHeading({
             category,
             contributor,
