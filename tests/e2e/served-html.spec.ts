@@ -126,14 +126,18 @@ for (const route of [...ROUTES, "/aboutus"]) {
   })
 }
 
-// The read has to stay during render, not move to an effect: ticket 11 builds
-// each href from the current query so filters compose, and an href computed
-// after mount is already wrong in the document that was served.
+// The read has to stay during render, not move to an effect: the hrefs are built
+// from the current query so filters compose, and an href computed after mount is
+// already wrong in the document that was served. The applied rail row wears a
+// 1px accent outline at 1px offset (ticket 05), and `outline-offset-1` appears
+// nowhere else — the focus ring uses 2px — so it is the served-HTML marker that
+// the active Category was highlighted before hydration, where `bg-yellow-400`
+// used to be.
 test("the active filter is highlighted in the served HTML, not after hydration", async ({
   request,
 }) => {
   const html = await (await request.get("/products?category=Buttons")).text()
-  expect(html).toContain("bg-yellow-400")
+  expect(html).toContain("outline-offset-1")
 })
 
 test("/bookmarks never shows more than the bookmarked Recordings, at any frame", async ({

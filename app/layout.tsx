@@ -6,7 +6,11 @@ import "./globals.css"
 import { JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { allRecordings } from "@/data/catalogue"
 import { metadata } from "@/data/meta-data"
-import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
+import {
+  contributorsByCount,
+  getUniqueCategories,
+  RECORDINGS_PER_CATEGORY,
+} from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
 
 import { CDN_ORIGIN } from "@/lib/cdn"
@@ -48,8 +52,15 @@ const jetbrains = JetBrains_Mono({
 })
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const categories = getUniqueCategories()
-  const contributors = getUniqueContributors()
+  // The rail's two lists, count-bearing: 18 Categories alphabetically, 24
+  // Contributors ranked by their whole-catalogue counts (ticket 05). The counts
+  // are never of the filtered result set, so a layout — which is never handed
+  // searchParams — is exactly where they belong.
+  const categories = getUniqueCategories().map((name) => ({
+    name,
+    count: RECORDINGS_PER_CATEGORY[name] ?? 0,
+  }))
+  const contributors = contributorsByCount()
 
   return (
     // suppressHydrationWarning because next-themes inlines a blocking script

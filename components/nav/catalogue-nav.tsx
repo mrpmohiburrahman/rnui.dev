@@ -2,42 +2,60 @@
 
 "use client"
 
-import { Suspense, type ReactNode } from "react"
+import { Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { BoxIcon, User } from "lucide-react"
+import type { FacetCount } from "@/data/recording"
 
 import { filterApplied, filterCleared, type Facet } from "@/lib/analytics"
-import { cn, truncateString } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 
 type CatalogueNavProps = {
-  contributors?: string[]
-  categories?: string[]
+  contributors?: FacetCount[]
+  categories?: FacetCount[]
   handleLinkClick?: () => void
-  children?: ReactNode
 }
 
 /**
- * The chip treatment every link in this list wears at rest, following
- * `PILL_CLASS` in components/recording-card-grid.tsx. Named rather than spelled a
- * third time so the All recordings link cannot drift from the facets it sits
- * above: decision 13 authorises it to exist, not to introduce an appearance of
- * its own.
+ * The row treatment every link in the rail wears — the mock's flat 7px-radius
+ * row (Catalogue.dc.html:38-44), minus the state-dependent pieces below. The
+ * transition is the Specimen's own figure for "Filter chip add / remove" and a
+ * rail row is that control (Specimen.dc.html:163). The focus ring replaces the
+ * applied state's 1px accent ring rather than stacking — an element has one
+ * outline — and is `:focus-visible` so a mouse click draws nothing
+ * (07-keyboard-focus-and-contrast.md).
  */
-const CHIP_CLASS = [
-  "flex items-start space-x-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 rounded-md px-2 py-0.5",
-  "shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)]",
-  "dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]",
-  "dark:hover:shadow-[0_0_0_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.4),0_1px_2px_rgba(0,0,0,0.5)]",
+const ROW_CHROME = [
+  "flex",
+  "rounded-[7px]",
+  "px-2",
+  "py-[5px]",
+  "transition-colors",
+  "duration-120",
+  "ease-out",
+  "focus-visible:outline",
+  "focus-visible:outline-[3px]",
+  "focus-visible:outline-acc",
+  "focus-visible:outline-offset-2",
 ]
 
-/**
- * Added on top of CHIP_CLASS by the facet that is currently applied, so the
- * visitor can see which link would clear what. The All recordings link carries no
- * facet, so it never wears this.
- */
-const ACTIVE_CHIP_CLASS = "bg-yellow-400 text-black dark:text-black"
+// At rest: a t2 name on transparent, and a hover lift to the neutral field
+// fill — a lift that cannot be confused with the applied state, which is
+// tinted accent rather than neutral.
+const ROW_IDLE = ["text-t2", "hover:bg-field", "hover:text-t1"]
+
+// Applied: a soft accent fill, a t1 name, and the mock's 1px accent ring at 1px
+// offset (Catalogue.dc.html:223). `hover:bg-acc-soft` keeps the hover lift from
+// reading as "was applied, now not".
+const ROW_ON = [
+  "bg-acc-soft",
+  "text-t1",
+  "outline",
+  "outline-1",
+  "outline-acc",
+  "outline-offset-1",
+  "hover:bg-acc-soft",
+]
 
 /**
  * A facet link that keeps every param it did not set, so filters compose — the
@@ -100,10 +118,10 @@ function reportFacetClick(
  * so eleven prerendered routes served `<div>Loading sidebar...</div>` as their
  * sidebar, and a visitor without JavaScript never got the swap that replaces it.
  *
- * Reading it after mount instead would remove the hook entirely, but ticket 11
- * builds each `href` from the current query so filters compose, and an href
- * computed after mount is wrong in the document that gets served. So the read
- * stays during render and only moves down to what needs it.
+ * Reading it after mount instead would remove the hook entirely, but the hrefs
+ * are built from the current query so filters compose, and an href computed after
+ * mount is wrong in the document that gets served. So the read stays during
+ * render and only moves down to what needs it.
  *
  * The fallback is the same list with nothing highlighted, which is why the served
  * HTML still carries every filter link.
@@ -131,85 +149,183 @@ function CatalogueNavList({
   // Absent means "the URL has not been read yet", and every `.get` below returns
   // null — which is exactly the unhighlighted list the fallback wants.
   searchParams = new URLSearchParams(),
-  children,
 }: CatalogueNavProps & { searchParams?: URLSearchParams }) {
+  // The whole catalogue's size, from the counts themselves rather than a separate
+  // prop: a rail that prints its own total cannot drift from its own rows.
+  const total = categories?.reduce((sum, c) => sum + c.count, 0) ?? 0
+
+  // Four rows by count, plus the active Contributor if it is not among them —
+  // without the pin a filter on any of the other twenty draws a rail that shows
+  // no filter at all (decision 2). The pin depends on the query, so it lives here
+  // rather than in the layout, and the Suspense fallback — which has no params —
+  // shows the plain four.
+  const topContributors = contributors?.slice(0, 4) ?? []
+  const activeContributor = searchParams.get("contributor")
+  const pinned = activeContributor
+    ? contributors?.find((c) => c.name === activeContributor)
+    : undefined
+  const visibleContributors =
+    pinned && !topContributors.some((c) => c.name === pinned.name)
+      ? [...topContributors, pinned]
+      : topContributors
+
   return (
-    <div className="">
-      {/* <Logo /> */}
-      {children}
-      <ScrollArea className="h-[calc(100vh-320px)] md:h-[calc(100vh-200px)] flex flex-col gap-4 pl-2">
-        {/* The whole catalogue. /products carries twice the traffic of / and is
-            where 18 legacy Category paths redirect (middleware.ts:23-43), but
-            every link that reached it — the facets below, those redirects —
-            arrived with a filter already applied. The unfiltered page had no
-            route to it from anywhere on the site (decision 13). */}
+    <div className="flex flex-col">
+      {/* The whole catalogue. /products carries twice the traffic of / and is
+          where 18 legacy Category paths redirect (middleware.ts:23-43), but
+          every link that reached it — the facets below, those redirects —
+          arrived with a filter already applied. The unfiltered page had no
+          route to it from anywhere on the site (decision 13), so it stays, as a
+          row in the same grammar as the facets it sits above. The mock does not
+          draw it; spec.md checkpoint 4 was read before keeping it. */}
+      {/* The margin lives on a wrapper, not the link: the row's class list is
+          asserted to equal a Category row's (nav-empty-states-layout.spec.ts),
+          which has no margin of its own. */}
+      <div className="mb-2">
         <Link
           href="/products"
           onClick={handleLinkClick}
-          className={cn(CHIP_CLASS)}
           prefetch={false}
+          className={cn(
+            ROW_CHROME,
+            "items-center gap-2 text-[12.5px]",
+            ROW_IDLE
+          )}
         >
-          <span className="px-1">All recordings</span>
+          <span className="min-w-0 truncate">All recordings</span>
+          <span
+            aria-hidden="true"
+            className="ml-auto font-mono text-[10px] tabular-nums text-t3"
+          >
+            {total}
+          </span>
         </Link>
-        {/* Categories Section */}
-        {categories && categories.length > 0 && (
-          <div className="flex items-center gap-2 mt-6 text-muted-foreground">
-            <BoxIcon className="size-5 stroke-pink-400" />
-            <p className="text-sm md:hidden">Categories</p>
+      </div>
+
+      {/* Categories — alphabetical, all 18, each with its whole-catalogue count.
+          The mock's label (Catalogue.dc.html:37) and rows (:38-44). */}
+      {categories && categories.length > 0 && (
+        <div>
+          <div className="px-2 pb-[9px] font-mono text-[9px] tracking-[0.16em] text-t3">
+            CATEGORIES
           </div>
-        )}
-        <ul className="mt-2 w-36 flex flex-col gap-2 items-start justify-center py-2">
-          {categories?.map((category, index) => (
-            <li key={`category-${index}-${category}`}>
-              <Link
-                href={facetHref(searchParams, "category", category)}
-                onClick={() => {
-                  reportFacetClick(searchParams, "category", category)
-                  handleLinkClick?.()
-                }}
-                className={cn(
-                  CHIP_CLASS,
-                  searchParams.get("category") === category
-                    ? ACTIVE_CHIP_CLASS
-                    : ""
-                )}
-                prefetch={false}
-              >
-                <span className="px-1">{truncateString(category, 12)}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        {/* Contributors */}
-        {contributors && contributors.length > 0 && (
-          <div className="flex items-center gap-2 mt-6 text-muted-foreground">
-            <User className="size-5 stroke-pink-400" />
-            <p className="text-sm md:hidden">Contributors</p>
+          <ul className="flex flex-col gap-[1px]">
+            {categories.map((category, index) => {
+              const on = searchParams.get("category") === category.name
+              return (
+                <li key={`category-${index}-${category.name}`}>
+                  <Link
+                    href={facetHref(searchParams, "category", category.name)}
+                    onClick={() => {
+                      reportFacetClick(searchParams, "category", category.name)
+                      handleLinkClick?.()
+                    }}
+                    prefetch={false}
+                    className={cn(
+                      ROW_CHROME,
+                      "items-center gap-2 text-[12.5px]",
+                      on ? ROW_ON : ROW_IDLE
+                    )}
+                  >
+                    {/* One flat neutral at rest, accent when applied. It is not
+                        the hue ticket 03 measures — that is per Recording and
+                        lives on the tile. */}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "size-[5px] flex-none rounded-[3px]",
+                        on
+                          ? "bg-acc"
+                          : "bg-[rgba(16,18,22,0.16)] dark:bg-[rgba(255,255,255,0.16)]"
+                      )}
+                    />
+                    <span className="min-w-0 truncate">{category.name}</span>
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "ml-auto font-mono text-[10px] tabular-nums",
+                        on ? "text-acc" : "text-t3"
+                      )}
+                    >
+                      {category.count}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* Contributors — the top four by count, plus the pin. The 22px above the
+          label is the mock's only gap between the two lists
+          (Catalogue.dc.html:47 vs :37). */}
+      {visibleContributors.length > 0 && (
+        <div>
+          <div className="px-2 pb-[9px] pt-[22px] font-mono text-[9px] tracking-[0.16em] text-t3">
+            CONTRIBUTORS · {contributors?.length ?? 0}
           </div>
-        )}
-        <ul className="mt-2 w-36 flex flex-col gap-2 items-start justify-center py-2">
-          {contributors?.map((contributor, index) => (
-            <li key={`category-${index}-${contributor}`}>
-              <Link
-                href={facetHref(searchParams, "contributor", contributor)}
-                onClick={() => {
-                  reportFacetClick(searchParams, "contributor", contributor)
-                  handleLinkClick?.()
-                }}
-                className={cn(
-                  CHIP_CLASS,
-                  searchParams.get("contributor") === contributor
-                    ? ACTIVE_CHIP_CLASS
-                    : ""
-                )}
-                prefetch={false}
-              >
-                <span className="px-1">{truncateString(contributor, 12)}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </ScrollArea>
+          <ul className="flex flex-col gap-[1px]">
+            {visibleContributors.map((contributor, index) => {
+              const on = searchParams.get("contributor") === contributor.name
+              return (
+                <li key={`contributor-${index}-${contributor.name}`}>
+                  <Link
+                    href={facetHref(
+                      searchParams,
+                      "contributor",
+                      contributor.name
+                    )}
+                    onClick={() => {
+                      reportFacetClick(
+                        searchParams,
+                        "contributor",
+                        contributor.name
+                      )
+                      handleLinkClick?.()
+                    }}
+                    prefetch={false}
+                    className={cn(
+                      ROW_CHROME,
+                      "items-baseline gap-2 text-[12px] leading-[1.3]",
+                      on ? ROW_ON : ROW_IDLE
+                    )}
+                  >
+                    {/* Long names wrap instead of truncating — two of the data's
+                        Contributors are unreadable at twelve characters and
+                        legible when wrapped (Catalogue.dc.html:51). */}
+                    <span className="[overflow-wrap:anywhere]">
+                      {contributor.name}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "ml-auto flex-none font-mono text-[10px]",
+                        on ? "text-acc" : "text-t3"
+                      )}
+                    >
+                      {contributor.count}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+          {/* The route this points at does not exist until ticket 10; the string
+              is fixed here so that ticket does not have to come back and edit the
+              rail (Catalogue.dc.html:56). */}
+          <div className="px-2 pt-[10px] text-[11.5px]">
+            <Link
+              href="/contributors"
+              onClick={handleLinkClick}
+              prefetch={false}
+              className="text-acc underline underline-offset-[3px]"
+            >
+              All {contributors?.length ?? 0} contributors →
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

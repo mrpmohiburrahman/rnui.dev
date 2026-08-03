@@ -1,6 +1,6 @@
 # 05 — The rail: Categories and Contributors with counts
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 02
 
 Every line number below was read before ticket 01 ran. The rename moves `data/entry.ts` to
@@ -336,3 +336,30 @@ what `CatalogueMobile.dc.html:58-68` draws for a phone. That is a known interim 
 regression, and `tests/e2e/filters.spec.ts:179-201` must still pass in the meantime.
 
 ## Comments
+
+### 2026-08-03 — Rail rebuilt and verified. Committed with the ticket.
+
+All fifteen steps done. The rail is now the mock's flat 7px-radius rows without icons, chips or
+truncation, with whole-catalogue counts (`RECORDINGS_PER_CATEGORY` / `RECORDINGS_PER_CONTRIBUTOR`
+in `data/recording.ts`), a `232px` wide `<aside>` on token `railBg`, the ledger-style labels
+(`CATEGORIES`, `CONTRIBUTORS · 24`, `All 24 contributors →` → `/contributors`), and the top-four
+Contributors by count with the active one pinned as a fifth row when it is outside the four. The
+Radix `ScrollArea` is gone — the list scrolls natively.
+
+Verified, not read: `tsc --noEmit` clean; all 201 unit tests pass (including the new
+`tests/recording-counts.test.ts` pinning every count and the contributor order); the full
+Playwright suite passes 124/124, including three new rail tests (counts don't move with filters,
+the pin, and the 232px geometry); `pnpm build`'s route table is unchanged; `pnpm format:check`
+clean; eslint 0 errors. `truncateString` stays in `lib/utils.ts` with no callers, per step 13.
+
+**Review-driven corrections (also part of this ticket).** `/code-review-mp` caught two things, both
+fixed before commit. The Category dot's two rest colours were swapped — white at rest on the light
+`railBg`, near-black on dark, i.e. invisible in both modes; now `rgba(16,18,22,.16)` light /
+`rgba(255,255,255,.16)` dark per step 7, both legible against their own `railBg`. And the rail had
+been built `w-[168px] lg:w-[232px]`; the mock and step 5 both draw a flat 232px, and a flat
+`w-[232px]` was verified against every `sm`+ no-sideways-scroll width in
+`nav-empty-states-layout.spec.ts` (all 52 green) — so the intermediate 168px was dropped as
+unneeded scope. The reviewer's lone standards note, extracting the Category/Contributor rows into
+a shared `FacetRow`, was deliberately left unmade: the two rows differ in five respects (dot, a
+baseline vs center, two font sizes, `tabular-nums` presence, truncate-vs-wrap) and collapsing them
+beneath variant flags is the over-abstraction the smell is the guard against.
