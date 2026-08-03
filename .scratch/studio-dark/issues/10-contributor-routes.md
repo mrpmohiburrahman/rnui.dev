@@ -1,6 +1,6 @@
 # 10 — Contributor routes
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 01, 02, 05
 
 Line numbers in `app/`, `components/`, `data/` and `lib/` were read before ticket 01 ran. The
@@ -419,3 +419,94 @@ may be judged enough — but it should be a decision rather than an oversight, a
 label is 23 as well.
 
 ## Comments
+
+Built 2026-08-03. `pnpm check-types` clean, `pnpm lint` 0 errors, `pnpm test` 245/245,
+`pnpm build` compiled 291 pages, Playwright 170/170 across two full runs (each run had one
+flake, a different one each time — `contributors.spec.ts`'s `Epicode | 0xV` on the first, then
+`view.spec.ts`'s view-billing test on the second; both pass on their own, and the first is
+already fixed, see below). Nothing below the line this ticket drew moved: `api_host` is still
+`https://us.i.posthog.com`, Firebase still owns the counts, and `/products`, `?category=`,
+`view_count`, `vote_count` and the three stored browser keys keep their spelling.
+
+- **One space deleted** (`data/fullapps.ts`, `contributor: "Pushkar Tandon "`). The line had
+  moved to `:29`. `pnpm assets:paths` was captured before and after and diffs clean, as ADR-0003
+  says it must. `getUniqueContributors()` now returns 23; the merged `Pushkar Tandon` holds 3.
+- **The guard went in before the fix** and failed on exactly one record
+  (`01JGNC3S3NQCRBGB39YR5WCMZD`), which is the evidence the test bites. It is in
+  `tests/data-integrity.test.ts` beside the required-fields case, per ADR-0005 — a submission PR
+  that re-pads a name fails the data suite rather than silently splitting a Contributor in two.
+- **`tests/recording-counts.test.ts` now pins the whole ranked list**, not the top four. That is
+  where the acceptance's 23-row order lives, hand-written and not derived, so the e2e spec is
+  free to assert that the page agrees with `data/recording.ts` rather than re-pinning 23 numbers
+  in a browser.
+- **The page is two files.** `app/contributors/page.tsx` is the server component — module-scope
+  arrays only, no Firestore, so it prerenders: the build lists it `○` and the regenerated
+  `public/sitemap-0.xml` went from 285 `<loc>` entries to 286, carrying
+  `https://www.rnui.dev/contributors`. `app/contributors/contributor-rows.tsx` is the client
+  half, because `posthog-js` cannot be called from a server component; the names and counts
+  arrive as props so `data/catalogue.ts` stays out of this route's chunk. `middleware.ts` and
+  `next-sitemap.config.js` are untouched, and the sitemap files carry no hand edits — the diff
+  is the generator's own timestamps plus the new line.
+- **Step 5's two halves turned out to be incompatible, and the acceptance won.** The step asked
+  for `openGraph: { title, description }` *and* for the root `app/opengraph-image.tsx` to be
+  inherited "without a line of code". Measured on the built HTML, it is one or the other: a
+  segment that declares any `openGraph` replaces the inherited one wholesale, and the route lost
+  all five of `og:image`, `og:image:alt`, `og:image:type`, `og:image:width` and
+  `og:image:height` with it. `/aboutus`, which exports no metadata at all, carries them.
+  Next emits that image at a hashed URL (`/opengraph-image?ad14766c…`), so naming it back by
+  hand would be a second spelling that rots the day the file changes. So the route exports
+  `title` and `description` only; the built HTML now carries `<title>Contributors</title>`, the
+  route's own `<meta name="description">` and the inherited `og:image`, which is the acceptance
+  bullet verbatim. The card's text falls back to those two, as scrapers do.
+- **A second call site with no event, closed in the same pass.** Step 6's See-all link was
+  missing `filter_applied`, and so was the Category link three elements above it in
+  `components/recording-detail.tsx` — the same hole, one line away, and leaving it would have
+  meant a Category filter set from a detail was invisible to dashboard `1937576` in exactly the
+  way step 4 says makes a funnel wrong rather than incomplete. Both now fire with
+  `active_filter_count: 1`, which is literal in both cases: each link's destination carries one
+  parameter. This is one line beyond the ticket and is flagged rather than buried.
+- **Step 6 and step 7 were already built.** Ticket 09 shipped the attribution sentence and the
+  `n === 1` rule it owns (`is theirs.` with no link, since its destination would be the
+  Recording already on screen). This ticket added only the event.
+- **The e2e spec asserts step 8's three claims plus five more**: the derived header line, the
+  three names that killed `/contributors/[slug]` round-tripping through `?contributor=` to the
+  right card count, `Enzo Manuel Mangano ( Reactiive )` rendering with no overflow at 1440px,
+  the rail's `All 23 contributors →` resolving 200 with a count that matches the rows it lands
+  on, and the focus ring and the hover treatment. The hover test reads `--acc`, `--acc-soft` and
+  `--t1` off the page through a probe element rather than typing hex, so it holds in either
+  mode.
+  Two things about it are worth knowing: the row counts are `aria-hidden`, deliberately, because
+  a duplicate row would otherwise hide behind a different number and the assertion that catches
+  step 1 being reverted would not bite; and the Enzo case asserts 48 cards and the
+  `48 OF 124 SHOWN` line rather than 124 cards, because a page is 48 (`recording-card-grid.tsx:16`)
+  and the acceptance bullet as written asks for pagination to not exist.
+- **The four follow-on tickets needed two edits, not four.** 04, 05, 06 and 11 all already write
+  the number as `contributors.length` rather than a literal, as step 1 predicted, and 06's and
+  11's acceptance already anticipated 23. Moved: 05's `CONTRIBUTORS · 24` acceptance bullet and
+  04's phone-counter bullet, both now 23 with the reason named. Prose that quotes what the
+  *mock* draws still says 24, because it does.
+
+Set `ready-for-human`, not `resolved`. Two acceptance items need a person:
+
+1. **The `filter_applied` verification.** The bullet asks for the PostHog debug view or a
+   network capture, "not by reading the code", and no automated test in this repo can supply it:
+   `lib/posthog-provider.tsx:13` calls `posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!)`, the
+   key is absent locally, and posthog-js consequently never assigns `window.posthog` — probed
+   under Playwright, both `window.posthog` and `window.posthog.capture` are `undefined`. Firing
+   real events at the production project from a local run would also pollute the very baseline
+   deploy B is going to be measured against. This is a check to make in the PostHog debug view
+   after deploy B: click a row on `/contributors` and the See-all link on a detail, and expect
+   two `filter_applied` events with `facet: "contributor"`, the exact name as `value` and
+   `active_filter_count: 1`.
+2. **Step 10, the checkpoint-3 review gate.** `/contributors` is not one of the five undrawn
+   routes, but the mock does not draw it either, so its layout is derived rather than ported and
+   `spec.md:202-203` applies by construction. Present it in both modes together with step 1's
+   23-versus-24 consequence and get both signed off before deploy B. The maintainer's one live
+   option on the count is named in step 1: keeping `24` means keeping two rows that both read
+   `Pushkar Tandon`, and that is the only way to keep it.
+
+One smaller thing left for a person rather than claimed: the acceptance says Tab reaches all 23
+rows *in document order*. The spec asserts the ring on a focused row and the rows carry no
+`tabindex`, so document order is the DOM's, but nothing walks all 23 with real Tab presses. And
+`app/opengraph-image.tsx:47`'s `343+ animations` copy is still wrong on every route; step 5 says
+to note it and not fix it here, and it is still noted.

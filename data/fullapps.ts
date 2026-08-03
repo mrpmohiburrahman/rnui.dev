@@ -26,7 +26,7 @@ export const full_apps: Recording[] = [
     durationMs: 3455,
     aspect: 0.477,
     hue: 356,
-    contributor: "Pushkar Tandon ",
+    contributor: "Pushkar Tandon",
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/tree/feature/snake-game",
     twitterId: "tandonpushkar0",

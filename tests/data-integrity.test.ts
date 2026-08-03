@@ -57,6 +57,24 @@ describe("catalog data integrity", () => {
     }
   })
 
+  // A Contributor's identity is the exact string in this field: it is the key
+  // RECORDINGS_PER_CONTRIBUTOR counts under, the value `?contributor=` filters
+  // on, and the text /contributors draws a row from. So `"Pushkar Tandon "` and
+  // `"Pushkar Tandon"` are two people to every one of them — one person, two
+  // rows, two addresses, two counts. Invisible in the data and invisible on the
+  // rail, which shows the top four; the directory is the surface that prints
+  // the lie. Guarded here rather than by trimming in the three derivations,
+  // because a fourth reader would need a fourth trim (ADR-0005).
+  it("no contributor name carries leading or trailing whitespace", () => {
+    const padded = allRecordings
+      .filter((recording) => recording.contributor !== recording.contributor.trim())
+      .map((recording) => `${recording.id}: "${recording.contributor}"`)
+    expect(
+      padded,
+      `contributor names with surrounding whitespace:\n${padded.join("\n")}`
+    ).toHaveLength(0)
+  })
+
   it("all source URLs match https?://", () => {
     const bad = allRecordings.filter(
       (recording) => !recording.source.match(/^https?:\/\//)
