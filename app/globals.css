@@ -169,6 +169,130 @@
   }
 }
 
+/* The tile's media box, Ticket 07 (Tile.dc.html:83-99). Two properties change
+   between resting and playing: the elevation (E0 hairline vs E1 emission, which
+   keys on --tile-hue) and the brightness (a resting tile dims so a playing one
+   reads brighter). The mode is the `.dark` class next-themes puts on <html>;
+   `playing` is the data-playing attribute the tile toggles on itself. A playing,
+   failed or loading tile carries no filter. Under prefers-reduced-motion the dim
+   does not exist at all — no <video> mounts, so nothing is ever playing to be
+   brighter than, and dimming would hand those visitors a permanently darkened
+   catalogue (Specimen.dc.html:95).
+
+   Source order is load-bearing: the [data-playing] rules come after the .dark
+   ones, and the motion blocks last, so each equal-specificity pair is decided
+   by what follows it. The 220ms transition (Specimen.dc.html:162) sits behind
+   `@media not (prefers-reduced-motion: reduce)` — the CSS equivalent of the
+   ticket's motion-reduce: reset — because under reduced motion no <video> ever
+   mounts, `playing` is never true, and a resting-by-default dim would hand
+   those visitors a permanently darkened catalogue.
+
+   The wash (Tile.dc.html:80-82) is the box's own background-image, visible only
+   in the window between layout and the lazy Poster painting — the Poster is
+   opaque and object-cover, so it hides the wash the moment it lands. It differs
+   by playback state and not by mode, and it is deliberately not animated, so it
+   is absent from the transition list below. */
+.tile-media {
+  box-shadow: var(--e0), 0 8px 20px -16px rgba(8, 10, 14, 0.5);
+  filter: brightness(0.9);
+  background-image:
+    radial-gradient(
+      72% 48% at 50% 27%,
+      hsla(var(--tile-hue), 50%, 52%, 0.2),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 40%, 32%, 0.14),
+      rgba(0, 0, 0, 0.66)
+    );
+}
+
+.dark .tile-media {
+  box-shadow: var(--e0);
+  filter: brightness(0.78) saturate(0.85);
+}
+
+.tile-media[data-playing] {
+  box-shadow: var(--e1);
+  filter: none;
+  background-image:
+    radial-gradient(
+      72% 48% at 50% 27%,
+      hsla(var(--tile-hue), 72%, 64%, 0.46),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 55%, 42%, 0.24),
+      rgba(0, 0, 0, 0.62)
+    );
+}
+
+@media not (prefers-reduced-motion: reduce) {
+  .tile-media,
+  .dark .tile-media,
+  .tile-media[data-playing] {
+    transition:
+      filter 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-media,
+  .dark .tile-media,
+  .tile-media[data-playing] {
+    filter: none;
+  }
+}
+
+/* The state chip, Ticket 07 step 5 (Tile.dc.html:26-28, 102-105). Its text is
+   CSS `::before` rather than DOM text on purpose: the resting label reads
+   `❙❙ PAUSED` for one visitor and `❙❙ STILLS ONLY` for another, and a text
+   node that differs between the served HTML and hydration would fail the
+   hydration test. Generated content is invisible to React, so the same empty
+   element serves both. The live state derives from the media box's own
+   data-playing attribute; the reduced-motion override is last so it wins. */
+.state-chip {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  background: rgba(4, 6, 10, 0.62);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.state-chip::before {
+  content: "❙❙ PAUSED";
+}
+
+.tile-media[data-playing] .state-chip {
+  background: rgba(6, 20, 18, 0.72);
+  color: #8ff0dc;
+}
+
+.dark .tile-media[data-playing] .state-chip {
+  background: rgba(111, 227, 204, 0.2);
+  color: #8ff0dc;
+}
+
+.tile-media[data-playing] .state-chip::before {
+  content: "● LIVE";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-media .state-chip,
+  .tile-media[data-playing] .state-chip {
+    background: rgba(4, 6, 10, 0.62);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .tile-media .state-chip::before,
+  .tile-media[data-playing] .state-chip::before {
+    content: "❙❙ STILLS ONLY";
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

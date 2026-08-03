@@ -7,7 +7,7 @@ import type { Recording } from "@/data/recording"
 import { BOOKMARKS_KEY, parseRememberedIds } from "@/hooks/use-remembered-set"
 import { CataloguePage } from "@/components/catalogue-page"
 
-import { getRecordings } from "../actions/get-recordings"
+import { getRecordings, getTopViewCount } from "../actions/get-recordings"
 
 const BookmarksPage = () => {
   // This route keeps its own fetch. Unlike the home page and the Category listing
@@ -19,6 +19,7 @@ const BookmarksPage = () => {
   // pre-filter would mean two copies of it, and the copy up here would not learn
   // that a visitor had un-bookmarked something from a card.
   const [recordings, setRecordings] = useState<Recording[]>([])
+  const [topViewCount, setTopViewCount] = useState(0)
 
   useEffect(() => {
     ;(async () => {
@@ -31,7 +32,15 @@ const BookmarksPage = () => {
       if (ids.length === 0) return
 
       try {
-        setRecordings(await getRecordings())
+        // The catalogue and its top view count are awaited together: the bar's
+        // denominator is a server-shaped number (get-recordings.ts) and this
+        // route has no server component above it to hand either one over.
+        const [catalogue, top] = await Promise.all([
+          getRecordings(),
+          getTopViewCount(),
+        ])
+        setRecordings(catalogue)
+        setTopViewCount(top)
       } catch (error) {
         console.error("Error fetching Recordings:", error)
         setRecordings([])
@@ -68,6 +77,7 @@ const BookmarksPage = () => {
           treatment="framed"
           bookmarkedOnly
           heading="Saved on this device"
+          topViewCount={topViewCount}
         />
       </Suspense>
     </div>

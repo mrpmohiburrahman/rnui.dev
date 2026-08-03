@@ -80,12 +80,12 @@ test("focused controls draw a ring, clicked ones do not", async ({ page }) => {
         : null
     )
 
-  const bookmark = page.getByRole("button", { name: /Bookmark$/ }).first()
+  const bookmark = page.getByRole("button", { name: /^Saved?$/ }).first()
   for (const control of [
     bookmark,
     page.getByRole("heading", { level: 3 }).first().getByRole("link"),
-    page.getByRole("link", { name: "Source" }).first(),
-    page.getByRole("button", { name: "Vote" }).first(),
+    page.getByRole("link", { name: "Repo" }).first(),
+    page.getByRole("button", { name: /^Vote/ }).first(),
   ]) {
     await control.focus()
     expect(await ring(), await control.innerText()).not.toBe("none")
@@ -110,7 +110,7 @@ test.describe("touch", () => {
   }) => {
     await page.goto("/")
 
-    const bookmark = page.getByRole("button", { name: "Add Bookmark" }).first()
+    const bookmark = page.getByRole("button", { name: "Save" }).first()
     await expect(bookmark).toBeVisible()
     expect(await bookmark.evaluate((el) => getComputedStyle(el).opacity)).toBe(
       "1"
@@ -119,7 +119,7 @@ test.describe("touch", () => {
     // A tap toggles the bookmark and does not open the Recording behind it.
     await bookmark.tap()
     await expect(
-      page.getByRole("button", { name: "Remove Bookmark" }).first()
+      page.getByRole("button", { name: "Saved" }).first()
     ).toBeVisible()
     await expect(page).not.toHaveURL(/\/recording\//)
   })

@@ -4,14 +4,20 @@
 // owns none of the playback decisions: components/playback-owner.tsx says when
 // this <video> plays, and @/lib/view-signal says when it counts.
 //
-// Same box and same pixels as the click-to-play tile it replaces, minus the play
-// glyph — removing click-to-play removes it, which decision 3 authorises and
-// ADR-0007 argues for ("it puts a play button on top of a video that is already
-// playing"). Nothing else about the tile moves.
+// Studio Dark ticket 07: this box is now the tile's only bounded object. The
+// radius and the background are the same element (`border-radius:16px` plus the
+// plinth), so there is exactly one layer behind the Poster. That is what the old
+// `bg-black` comment recorded, minus the card that used to clip this box to a
+// rounded top corner and antialias its arc against however many dark layers sat
+// under it — with one instead of two, ten corners came out a few levels lighter,
+// 138 pixels measured. If the box is ever split into two layers again, that
+// defect comes back with it; the fix is to keep the radius and the background on
+// the same element (Tile.dc.html:11).
 "use client"
 
 import { useCallback, useRef, useState, useSyncExternalStore } from "react"
 
+import type { Recording } from "@/data/recording"
 import {
   demoLoadFailed,
   demoPlayed,
@@ -30,6 +36,16 @@ const FAILURE_REASONS: Record<number, string> = {
   2: "network",
   3: "decode",
   4: "unsupported",
+}
+
+// The failure overlay's mono line, per reason. The values are the `reason`
+// property posthog-expansion reads, so FAILURE_REASONS is untouched and this
+// map names them for a human; the mock's own string is used for the code it drew.
+const FAILURE_LABELS: Record<string, string> = {
+  aborted: "◺ PLAYBACK ABORTED",
+  network: "◺ NETWORK FAILED",
+  decode: "◺ DECODE FAILED",
+  unsupported: "◺ FORMAT UNSUPPORTED",
 }
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
@@ -53,28 +69,37 @@ const usePrefersReducedMotion = () =>
     () => true
   )
 
-// Asset paths in, not `src`/`poster` — ADR-0004 and CONTEXT.md's Asset path
-// recording, which lists `src` and `url` under _Avoid_. `interactive-video.tsx`
-// still speaks the old vocabulary; a module written after the rename does not.
 export function DemoTile({
+  recording,
   facts,
-  demoPath,
-  posterPath,
-  caption,
+  onRepoClick,
   className = "",
 }: {
+  // The Recording itself rather than its three asset paths: the tile needs `hue`
+  // for the emission, `isNew` for the chip and `source` for the failed state's
+  // action, and four scalars is worse than one object. The module still reads
+  // `recording.demoPath` and `recording.posterPath` and never speaks `src` or
+  // `thumbnail` — ADR-0004 governs the spelling, not the arity.
+  recording: Recording
   // The Recording's analytics facts rather than its id: this tile reports the play
   // and the owner reports the watch, and both events name the Category and the
   // contributor. Memoise it at the call site — it is a `register` dependency, and a
   // fresh object per render unobserves and re-observes the <video>.
   facts: RecordingFacts
-  demoPath: string
-  posterPath?: string
-  caption?: string
+  // The same handler the `Repo ↗` link below the media calls. Following the
+  // Source link is one of ADR-0007's three view signals, and a broken tile does
+  // not change that (ticket 07 step 6).
+  onRepoClick: (e: React.MouseEvent) => void
   className?: string
 }) {
   const [failureReason, setFailureReason] = useState<string | null>(null)
   const [hasPlayed, setHasPlayed] = useState(false)
+  // Is a slot granted right now, as distinct from `hasPlayed` — *has the fade
+  // run* vs *is the slot held right now*. They must not share a variable: the
+  // owner pauses tiles that scroll out of view (playback-owner.tsx:118), and
+  // reusing hasPlayed for the glow would leave every scrolled-past tile glowing
+  // behind the visitor (ticket 07 step 3).
+  const [playing, setPlaying] = useState(false)
   // Once per tile per page. The owner pauses and re-grants a slot on every
   // scroll that changes what is on screen, so `playing` fires repeatedly for a
   // tile nobody did anything new to.
@@ -83,10 +108,12 @@ export function DemoTile({
   const reduced = usePrefersReducedMotion()
 
   // The Published Asset's address, not an Asset path — that distinction is why
-  // these are named apart from the two props above.
-  const demoUrl = getCdnUrl(demoPath)
+  // these are named apart from the props above.
+  const demoUrl = getCdnUrl(recording.demoPath)
   const posterUrl =
-    posterPath && posterPath.trim() !== "" ? getCdnUrl(posterPath) : "/logo.png"
+    recording.posterPath && recording.posterPath.trim() !== ""
+      ? getCdnUrl(recording.posterPath)
+      : "/logo.png"
 
   // A failed Demo is terminal and says so. There is deliberately no fallback
   // source: Assets live only on the CDN, so the root-relative path this used to
@@ -100,9 +127,9 @@ export function DemoTile({
       if (!error) return
       const reason = FAILURE_REASONS[error.code] ?? "unknown"
       setFailureReason(reason)
-      demoLoadFailed(demoPath, reason, demoUrl)
+      demoLoadFailed(recording.demoPath, reason, demoUrl)
     },
-    [demoPath, demoUrl]
+    [recording.demoPath, demoUrl]
   )
 
   // A React 19 ref cleanup, memoised: an inline arrow would unregister and
@@ -115,25 +142,43 @@ export function DemoTile({
     [owner, facts]
   )
 
+  // The hue reaches CSS as one inline custom property, set from the Recording's
+  // measured hue with the mock's own fallback (Tile.dc.html:75) — the accent's
+  // own hue (Specimen.dc.html:114), so an unmeasured Recording glows in the
+  // site's green rather than in nothing.
+  const tileHue = recording.hue ?? 175
+
   return (
-    // bg-black is carried over from the play button this replaces, even though
-    // the box behind it is already black. It is not redundant: the card clips
-    // this box to a rounded top corner, and the arc is antialiased against
-    // however many dark layers are under it. With one instead of two, ten
-    // corners came out a few levels lighter — measured, 138 pixels of a
-    // 1,296,000-pixel viewport, and the only thing standing between this ticket
-    // and "differs by the play glyph and nothing else".
-    <div className={`relative bg-black ${className}`} data-testid="demo">
+    <div
+      data-testid="demo"
+      data-playing={playing ? "" : undefined}
+      className={`tile-media relative aspect-[9/16] rounded-tile overflow-hidden bg-plinth w-full ${className}`}
+      style={{ "--tile-hue": tileHue } as React.CSSProperties}
+    >
       {failureReason ? (
         <div
           role="alert"
           data-testid="demo-error"
-          className="w-full h-full bg-neutral-900 text-neutral-200 flex flex-col items-center justify-center gap-1 p-4 text-center"
+          className="absolute inset-0 bg-[rgba(4,5,8,0.9)] flex flex-col items-center justify-center gap-[11px] p-[18px] text-center"
         >
-          <span className="text-sm font-medium">This demo failed to load</span>
-          <span className="text-xs text-neutral-400">
-            {caption ?? demoPath} ({failureReason})
-          </span>
+          <div
+            className="font-mono text-[9px] tracking-[0.14em] text-[#F5B3A4]"
+            aria-hidden
+          >
+            {FAILURE_LABELS[failureReason] ?? "◺ PLAYBACK FAILED"}
+          </div>
+          <div className="text-xs leading-[1.45] text-[rgba(255,255,255,0.86)] text-pretty">
+            This recording won’t play in your browser. The source is still there.
+          </div>
+          <a
+            href={recording.source}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onRepoClick}
+            className="text-[11.5px] font-medium text-[#08090C] bg-[#F1F2F4] px-[11px] py-[7px] rounded-[9px]"
+          >
+            Open repo <span aria-hidden>↗</span>
+          </a>
         </div>
       ) : (
         <>
@@ -162,20 +207,24 @@ export function DemoTile({
               // The cross-fade of decision 15, in CSS rather than framer: the
               // Poster is the frame two seconds in (scripts/generate-posters.ts:47-48)
               // while playback starts at 0, so every tile jumps backwards the
-              // moment the Demo appears. 150ms hides a defect rather than decorating.
+              // moment the Demo appears. The Specimen's first motion row is
+              // 160ms opacity, linear (Specimen.dc.html:161), superseding
+              // decision 15's 150ms — one number (ticket 07 step 4).
               //
               // It never fades back. Returning to a Poster two seconds ahead of
               // the paused frame would reintroduce the same jump, in the other
               // direction.
-              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-150 ${
+              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-[160ms] ease-linear ${
                 hasPlayed ? "opacity-100" : "opacity-0"
               }`}
               onPlaying={() => {
+                setPlaying(true)
                 setHasPlayed(true)
                 if (announced.current) return
                 announced.current = true
                 demoPlayed(facts, "grid", "autoplay")
               }}
+              onPause={() => setPlaying(false)}
               onError={handleDemoError}
               muted
               loop
@@ -188,7 +237,24 @@ export function DemoTile({
               preload="none"
             />
           )}
+          {/* The state chip, `aria-hidden` in full — it describes a purely
+              visual state, and 48 of them announced is noise. Its text is the
+              CSS ::before in globals.css, so the served HTML holds one element
+              and both kinds of visitor read their own label from it. */}
+          <div aria-hidden className="state-chip font-mono text-[8.5px] tracking-[0.13em] px-[7px] py-1 rounded-[6px]" />
         </>
+      )}
+      {/* The NEW chip: top-right inside the media, and it survives a failed
+          Demo the way the mock's sc-if does — a Recording being recent and a
+          Recording being broken are different facts. aria-hidden like the
+          state chip. */}
+      {recording.isNew && (
+        <div
+          aria-hidden
+          className="absolute right-[10px] top-[10px] font-mono text-[8.5px] tracking-[0.13em] px-[7px] py-1 rounded-[6px] bg-new-bg text-new-fg"
+        >
+          NEW
+        </div>
       )}
     </div>
   )

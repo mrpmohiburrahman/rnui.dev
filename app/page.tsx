@@ -5,7 +5,7 @@ import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
 
-import { getRecordings } from "./actions/get-recordings"
+import { getRecordings, getTopViewCount } from "./actions/get-recordings"
 
 async function Page({
   searchParams,
@@ -25,6 +25,7 @@ async function Page({
     categories: getUniqueCategories().length,
   }
   const data = await getRecordings(params.search)
+  const topViewCount = await getTopViewCount()
 
   return (
     <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
@@ -32,6 +33,7 @@ async function Page({
         recordings={data}
         treatment="framed"
         stats={stats}
+        topViewCount={topViewCount}
         heading={catalogueHeading({ total: data.length })}
         // The mock's own showHero rule (Catalogue.dc.html:245) leaves the
         // filtered variant — which has only a search term beyond the facets —

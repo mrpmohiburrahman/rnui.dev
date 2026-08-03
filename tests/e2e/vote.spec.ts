@@ -8,7 +8,7 @@ import {
 
 function oneVoteClick(browser: Browser, url: string) {
   return recordServerActions(browser, url, (page) =>
-    page.getByRole("button", { name: "Vote", exact: true }).first().click()
+    page.getByRole("button", { name: /^Vote/ }).first().click()
   )
 }
 

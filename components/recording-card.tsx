@@ -3,8 +3,6 @@
 import { memo, useCallback, useMemo, useState } from "react"
 import Link from "next/link"
 import type { Recording } from "@/data/recording"
-import { GitHubLogoIcon, TwitterLogoIcon } from "@radix-ui/react-icons"
-import { Bookmark, Linkedin, Star } from "lucide-react"
 
 import {
   bookmarkAdded,
@@ -15,13 +13,6 @@ import {
   voteCast,
 } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
-import Badge from "@/components/badge" // Import the Badge component
-import MinimalCard, {
-  MinimalCardContent,
-  MinimalCardDescription,
-  MinimalCardFooter,
-  MinimalCardTitle,
-} from "@/components/cult/minimal-card"
 import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
 import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 
@@ -34,6 +25,15 @@ interface RecordingCardProps {
   toggleBookmark: (id: string) => void
   isVoted: boolean
   toggleVote: (id: string) => void
+  /** The whole catalogue's top view count — the views bar's denominator, which
+   *  no client-side module can compute (ticket 07 step 8). Threaded from the
+   *  routes, never fetched here. */
+  topViewCount: number
+  /** True when the previous tile in the grid shares this one's Contributor,
+   *  which is what the mock's `runRepeat` means: the byline is then prefixed
+   *  `↳ ` and drops to t3 (Tile.dc.html:108-109). The grid computes it; the
+   *  card does not know its neighbours. */
+  repeatsContributor?: boolean
 }
 
 const RecordingCardComponent: React.FC<RecordingCardProps> = ({
@@ -42,6 +42,8 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
   toggleBookmark,
   isVoted,
   toggleVote,
+  topViewCount,
+  repeatsContributor = false,
 }) => {
   // The displayed counts follow the Recording, with whatever this visitor has just
   // clicked added on top. They used to be snapshotted into state at mount, so a
@@ -203,20 +205,22 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
     [recordView, facts]
   )
 
-  // The three profile links count nothing. They point at a person, not at the
-  // Recording, so a click on one says nothing about this Recording having been viewed —
-  // one page announces the same three links up to 124 times. They still have to
-  // stop the click reaching the card, or following a byline would open the panel.
-  const stopPropagation = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-  }, [])
+  // The bar's width as a percentage of the catalogue's top entry, which is what
+  // the mock divides by in every variant (Tile.dc.html:112) — not the largest
+  // number on screen. The 4% floor is the mock's own, and a denominator of zero
+  // or less yields the floor rather than a division by zero.
+  const barPct =
+    topViewCount > 0
+      ? Math.max(4, Math.round((viewCount / topViewCount) * 100))
+      : 4
 
   return (
-    // A plain div. There was a `motion.div` here, projecting its layout and
-    // sliding in on mount. The slide serialised `initial` into the style
-    // attribute during the server render, so every card arrived at `opacity: 0`
-    // and 277 of them slid up 10px the moment hydration finished. The layout
-    // projection ran over all 277 on every sort toggle, for a rare reorder.
+    // A plain column, gap:10px between the media and the text block — the mock
+    // has no card, and the media box is the tile's only bounded object
+    // (Tile.dc.html:10). A plain div, for the reason recorded below; there was
+    // a `motion.div` here projecting its layout and sliding in on mount, and
+    // the slide serialised `initial` into the style attribute during the server
+    // render.
     <div
       // No fixed width. A hard 221-pixel width used to sit here, inside a
       // `minmax(0, 1fr)` track, so from `sm` up the card was correct at exactly
@@ -224,184 +228,144 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
       // side of it — the last card in each row running past the grid, where
       // `overflow-hidden` on the root cut it off. The column-break hint went
       // with it: nothing on the site establishes a multi-column context.
-      className="group relative w-full cursor-pointer"
+      className="group relative w-full cursor-pointer flex flex-col gap-2.5"
       onClick={handleClick}
     >
-      <div className="w-full h-full relative">
-        <MinimalCard
+      <DemoTile
+        recording={recording}
+        facts={facts}
+        onRepoClick={handleSourceClick}
+        className="w-full"
+      />
+
+      {/* The text block, gap:7px between its rows (Tile.dc.html:44). */}
+      <div className="flex flex-col gap-[7px]">
+        {/* The card's one keyboard route into the Recording. The card body
+            is a div with an onClick — a mouse affordance that no Tab ever
+            reaches — so without this the detail view had no keyboard route
+            at all.
+
+            A real href, so the Recording can be opened in a new tab, copied
+            and crawled; but a plain click is intercepted and handed to
+            handleClick, so the headline and the card body do the same thing.
+            Letting the <Link> navigate instead would send a keyboard visitor
+            to the standalone page while a mouse visitor got the overlay.
+
+            The href alone carries no query string, and cannot: it is rendered
+            on the server, where window.location does not exist, so appending
+            one would be a hydration mismatch on every card. handleClick reads
+            window.location.search at click time instead, which is what keeps
+            `?page=2` across an open. A cmd-click therefore opens the
+            Recording's own address with no listing state attached — right for
+            a new tab, which is not showing the listing.
+
+            No aria-label: the link's name is its visible text. Tailwind
+            preflight sets `a { color: inherit; text-decoration: inherit }`, so
+            nothing about the heading moves or changes colour.
+
+            The min-height is not decoration: two lines at 14.5×1.32 is 38.3px,
+            so reserving 39 keeps a one-line and a two-line caption on the same
+            baseline and stops the row below shifting when one wraps. */}
+        <h3 className="min-h-[39px] text-[14.5px] font-medium leading-[1.32] tracking-[-0.01em] text-t1 text-pretty">
+          <Link href={href} prefetch={false} onClick={handleHeadlineClick}>
+            {recording.caption}
+          </Link>
+        </h3>
+
+        {/* The Category label, upper-cased (Tile.dc.html:46,98). */}
+        <p className="font-mono text-[9px] tracking-[0.12em] text-t3 uppercase">
+          {recording.category}
+        </p>
+
+        {/* The Contributor byline, plain text not a link — the profiles live on
+            the detail (Detail.dc.html:57-59). When the previous tile shares the
+            contributor, the `↳ ` prefix and t3 mark the repeat (Tile.dc.html:108-109). */}
+        <p
           className={cn(
-            "text-neutral-900 hover:bg-pink-100 dark:text-neutral-100 dark:hover:bg-gray-900",
-            "w-full h-full transition-colors duration-200 rounded-lg shadow-elevationLight flex flex-col"
+            "min-h-[31px] text-xs leading-[1.32] [overflow-wrap:anywhere]",
+            repeatsContributor ? "text-t3" : "text-t2"
           )}
         >
-          {/* Bookmark Button.
-              It used to be opacity-10 and pointer-events-none until the card was
-              hovered. Neither takes an element out of the tab order, so a keyboard
-              visitor landed on a control drawn at 10% that also removed its own
-              focus ring; on touch, where there is no hover, it was unreachable
-              entirely. It is `absolute`, so showing it at rest moves nothing. */}
+          {repeatsContributor ? "↳ " : ""}
+          {recording.contributor}
+        </p>
+
+        {/* The views row: a 3px track with a fill and the count in tabular
+            mono (Tile.dc.html:48-53,110-111). The figure is pinned to en-US —
+            an unpinned locale formats differently on the server and in the
+            browser, which is a hydration mismatch on 48 numbers. The bar reads
+            the same viewCount the figure does, so a click cannot move one
+            without the other. */}
+        <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex-1 h-[3px] rounded-[2px] bg-bar-track">
+            <div
+              className="h-[3px] rounded-[2px] bg-bar-fill"
+              style={{ width: `${barPct}%` }}
+            />
+          </div>
+          <span className="font-mono text-[10px] text-t3 tabular-nums whitespace-nowrap">
+            {viewCount.toLocaleString("en-US")} views
+          </span>
+        </div>
+
+        {/* The controls row (Tile.dc.html:54-57). The count is inside the vote
+            button now, so a bare aria-label would silence it — the label names
+            the action and the count together. The save button carries no
+            aria-label at all: the visible word is now "Save", and an accessible
+            name of "Add Bookmark" over a button that says Save is a WCAG 2.5.3
+            failure — its name is the visible text and the state goes on
+            aria-pressed. The glyphs are aria-hidden so the accessible names are
+            `Vote, 3` / `Unvote, 3` and `Save` / `Saved`.
+
+            The row wraps: the mock is a single line at 208px and up
+            (Tile.dc.html:54), but the grid's `md:grid-cols-3` tracks can fall
+            to ~118px, below the three controls' combined min-content — the
+            `ml-auto` Repo link drops to its own right-aligned line there
+            instead of running past the card. */}
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 mt-[3px]">
+          <button
+            type="button"
+            onClick={handleVoteClick}
+            aria-pressed={isVoted}
+            aria-label={`${isVoted ? "Unvote" : "Vote"}, ${voteCount}`}
+            className={cn(
+              "flex items-center gap-[5px] font-mono text-[10.5px] px-[9px] py-[6px] rounded-lg border",
+              isVoted
+                ? "border-acc bg-acc-soft text-acc"
+                : "border-line bg-ctrl text-t2 hover:border-line2 hover:text-t1",
+              "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+            )}
+          >
+            <span aria-hidden>▲</span>
+            {voteCount}
+          </button>
+
           <button
             type="button"
             onClick={handleBookmarkClick}
-            className="absolute top-4 right-4 p-1 bg-white dark:bg-gray-800 rounded-full shadow-md z-10"
-            aria-label={isBookmarked ? "Remove Bookmark" : "Add Bookmark"}
-          >
-            {isBookmarked ? (
-              <Bookmark className="h-5 w-5 text-blue-500 fill-blue-500" />
-            ) : (
-              <Bookmark className="h-5 w-5 text-gray-500 dark:text-gray-300" />
+            aria-pressed={isBookmarked}
+            className={cn(
+              "flex items-center gap-[5px] text-[11px] px-[9px] py-[6px] rounded-lg border",
+              isBookmarked
+                ? "border-acc bg-acc-soft text-acc"
+                : "border-line bg-ctrl text-t2",
+              "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
             )}
+          >
+            <span aria-hidden>{isBookmarked ? "◆" : "◇"}</span>
+            {isBookmarked ? "Saved" : "Save"}
           </button>
 
-          {/* "New" Badge */}
-          {recording.isNew && (
-            <Badge variant="success" className="absolute top-4 left-4 z-10">
-              New
-            </Badge>
-          )}
-
-          {/* The Demo. It autoplays and counts its own view — two seconds of
-              actual playback, once per browser session — from inside the
-              playback owner, which is why nothing about that is wired here. */}
-          <div className="flex-shrink-0 aspect-[9/16] w-full bg-black rounded-t-lg overflow-hidden">
-            <DemoTile
-              facts={facts}
-              demoPath={recording.demoPath}
-              caption={`video demo of ${recording.caption}`}
-              posterPath={recording.posterPath}
-              className="w-full h-full object-contain"
-            />
-          </div>
-
-          {/* Card Content */}
-          <div className="flex flex-col flex-grow justify-between p-4">
-            <div>
-              <MinimalCardTitle className="font-semibold mb-1 text-neutral-800 dark:text-neutral-200 text-sm">
-                {/* The card's one keyboard route into the Recording. The card body
-                    is a div with an onClick — a mouse affordance that no Tab
-                    ever reaches — so without this the detail view had no
-                    keyboard route at all.
-
-                    A real href, so the Recording can be opened in a new tab, copied
-                    and crawled; but a plain click is intercepted and handed to
-                    handleClick, so the headline and the card body do the same
-                    thing. Letting the <Link> navigate instead would send a
-                    keyboard visitor to the standalone page while a mouse
-                    visitor got the overlay.
-
-                    The href alone carries no query string, and cannot: it is
-                    rendered on the server, where window.location does not
-                    exist, so appending one would be a hydration mismatch on
-                    every card. handleClick reads window.location.search at
-                    click time instead, which is what keeps `?page=2` across an
-                    open. A cmd-click therefore opens the Recording's own address
-                    with no listing state attached — right for a new tab, which
-                    is not showing the listing.
-
-                    No aria-label: the link's name is its visible text. Tailwind
-                    preflight sets `a { color: inherit; text-decoration: inherit }`,
-                    so nothing about the heading moves or changes colour. */}
-                <Link
-                  href={href}
-                  prefetch={false}
-                  onClick={handleHeadlineClick}
-                >
-                  {recording.caption}
-                </Link>
-              </MinimalCardTitle>
-              <MinimalCardDescription className="text-sm text-neutral-700 dark:text-neutral-300 mb-2">
-                {recording.contributor}
-              </MinimalCardDescription>
-              <MinimalCardContent />
-            </div>
-            <MinimalCardFooter className="p-0">
-              {/* Wraps. Three social icons and the Source link have a
-                  129px min-content width, and neither half can shrink — an
-                  icon is a fixed 20px and "Source" is a word. That fitted while
-                  the card was pinned at 221 pixels; once it became its track,
-                  the narrower bands put the content box under 129px and Source
-                  ran off the right edge of the card. Wrapping only engages
-                  where it did not fit. */}
-              <div className="flex flex-wrap gap-y-2 justify-between items-center w-full text-neutral-800 dark:text-neutral-200">
-                {/* Left Side: Social Icons */}
-                <div className="flex items-center gap-3">
-                  {recording.twitterId && (
-                    <Link
-                      href={`https://twitter.com/${recording.twitterId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-blue-700 transition-colors"
-                      aria-label={`${recording.contributor} on X`}
-                      onClick={stopPropagation}
-                    >
-                      <TwitterLogoIcon className="w-5 h-5" />
-                    </Link>
-                  )}
-
-                  {recording.linkedInId && (
-                    <Link
-                      href={`https://linkedin.com/in/${recording.linkedInId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-blue-900 transition-colors"
-                      aria-label={`${recording.contributor} on LinkedIn`}
-                      onClick={stopPropagation}
-                    >
-                      <Linkedin size={20} />
-                    </Link>
-                  )}
-                  {recording.githubId && (
-                    <Link
-                      href={`https://github.com/${recording.githubId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-gray-800 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-                      aria-label={`${recording.contributor} on GitHub`}
-                      onClick={stopPropagation}
-                    >
-                      <GitHubLogoIcon className="w-5 h-5" />
-                    </Link>
-                  )}
-                </div>
-
-                {/* Right Side: Source Link */}
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={recording.source}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline flex items-center gap-1 tracking-tight text-sm font-semibold"
-                    onClick={handleSourceClick}
-                  >
-                    Source
-                  </Link>
-                </div>
-              </div>
-            </MinimalCardFooter>
-
-            {/* Counts and Vote Button */}
-            <div className="flex justify-between items-center mt-4">
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Views: {viewCount}
-              </span>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Votes: {voteCount}
-              </span>
-              <button
-                type="button"
-                onClick={handleVoteClick}
-                className="text-yellow-500 hover:text-yellow-700"
-                aria-label={isVoted ? "Unvote" : "Vote"}
-              >
-                {isVoted ? (
-                  <Star className="h-5 w-5 fill-yellow-500" /> // Filled star for voted
-                ) : (
-                  <Star className="h-5 w-5 stroke-current" /> // Outlined star for not voted
-                )}
-              </button>
-            </div>
-          </div>
-        </MinimalCard>
+          <a
+            href={recording.source}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleSourceClick}
+            className="ml-auto text-[11.5px] font-medium text-acc underline underline-offset-3 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 focus-visible:rounded-[3px]"
+          >
+            Repo <span aria-hidden>↗</span>
+          </a>
+        </div>
       </div>
     </div>
   )
@@ -417,7 +381,13 @@ export const RecordingCard = memo(
       prevProps.isBookmarked === nextProps.isBookmarked &&
       prevProps.isVoted === nextProps.isVoted &&
       prevProps.recording.vote_count === nextProps.recording.vote_count &&
-      prevProps.recording.view_count === nextProps.recording.view_count
+      prevProps.recording.view_count === nextProps.recording.view_count &&
+      // A comparator prop it does not name can change without re-rendering the
+      // card. topViewCount moves when the 300-second cache revalidates and
+      // repeatsContributor moves whenever a sort or filter reorders the grid —
+      // either one going stale is a silent wrong render (ticket 07 step 9).
+      prevProps.topViewCount === nextProps.topViewCount &&
+      prevProps.repeatsContributor === nextProps.repeatsContributor
     )
   }
 )

@@ -8,11 +8,11 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
 })
 
-// One bookmark button per card, as pagination.spec.ts counts them.
-const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
+// One save button per card, as pagination.spec.ts counts them.
+const cards = (page: Page) => page.getByRole("button", { name: /^Saved?$/ })
 
-// The first card's caption, which is how an order is compared: the bookmark
-// button is named "Add Bookmark" on every card and identifies none of them.
+// The first card's caption, which is how an order is compared: the save button
+// is named "Save" or "Saved" on every card and identifies none of them.
 const firstCaption = (page: Page) =>
   page.getByRole("heading", { level: 3 }).first().textContent()
 

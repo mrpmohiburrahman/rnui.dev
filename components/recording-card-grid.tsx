@@ -77,6 +77,9 @@ export interface RecordingCardGridProps {
    * denominator of the result line. Absent on `/bookmarks`, whose saved view has
    * no denominator. */
   catalogueTotal?: number
+  /** The whole catalogue's top view count, the denominator of every tile's views
+   * bar (ticket 07 step 8). Threaded from the routes. */
+  topViewCount: number
   /** Show only bookmarked Recordings; selects the `N SAVED · THIS BROWSER` form
    * of the result line. */
   bookmarkedOnly?: boolean
@@ -97,6 +100,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   heading,
   catalogueTotal,
   bookmarkedOnly,
+  topViewCount,
 }) => {
   const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
   // Pagination lives in the URL, not in state, so a page is shareable and Back
@@ -301,10 +305,18 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
                   Ids are unique — tests/data-integrity.test.ts enforces it. */}
               {sortedData
                 ?.slice(0, shownCount)
-                .map((recording) => (
+                .map((recording, i, shown) => (
                   <RecordingCard
                     key={recording.id}
                     recording={recording}
+                    // The second of two adjacent tiles by the same Contributor
+                    // repeats its byline prefixed `↳ ` and in t3 — what the
+                    // mock's runRepeat means (Tile.dc.html:108-109). The grid
+                    // knows the neighbour; the card does not.
+                    repeatsContributor={
+                      i > 0 && shown[i - 1].contributor === recording.contributor
+                    }
+                    topViewCount={topViewCount}
                     isBookmarked={bookmarks.includes(recording.id)}
                     toggleBookmark={toggleBookmark}
                     isVoted={votedRecordingIds.includes(recording.id)}

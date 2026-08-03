@@ -213,4 +213,27 @@ test.describe("reduced motion", () => {
     // The tiles are not blank: they hold their Poster.
     await expect(page.getByTestId("demo").first().locator("img")).toBeVisible()
   })
+
+  // No <video> mounts, so `playing` is never true and nothing is ever brighter
+  // than anything else — a resting-by-default dim would hand the visitors who
+  // asked for less motion a permanently darkened catalogue (Specimen.dc.html:95).
+  // The brightness must live in CSS behind the media query rather than in the
+  // hook, whose server snapshot is `true`, so this is the assertion that would
+  // have caught shipping that dim.
+  test("tiles sit at full brightness, and say so", async ({ page }) => {
+    await page.goto("/")
+    const tile = page.getByTestId("demo").first()
+    await tile.waitFor()
+
+    expect(
+      await tile.evaluate((el) => getComputedStyle(el).filter)
+    ).toBe("none")
+
+    // The state chip's text is the CSS ::before (globals.css), so it is read
+    // off the pseudo-element, not the element's textContent.
+    const label = await tile
+      .locator(".state-chip")
+      .evaluate((el) => getComputedStyle(el, "::before").content)
+    expect(label).toContain("STILLS ONLY")
+  })
 })
