@@ -72,8 +72,16 @@ const ROW_ON = [
  * on (data/categories.ts:68-70). `URLSearchParams` spells a space `+` where that
  * table spells it `%20`; both decode to the same string, so the active test below
  * and the redirect targets keep agreeing.
+ *
+ * Exported for components/filter-chips.tsx and components/catalogue-empty.tsx,
+ * which remove a facet by exactly this policy. A second spelling of it is what
+ * makes a chip and the rail row it mirrors disagree about where "off" is.
  */
-function facetHref(current: URLSearchParams, key: string, value: string) {
+export function facetHref(
+  current: URLSearchParams,
+  key: string,
+  value: string
+) {
   // A copy: useSearchParams() hands back a ReadonlyURLSearchParams whose
   // set/delete throw.
   const params = new URLSearchParams(current)

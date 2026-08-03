@@ -64,7 +64,7 @@ const BookmarksPage = () => {
   // blank. Which Recordings this route shows is decided by localStorage, so the
   // grid itself was never going to be in that HTML.
   return (
-    <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
+    <div className="max-w-full pt-2">
       <Suspense
         fallback={
           <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">
@@ -74,7 +74,6 @@ const BookmarksPage = () => {
       >
         <CataloguePage
           recordings={recordings}
-          treatment="framed"
           bookmarkedOnly
           heading="Saved on this device"
           topViewCount={topViewCount}

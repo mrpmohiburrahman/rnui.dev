@@ -5,6 +5,7 @@ import { permanentRedirect } from "next/navigation"
 import { allRecordings } from "@/data/catalogue"
 import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 
+import { catalogueDiagnosis } from "@/lib/catalogue-filters"
 import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
 
@@ -57,15 +58,26 @@ const RecordingsPage = async ({
     categories: getUniqueCategories().length,
   }
 
+  // Why the result set is empty, computed here because only a server component
+  // can hold the whole catalogue: the zero panel has to answer "what would I see
+  // if I dropped this one filter". Against allRecordings rather than
+  // getRecordings() — the diagnosis reads caption, Category and Contributor
+  // only, none of which come from Firestore, so the plain array is both correct
+  // and free.
+  const diagnosis =
+    data.length === 0
+      ? catalogueDiagnosis(allRecordings, { category, contributor, search })
+      : null
+
   return (
     <div className="flex">
       <div className=" max-w-full pt-4">
         <CataloguePage
           recordings={data}
-          treatment="plain"
           stats={stats}
           showHero={false}
           topViewCount={topViewCount}
+          diagnosis={diagnosis}
           heading={catalogueHeading({
             category,
             contributor,

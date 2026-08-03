@@ -1,6 +1,6 @@
 # 08 — The grid, the filter chips, Load more and the empty states
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 06, 07
 
 The surface is everything inside `<main>` below the heading row: the filter bar
@@ -654,3 +654,118 @@ Not blocking, but contended:
   (`Catalogue.dc.html:216`), and owns the global mechanism that zeroes step 3's 120ms transition.
   This ticket adds no `prefers-reduced-motion` branch of its own beyond writing the transition so
   one can reach it.
+
+## Comments
+
+### 2026-08-03 — Built. Every acceptance bullet met except three clauses about PostHog events, which cannot be verified in this harness. `ready-for-human`.
+
+Work steps 1-11 are all done. `pnpm check-types`, `pnpm lint` (0 errors, 4 pre-existing
+warnings in `placeholders-and-vanish-input.tsx`, `input.tsx` and an `aboutus` page — none in a
+file this ticket touches), `pnpm test` **241/241** and the Playwright suite **151/151** all pass,
+against a production build.
+
+**What the commit is.** `lib/catalogue-filters.ts` (the diagnosis, the two sentences, the action
+list and `clearAllHref`), `components/filter-chips.tsx`, `components/catalogue-empty.tsx`,
+`catalogueMatchLine` in `lib/catalogue-heading.ts`, the grid's fixed tracks and its Load more /
+end-of-set block, `emptyState` replacing `emptyMessage`, `facetHref` exported and `searchHref`
+extracted, and the diagnosis computed in both server routes.
+
+**The mock's own zero-result query, resolved against the data.** `Misc` + that Contributor +
+`wheel` diagnoses the Category, names `Wheel Picker`, and reports its Category as whatever
+`data/sliders.ts` holds — `Sliders`, not the mock's `Pickers`. All three single drops are
+non-empty on that query, so the panel offers five actions where the mock draws three.
+`grep -rn "Pickers\|Wheel Picker\|Spin Wheel\|Enzo" app components lib` returns nothing.
+
+**One thing the ticket did not anticipate: the framed panel had to go.** The first acceptance
+bullet — five 208px tracks at 1440px — is arithmetically impossible with it. `main` is 1208px
+inside the 232px rail and its own 26px gutters leave 1156px; five tracks plus four 24px gaps need
+1136px. The `treatment="framed"` panel's `p-4`, the grid wrapper's `md:mx-4` and `/`'s `px-2
+md:pl-4` together spent 80px, leaving 1076px and four tracks. Ticket 06's Depends-on says
+outright *"08 owns the grid, the `treatment` prop and the zero-result panel"*, and the mock draws
+no panel around the grid at all, so `GridTreatment`, both `bg-white dark:bg-[#1E1E1E]
+rounded-[2rem]` wrappers and the doubled route gutters are deleted. Checkpoint 4 was read first:
+the panel is the pre-redesign look, superseded by this effort rather than by a decision of its
+own. It took the file from eight hex literals to five — the five left are the phone sort
+dropdown's, which ticket 11 owns. Both catalogue routes now render at the mock's own 1156px.
+
+**Three acceptance clauses could not be verified, and one of them cannot be true as written.**
+
+- *"fires exactly one `filter_cleared` with `{ facet: "category", value: "Misc" }"*,
+  *"fires two `filter_cleared` events, one per Facet"* and *"fires no PostHog event at all"* —
+  **posthog-js emits no capture request at all under Playwright in this repo.** Verified at
+  length: `posthog.init` runs (the token reaches `/array/<token>/config.js`, `localStorage`
+  carries a `distinct_id` and an `$initialization_time`), the recorder, surveys and web-vitals
+  extensions load, and yet no POST to `/i/v0/e/` ever happens — not for a click, not for a
+  `$pageview`, not on unload, and nothing is left queued. Spoofing `navigator.webdriver`, the
+  headless user-agent, and both together changed nothing. A recorder that decoded the gzip
+  payload was written and then deleted, because there was no payload to decode. The code does
+  what the three bullets require and the Spec review confirmed it by reading:
+  `filterCleared` → `posthog.capture("filter_cleared", {facet, value})`; the facet ✕ is a `<Link>`
+  whose `onClick` calls it once; `Clear all` loops the active facets with `if (key !== "search")`;
+  the search ✕ is a plain button that only calls `router.replace`. **A maintainer's judgement is
+  what is left here** — either accept that, or land a harness that can see captures. Ticket 15
+  owns PostHog at deploy B and is the right home for the harness.
+- *"No captured event anywhere in the session carries the string `wheel`."* **This one cannot
+  hold, and not because of anything in this ticket.** `?search=wheel` is a shareable address
+  (`ui-ux-overhaul` ticket 10), so PostHog's own `$`-prefixed events — `$pageview`, `$autocapture`,
+  the dead-click stream — carry it inside `$current_url` by construction. What
+  `lib/analytics.ts:19-20` promises is narrower and is met: no event *this site defines* carries
+  a visitor's own words. **Also for the maintainer**, and also ticket 15's, since that ticket
+  already owns what autocapture does at deploy B.
+
+**Everything else, bullet by bullet.** Five 208px tracks with 28px/24px gaps and card width equal
+to track width, asserted at 1440px and measured at 390/640/768/1024/1280/1440 on all three routes
+with `scrollWidth === clientWidth`. The bar's `2 ACTIVE`, its `CATEGORY Misc` chip and its
+`BY Enzo Manuel Mangano ( Reactiive )` chip in the **stored** spelling with the inner spaces. Chip
+removal dropping `page`, `Clear all` landing on bare `/products`, the search chip returning to `/`
+with no query string. `Load 48 more` with `48 OF 277 SHOWN · NO INFINITE SCROLL`, `Load 37 more`
+on the short last page, `END OF CATALOGUE · 277 OF 277` with both links working and the GitHub one
+pointing where `top-nav-bar.tsx` points, and `END OF RESULTS · 20 OF 20` under a Buttons filter.
+All six headline forms, the qualifier order, the one-filter and no-single-drop cases, the empty
+saved panel's copy and its `Browse the catalogue` landing on `/` with 48 cards, the held-fetch
+regression test passing with only its matcher string changed, focus rings on Tab for every control
+in the bar and every action in the panel reached by keyboard alone, and a chip's
+`transition-duration` computing `0s` under `prefers-reduced-motion`. No hex literal added, no
+`posthog.capture` added (15 before and after), `tests/analytics.test.ts` untouched, and no client
+chunk names `data/catalogue.ts`.
+
+**Two-axis review, and what it changed.** Both axes ran and both found something real.
+
+- *Spec, one defect, fixed.* `catalogueActions` gated `Search all N` on `searchAll` alone. Those
+  two conditions are independent — three filters can leave every pair empty while the term alone
+  still matches, which
+  `/products?category=Accordions&contributor=…&search=wheel`-shaped queries do — so the
+  "exactly one action" case offered two. Now gated on `dropped` as well, with a unit test that
+  pins `dropped: null` and `searchAll: true` together.
+- *Standards, one real duplication, fixed.* `Clear all` was spelled twice and the two already
+  disagreed: the bar preserved `sort`, the panel discarded it. Both now call one exported
+  `clearAllHref`, which is unit-tested — the same argument `facetHref` carries in its own comment.
+- Also from Standards: `numberWord` no longer says "three" for any count above two, and one
+  comment said "entry" in the sense ADR-0008 retired.
+- Declined, with reasons: `facetHref`'s `key: string` stays, because step 9 says export it and
+  change nothing else in that file; `searchHref` stays in `components/catalogue-search.tsx`,
+  because step 3 names that file; `catalogueSentences` takes two parameters rather than the
+  spec's three, because the sentences do not use `catalogueTotal` and an unused parameter is
+  worse than a moved one — the total goes to `catalogueActions`, which does use it.
+- One edge the Standards axis caught and this ticket now handles: an empty list with **no** filter
+  on it, which is what `get-recordings.ts` returns when the Firestore read throws. The zero panel
+  diagnoses filters and there are none, so it drew a blank 620px box.
+  `components/catalogue-page.tsx` now hands `null` there, which already means "say nothing".
+
+**Open questions, as shipped.**
+
+1. **`END OF RESULTS`.** Shipped as step 5 derives it — one word, `END OF CATALOGUE` unfiltered
+   and `END OF RESULTS` otherwise. The alternative in the ticket (render no rule at all when a
+   filter is on) is still open and is a smaller change if preferred.
+2. **Which Recording the diagnosis names.** First in `allRecordings` order, as step 1 says.
+   Deterministic, no Firestore read.
+3. **14px and 8px are off the Specimen's radius scale.** Both shipped as drawn, per decision 2 —
+   the panels at 14px and the chips at 8px. Ticket 02 may want tokens; there is no row for either.
+4. **`line2`.** Took `Catalogue.dc.html`'s value via the ticket-02 token, which is what
+   `app/globals.css` already holds.
+
+**Not built, deliberately.** The `loading` variant's tile skeleton and its
+`RESERVING SPACE FOR 48` line. This ticket introduces no boundary that suspends — both grid
+callers are server components holding their Recordings, `find app -name loading.tsx` returns
+nothing, and `/bookmarks` reading its saves from an effect is already answered by
+`emptyState: null`. The Depends-on section records where to start when a route does suspend.

@@ -73,3 +73,21 @@ export function catalogueResultLine(config: {
         : "RECENT"
   return `${shown} OF ${catalogueTotal} · SORTED ${label}`
 }
+
+/**
+ * The zero-result panel's own eyebrow (Catalogue.dc.html:100). It lives beside
+ * its two siblings so the numerator and denominator obey the same one rule —
+ * `shown` is tiles rendered, `catalogueTotal` is always the whole catalogue —
+ * and so the two mono lines cannot drift apart.
+ *
+ * A third function rather than a flag on catalogueResultLine because the strings
+ * genuinely differ: `0 OF 277 · 3 FILTERS` in the heading row and
+ * `0 OF 277 MATCH` in the panel, both drawn, both on screen at once in the mock's
+ * `zero` variant.
+ */
+export function catalogueMatchLine(config: {
+  shown: number
+  catalogueTotal: number
+}): string {
+  return `${config.shown} OF ${config.catalogueTotal} MATCH`
+}

@@ -261,6 +261,134 @@ test("a filter on a Contributor outside the top four pins that row to the rail",
   await expect(rows.nth(4)).toHaveAttribute("href", "/products")
 })
 
+// Until ticket 08 the only way to drop a filter was to find the same rail row
+// and click it again, and a search term had no removal control at all. The bar
+// above the heading row is the one place all three are visible at once.
+test.describe("the filter bar", () => {
+  const BAR_URL = `/products?category=Misc&contributor=${encodeURIComponent(
+    "Enzo Manuel Mangano ( Reactiive )"
+  )}`
+
+  // A chip, by the ✕ that removes it — the label is the mock's own, and the
+  // chip is that control's parent span. Not scoped to a role: the two facet ✕
+  // are Links, because a facet has an href, and the search ✕ is a button,
+  // because clearing a term is a replace on the route the visitor is on.
+  const chip = (page: Page, label: string) =>
+    page.getByLabel(label).locator("..")
+
+  test("counts the active facets and names each one", async ({ page }) => {
+    await page.goto(BAR_URL)
+
+    await expect(page.getByText("2 ACTIVE")).toBeVisible()
+    await expect(chip(page, "Remove category filter")).toHaveText(
+      "CATEGORYMisc✕"
+    )
+    // The stored spelling, with the spaces inside the parentheses — the mock
+    // tidies them and the data does not, and the chip renders what
+    // `?contributor=` actually holds.
+    await expect(chip(page, "Remove contributor filter")).toHaveText(
+      "BYEnzo Manuel Mangano ( Reactiive )✕"
+    )
+  })
+
+  test("removing one chip leaves the other and drops the page", async ({
+    page,
+  }) => {
+    await page.goto(`${BAR_URL}&page=2`)
+    await page.getByRole("link", { name: "Remove category filter" }).click()
+
+    await expect(page).toHaveURL(/contributor=/)
+    await expect(page).not.toHaveURL(/category=/)
+    await expect(page).not.toHaveURL(/page=/)
+  })
+
+  test("Clear all lands on the unfiltered catalogue", async ({ page }) => {
+    await page.goto(BAR_URL)
+    await page.getByRole("link", { name: "Clear all" }).click()
+
+    await expect(page).toHaveURL(/\/products$/)
+  })
+
+  test("the search chip clears the term without leaving the route", async ({
+    page,
+  }) => {
+    await page.goto("/?search=wheel")
+    await expect(page.getByText("1 ACTIVE")).toBeVisible()
+    await expect(chip(page, "Clear search")).toHaveText("SEARCH“wheel”✕")
+
+    await page.getByRole("button", { name: "Clear search" }).click()
+
+    // `/`, not `/products`: the box works on whatever route it is on, and so
+    // does its chip. And no query string at all, not a bare `?`.
+    await expect
+      .poll(() => new URL(page.url()).pathname + new URL(page.url()).search)
+      .toBe("/")
+  })
+
+  test("the saved view draws no bar", async ({ page }) => {
+    await page.goto("/bookmarks?category=Misc")
+    await expect(page.getByText(/\d+ ACTIVE/)).toHaveCount(0)
+  })
+
+  // Every control in the bar is reachable and operable without a pointer, and
+  // shows a ring while it is — ui-ux-overhaul ticket 07 is what put visible
+  // focus on this site, and studio-dark checkpoint 5 makes keyboard
+  // verification acceptance rather than a follow-up.
+  test("every control in the bar takes focus and shows a ring", async ({
+    page,
+  }) => {
+    await page.goto(`${BAR_URL}&search=wheel`)
+
+    // Tab, not `.focus()`: the ring is `:focus-visible`, so a mouse click draws
+    // nothing (ui-ux-overhaul ticket 07) and programmatic focus is not the thing
+    // under test. Four controls, each reached by keyboard alone.
+    const reached: string[] = []
+    for (let i = 0; i < 60 && reached.length < 4; i++) {
+      await page.keyboard.press("Tab")
+      const active = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement | null
+        if (!el) return null
+        return {
+          label: el.getAttribute("aria-label") ?? el.textContent?.trim() ?? "",
+          outline: getComputedStyle(el).outlineWidth,
+        }
+      })
+      if (
+        active &&
+        [
+          "Remove category filter",
+          "Remove contributor filter",
+          "Clear search",
+          "Clear all",
+        ].includes(active.label)
+      ) {
+        expect(active.outline).toBe("3px")
+        reached.push(active.label)
+      }
+    }
+    expect(reached).toEqual([
+      "Remove category filter",
+      "Remove contributor filter",
+      "Clear search",
+      "Clear all",
+    ])
+  })
+
+  // The Specimen's "all durations 0ms" (Specimen.dc.html:95). The chip's own
+  // 120ms is written as a CSS transition precisely so the global rule in
+  // app/globals.css can reach it; ticket 13 owns that mechanism, this asserts
+  // the chip is inside it.
+  test("a chip's transition is zero under reduced motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto(BAR_URL)
+
+    const chipEl = page.getByLabel("Remove category filter").locator("..")
+    expect(
+      await chipEl.evaluate((el) => getComputedStyle(el).transitionDuration)
+    ).toBe("0s")
+  })
+})
+
 test("the rail is 232px wide and main starts exactly beside it", async ({
   page,
 }) => {

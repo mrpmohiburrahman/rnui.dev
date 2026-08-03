@@ -14,23 +14,21 @@ import { useMemo, type ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
+import type { CatalogueDiagnosis } from "@/lib/catalogue-filters"
 import {
   BOOKMARKS_KEY,
   useRememberedSet,
   VOTED_RECORDING_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
+import type { EmptyState } from "@/components/catalogue-empty"
 import { Hero } from "@/components/hero"
 import { PlaybackOwner } from "@/components/playback-owner"
-import {
-  RecordingCardGrid,
-  type GridTreatment,
-} from "@/components/recording-card-grid"
+import { RecordingCardGrid } from "@/components/recording-card-grid"
 import { RecordingOverlay } from "@/components/recording-overlay"
 
 interface CataloguePageProps {
   recordings: Recording[]
-  treatment: GridTreatment
   /**
    * Show only the Recordings this visitor has bookmarked. The bookmarks route is
    * handed the whole catalogue and sets this, rather than filtering before it
@@ -54,17 +52,23 @@ interface CataloguePageProps {
    * CataloguePage is a client component and the counts it would need are not
    * in the client graph. */
   heading: string
+  /** Why the filtered catalogue is empty, computed by the route's server
+   * component and passed straight through — this module is "use client" and
+   * the diagnosis needs the whole catalogue to answer "what would I see if I
+   * dropped this one filter". Absent on /bookmarks, which can never show the
+   * zero panel. */
+  diagnosis?: CatalogueDiagnosis | null
   /** Rendered above the sort controls: a heading, a hero, a newsletter form. */
   children?: ReactNode
 }
 
 export function CataloguePage({
   recordings,
-  treatment,
   bookmarkedOnly = false,
   showHero = false,
   stats,
   heading,
+  diagnosis,
   children,
   topViewCount,
 }: CataloguePageProps) {
@@ -115,10 +119,17 @@ export function CataloguePage({
   //
   // The other routes are handed their Recordings by a server component, so an empty
   // list there is an answer rather than a gap.
-  const emptyMessage = !bookmarkedOnly
-    ? "No recordings match the current search or filters."
+  //
+  // `null` also covers the one case where there is nothing truthful to say: an
+  // empty list with no filter on it, which is what get-recordings.ts returns
+  // when the Firestore read throws. The zero panel diagnoses filters, and there
+  // are none, so it would draw an empty box.
+  const emptyState: EmptyState | null = !bookmarkedOnly
+    ? diagnosis
+      ? { kind: "zero", diagnosis }
+      : null
     : bookmarks?.length === 0
-      ? "No bookmarked recordings yet. Bookmarks are kept in this browser on this device — there are no accounts, so they do not follow you to another browser or another device."
+      ? { kind: "saved" }
       : null
 
   return (
@@ -130,8 +141,7 @@ export function CataloguePage({
       <PlaybackOwner suspended={openRecording !== null}>
         <RecordingCardGrid
           sortedData={sortedData}
-          treatment={treatment}
-          emptyMessage={emptyMessage}
+          emptyState={emptyState}
           hero={showHero && stats ? <Hero {...stats} /> : undefined}
           heading={heading}
           catalogueTotal={stats?.recordings}
