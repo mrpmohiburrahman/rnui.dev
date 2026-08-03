@@ -8,6 +8,28 @@ import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
 /** How long the box stays quiet before it navigates. */
 const DEBOUNCE_MS = 300
 
+/**
+ * Where a search term change lands: the route the visitor is on, every other
+ * param kept, `page` dropped because a different term is a different result set.
+ *
+ * An empty term removes the param, which is what makes the filter bar's `Clear
+ * search` chip the same policy as emptying the box rather than a second one.
+ * `facetHref` (components/nav/catalogue-nav.tsx) cannot serve here: it always
+ * returns /products, and the search box works on whatever route it is on.
+ */
+export function searchHref(
+  pathname: string,
+  current: URLSearchParams,
+  term: string
+) {
+  const params = new URLSearchParams(current)
+  if (term) params.set("search", term)
+  else params.delete("search")
+  params.delete("page")
+  const query = params.toString()
+  return query ? `${pathname}?${query}` : pathname
+}
+
 export function CatalogueSearch({
   recordingCount,
   searchParams,
@@ -35,14 +57,8 @@ export function CatalogueSearch({
   // changed the query. The hook's value is the one this render was given.
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(window.location.search)
-    if (term) {
-      params.set("search", term)
-    } else {
-      params.delete("search")
-    }
-    params.delete("page")
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`)
+      router.replace(searchHref(pathname, params, term))
     })
   }
 

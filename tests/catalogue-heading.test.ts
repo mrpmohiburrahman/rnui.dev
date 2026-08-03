@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { catalogueHeading, catalogueResultLine } from "../lib/catalogue-heading"
+import {
+  catalogueHeading,
+  catalogueMatchLine,
+  catalogueResultLine,
+} from "../lib/catalogue-heading"
 
 describe("catalogueHeading", () => {
   it("returns Recent when nothing is filtered", () => {
@@ -140,5 +144,30 @@ describe("catalogueResultLine", () => {
         loading: true,
       })
     ).toBe("RESERVING SPACE FOR 48")
+  })
+})
+
+describe("catalogueMatchLine", () => {
+  it("renders the zero panel's eyebrow", () => {
+    expect(catalogueMatchLine({ shown: 0, catalogueTotal: 277 })).toBe(
+      "0 OF 277 MATCH"
+    )
+  })
+
+  // Both mono lines are on screen at once in the mock's `zero` variant, and the
+  // denominator is the whole catalogue in each — that one rule is why this is a
+  // third function rather than a flag on catalogueResultLine.
+  it("keeps the same denominator as the heading row's result line", () => {
+    expect(catalogueMatchLine({ shown: 0, catalogueTotal: 277 })).toContain(
+      "OF 277"
+    )
+    expect(
+      catalogueResultLine({
+        shown: 0,
+        catalogueTotal: 277,
+        filterCount: 3,
+        sort: "recent",
+      })
+    ).toContain("OF 277")
   })
 })

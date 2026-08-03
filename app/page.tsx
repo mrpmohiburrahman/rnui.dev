@@ -2,6 +2,7 @@
 import { allRecordings } from "@/data/catalogue"
 import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
 
+import { catalogueDiagnosis } from "@/lib/catalogue-filters"
 import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
 
@@ -27,13 +28,20 @@ async function Page({
   const data = await getRecordings(params.search)
   const topViewCount = await getTopViewCount()
 
+  // The term is the only filter this route applies, so it is the only one the
+  // zero panel can diagnose. Same reason as /products for computing it here.
+  const diagnosis =
+    data.length === 0
+      ? catalogueDiagnosis(allRecordings, { search: params.search })
+      : null
+
   return (
-    <div className="max-w-full px-2 md:pl-4 md:pr-0 pt-2">
+    <div className="max-w-full pt-2">
       <CataloguePage
         recordings={data}
-        treatment="framed"
         stats={stats}
         topViewCount={topViewCount}
+        diagnosis={diagnosis}
         heading={catalogueHeading({ total: data.length })}
         // The mock's own showHero rule (Catalogue.dc.html:245) leaves the
         // filtered variant — which has only a search term beyond the facets —

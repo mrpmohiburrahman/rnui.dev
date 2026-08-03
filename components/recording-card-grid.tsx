@@ -7,46 +7,42 @@ import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { catalogueResultLine } from "@/lib/catalogue-heading"
-import { cn } from "@/lib/utils"
 
+import { CatalogueEmpty, type EmptyState } from "./catalogue-empty"
+import { FilterChips } from "./filter-chips"
 import { RecordingCard } from "./recording-card"
 
 /** How many Recordings one page of the grid renders. The catalogue is 277. */
 const PAGE_SIZE = 48
 
 /**
- * The pill treatment for the Load more control. It used to be shared by the
- * Last updated and Total items pills, which moved into the site header (ticket
- * 04); the class is kept here so Load more introduces no colour, radius or
- * shadow value that was not already on the page.
- */
-const PILL_CLASS =
-  "px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] "
-
-/**
- * Which of the two visual treatments to render. `framed` wraps the heading row
- * and the grid in a panel; `plain` leaves both bare.
+ * The mock's tile width at both of the two widths it draws — 208px desktop
+ * (Catalogue.dc.html:91) and 163px phone (CatalogueMobile.dc.html:37) — with
+ * their own column and row gaps, 16/20 and 24/28.
  *
- * It is a required prop rather than a default because it used to be a substring
- * test against the current address, performed in here: invisible from every call
- * site, and wrong the moment a route was added.
+ * `auto-fill` rather than the mock's literal `repeat(5, 208px)`: the container
+ * width belongs to the shell and the rail, and a hard five would overflow the
+ * moment either moved. A fixed track fits as many as the box holds and can never
+ * exceed it, so `scrollWidth === clientWidth` holds at every width by
+ * construction. The card stays `w-full`, which is the other half of that
+ * criterion — ticket 12's defect was card width ≠ track width, not fixed tracks.
  */
-export type GridTreatment = "framed" | "plain"
+const GRID_CLASS =
+  "grid grid-cols-[repeat(auto-fill,163px)] sm:grid-cols-[repeat(auto-fill,208px)] gap-x-4 gap-y-5 sm:gap-x-6 sm:gap-y-7"
 
 export interface RecordingCardGridProps {
   sortedData?: Recording[]
-  treatment: GridTreatment
   /**
-   * What to say when there is nothing to show, or null when the caller cannot
-   * yet tell whether there is anything — an empty list is a gap during a fetch
-   * as often as it is an answer, and a message shown across that gap is a false
-   * one.
+   * Which panel to render when there is nothing to show, or null when the caller
+   * cannot yet tell whether there is anything — an empty list is a gap during a
+   * fetch as often as it is an answer, and a panel shown across that gap is a
+   * false one.
    *
    * Required rather than defaulted: only the caller knows whether an empty list
    * means "no Recording matches this filter" or "this visitor has bookmarked
    * nothing", and a default here would quietly show the wrong one of those.
    */
-  emptyMessage: string | null
+  emptyState: EmptyState | null
   children?: React.ReactNode
   bookmarks: string[]
   toggleBookmark: (id: string) => void
@@ -87,8 +83,7 @@ export interface RecordingCardGridProps {
 
 export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   sortedData,
-  treatment,
-  emptyMessage,
+  emptyState,
   children,
   bookmarks,
   toggleBookmark,
@@ -169,21 +164,9 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   }, [search, total])
 
   return (
-    <div
-      // style={{ borderWidth: 1, borderColor: "purple" }}
-      className="flex flex-col md:items-start gap-4 overflow-hidden pb-4 md:mx-4 mx-0  relative"
-    >
+    <div className="relative flex w-full flex-col gap-4 overflow-hidden pb-4 md:items-start">
       {hero && <div className="w-full">{hero}</div>}
-      <div
-        className={cn(
-          "px-4",
-          treatment === "plain"
-            ? "md:p-4 md:gap-3"
-            : "bg-white p-4 gap-3 dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
-        )}
-      >
-        {children}
-      </div>
+      {children && <div className="w-full">{children}</div>}
       {/* The desktop sort pills, the counter line and the Last updated / Total
           items pills all moved into the site header (ticket 04 steps 7 and 4);
           the only sort control left here is the phone dropdown below, `flex
@@ -255,6 +238,12 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           </div>
         )}
       </div>
+      {/* The filter bar, Catalogue.dc.html:76-82, above the heading row exactly
+          as the mock stacks them. It draws itself only when a facet is on, so
+          every unfiltered route renders nothing. Not on the saved view: the
+          three params do not filter it, and a chip naming a filter that filters
+          nothing is the sort of thing decision 2 forbids. */}
+      {!bookmarkedOnly && <FilterChips />}
       {/* The heading row, Catalogue.dc.html:85-88: the section head on the
           left and the mono result line right-aligned on a reserved width. The
           heading is an h2 when the hero is present and an h1 when it is not, so
@@ -272,14 +261,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           {resultLine}
         </span>
       </div>
-      <div
-        className={cn(
-          "p-4 w-full",
-          treatment === "plain"
-            ? ""
-            : "bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
-        )}
-      >
+      <div className="w-full">
         {/* No Suspense boundary. Nothing below here is async — every card
             renders from props already in hand — but the server still emitted
             the "Loading…" fallback and streamed all 277 cards into a
@@ -291,50 +273,112 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           {/* An empty list used to render an empty grid: the only thing on
               screen was `Total Items: 0`, on a filtered catalogue and on a
               /bookmarks page with nothing saved alike. Both paths arrive here,
-              because CataloguePage is the only caller. */}
-          {isEmpty && emptyMessage ? (
-            <p className="text-sm text-neutral-700 dark:text-neutral-300">
-              {emptyMessage}
-            </p>
+              because CataloguePage is the only caller.
+
+              The panel replaces the grid rather than sitting under it, as the
+              mock's own switch does (Catalogue.dc.html:247), and the min-height
+              is that switch's other half (:252) — without it the footer rides up
+              under a 620px-shorter page. */}
+          {isEmpty && emptyState ? (
+            <div className="sm:min-h-[620px]">
+              <CatalogueEmpty
+                state={emptyState}
+                catalogueTotal={catalogueTotal ?? total}
+              />
+            </div>
           ) : (
-            /* Adjusted Grid Columns for Smaller Portrait Cards */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className={GRID_CLASS}>
               {/* Keyed by id alone. The key used to carry the array index, so
                   every key changed when the list reordered and a sort toggle
                   unmounted and remounted all 277 cards, restarting every Demo.
                   Ids are unique — tests/data-integrity.test.ts enforces it. */}
-              {sortedData
-                ?.slice(0, shownCount)
-                .map((recording, i, shown) => (
-                  <RecordingCard
-                    key={recording.id}
-                    recording={recording}
-                    // The second of two adjacent tiles by the same Contributor
-                    // repeats its byline prefixed `↳ ` and in t3 — what the
-                    // mock's runRepeat means (Tile.dc.html:108-109). The grid
-                    // knows the neighbour; the card does not.
-                    repeatsContributor={
-                      i > 0 && shown[i - 1].contributor === recording.contributor
-                    }
-                    topViewCount={topViewCount}
-                    isBookmarked={bookmarks.includes(recording.id)}
-                    toggleBookmark={toggleBookmark}
-                    isVoted={votedRecordingIds.includes(recording.id)}
-                    toggleVote={toggleVote}
-                  />
-                ))}
+              {sortedData?.slice(0, shownCount).map((recording, i, shown) => (
+                <RecordingCard
+                  key={recording.id}
+                  recording={recording}
+                  // The second of two adjacent tiles by the same Contributor
+                  // repeats its byline prefixed `↳ ` and in t3 — what the
+                  // mock's runRepeat means (Tile.dc.html:108-109). The grid
+                  // knows the neighbour; the card does not.
+                  repeatsContributor={
+                    i > 0 && shown[i - 1].contributor === recording.contributor
+                  }
+                  topViewCount={topViewCount}
+                  isBookmarked={bookmarks.includes(recording.id)}
+                  toggleBookmark={toggleBookmark}
+                  isVoted={votedRecordingIds.includes(recording.id)}
+                  toggleVote={toggleVote}
+                />
+              ))}
             </div>
           )}
         </div>
       </div>
+      {/* Load more, Catalogue.dc.html:125-127. The label is derived rather than
+          the mock's flat `Load 48 more`: the last page is short — 277 less five
+          pages of 48 is 37 — and decision 2 is that nothing on screen lies.
+          `total` under it is the filtered count, not catalogueTotal: the heading
+          row answers "how much of the catalogue is this", this line answers "how
+          much of this result set is on screen", and printing 277 under a
+          60-result search would be false. */}
       {hasMore && (
-        <button
-          type="button"
-          className={cn(PILL_CLASS, "self-center")}
-          onClick={loadMore}
-        >
-          Load more
-        </button>
+        <div className="flex w-full flex-col items-center gap-[11px] pb-[6px] pt-[42px]">
+          <button
+            type="button"
+            className="rounded-[11px] border border-line2 bg-field px-[26px] py-3 text-[13.5px] font-medium text-t1 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-[3px]"
+            onClick={loadMore}
+          >
+            Load {Math.min(PAGE_SIZE, total - shown)} more
+          </button>
+          <span className="font-mono text-metric tracking-[0.1em] text-t3">
+            {shown} OF {total} SHOWN · NO INFINITE SCROLL
+          </span>
+        </div>
+      )}
+      {/* The end of the set, Catalogue.dc.html:132-141 — every card in a
+          non-empty result set is on screen, whether that took five pages or
+          none. The mock draws only END OF CATALOGUE, on its unfiltered variant;
+          `END OF CATALOGUE · 60 OF 60` under a Category filter would be false, so
+          one word is derived. */}
+      {!hasMore && total > 0 && (
+        <div className="w-full">
+          <div className="flex items-center gap-4 pb-[4px] pt-[34px]">
+            <div className="h-px flex-1 bg-line" />
+            <span className="font-mono text-metric tracking-[0.14em] text-t3">
+              {filterCount > 0 || bookmarkedOnly
+                ? "END OF RESULTS"
+                : "END OF CATALOGUE"}{" "}
+              · {total} OF {total}
+            </span>
+            <div className="h-px flex-1 bg-line" />
+          </div>
+          <div className="flex items-center justify-center gap-[10px] pt-[18px] text-[12.5px]">
+            {/* No smooth behaviour: smooth scrolling is one of the things
+                prefers-reduced-motion exists to suppress, and a jump needs no
+                exception. */}
+            <button
+              type="button"
+              className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Back to top ↑
+            </button>
+            <span aria-hidden="true" className="text-t3">
+              ·
+            </span>
+            {/* Not repoClicked: that event is about following a Recording's
+                Source link (lib/analytics.ts:109-113) and this link belongs to
+                no Recording. */}
+            <a
+              href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+            >
+              Add your own recording on GitHub ↗
+            </a>
+          </div>
+        </div>
       )}
     </div>
   )
