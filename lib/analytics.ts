@@ -108,8 +108,10 @@ export function recordingOpened(
   // link to the contributor's code (`data/recording.ts`), and `repo_clicked` is the
   // event about following it — so a property called `source` reading `card` would
   // mean something else entirely on the tile beside it. Free to spell correctly
-  // here because no event has been ingested yet.
-  openedFrom: "card" | "url"
+  // here because no event has been ingested yet. `keyboard` is the overlay's
+  // arrows (ticket 09 step 10): the visitor asked for that Recording, which is
+  // ADR-0007:3 reach, not interest.
+  openedFrom: "card" | "url" | "keyboard"
 ) {
   posthog.capture("recording_opened", { ...facts, opened_from: openedFrom })
 }
