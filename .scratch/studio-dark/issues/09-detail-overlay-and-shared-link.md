@@ -1,6 +1,6 @@
 # 09 — The detail: overlay and shared-link arrival
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 07
 
 The surface is `assets/new-ui/Detail.dc.html` in all three of its forms — `page` (1440px, the
@@ -647,3 +647,66 @@ Not blocking, but contended:
 - **13** is the merge gate and owns the verification this ticket's Acceptance sets up: the
   contrast pass in both modes, the keyboard walk, the reduced-motion sampling, and the LCP/CLS/INP
   measurement — including whatever the scrim's `backdrop-filter: blur(3px)` costs on a phone.
+
+## Comments
+
+Resolved 2026-08-03 — code, tests, build all green (`check-types`, `lint`, 245 unit, 160 e2e).
+Everything below the line this ticket drew stays as the spec froze it: `api_host`
+`https://us.i.posthog.com`, Firebase owns view and vote counts, `/products`, `?category=`,
+`view_count` and `vote_count` keep their public spelling, and the three stored keys keep their
+exact strings.
+
+- **The overlay was rewritten, not patched** (`components/recording-overlay.tsx`). The committed
+  version predated the Specimen: it still used the brief's 180/100/140 durations, the scale
+  `0.98 → 1`, `bg-black` + an inline 0.5, `EASE = [0.19,1,0.22,1]`, and a centred panel. The
+  rewrite ships the Specimen's table (`spec.md:58-67`): enter 240ms / exit 160ms both nodes,
+  `cubic-bezier(.2,.8,.2,1)` on open and `easeIn` on close, an 8px rise (`translateY(8px) → 0`)
+  instead of scale, `bg-scrim` with `backdrop-filter: blur(3px)`, and a top-aligned panel
+  (`align-items:flex-start; justify-content:center; padding-top:64px`). The durations live as
+  `ENTER_MS`/`EXIT_MS`/`RISE` constants rather than ticket 02's Tailwind keys because framer
+  takes numbers, not class names.
+- **Two open risks were closed.** The old overlay travelled 50px on open (brief's own note);
+  the 8px translate at a 1080px panel is 8px whatever the width. And under reduced motion the
+  transform is gated **in the component** (`rise = reduce ? 0 : 8`), not only by
+  `<MotionConfig reducedMotion="user">`, so no panel ever paints one frame risen.
+- **One keydown listener, added while open** (step 10): ArrowLeft/Right walk the Category
+  sequence clamped at both ends, `s`/`S` and `v`/`V` toggle save and vote, and a modified arrow
+  returns early so `⌘←` keeps its browser Back (the one close path). Escape is Radix's, routed
+  through `onOpenChange` → the single `window.history.back()`.
+- **`opened_from: "keyboard"`** (step 10): arriving by arrow is ADR-0007:3 reach, so the
+  overlay calls `countView` + `recordingOpened(facts, "keyboard")`. `opened_from` has been
+  collecting `card` and `url` since deploy A; the third value is live as of this commit. Flagged
+  here as the ticket asks because dashboard `1937576` exists to attribute exactly this
+  (`spec.md:102-106`).
+- **Focus in/out** (step 11): the close button is first in the DOM so Radix focuses it on open;
+  `onCloseAutoFocus` returns to the tile that was open at the moment of closing via
+  `data-recording-id` — which after an arrow step is not the tile that opened it. The card root
+  now carries `data-recording-id` and `tabIndex={-1}` (`components/recording-card.tsx`), since a
+  div needs a tabIndex for `.focus()` to work at all.
+- **The standalone route** (`app/recording/[id]/page.tsx`) now has `revalidate = 300`, reads
+  the Recording from `getRecordingsWithCounts()`, computes `catalogueTotal`, `contributorTotal`
+  (`RECORDINGS_PER_CONTRIBUTOR`), `more`, `topViewCount` and the Category size server-side, and
+  draws the shared-link `<nav>` row (`Detail.dc.html:13-18`). Its client half lives in
+  `app/recording/[id]/recording-body.tsx`, which owns the two Remembered sets through
+  `useRememberedSet` so saved/vote on the route are the same state the tile shows on `/`.
+- **Threading**: `components/catalogue-page.tsx` derives `more`, `sequence`, `contributorTotal`
+  and `catalogueTotal` from the Recordings in hand — never by importing `data/catalogue` into a
+  client chunk (step 8's reason). On `/` and `/bookmarks` the whole catalogue is in hand, so the
+  counts are the true ones.
+- **Tests added**: `tests/recording-detail.test.ts` (initials rule + `formatAspect`); the
+  design-tokens test now pins `--media-glow` and `boxShadow.media`
+  (`tests/design-tokens.test.ts:128-140`); `tests/e2e/recording-route.spec.ts` gained the
+  arrows/`history.length` walk, `S`/`V`, the focus-on-open and focus-on-Escape claims, the
+  modified-arrow pass-through, the reduced-motion `ty` sampling, the media label, the
+  no-overlay-chrome route, the 44px phone bar, and the Contributor-total claims (Enzo `124 of
+  the 277`, solo contributor `1 of the 277`, link href). Three selectors step 15 flagged broke
+  and were fixed in-place: `.fixed.inset-0.bg-black` → `.bg-scrim`, `Close Modal` →
+  `Close, or press Escape`, and the scale matcher → a `ty` matcher.
+- **Open question 1 stands**: `ENTRIES`/`TOP ENTRY` still ship the mock's spelling per the
+  ticket; the `S SAVE`/`V VOTE` legend does not use `ENTRIES`.
+
+Set `ready-for-human`, not `resolved`: three acceptance bullets need data or judgement this
+commit cannot supply — the Firestore-backed view-count bullet (a Recording with one in
+Firestore renders it; needs deploy A's counts), the Lighthouse CLS=0 run, and the light/dark
+screenshot + 4.5:1 contrast pass, which checkpoint 5 (`spec.md:207-208`) assigns to deploy B /
+ticket 13. Everything else on the Acceptance list is covered by the suite above.

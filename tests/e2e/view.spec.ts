@@ -80,7 +80,9 @@ test("opening a Recording and following its Source link bill one view each", asy
     // corner and the Demo fills the top. Both open the Recording the same way.
     await page.getByRole("heading", { level: 3 }).first().click()
     await expect(page.getByRole("dialog")).toBeVisible()
-    await page.getByRole("link", { name: "GitHub Repository" }).click()
+    await page
+      .getByRole("link", { name: /^Open source repo on GitHub/ })
+      .click()
   })
 
   // Two, from one Recording. expectNoActionRepeated is deliberately not used: this

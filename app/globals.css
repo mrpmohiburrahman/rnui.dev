@@ -118,6 +118,14 @@
     --e1: 0 0 0 1px rgba(16,18,22,0.10),
       0 20px 44px -22px hsla(var(--tile-hue),55%,40%,0.55);
     --e2: 0 40px 100px -30px rgba(16,18,22,0.45);
+
+    /* E1 at detail scale — the Recording detail's media box, which is not the
+       tile's --e1 (the numbers differ in every term, so it is declared apart
+       rather than reused). Keys on --tile-hue the way the tile does; the mock's
+       literal 290 is the Specimen's fixed illustration, and ticket 07 sets the
+       hue per Recording from the measurement ticket 03 writes. Ticket 09. */
+    --media-glow: 0 0 0 1px rgba(16,18,22,0.10),
+      0 34px 80px -32px hsla(var(--tile-hue),55%,40%,0.55);
   }
 
   .dark {
@@ -153,6 +161,8 @@
     --e1: 0 0 0 1px hsla(var(--tile-hue),60%,60%,0.24),
       0 22px 60px -20px hsla(var(--tile-hue),70%,55%,0.45);
     --e2: 0 40px 120px -30px rgba(0,0,0,0.9);
+    --media-glow: 0 0 0 1px hsla(var(--tile-hue),60%,62%,0.26),
+      0 40px 120px -30px hsla(var(--tile-hue),70%,58%,0.5);
   }
 }
 
@@ -290,6 +300,118 @@
   .tile-media .state-chip::before,
   .tile-media[data-playing] .state-chip::before {
     content: "❙❙ STILLS ONLY";
+  }
+}
+
+/* The Recording detail's media chrome, Ticket 09 step 3 (Detail.dc.html:35-38).
+   The centre label's static prefix (the measured aspect, e.g. `9:16`) is a React
+   text node; the state suffix and the pip are CSS `::before`/`::after` content,
+   keyed on the box's own `data-state` — playing / failed / still — which the
+   component derives from the <video> it holds. Same shape as the tile's state
+   chip: the reduced-motion variant would otherwise be a hydration mismatch
+   (generated content is invisible to React), and `data-state` is client-only,
+   set after a click or an error.
+
+   `still` is the default; the repeated `data-state="still"` selectors below exist
+   so the reduced-motion block can override them with a media query. */
+.detail-media-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.detail-media-center::after {
+  content: " · STILL FRAME";
+}
+
+.detail-media[data-state="playing"] .detail-media-center::after {
+  content: " · PLAYING · MUTED · LOOPING";
+}
+
+.detail-media[data-state="failed"] .detail-media-center::after {
+  content: " · UNAVAILABLE";
+}
+
+.detail-pip {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(4, 6, 10, 0.62);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.detail-pip::before {
+  content: "❙❙ PAUSED";
+}
+
+.detail-media[data-state="playing"] .detail-pip {
+  background: rgba(111, 227, 204, 0.2);
+  color: #8ff0dc;
+}
+
+.detail-media[data-state="playing"] .detail-pip::before {
+  content: "● LIVE";
+}
+
+.detail-media[data-state="failed"] .detail-pip {
+  display: none;
+}
+
+.detail-noaudio {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(4, 6, 10, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.detail-media-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  color: var(--t3);
+}
+
+/* Under reduced motion the box shows stills only, whatever its data-state — a
+   press is allowed to play, but the chrome says the still it arrived on
+   (`Specimen.dc.html:95`: "all durations 0ms", and poster-only tiles). Placed
+   last so it wins over the playing rules above. */
+@media (prefers-reduced-motion: reduce) {
+  .detail-media .detail-media-center::after,
+  .detail-media[data-state="playing"] .detail-media-center::after {
+    content: " · STILLS ONLY";
+  }
+
+  .detail-media .detail-pip,
+  .detail-media[data-state="playing"] .detail-pip {
+    background: rgba(4, 6, 10, 0.62);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .detail-media .detail-pip::before,
+  .detail-media[data-state="playing"] .detail-pip::before {
+    content: "❙❙ STILLS ONLY";
+  }
+
+  .detail-media[data-state="failed"] .detail-pip {
+    display: none;
   }
 }
 

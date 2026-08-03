@@ -229,6 +229,12 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
       // `overflow-hidden` on the root cut it off. The column-break hint went
       // with it: nothing on the site establishes a multi-column context.
       className="group relative w-full cursor-pointer flex flex-col gap-2.5"
+      data-recording-id={recording.id}
+      // Out of the tab order (the card is click-opened, not tab-opened) but
+      // focusable: Escape returns document.activeElement to this tile through
+      // its id (components/recording-overlay.tsx onCloseAutoFocus), and a div
+      // needs a tabIndex for .focus() to work at all.
+      tabIndex={-1}
       onClick={handleClick}
     >
       <DemoTile

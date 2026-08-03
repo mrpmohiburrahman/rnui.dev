@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import { allRecordings } from "../../data/catalogue"
+import { RECORDINGS_PER_CONTRIBUTOR } from "../../data/recording"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -49,7 +50,7 @@ async function startSampling(page: import("@playwright/test").Page) {
     }
     const tick = () => {
       const panel = document.querySelector('[role="dialog"]')
-      const tint = document.querySelector(".fixed.inset-0.bg-black")
+      const tint = document.querySelector(".bg-scrim")
       if (panel) {
         const style = getComputedStyle(panel)
         frames.push({
@@ -129,11 +130,11 @@ test("Escape, the close button, the tint and Back all take the same way out", as
 
   for (const close of [
     async () => page.keyboard.press("Escape"),
-    async () => page.getByRole("button", { name: "Close Modal" }).click(),
-    // Away from the panel, which is centred and 768px wide at this viewport.
+    async () => page.getByRole("button", { name: "Close, or press Escape" }).click(),
+    // Away from the panel, which is top-aligned and 1080px wide at this viewport.
     async () =>
       page
-        .locator("[data-radix-dialog-overlay], .fixed.inset-0.bg-black")
+        .locator(".bg-scrim")
         .click({ position: { x: 10, y: 10 } }),
     async () => page.goBack(),
   ]) {
@@ -190,46 +191,181 @@ test("an id that is not a Recording is a 404", async ({ page }) => {
   expect(response.status()).toBe(404)
 })
 
+// The Contributor line's total is the whole-catalogue count, computed in the
+// page's server component from getRecordingsWithCounts — never a mock constant
+// (ticket 09 step 5, acceptance: rendered total equals RECORDINGS_PER_CONTRIBUTOR).
+test("a Contributor with many Recordings renders their whole-catalogue total and a See-all link", async ({
+  page,
+}) => {
+  const enzo = allRecordings.find(
+    (r) => r.contributor === "Enzo Manuel Mangano ( Reactiive )"
+  )!
+  const total = RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano ( Reactiive )"]
+  await page.goto(`/recording/${enzo.id}`)
+
+  await expect(
+    page.getByText(`${total} of the 277 recordings here`, { exact: false })
+  ).toBeVisible()
+  await expect(
+    page.getByRole("link", { name: `See all ${total} →` })
+  ).toBeVisible()
+  await expect(
+    page.getByRole("link", { name: `See all ${total} →` })
+  ).toHaveAttribute(
+    "href",
+    `/products?${new URLSearchParams({ contributor: enzo.contributor }).toString()}`
+  )
+})
+
+test("a Contributor with one Recording renders 1 ... is theirs and no See-all link", async ({
+  page,
+}) => {
+  const counts = new Map<string, number>()
+  for (const r of allRecordings)
+    counts.set(r.contributor, (counts.get(r.contributor) ?? 0) + 1)
+  const solo = allRecordings.find((r) => counts.get(r.contributor) === 1)!
+  await page.goto(`/recording/${solo.id}`)
+
+  await expect(
+    page.getByText("1 of the 277 recordings here is theirs.", {
+      exact: false,
+    })
+  ).toBeVisible()
+  await expect(
+    page.getByRole("link", { name: /^See all/ })
+  ).toHaveCount(0)
+})
+
+test("the arrows walk the Category without wrapping and without growing history", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await firstCard(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+
+  const startId = new URL(page.url()).pathname.split("/").pop()!
+  const historyBefore = await page.evaluate(() => history.length)
+
+  // The context strip names the Category, position and the Category's true size
+  // (148 Misc tiles on /). Advance five times, then the assertion that escape
+  // still steps to the grid is meaningful only if each step changed the address
+  // via replaceState and never pushed.
+  for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowRight")
+  expect(page.url()).toMatch(/\/recording\/[0-9A-Za-z]{26}/)
+  const middleId = new URL(page.url()).pathname.split("/").pop()!
+  expect(middleId).not.toBe(startId)
+  expect(await page.evaluate(() => history.length)).toBe(historyBefore)
+
+  // Back to the starting id. ArrowLeft on the first of a Category is clamped,
+  // so this is an acceptable way to confirm the wrap is absent too.
+  for (let i = 0; i < 5; i++) await page.keyboard.press("ArrowLeft")
+  expect(new URL(page.url()).pathname.split("/").pop()).toBe(startId)
+
+  // At both ends the arrows change nothing.
+  expect(await page.evaluate(() => history.length)).toBe(historyBefore)
+})
+
+test("S and V drive the tile's save and vote behind the scrim", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await firstCard(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+  const openId = new URL(page.url()).pathname.split("/").pop()!
+
+  // The tile behind the scrim carries the same recording-id (ticket 07). S
+  // toggles its bookmark (visible text "Save"/"Saved", no aria-label on the
+  // card), V its vote ("Vote, N").
+  const tile = page.locator(`[data-recording-id="${openId}"]`)
+  await expect(tile).toBeVisible()
+
+  const save = tile
+    .locator('button:has-text("Save"), button:has-text("Saved")')
+    .first()
+  const vote = tile
+    .locator('[aria-label^="Vote"], [aria-label^="Unvote"]')
+    .first()
+  const before = await save.getAttribute("aria-pressed")
+  const votesBefore = await vote.getAttribute("aria-pressed")
+  await page.keyboard.press("s")
+  expect(await save.getAttribute("aria-pressed")).not.toBe(before)
+  await page.keyboard.press("V")
+  expect(await vote.getAttribute("aria-pressed")).not.toBe(votesBefore)
+})
+
+test("Escape leaves focus on the tile that was open", async ({ page }) => {
+  await page.goto("/")
+  await firstCard(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+  const openId = new URL(page.url()).pathname.split("/").pop()!
+  await page.keyboard.press("Escape")
+  await expect(page.getByRole("dialog")).toHaveCount(0)
+
+  expect(
+    await page.evaluate((id) => {
+      const el = document.querySelector(`[data-recording-id="${id}"]`)
+      return document.activeElement === el || el?.contains(document.activeElement)
+    }, openId)
+  ).toBe(true)
+})
+
+test("the close button holds focus on open, and a modified arrow is not swallowed", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await firstCard(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+
+  // Radix focuses the first focusable in the content on open, which is the close
+  // button (recording-overlay.tsx).
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toBeFocused()
+
+  // The arrow handler returns early on e.metaKey || e.ctrlKey; it must never move
+  // the Recording under a cream/Cmd+LefLeft (browser Back on macOS). Browser Back
+  // itself is the one close path and is covered by the "same way out" test; here
+  // we prove the handler does not steal the keystroke, which would freeze the
+  // visitor on /recording/<id>.
+  const startId = new URL(page.url()).pathname.split("/").pop()!
+  await page.keyboard.press("Meta+ArrowRight")
+  await page.keyboard.press("Control+ArrowLeft")
+  await page.keyboard.press("Alt+ArrowLeft")
+  expect(new URL(page.url()).pathname.split("/").pop()).toBe(startId)
+})
+
 test.describe("reduced motion", () => {
   // Under contextOptions, not as a bare option: Playwright 1.60 moved it there.
   test.use({ contextOptions: { reducedMotion: "reduce" } })
 
   // <MotionConfig reducedMotion="user"> is not enough on its own: framer snaps
-  // transforms rather than dropping them, so a panel that started at scale 0.98
-  // would still paint one frame at 0.98 and jump. Sampled across the whole open
-  // and the whole close, because one frame is all it took.
-  test("the panel fades and never scales", async ({ page }) => {
+  // transforms rather than dropping them, so a panel that started at translateY
+  // 8px would still paint one frame risen and jump. Sampled across the whole
+  // open and the whole close, because one frame is all it took.
+  test("the panel fades under reduced motion and stays put", async ({ page }) => {
     await page.goto("/")
 
-    // Sampling happens inside the page, one frame at a time, and is read out
-    // once at the end. It used to be 25 round-trips of page.evaluate with an 8ms
-    // wait between them, which is not a frame clock: a round-trip costs more
-    // than 16ms on a loaded machine, so a whole exit could finish inside two
-    // polls and the run would see a single opacity value and call the fade
-    // missing. It failed that way in a full suite and passed alone, which is the
-    // signature of a sampler racing the thing it samples rather than of a
-    // regression.
     await startSampling(page)
     await firstCard(page).click()
     await expect(page.getByRole("dialog")).toBeVisible()
     const opening = await readSamples(page)
 
-    // Sampled from its first frame, because the sampler is already running when
-    // the key is pressed. Each node is checked on its own: a set of combined
-    // strings would pass on either one moving alone.
     await startSampling(page)
     await page.keyboard.press("Escape")
     await expect(page.getByRole("dialog")).toHaveCount(0)
     const closing = await readSamples(page)
 
-    const scales = [...opening, ...closing].flatMap((frame) => {
-      const matrix = frame.transform.match(
-        /matrix\(([-\d.]+), 0, 0, ([-\d.]+),/
-      )
-      return matrix ? [Number(matrix[1]), Number(matrix[2])] : []
+    // The transform is a translate now, not a scale: matrix(1, 0, 0, 1, tx, ty).
+    // Under reduced motion the 8px rise is gated off, so framer writes
+    // `transform: none` (ty snaps to 0) — both that and an on-paint matrix must
+    // read as a constant ty of 0.
+    const tys = [...opening, ...closing].flatMap((frame) => {
+      if (frame.transform.trim().toLowerCase() === "none") return [0]
+      const matrix = frame.transform.match(/matrix\(([-\d.]+), 0, 0, ([-\d.]+),/)
+      return matrix ? [Number(matrix[2])] : []
     })
-    expect(scales.length).toBeGreaterThan(0)
-    expect([...new Set(scales)]).toEqual([1])
+    expect(tys.length).toBeGreaterThan(0)
+    expect([...new Set(tys)]).toEqual([0])
 
     // Both nodes still fade, so the transition still says "on top of" rather
     // than "went somewhere else".
@@ -237,5 +373,63 @@ test.describe("reduced motion", () => {
     expect(
       new Set(closing.map((f) => f.tint).filter((t) => t !== null)).size
     ).toBeGreaterThan(1)
+  })
+})
+
+// The standalone /recording/<id> route's media chrome (ticket 09 step 3): the
+// labels are CSS ::before content on the detail chrome, read off the
+// pseudo-element the way home.spec.ts:234-237 reads the tile's.
+test("the media centre label reads STILL FRAME with a PAUSED pip before any click", async ({
+  page,
+}) => {
+  await page.route("**/demo/**", (route) => route.abort())
+  await page.goto(`/recording/${known.id}`)
+
+  const label = await page
+    .locator(".detail-media-center")
+    .evaluate((el) => getComputedStyle(el, "::after").content)
+  expect(label).toContain("STILL FRAME")
+  const pip = await page
+    .locator(".detail-pip")
+    .evaluate((el) => getComputedStyle(el, "::before").content)
+  expect(pip).toContain("PAUSED")
+})
+
+// Step 13: the route shows none of the overlay chrome, and its arrows do
+// nothing — no keydown listener exists on this page.
+test("the standalone route shows no overlay chrome, and ArrowRight does nothing there", async ({
+  page,
+}) => {
+  await page.goto(`/recording/${known.id}`)
+
+  await expect(page.getByRole("dialog")).toHaveCount(0)
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toHaveCount(0)
+  await expect(page.getByText(/PREV \/ NEXT|S SAVE|V VOTE/)).toHaveCount(0)
+
+  const before = new URL(page.url()).pathname
+  await page.keyboard.press("ArrowRight")
+  expect(new URL(page.url()).pathname).toBe(before)
+})
+
+// Step 14: below `lg` the three controls pin under the body, every one at least
+// 44px tall, the two glyph buttons exposing the accessible names Vote and Saved.
+test.describe("phone layout", () => {
+  test.use({ viewport: { width: 390, height: 844 } })
+
+  test("every bottom-bar control is at least 44px tall", async ({ page }) => {
+    await page.goto(`/recording/${known.id}`)
+
+    for (const [role, name] of [
+      ["button", "Vote"],
+      ["button", /^(Save|Saved)$/],
+      ["link", /Open repo/],
+    ] as const) {
+      const control = page.getByRole(role, { name }).last()
+      await expect(control).toBeVisible()
+      const height = await control.evaluate((el) => el.getBoundingClientRect().height)
+      expect(height).toBeGreaterThanOrEqual(44)
+    }
   })
 })

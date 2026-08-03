@@ -158,6 +158,10 @@ const config = {
         e0: "var(--e0)",
         e1: "var(--e1)",
         e2: "var(--e2)",
+        // E1 at detail scale, Detail.dc.html:135-137 — the Recording detail's
+        // media box glow. Not the tile's --e1: the values differ in every term,
+        // so this is its own token (ticket 09 step 2).
+        media: "var(--media-glow)",
       },
       fontSize: {
         // Seven steps, Specimen.dc.html:137-145. Each tuple bakes its own

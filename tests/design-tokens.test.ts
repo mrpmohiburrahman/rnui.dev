@@ -124,6 +124,17 @@ describe("studio dark tokens", () => {
     expect(darkVars["--e1"]).toContain("hsla(var(--tile-hue),60%,60%,0.24)")
     expect(rootVars["--e1"]).toContain("hsla(var(--tile-hue),55%,40%,0.55)")
   })
+
+  it("the detail media glow (ticket 09) is declared in both modes", () => {
+    // E1 at detail scale, Detail.dc.html:135-137 — not the tile's --e1.
+    expect(rootVars["--media-glow"]).toContain("hsla(var(--tile-hue),55%,40%,0.55)")
+    expect(darkVars["--media-glow"]).toContain("hsla(var(--tile-hue),60%,62%,0.26)")
+    expect(rootVars["--media-glow"]).toContain("0 34px 80px -32px")
+    expect(darkVars["--media-glow"]).toContain("0 40px 120px -30px")
+    expect(
+      (config.theme!.extend!.boxShadow as Record<string, string>).media
+    ).toBe("var(--media-glow)")
+  })
 })
 
 describe("tailwind surfaces the tokens", () => {

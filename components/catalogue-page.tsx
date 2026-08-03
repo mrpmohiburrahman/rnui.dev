@@ -132,6 +132,31 @@ export function CataloguePage({
       ? { kind: "saved" }
       : null
 
+  // What the open Recording's detail draws. Derived here, from `recordings` in
+  // hand — never by importing data/catalogue into a client chunk (ticket 09
+  // step 8) — so `/products?category=Buttons` narrows them to their other
+  // Buttons, which is narrower than the heading but never untrue. On `/` and
+  // `/bookmarks` the whole 277 are in hand, so the Contributor count is exactly
+  // RECORDINGS_PER_CONTRIBUTOR and `more` is their true other Recordings.
+  const sameCategory = useMemo(
+    () =>
+      recordings.filter((r) => r.category === openRecording?.category),
+    [recordings, openRecording]
+  )
+  const catalogueTotalProvided = stats?.recordings ?? recordings.length
+  const contributorTotal = openRecording
+    ? recordings.filter((r) => r.contributor === openRecording.contributor).length
+    : 0
+  const more = useMemo(() => {
+    if (!openRecording) return []
+    return recordings
+      .filter(
+        (r) =>
+          r.contributor === openRecording.contributor && r.id !== openRecording.id
+      )
+      .slice(0, 2)
+  }, [recordings, openRecording])
+
   return (
     <>
       {/* One owner for every Demo on the page, and the only thing that records a
@@ -164,14 +189,27 @@ export function CataloguePage({
         </RecordingCardGrid>
       </PlaybackOwner>
 
-      {/* history.back() is the whole close path, so Escape, the close button,
-          the tint and the browser's own Back button all do one identical thing.
-          Safe because the overlay only opens on an /recording/… pathname this page
-          pushed itself; a cold /recording/… renders app/recording/[id]/page.tsx, which
-          has no overlay. */}
+      {/* history.back() is the whole close path, so every close — Escape, the
+          close button, the scrim, browser Back — does one identical thing. Safe
+          because the overlay only opens on an /recording/… pathname this page
+          pushed itself; a cold /recording/… renders app/recording/[id]/page.tsx,
+          which has no overlay. */}
       <RecordingOverlay
         recording={openRecording}
         onClose={() => window.history.back()}
+        topViewCount={topViewCount}
+        catalogueTotal={catalogueTotalProvided}
+        contributorTotal={contributorTotal}
+        more={more}
+        sequence={sameCategory}
+        saved={openRecording ? (bookmarks?.includes(openRecording.id) ?? false) : false}
+        voted={
+          openRecording
+            ? (votedRecordingIds?.includes(openRecording.id) ?? false)
+            : false
+        }
+        onToggleSave={() => openRecording && toggleBookmark(openRecording.id)}
+        onToggleVote={() => openRecording && toggleVote(openRecording.id)}
       />
     </>
   )
