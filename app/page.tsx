@@ -1,6 +1,10 @@
 // app/page.tsx
 import { allRecordings } from "@/data/catalogue"
-import { getUniqueCategories, getUniqueContributors } from "@/data/recording"
+import {
+  getUniqueCategories,
+  getUniqueContributors,
+  RECORDINGS_PER_CONTRIBUTOR,
+} from "@/data/recording"
 
 import { catalogueDiagnosis } from "@/lib/catalogue-filters"
 import { catalogueHeading } from "@/lib/catalogue-heading"
@@ -40,6 +44,9 @@ async function Page({
       <CataloguePage
         recordings={data}
         stats={stats}
+        // The whole-catalogue map, because ?search= narrows `data` and a
+        // Contributor count derived from a narrowed set is the size of the search.
+        perContributor={RECORDINGS_PER_CONTRIBUTOR}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
         heading={catalogueHeading({ total: data.length })}
