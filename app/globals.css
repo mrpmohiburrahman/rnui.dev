@@ -78,7 +78,12 @@
    The Specimen prints its own slightly different figures for the same pairs —
    16.8/9.5/5.7/11.9 dark and 15.4/7.5/5.1/4.9 light, both sets clearing 4.5:1.
    The numbers above are the ones actually measured, and are the budget an edit
-   to any text token spends. */
+   to any text token spends.
+
+   --fail is ticket 12's: #F5B3A4 drawn once on Tile.dc.html:21 (dark only) was
+   promoted to a token with a light counterpart. Measured 2026-08-04:
+     dark  fail #F5B3A4 on canvas #0A0B0D 11.13, on panel #101216 10.59
+     light fail #9E3A2C on canvas #F4F4F1 6.16, on panel #FFFFFF 6.78 */
 @layer base {
   :root {
     --canvas: #F4F4F1;
@@ -108,6 +113,7 @@
     --bar-fill: rgba(16,18,22,0.34);
     --new-bg: rgba(255,238,190,0.94);
     --dock: rgba(239,239,235,0.96);
+    --fail: #9E3A2C;
 
     /* The tile's own fallback hue, Tile.dc.html:75. Not mode-dependent: an
        unmeasured Recording glows the site's own green rather than an arbitrary
@@ -156,6 +162,8 @@
     --bar-fill: rgba(255,255,255,0.34);
     --new-bg: rgba(235,208,138,0.22);
     --dock: rgba(12,13,17,0.94);
+
+    --fail: #F5B3A4;
 
     --e0: 0 0 0 1px rgba(255,255,255,0.07);
     --e1: 0 0 0 1px hsla(var(--tile-hue),60%,60%,0.24),

@@ -1,118 +1,100 @@
 // app/subscribe/page.tsx
+//
+// The explanation half of the NOTIFY pairing (ticket 12 step 4): the footer's
+// NOTIFY column (components/site-footer.tsx) is the control — one field, one
+// button, asks for nothing but an address. This page is where that column's
+// own link goes, and the only place that can say what actually arrives, how
+// often, that the address is stored in Firestore and nothing else, and that
+// there is no account behind it. Each is obviously the other's complement.
+//
+// The Firestore write lives behind the same server action the footer's form
+// uses (app/actions/subscribe-email.ts) — ticket 04 step 12 left this page's
+// duplicate copy of the write here for this ticket to remove. The
+// `newsletterSubscribed` localStorage key is written on success so the footer
+// column collapses to its already-built subscribed state on the NEXT load
+// (not the same render: newsletter-form.tsx reads the key once on mount and a
+// storage event does not fire in the tab that wrote the key).
+
 "use client"
 
-import { useState } from "react"
-import { addDoc, collection, Timestamp } from "firebase/firestore"
+import { useState, useTransition } from "react"
 
-import { db } from "@/lib/firebase"
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { subscribeEmail } from "@/app/actions/subscribe-email"
 
-// Determine the collection name based on the environment
-const COLLECTION_NAME =
-  process.env.NEXT_PUBLIC_FIRESTORE_EMAIL_COLLECTION || "emails"
-export default function Page() {
+export default function SubscribePage() {
   const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setLoading(true)
     setError(null)
-    setSuccess(false)
 
-    try {
-      if (!email) {
-        throw new Error("Email is required")
+    startTransition(async () => {
+      const result = await subscribeEmail(new FormData(e.currentTarget))
+      if (result.ok) {
+        setEmail("")
+        setDone(true)
+        localStorage.setItem("newsletterSubscribed", "true")
+      } else {
+        setError(result.message)
       }
-
-      // Reference to the 'emails' collection
-      const emailsRef = collection(db, COLLECTION_NAME)
-
-      // Add a new document with the email and timestamp
-      await addDoc(emailsRef, {
-        email: email,
-        createdAt: Timestamp.now(),
-      })
-
-      setSuccess(true)
-      setEmail("")
-    } catch (err) {
-      console.error("Error storing email:", err)
-      setError("An unexpected error occurred. Please, try again later.")
-    } finally {
-      setLoading(false)
-    }
+    })
   }
 
   return (
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black mb-96 ">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-        Awesome React Native UI
-      </h2>
-
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Get notified when new animation is being added
+    <div className="max-w-[720px]">
+      <span className="block pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3">
+        NOTIFY
+      </span>
+      <h1 className="m-0 text-hero text-t1">Subscribe</h1>
+      <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
+        One email when a new recording is added to the catalogue — nothing more,
+        nothing on a schedule. Your address is stored in Firestore and used for
+        nothing else. There is no account, no sign-in and nothing synced between
+        devices.
       </p>
 
-      <form className="my-8" onSubmit={handleSubmit}>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Email Address</Label>
-          <Input
+      <form onSubmit={handleSubmit} className="mt-[18px] max-w-[520px]">
+        <label
+          htmlFor="email"
+          className="block pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3"
+        >
+          EMAIL
+        </label>
+        <div className="flex items-center gap-[9px]">
+          <input
             id="email"
-            placeholder="youremail@email.com"
+            name="email"
             type="email"
+            placeholder="youremail@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            aria-label="Email address"
+            className="min-h-[40px] w-full min-w-0 rounded-[10px] border border-line bg-field px-[11px] text-[12.5px] text-t1 placeholder:text-t3 focus:border-acc focus:shadow-[0_0_0_3px_var(--acc-soft)] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2 md:h-[34px] md:min-h-0"
           />
-        </LabelInputContainer>
+          <button
+            type="submit"
+            disabled={isPending || done}
+            className="min-h-[44px] h-[34px] shrink-0 rounded-[9px] bg-acc px-[14px] text-[11.5px] font-medium text-on-acc transition-colors duration-120 disabled:opacity-60 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 md:min-h-0"
+          >
+            {isPending ? "Subscribing…" : done ? "Subscribed ✓" : "Subscribe"}
+          </button>
+        </div>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        {success && (
-          <p className="text-green-500 text-sm mb-4">
-            Thank you for signing up!
+        {done && (
+          <p className="mt-[10px] text-[12px] leading-[1.45] text-t1">
+            You are on the list — watch your inbox for new recordings.
           </p>
         )}
-
-        <button
-          className={`bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Sign up →"}
-          <BottomGradient />
-        </button>
+        {error && !done && (
+          <p className="mt-[10px] text-[12px] leading-[1.45] text-fail">
+            {error}
+          </p>
+        )}
       </form>
-    </div>
-  )
-}
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  )
-}
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode
-  className?: string
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
     </div>
   )
 }
