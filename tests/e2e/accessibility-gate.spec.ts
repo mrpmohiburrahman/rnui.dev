@@ -118,28 +118,62 @@ for (const mode of ["dark", "light"] as const) {
       await page.goto(route, { waitUntil: "networkidle" })
       await page.keyboard.press("Tab")
 
-      let firstEl: Element | null = null
-      let wrapped = false
+      // The walk runs in the browser, not in Node. An earlier version read
+      // `document.activeElement` and `getComputedStyle` directly in the test
+      // body, where neither exists — every one of these 20 cases died on
+      // `ReferenceError: document is not defined` before asserting anything.
+      // Each stop is measured inside page.evaluate() and Tab is pressed from
+      // the test, so the sequencing stays with Playwright.
+      const stops: Array<{ index: number; tag: string; outline: string }> = []
+      let firstKey: string | null = null
+
       for (let i = 0; i < 60; i++) {
-        const el = document.activeElement as HTMLElement | null
-        if (!el) break
-        if (i === 0) firstEl = el
-        const outline = getComputedStyle(el).outlineStyle
+        const stop = await page.evaluate(() => {
+          const el = document.activeElement as HTMLElement | null
+          if (!el) return null
+          return {
+            tag: el.tagName,
+            outline: getComputedStyle(el).outlineStyle,
+            // Identity across round-trips: activeElement cannot cross the
+            // bridge, so key on what distinguishes a stop.
+            key: `${el.tagName}|${el.getAttribute("href") ?? ""}|${
+              (el.textContent || "").trim().slice(0, 40)
+            }`,
+          }
+        })
+        if (!stop) break
+
+        // Tabbing past the last control moves focus to the document body (and
+        // on to browser chrome). BODY is not a focus stop and legitimately has
+        // no ring, so the walk ends here rather than asserting on it — the
+        // original guard tested this only *after* the assertion, which is why
+        // every route reported a phantom `BODY has no visible ring` failure at
+        // the end of its tab order.
+        if (stop.tag === "BODY" && i > 0) break
+
+        if (i === 0) firstKey = stop.key
+        stops.push({ index: i, tag: stop.tag, outline: stop.outline })
+
         expect(
-          outline,
-          `focus stop ${i} (${el.tagName}) on ${route} (${mode}) has no visible ring`
+          stop.outline,
+          `focus stop ${i} (${stop.tag}) on ${route} (${mode}) has no visible ring`
         ).not.toBe("none")
+
         await page.keyboard.press("Tab")
-        if (i > 0 && document.activeElement === firstEl) {
-          wrapped = true
-          break
-        }
-        // A dialog traps focus; stop once we leave it (body reached after close).
-        if (el.tagName === "BODY" && i > 0) break
+
+        const next = await page.evaluate(() => {
+          const el = document.activeElement as HTMLElement | null
+          if (!el) return null
+          return `${el.tagName}|${el.getAttribute("href") ?? ""}|${
+            (el.textContent || "").trim().slice(0, 40)
+          }`
+        })
+        // Wrapped the focusable set — every stop visited has been asserted.
+        if (i > 0 && next === firstKey) break
       }
-      // We either wrapped the focusable set (normal) or left a dialog — either way
-      // every stop we visited was asserted above. `wrapped` is informational.
-      void wrapped
+
+      // A route with no focusable element at all would pass vacuously.
+      expect(stops.length, `no focus stops found on ${route} (${mode})`).toBeGreaterThan(0)
     })
   }
 }
