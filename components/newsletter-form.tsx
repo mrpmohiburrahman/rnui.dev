@@ -14,6 +14,7 @@
 import { useEffect, useState, useTransition } from "react"
 
 import { subscribeEmail } from "@/app/actions/subscribe-email"
+import { newsletterSubmitted } from "@/lib/analytics"
 
 const NewsletterForm: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -41,6 +42,9 @@ const NewsletterForm: React.FC = () => {
         setEmail("")
         setIsSubscribed(true)
         localStorage.setItem("newsletterSubscribed", "true")
+        // The NOTIFY signup — ticket 15.1. Route only, no address: the event
+        // carries the path it fired from and nothing reconstructing an email.
+        newsletterSubmitted(window.location.pathname)
       } else {
         setError(result.message)
       }

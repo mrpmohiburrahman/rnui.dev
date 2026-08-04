@@ -194,3 +194,21 @@ export function loadMoreClicked(page: number, recordingsShown: number) {
     recordings_shown: recordingsShown,
   })
 }
+
+/**
+ * The NOTIFY footer column's signup — the one conversion action on the site that
+ * had no event until now. Decision 9 made it the fourth footer column on every
+ * route (ticket 04 step 7), so a single newsletter signup is now exposed ten
+ * times what it was on `/` and `/subscribe` alone; it has to be measured.
+ *
+ * The only property is the route it fired from. The form takes an email address,
+ * but an event that carried it could reconstruct a visitor's address, and
+ * `session_recording.maskAllInputs` (lib/posthog-provider.tsx:41) is the only
+ * thing keeping that address out of recordings today. No email, no address, no
+ * PII — the route is the conversion signal, not the identity. This is the
+ * fourteenth and last event; ticket 15.1 is the only part of that ticket that
+ * adds rather than preserves. See the issue before reverting it.
+ */
+export function newsletterSubmitted(route: string) {
+  posthog.capture("newsletter_submitted", { route })
+}
