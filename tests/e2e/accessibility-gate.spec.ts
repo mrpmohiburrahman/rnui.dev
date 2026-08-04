@@ -48,9 +48,28 @@ for (const mode of ["no-preference", "reduce"] as const) {
       await page.goto(route, { waitUntil: "networkidle" })
 
       const groups = await page.evaluate(() => {
+        // The *accessible* name, not `textContent`. An `aria-hidden` descendant
+        // contributes nothing to the name a screen reader announces, and every
+        // Repo link ends in `<span aria-hidden>↗</span>`
+        // (recording-card.tsx:382). Reading `textContent` grouped them under
+        // `repo ↗`, which the allow-list below could never match — so the gate
+        // reported all 48 Repo links as ambiguous on every catalogue route,
+        // while the names it was actually asserting on were not the ones the
+        // page exposes.
+        const accessibleName = (el: Element) => {
+          const clone = el.cloneNode(true) as Element
+          clone
+            .querySelectorAll("[aria-hidden='true'],[aria-hidden='']")
+            .forEach((hidden) => hidden.remove())
+          return (
+            el.getAttribute("aria-label") ||
+            (clone.textContent || "")
+          ).trim()
+        }
+
         const byName = new Map<string, Set<string>>()
         for (const a of Array.from(document.querySelectorAll("a[href]"))) {
-          const name = (a.textContent || "").trim().toLowerCase()
+          const name = accessibleName(a).toLowerCase()
           if (!name) continue
           const href = a.getAttribute("href") || ""
           let set = byName.get(name)
@@ -94,8 +113,12 @@ test("step 9 · detail Contributor links are named, and /contributors rows are d
 
   await page.goto("/contributors", { waitUntil: "networkidle" })
   const rowNames = await page.evaluate(() => {
+    // Scoped to <main>: the rail is in the layout and links its top four
+    // Contributors to the same four addresses, so an unscoped query returned
+    // 27 links for 23 rows and read the four legitimate duplicates as duplicate
+    // *rows*. The rail deliberately points at the same place the row does.
     const rows = Array.from(
-      document.querySelectorAll("a[href^='/products?contributor=']")
+      document.querySelectorAll("main a[href^='/products?contributor=']")
     )
     const names = rows.map((r) => (r.textContent || "").trim())
     return { count: names.length, distinct: new Set(names).size }

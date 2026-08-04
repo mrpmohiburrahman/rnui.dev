@@ -122,11 +122,16 @@ test("/ fires no search_performed", async ({ page }) => {
   await page.goto("/")
 
   const box = page.getByRole("textbox", { name: /search/i })
-  await box.click()
+  // The box is deliberately NOT clicked first. `/` is inert once focus is
+  // already inside an input (checkpoint-13-gate.md, step 5) — that is what
+  // lets someone type a path into the search box — so pressing it from
+  // inside tests the escape hatch and lands a literal `/` in the value. The
+  // shortcut under test is the one pressed from the page.
+  await page.keyboard.press("/")
+  await expect(box).toBeFocused()
   // The bare `/` shortcut focuses and selects the box; it must not type a `/`
   // and must not fire search_performed. Then type a real query without
   // submitting, so no settled-search event can have fired either way.
-  await page.keyboard.press("/")
   await box.pressSequentially("button")
 
   const captured = await readCaptured(page)
