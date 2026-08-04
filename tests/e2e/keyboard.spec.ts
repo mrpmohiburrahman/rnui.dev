@@ -155,3 +155,119 @@ test("the search field is named, and its hint stands still", async ({
 
   expect(await hint()).toBe(first)
 })
+
+// The `/` shortcut the search field's chip advertises (Catalogue.dc.html:22,
+// ticket 04 step 6). One document-level listener in the header answers a bare
+// `/` and nothing else — the three early returns in site-header.tsx are an
+// input (including the search box itself), a [contenteditable] and a trapped
+// dialog. Asserting the first half of each: it focuses and selects the visible
+// search box, and it never types a character.
+for (const route of ["/", "/products", "/bookmarks"]) {
+  test(`/ focuses and selects the search box on ${route}`, async ({ page }) => {
+    await page.goto(route)
+    await expect(page.getByRole("textbox", { name: /search/i })).toBeVisible()
+
+    // /bookmarks hydrates its grid from a Suspense boundary; pressing before the
+    // input has finished hydrating focuses an element React then replaces, and
+    // the focus is lost on the swap. A real visitor can only press after the
+    // page is interactive, so wait to be interactive rather than asserting a
+    // focus the draw cannot hold yet.
+    await page.waitForLoadState("networkidle")
+
+    await page.keyboard.press("/")
+
+    const box = page.getByRole("textbox", { name: /search/i })
+    await expect(box).toBeFocused()
+    // select()ed, so the value — had there been one — is selected; the box is
+    // empty here, so the selection is asserted as a zero-length caret at the
+    // start rather than as a highlighted range.
+    const sel = await box.evaluate((el) => {
+      const input = el as HTMLInputElement
+      return [input.selectionStart, input.selectionEnd] as const
+    })
+    expect(sel).toEqual([0, 0])
+    // And nothing was typed: a plain `/` in the box would have been the focus
+    // mechanism's own keystroke, not this shortcut's.
+    await expect(box).toHaveValue("")
+  })
+}
+
+test("/ does nothing inside the search box, and nothing reaches a dialog", async ({
+  page,
+}) => {
+  // Caret already in the box: the shortcut must not steal the keystroke, so a
+  // typed `/` is the box's own character, not a refocus of it. (Focus being
+  // moved at all is the other test's job; this one is about the two guards.)
+  await page.goto("/")
+  const box = page.getByRole("textbox", { name: /search/i })
+  await page.waitForLoadState("networkidle")
+  await box.click()
+  await box.pressSequentially("/")
+  await expect(box).toHaveValue("/")
+
+  // Inside the open Recording overlay the key is inert on a fresh load — no
+  // keystroke in the box first, so the focus contract is unclouded — because
+  // yanking focus out of a trapped dialog is worse than not answering it.
+  // The dialog is a Radix Dialog, so everything outside it is aria-hidden and
+  // gone from the accessibility tree; assert the real thing, that focus stayed
+  // inside the dialog, rather than on a textbox getByRole cannot even see.
+  await page.goto("/")
+  await page.getByRole("heading", { level: 3 }).first().click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+  await page.keyboard.press("/")
+  const focus = await page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null
+    return { inDialog: !!el?.closest('[role="dialog"]'), tag: el?.tagName }
+  })
+  expect(focus.inDialog).toBe(true)
+  // The overlay still has focus (the close button), so the trap held.
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toBeFocused()
+})
+
+// The same two keys that drive the overlay's save and vote, typed into the
+// search box: they are the box's letters now, not the overlay's commands, and
+// they must toggle nothing. The overlay half of the pair is
+// recording-route.spec.ts:273-309.
+test("s and v in the search box insert letters and toggle nothing", async ({
+  page,
+}) => {
+  await page.goto("/")
+  const box = page.getByRole("textbox", { name: /search/i })
+  await box.click()
+
+  const save = page.getByRole("button", { name: /^Saved?$/ }).first()
+  const vote = page.getByRole("button", { name: /^Vote/ }).first()
+  const saved = await save.getAttribute("aria-pressed")
+  const voted = await vote.getAttribute("aria-pressed")
+
+  await page.keyboard.press("s")
+  await page.keyboard.press("v")
+  await expect(box).toHaveValue("sv")
+  expect(await save.getAttribute("aria-pressed")).toBe(saved)
+  expect(await vote.getAttribute("aria-pressed")).toBe(voted)
+})
+
+// The legend's three controls each carry an aria-keyshortcuts equal to the key
+// the legend names (Detail.dc.html:24-25). ← and → are keys only — ticket 09
+// builds no prev/next control — so they are absent here by construction. The
+// keyshortcuts are overlay chrome (recording-overlay.tsx sets keyboardControls),
+// so the panel must be open to see them.
+test("save, vote and close each carry their aria-keyshortcuts", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await page.getByRole("heading", { level: 3 }).first().click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+
+  await expect(
+    page.getByRole("button", { name: /^Save/ }).last()
+  ).toHaveAttribute("aria-keyshortcuts", "s")
+  await expect(
+    page.getByRole("button", { name: /^Vote/ }).last()
+  ).toHaveAttribute("aria-keyshortcuts", "v")
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toHaveAttribute("aria-keyshortcuts", "Escape")
+})

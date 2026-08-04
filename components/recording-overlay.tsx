@@ -250,6 +250,7 @@ export function RecordingOverlay({
                     <button
                       type="button"
                       aria-label="Close, or press Escape"
+                      aria-keyshortcuts="Escape"
                       className="flex items-center gap-[7px] font-mono text-[10px] px-2.5 py-[7px] rounded-[8px] border border-acc bg-acc-soft text-t1 cursor-pointer focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
                     >
                       ESC ✕

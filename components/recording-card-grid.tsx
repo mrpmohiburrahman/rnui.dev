@@ -8,6 +8,7 @@ import type { Recording } from "@/data/recording"
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { catalogueResultLine } from "@/lib/catalogue-heading"
 
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 import { CatalogueEmpty, type EmptyState } from "./catalogue-empty"
 import { FilterChips } from "./filter-chips"
 import { RecordingCard } from "./recording-card"
@@ -129,6 +130,17 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     Boolean
   ).length
 
+  // A reduced-motion visitor sees the whole catalogue as stills, so the result
+  // line says so where the mock draws it (Catalogue.dc.html:216). This is the
+  // `48 OF 277 · STILLS ONLY` handover from ticket 08 — the grid reads its own
+  // preference rather than being told, because the saved view and the filter
+  // view already print their own tails and only the unfiltered resting view has
+  // a STILLS variant to give. The server snapshot `false` means the served HTML
+  // claims nothing it does not deliver for a visitor who will play Demos, and
+  // the line flips to STILLS ONLY only where the browser says reduce
+  // (hooks/use-prefers-reduced-motion.ts).
+  const reducedMotion = usePrefersReducedMotion(false)
+
   const resultLine = catalogueResultLine({
     shown,
     // The saved view's form has no denominator, so `total` is the safe
@@ -137,6 +149,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     filterCount,
     savedView: bookmarkedOnly,
     sort: currentSort ?? "recent",
+    reducedMotion,
   })
 
   // pushState rather than router.push: the App Router picks it up through

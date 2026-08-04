@@ -273,7 +273,17 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
             so reserving 39 keeps a one-line and a two-line caption on the same
             baseline and stops the row below shifting when one wraps. */}
         <h3 className="min-h-[39px] text-[14.5px] font-medium leading-[1.32] tracking-[-0.01em] text-t1 text-pretty">
-          <Link href={href} prefetch={false} onClick={handleHeadlineClick}>
+          {/* The headline is the card's primary link and a keyboard route to the
+              detail (the card body's onClick is a mouse affordance). The ring is
+              the spec's 3px accent on links — without it a keyboard visitor
+              arrives at the caption with no way to tell it is focused (the ring
+              the other controls carry, ticket 13 step 8). */}
+          <Link
+            href={href}
+            prefetch={false}
+            onClick={handleHeadlineClick}
+            className="rounded-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
+          >
             {recording.caption}
           </Link>
         </h3>

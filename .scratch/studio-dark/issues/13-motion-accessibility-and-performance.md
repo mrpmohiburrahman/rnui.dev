@@ -1,6 +1,6 @@
 # 13 — Motion, reduced motion, accessibility and the performance measurement
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 07, 08, 09, 10, 11, 12
 
 The merge gate. `spec.md:168-169` is checkpoint 5: *"Before deploy B. Contrast, keyboard and
@@ -540,3 +540,88 @@ reduced-motion rule step 4d verifies, and reaches here through 07; **03** suppli
 makes step 7's glow sample mean anything, likewise through 07; **01** supplies the vocabulary
 every path in this file is written in, including `tests/e2e/recording-route.spec.ts`
 (`01-…md:86`).
+
+## Comments
+
+Status: ready-for-human on this branch. The gate's automatable verification is complete and
+green; the parts an agent cannot close are handed to the maintainer (see the checkpoint file's
+*What this does and does not prove* and the hand-offs below).
+
+What this pass added on top of the prior WIP (reduced-motion hook, keyboard/overlay/focus-trap
+tests, aria-keyshortcuts):
+
+- **Shared reduced-motion hook.** `hooks/use-prefers-reduced-motion.ts` is the single
+  `usePrefersReducedMotion(serverSnapshot)` hook; `components/demo-tile.tsx` and
+  `components/recording-card-grid.tsx` both consume it. Step 4e's result line was a real gap
+  handed over by 08: `lib/catalogue-heading.ts:67` renders the `STILLS ONLY` tail but the grid
+  never passed the flag, so it never reached the DOM. `recording-card-grid.tsx` now wires it
+  with `usePrefersReducedMotion(false)` — the server never pays "stills" to a visitor who asked
+  for motion, and hydration flips the tail to `STILLS ONLY`. Decision 2 of 08-13's handover,
+  resolved. `demo-tile.tsx`'s hook copy was removed, not kept twice (its server snapshot is
+  `true`: on the detail route a reduced-motion visitor should not mount the
+  autoplaying demo).
+
+- **Step 4 (reduced motion)**: `tests/e2e/served-html.spec.ts` asserts no route's served HTML
+  (`/`, `/products`, `/bookmarks`, `/recording/<id>`) contains a `<video>` (4a). New
+  `recording-route.spec.ts` asserts the detail mounts no Demo and fetches no `/demo/` under
+  reduced motion (4b). `home.spec.ts` asserts the result line reads `STILLS ONLY` and that
+  `animate-in/out` and duration utilities compute 0s under reduced motion — the 4d handover,
+  and a regression test for the global 0s rule in `app/globals.css` (4c/4d).
+
+- **Step 5 (keyboard)**: `keyboard.spec.ts` covers `/` focus+select on `/`, `/products`,
+  `/bookmarks`, the `/`-in-a-dialog trap (step 5's overlay-inert case), `/` inert in the search
+  box, `s`/`v` in the search box toggling nothing, and `aria-keyshortcuts` present on Save and
+  Close. `/bookmarks` hydration needs `waitForLoadState("networkidle")` before `/` (noted in
+  test comment).
+
+- **Step 6 (trap & return)**: enforced in `recording-route.spec.ts`. Tab-wrapping is walked
+  until focus returns to the close button (querySelectorAll order is not browser tab order, and
+  a `<video>` may hold a silent tab stop); the walk ends on the close button, so Tab-from-last
+  already holding focus there is asserted directly. The onEscape focus-return was handled by
+  ticket 09 (it is not porting). `keyboard.spec.ts` also asserts key/inert behavior after the
+  / keystroke.
+
+- **Hardened while debugging**: the sheet is ticket 11's `/filter-dock` Radix Dialog, not
+  `component.tsx` — confirmed no `sheet.tsx` survived. Radix Dialog `aria-hidden`s the rest of
+  the page, so `getByRole("textbox")` inside a dialog resolves to 0; the dialog-/ assertion
+  reads `document.activeElement.closest('[role="dialog"]')` instead.
+
+- **Step 2 (motion inventory) + step 7 (contrast) completed and written to
+  `.scratch/studio-dark/checkpoint-13-gate.md`.** The inventory reads all six moments from the
+  built site; the contrast table is produced by `scripts/checkpoint-13-contrast.ts` (composite
+  over black and white Poster, the brightness trap applied). 5 of 7 pairs clear 4.5:1; the two
+  that fail (LIVE dark, NEW dark, both 1.22:1 over a light Poster) are recorded as hand-offs,
+  not repainted — decision 2 ships the mock as drawn.
+
+- **Two real defects the gate caught and fixed in this pass:**
+  1. Demo cross-fade was 150ms, not 160ms. `components/demo-tile.tsx` used the arbitrary class
+     `duration-[160ms]`, which Tailwind's JIT dropped from the build (no arbitrary `duration-[...]`
+     class is emitted), so the core `transition-opacity` utility's `.15s` default won. Switched to
+     the named `duration-160` token (ticket 02). The probe now reads `0.16s linear`.
+  2. The card headline link had no `:focus-visible` ring — it fell back to the UA default
+     (`auto`, 1px) instead of the spec's `3px acc`. Added the ring classes to the headline `<Link>`
+     in `components/recording-card.tsx`. The step-8 sweep (10 routes x 2 modes) now passes 20/20.
+
+- **Steps 8 and 9 turned into committed Playwright specs** — `tests/e2e/accessibility-gate.spec.ts`
+  sweeps all ten routes in both modes for focus visibility (outline never `none`) and
+  accessible-name uniqueness (allow-list `repo` / `open repo`). Both pass.
+
+- **Motion briefs written** for the overlay (`motion-brief-overlay-studio-dark.md`) and the sheet
+  (`motion-brief-sheet.md`); `.scratch/ui-ux-overhaul/motion-brief-overlay.md` carries a dated
+  correction naming the four values Studio Dark supersedes (step 3).
+
+- **Verification green:** `pnpm check-types`, `pnpm lint` (0 errors, 7 pre-existing warnings in
+  files this ticket does not touch), `pnpm test` (245 unit), `pnpm build`, and the full
+  Playwright suite — **239/239** — all pass on the fresh build.
+
+**Hand-offs (cannot be closed by an agent — why this is `ready-for-human`, not `resolved`):**
+- **Steps 10-12 (LCP/CLS/INP + glow A/B).** `lighthouse` 13.4.1 is installed, but the "before"
+  arm needs a `git worktree` at the deploy-A SHA, which is **not in this branch's history**
+  (`feat/catalogue-ux` is a single linear Studio Dark build — there is no pre-Studio-Dark
+  ancestor to diff against). The glow A/B needs the `chrome-devtools` MCP, also not configured.
+  Both are recorded as maintainer runs in the checkpoint file.
+- **Step 14 (`/review-animations`).** The skill is `disable-model-invocation: true`; an agent
+  cannot run it. Its three `STANDARDS.md` collisions are recorded above as deliberate Specimen
+  overrides. The maintainer runs the review and pastes its output.
+- **The two failing contrast pairs** (LIVE dark, NEW dark over a light Poster) — repaint is the
+  maintainer's call under decision 2.

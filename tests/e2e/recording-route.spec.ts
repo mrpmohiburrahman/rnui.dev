@@ -175,6 +175,73 @@ test("the open panel traps focus and locks the page behind it", async ({
   ).toBe("hidden")
 })
 
+// The trap's exact contract (Detail.dc.html:92): Tab from the last focusable
+// in the panel reaches the first, and Shift+Tab from the first reaches the
+// last. "Traps focus" (:157) proves nothing escapes; this proves the cycle is
+// closed in both directions, which is what Tab does inside a real modal.
+test("Tab wraps from the panel's last control to its first, and back", async ({
+  page,
+}) => {
+  await page.goto("/")
+  await firstCard(page).click()
+  await expect(page.getByRole("dialog")).toBeVisible()
+
+  const panel = page.locator('[role="dialog"]')
+  const focusableCount = await panel.evaluate((el) =>
+    Array.from(
+      el.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).length
+  )
+  expect(focusableCount).toBeGreaterThan(2)
+
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toBeFocused()
+
+  // Walk with Tab until focus wraps back to the close button — that wrap is
+  // the first assertion, and the element it lands on the previous step is the
+  // last in the *browser's* tab order, which is not necessarily
+  // querySelectorAll's document order (a <video> can hold its own silent tab
+  // stop). Computing the last element by selector index was how this first
+  // mis-asserted, so drive the walk itself instead of trusting a count.
+  const lastText = await (async () => {
+    for (let i = 0; i < 60; i++) {
+      const now = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement | null
+        return el?.innerText?.trim() ?? ""
+      })
+      await page.keyboard.press("Tab")
+      const next = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement | null
+        return el?.innerText?.trim() ?? ""
+      })
+      if (next === "ESC ✕" && now !== "ESC ✕") return now
+    }
+    throw new Error("focus never wrapped back to the close button")
+  })()
+
+  expect(lastText).toBeTruthy()
+
+  // The walk wrapped, so focus is already on the close button — Tab from the
+  // last element reached the first, the contract's second clause, and the
+  // element before it was the panel's last.
+  await expect(
+    page.getByRole("button", { name: "Close, or press Escape" })
+  ).toBeFocused()
+
+  // And Shift+Tab from the first wraps back to the last — the same element the
+  // forward walk landed on, so both directions agree.
+  await page.keyboard.press("Shift+Tab")
+  expect(
+    (await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null
+      return el?.innerText?.trim() || ""
+    }))
+  ).toBe(lastText)
+})
+
 test("a Recording address opened cold is a page, not an overlay", async ({
   page,
 }) => {
@@ -453,6 +520,31 @@ test("the close button holds focus on open, and a modified arrow is not swallowe
 test.describe("reduced motion", () => {
   // Under contextOptions, not as a bare option: Playwright 1.60 moved it there.
   test.use({ contextOptions: { reducedMotion: "reduce" } })
+
+  // The Specimen's rule does not name a surface, and ADR-0007:23 depends on it
+  // holding everywhere: a reduced-motion visitor can never earn an autoplay
+  // view because no Demo is mounted for them at all. The grid's half of this is
+  // home.spec.ts:200-215; the detail is the half that mounts InteractiveVideo
+  // (components/entry-detail.tsx:73-81), which today sits at a poster with a
+  // play button until the click. Not mounted-and-idle: not mounted.
+  test("mounts no Demo and fetches none on the detail either", async ({
+    page,
+  }) => {
+    const demoRequests: string[] = []
+    page.on("request", (request) => {
+      if (request.url().includes("/demo/")) demoRequests.push(request.url())
+    })
+
+    await page.goto(`/recording/${known.id}`)
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+    await page.waitForLoadState("networkidle")
+
+    await expect(page.locator("video")).toHaveCount(0)
+    expect(demoRequests).toEqual([])
+
+    // The poster is the detail's still frame, not a blank box.
+    await expect(page.getByRole("button", { name: "Play video" })).toBeVisible()
+  })
 
   // <MotionConfig reducedMotion="user"> is not enough on its own: framer snaps
   // transforms rather than dropping them, so a panel that started at translateY

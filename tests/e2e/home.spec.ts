@@ -236,4 +236,67 @@ test.describe("reduced motion", () => {
       .evaluate((el) => getComputedStyle(el, "::before").content)
     expect(label).toContain("STILLS ONLY")
   })
+
+  // The result line names the mode the rest of the reduced-motion tests assume
+  // (Catalogue.dc.html:216). The grid reads its own preference and flips the
+  // tail to STILLS ONLY on hydration — the server rendered SORTED RECENT for
+  // everyone, because a served document must not claim stills for a visitor who
+  // will play Demos (components/recording-card-grid.tsx).
+  test("the result line reads 48 OF 277 · STILLS ONLY", async ({ page }) => {
+    await page.goto("/")
+    await expect(
+      page.getByText("48 OF 277 · STILLS ONLY")
+    ).toBeVisible()
+  })
+
+  // The tailwindcss-animate gap (ticket 13 step 4d): `duration-*` emits
+  // `animation-duration`, not `transition-duration`, and `animate-in`/`animate-out`
+  // emit an animation that the media query's `transition-duration: 0s` would
+  // leave running at full length. The universal `*` rule in app/globals.css
+  // zeroes `animation-duration` too — this test is what notices if a future
+  // rewrite of that rule drops the second line.
+  //
+  // Of the three files that still carry an animate utility — components/ui/
+  // dropdown-menu.tsx, tooltip.tsx and navigation-menu.tsx — only the dropdown
+  // mounts (the theme switcher). The probe elements below use the exact class
+  // strings of the two that do not, so all three are pinned without needing
+  // their (nonexistent) triggers.
+  test("animate-in/out and duration utilities compute 0s under reduced motion", async ({
+    page,
+  }) => {
+    await page.goto("/")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    const menu = page.locator('[role="menu"]')
+    await expect(menu).toBeVisible()
+    await expect(menu).toHaveAttribute("data-state", "open")
+
+    const durations = await page.evaluate(() => {
+      const read = (el: Element) => getComputedStyle(el).animationDuration
+      const probe = (cls: string) => {
+        const el = document.createElement("div")
+        el.className = cls
+        document.body.appendChild(el)
+        const value = read(el)
+        el.remove()
+        return value
+      }
+      const menu = document.querySelector('[role="menu"]')
+      if (!menu) throw new Error("theme dropdown content never mounted")
+      return {
+        // The one real instance: the dropdown's content element, which carries
+        // `data-[state=open]:animate-in data-[state=open]:fade-in-0
+        // data-[state=open]:zoom-in-95` (components/ui/dropdown-menu.tsx).
+        dropdown: read(menu),
+        tooltip: probe("animate-in fade-in-0 zoom-in-95"),
+        navigation: probe(
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90"
+        ),
+      }
+    })
+
+    for (const value of Object.values(durations)) {
+      expect(value).toBe("0s")
+    }
+  })
 })
