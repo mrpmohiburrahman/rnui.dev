@@ -1,6 +1,6 @@
 # 14 — The before-and-after recordings
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 13
 
 Steps 1 and 2 may be pulled forward by the maintainer at any time and there is a reason to —
@@ -100,3 +100,26 @@ Two things drift under all three captures:
   S1 → S3 cut is captioned as both.
 
 ## Comments
+
+### 2026-08-04 — Steps 1–2 authored; capture blocked on ticket 13
+
+The two code deliverables (steps 1–2) are in place and verified without a server:
+
+- `playwright.tour.config.ts` — standalone config, `video: "on"`, fixed 1440×900 viewport,
+  **no `webServer` block**, and the `autoplay-policy` launch arg. `pnpm exec playwright test
+  --list -c playwright.tour.config.ts` lists exactly 1 test; the default `pnpm exec playwright
+  test --list` collects the 119+ e2e specs and zero tour specs, as the acceptance requires.
+- `tests/tour/catalogue.spec.ts` — one scripted tour, exactly one `expect` (before the tour
+  begins, a soft "page responded" check). Every wait is an explicit duration (no
+  `waitForLoadState` / auto-retry); driven by visible text + ARIA role; the only per-state
+  differences live in the `PER_STATE` map, so the body stays identical across checkouts.
+- `.gitignore` now ignores `.scratch/studio-dark/recordings/` (megabytes of webm; reproducible
+  from a sha + this script).
+
+Steps 3–4 (the six captures + ffmpeg handover) remain blocked on ticket 13: the spec names
+three states S1 (main), S2 (deploy A), S3 (Studio Dark) and requires all six clips captured
+within **one sitting** so the live Firebase view/vote counts are frozen across them — and the
+counts drift while ticket 13 (and its deploy A) are unmerged. The "one real risk" in the
+Problem section is exactly this. So the scripts are committed and ready; the capture is the
+maintainer's or a later agent's once 13 ships. Ticket 14 therefore moves to `ready-for-human`
+rather than `resolved`: code done, capture intentionally not run.

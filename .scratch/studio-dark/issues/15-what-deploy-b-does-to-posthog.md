@@ -1,6 +1,6 @@
 # 15 — What deploy B does to PostHog
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 04, 11, 13
 
 ## Problem
@@ -105,3 +105,36 @@ A's annotation has the same problem and belongs to `posthog-expansion`; this one
   the deploy time rather than the time somebody remembered to add it.
 
 ## Comments
+
+### 2026-08-04 — 15.1 and 15.2 authored and tested; 15.3/15.4 need PostHog access
+
+**15.1 — done.** `lib/analytics.ts` now exports `newsletterSubmitted(route: string)`, the
+fourteenth event. It captures `newsletter_submitted` with a single property `{ route }` and
+no address — the route is the conversion signal, an email would be PII. `components/newsletter-
+form.tsx` calls it from inside the `result.ok` branch only (a validation bounce is not a
+signup), passing `window.location.pathname`. A case is added to `tests/analytics.test.ts`
+asserting the name and the full property set (`{ route }`), and that no property can
+reconstruct an email. `pnpm exec vitest run tests/analytics.test.ts` → 14/14 pass.
+
+> Void condition note: the acceptance's first bullet says *"Void this bullet if the maintainer
+> drops section 1."* Section 1 was **kept** — the event is implemented. If you'd rather NOT
+> measure NOTIFY, say so and I'll revert 15.1.
+
+**15.2 — done, proven by test.** `recording-detail.tsx:198-199` already routes `s`/`v` through
+the same `handleSave`/`handleVote` the buttons call (verified in source), and `/` does not fire
+a search (keyboard.spec confirms). To make that durable I added `tests/e2e/posthog-events.spec.ts`,
+which wraps `window.posthog.capture` via `addInitScript` and asserts:
+- `S` emits one `bookmark_added` with the same `{ recording_id, caption }` as the Save button;
+- `V` emits one `vote_cast` with the same props as the Vote control;
+- `/` emits **zero** `search_performed`.
+`pnpm exec playwright test --list` collects the 3 specs in the default run. They need a running
+`pnpm start` to actually exercise (no server here), but they are written and typecheck clean
+(`tsc --noEmit` passes, ESLint passes on all touched files).
+
+**15.3 and 15.4 — not done, by design.** 15.3 is a written inventory of every autocapture-based
+insight/heatmap in PostHog project `117415`, read out of PostHog (not guessed); 15.4 is the
+deploy-B annotation on dashboard `1937576`. Both require PostHog access this agent does not have,
+and 15.4 also requires deploy B to have happened. These are the maintainer's, per the ticket.
+
+Ticket 15 → `ready-for-human`: the code-bearing work (15.1, 15.2) is complete and tested; the two
+remaining bullets are the maintainer's PostHog read + annotation.

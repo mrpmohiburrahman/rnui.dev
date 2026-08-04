@@ -10,6 +10,7 @@ import {
   filterApplied,
   filterCleared,
   loadMoreClicked,
+  newsletterSubmitted,
   recordingFacts,
   recordingOpened,
   repoClicked,
@@ -214,5 +215,21 @@ describe("the two-property events", () => {
       report(facts)
       expect(onlyCapture()).toEqual([name, expected])
     }
+  })
+})
+
+describe("newsletter_submitted (the fourteenth event, ticket 15.1)", () => {
+  it("carries the route it fired from and nothing reconstructing an email", () => {
+    // Decision 9 put NOTIFY on every route; the event measures the conversion,
+    // not the visitor. The form takes an address, but the event carries only the
+    // path — a route is a string literal, an address is PII.
+    newsletterSubmitted("/products")
+    const [name, props] = onlyCapture()
+
+    expect(name).toBe("newsletter_submitted")
+    expect(props).toEqual({ route: "/products" })
+    // The assertion the acceptance is actually about: whatever fired, it cannot
+    // be used to reconstruct the typed email. Exactly one key, and it is `route`.
+    expect(Object.keys(props).sort()).toEqual(["route"])
   })
 })

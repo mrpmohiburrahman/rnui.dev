@@ -55,3 +55,7 @@ __data__
 # Scratch worktrees created by coding agents. They hold a full checkout and a
 # .next build, so eslint and vitest glob straight into them if they are tracked.
 .claude/worktrees/
+
+# Studio Dark before/after tour recordings (ticket 14). Megabytes of webm,
+# reproducible from a commit sha plus tests/tour/catalogue.spec.ts — not source.
+.scratch/studio-dark/recordings/
