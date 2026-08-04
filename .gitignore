@@ -59,3 +59,7 @@ __data__
 # Studio Dark before/after tour recordings (ticket 14). Megabytes of webm,
 # reproducible from a commit sha plus tests/tour/catalogue.spec.ts — not source.
 .scratch/studio-dark/recordings/
+
+# The visual QA contact sheet — 21MB of PNG, same bargain as the recordings
+# above: reproducible from `node scripts/visual-qa.mjs` against a build.
+.scratch/studio-dark/visual-qa/

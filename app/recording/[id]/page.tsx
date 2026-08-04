@@ -113,7 +113,9 @@ export default async function RecordingPage(props: Params) {
         <span className="font-mono text-[10px] tracking-[0.1em] text-t3">
           {recording.category.toUpperCase()} ·{" "}
           {withCounts.filter((r) => r.category === recording.category).length}{" "}
-          ENTRIES
+          {/* Detail.dc.html:16 draws "148 ENTRIES"; the mock predates the
+              rename and decision 3 renames in copy too. */}
+          RECORDINGS
         </span>
         <span className="ml-auto font-mono text-[9.5px] tracking-[0.12em] text-t3">
           OPENED FROM A SHARED LINK

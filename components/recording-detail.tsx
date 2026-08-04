@@ -353,7 +353,8 @@ export function RecordingDetail({
               />
             </div>
             <span className="font-mono text-[9px] tracking-[0.1em] text-t3 whitespace-nowrap tabular-nums">
-              {viewPct}% OF TOP ENTRY
+              {/* Detail.dc.html:69 draws "OF TOP ENTRY" — pre-rename copy. */}
+              {viewPct}% OF TOP RECORDING
             </span>
           </div>
           <div className="hidden lg:flex flex-wrap items-center gap-2">

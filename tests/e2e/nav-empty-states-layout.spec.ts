@@ -438,4 +438,39 @@ test.describe("the content clears the header instead of sitting under it", () =>
       })
     }
   }
+
+  // The three catalogue routes are one component behind one flag (spec.md
+  // decision 10), so at a given width they get the same number of grid tracks.
+  //
+  // Counting tracks rather than checking `scrollWidth === clientWidth`: an
+  // extra gutter does not overflow anything, it just costs a column, so the
+  // overflow check passes on a grid that has silently lost one. Two stale
+  // wrappers from the pre-redesign scaffold did exactly that to /products —
+  // `<div className="flex">` in its page (a block child of a flex row
+  // shrink-to-fits) and a `md:px-4` app/products/layout.tsx with no counterpart
+  // on / or /bookmarks, which at 1440px left 1124px where five 208px tracks
+  // plus four 24px gaps need 1136px. Both are gone; this is what says so.
+  for (const width of [1440, 1280]) {
+    test(`the three catalogue routes lay out the same grid at ${width}px`, async ({
+      page,
+    }) => {
+      const tracks: Record<string, string> = {}
+      for (const path of ["/", "/products", "/bookmarks"]) {
+        await page.setViewportSize({ width, height: 900 })
+        await page.goto(path)
+        tracks[path] = await page.evaluate(() => {
+          const grid = Array.from(document.querySelectorAll<HTMLElement>("div")).find(
+            (el) =>
+              getComputedStyle(el).display === "grid" &&
+              el.querySelector('a[href^="/recording/"]')
+          )
+          return grid ? getComputedStyle(grid).gridTemplateColumns : "no grid"
+        })
+      }
+      // /bookmarks holds whatever this browser saved, which is nothing here, so
+      // it has no grid to measure — the claim is about the two that do.
+      expect(tracks["/products"], JSON.stringify(tracks)).toBe(tracks["/"])
+      expect(tracks["/"].split(" ").length).toBeGreaterThan(1)
+    })
+  }
 })

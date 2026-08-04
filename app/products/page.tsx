@@ -81,28 +81,32 @@ const RecordingsPage = async ({
   const categories = categoriesWithCounts()
   const contributors = contributorsByCount()
 
+  // A plain block, exactly like `/` (app/page.tsx:51). This used to sit inside a
+  // `<div className="flex">` left over from the pre-redesign layout, whose old
+  // contents were `mx-auto` and so never revealed what the wrapper did: a block
+  // child of a flex row shrink-to-fits, so the grid's
+  // `repeat(auto-fill, 208px)` resolved against the chip row's width instead of
+  // the viewport's and the catalogue rendered one column.
   return (
-    <div className="flex">
-      <div className=" max-w-full pt-4">
-        <CataloguePage
-          recordings={data}
-          stats={stats}
-          // Required here, not optional: this route is always handed a filtered
-          // set (ticket 09 step 1), so deriving the count would give the size
-          // of the filter.
-          perContributor={RECORDINGS_PER_CONTRIBUTOR}
-          categories={categories}
-          contributors={contributors}
-          showHero={false}
-          topViewCount={topViewCount}
-          diagnosis={diagnosis}
-          heading={catalogueHeading({
-            category,
-            contributor,
-            total: data.length,
-          })}
-        />
-      </div>
+    <div className="max-w-full pt-4">
+      <CataloguePage
+        recordings={data}
+        stats={stats}
+        // Required here, not optional: this route is always handed a filtered
+        // set (ticket 09 step 1), so deriving the count would give the size
+        // of the filter.
+        perContributor={RECORDINGS_PER_CONTRIBUTOR}
+        categories={categories}
+        contributors={contributors}
+        showHero={false}
+        topViewCount={topViewCount}
+        diagnosis={diagnosis}
+        heading={catalogueHeading({
+          category,
+          contributor,
+          total: data.length,
+        })}
+      />
     </div>
   )
 }
