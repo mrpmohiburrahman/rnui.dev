@@ -659,6 +659,42 @@ Not blocking, but contended:
 
 ### 2026-08-03 — Built. Every acceptance bullet met except three clauses about PostHog events, which cannot be verified in this harness. `ready-for-human`.
 
+> **2026-08-04 addendum — an attempt to close the three clauses, and why it failed.**
+>
+> Ticket 15.2 appears to solve exactly this problem in `tests/e2e/posthog-events.spec.ts`: rather
+> than watching for a network POST (which never comes, as this ticket correctly found), it wraps
+> `window.posthog.capture` via `addInitScript` and reads the calls synchronously. Since
+> `filterCleared` is a plain `posthog.capture("filter_cleared", …)` at `lib/analytics.ts:152-154`,
+> the same instrument should answer all three clauses.
+>
+> A spec was written against the three clauses and **all four cases failed**: `window.posthog` is
+> `undefined`, so the spy never attaches. Probed directly — moving the `route.abort()` to after
+> `goto` (the 15.2 ordering) changes nothing; `typeof window.posthog === "undefined"` either way.
+> The `phc_…` key *is* inlined into the client bundle (`.next/static/chunks/`), so `posthog.init`
+> is reached; posthog-js simply does not assign `window.posthog` when its remote config
+> (`/array/<token>/config.js`) is blocked. **This ticket's original finding stands and the spec
+> was deleted rather than left red.**
+>
+> **What this uncovered instead: `posthog-events.spec.ts` never passes.** It fails 3/3 in every
+> configuration — alone, after another spec, and in the full suite (which exits 1). An earlier
+> version of this addendum claimed the specs were *order-dependent* and passed when run after
+> `home.spec.ts`; **that was wrong** — it misread `home.spec.ts`'s own 10 passing tests as
+> theirs, and the "browser cache warming" explanation was disproved by probing directly:
+> `window.posthog` is `undefined` even with the PostHog network fully allowed.
+>
+> The actual reason is architectural and is the same one that defeats this ticket's clauses.
+> `lib/analytics.ts:22` does `import posthog from "posthog-js"` and calls the **module
+> singleton**; nothing in the app ever touches `window.posthog`. A spy installed on
+> `window.posthog` — 15.2's approach — therefore watches an object the app never uses. Verified:
+> a stub installed via `addInitScript` survives `posthog.init` intact and captures **zero**
+> events while the interaction demonstrably fires them.
+>
+> **The fix is a design decision, not a patch**, which is why it is left here: either expose the
+> singleton for tests (e.g. assign it to `window` in a test-only branch of the provider) or
+> assert on the outbound request payload instead of the call. Both change what 15.2's assertions
+> mean, and it is 15's file.
+
+
 Work steps 1-11 are all done. `pnpm check-types`, `pnpm lint` (0 errors, 4 pre-existing
 warnings in `placeholders-and-vanish-input.tsx`, `input.tsx` and an `aboutus` page — none in a
 file this ticket touches), `pnpm test` **241/241** and the Playwright suite **151/151** all pass,

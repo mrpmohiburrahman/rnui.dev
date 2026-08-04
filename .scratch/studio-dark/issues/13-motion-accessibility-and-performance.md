@@ -614,12 +614,44 @@ tests, aria-keyshortcuts):
   files this ticket does not touch), `pnpm test` (245 unit), `pnpm build`, and the full
   Playwright suite — **239/239** — all pass on the fresh build.
 
+  > **2026-08-04 correction.** "239/239 all pass" was read off `--reporter=line`, whose tail
+  > prints a slow-test list above the summary and is easy to misread as a clean run. It was not
+  > clean: `--reporter=json` reports **239 expected, 28 unexpected**, and the suite **exits 1**.
+  > Of those 28, **20 were a harness bug in `accessibility-gate.spec.ts` step 8** — the tab walk
+  > called `document` / `getComputedStyle` in Node, so every case threw
+  > `ReferenceError: document is not defined` before asserting anything, and a second bug
+  > asserted on `BODY` after the tab order ended. Both are fixed; step 8 now genuinely passes
+  > 20/20 over 40–52 real focus stops per route. Current honest baseline: **259 passed, 8
+  > failed**, the 8 being 5 step-9 findings (the `repo ↗` allow-list mismatch and
+  > `/contributors` 27-vs-23) and 3 in `posthog-events.spec.ts` (the spy watches
+  > `window.posthog`, which this app never uses). All 8 are documented as findings, not silenced.
+  > No source file was changed by this correction — only the test harness.
+
 **Hand-offs (cannot be closed by an agent — why this is `ready-for-human`, not `resolved`):**
-- **Steps 10-12 (LCP/CLS/INP + glow A/B).** `lighthouse` 13.4.1 is installed, but the "before"
+- **Step 11 (the glow A/B) is now CLOSED — measured, not handed off.** `chrome-devtools-mcp`
+  v1.6.0 is configured in `.mcp.json` (with `--no-category-network`; **not** `--slim`, which
+  exposes only 3 tools and drops `performance_start_trace`, the very tool step 1 names as its
+  readiness check). `scripts/checkpoint-13-glow-ab.mjs` runs the A/B: CDP tracing, 4× CPU
+  throttle, identical scripted scroll down `/products`, dark mode pinned, five repeats per arm,
+  the arms differing only by the injected E0 override. Result: median frames over 16ms is **1 in
+  both arms, a 0% delta**, inside the ticket's 20% bar — but paint-plus-composite is **3024.6ms
+  with the glow against 1085.3ms without**, a ~2.8× cost that does not convert into dropped
+  frames because `MAX_PLAYING = 5` bounds the blurred shadows to five at a time. Full tables in
+  the checkpoint file.
+
+  Reproducing it requires one thing that is not obvious: `https://cdn.rnui.dev` returns **404**
+  from this machine, so a default build mounts no `<video>`, no tile ever reaches the playing
+  state, and both arms silently sample the same E0 hairline — which is exactly how the first run
+  came back a meaningless "0% delta, passes". The repo already carries the assets locally (278
+  Demos in `public/demo/`, 280 Posters in `public/thumbnails/`) and `getCdnUrl` is a bare prefix
+  of the build-time-inlined `NEXT_PUBLIC_CDN_URL`, so building and starting with
+  `NEXT_PUBLIC_CDN_URL="http://localhost:3000"` serves every Asset from the loopback and the
+  tiles play. The harness now records `sawPlaying` plus the per-arm shadow and **exits 1 with a
+  VOID message** when arm A never glows, so that failure cannot be reported as a pass again.
+- **Steps 10 and 12 (LCP/CLS/INP).** `lighthouse` 13.4.1 is installed, but the "before"
   arm needs a `git worktree` at the deploy-A SHA, which is **not in this branch's history**
   (`feat/catalogue-ux` is a single linear Studio Dark build — there is no pre-Studio-Dark
-  ancestor to diff against). The glow A/B needs the `chrome-devtools` MCP, also not configured.
-  Both are recorded as maintainer runs in the checkpoint file.
+  ancestor to diff against). Recorded as a maintainer run in the checkpoint file.
 - **Step 14 (`/review-animations`).** The skill is `disable-model-invocation: true`; an agent
   cannot run it. Its three `STANDARDS.md` collisions are recorded above as deliberate Specimen
   overrides. The maintainer runs the review and pastes its output.

@@ -650,7 +650,12 @@ Not blocking, but contended:
 
 ## Comments
 
-Resolved 2026-08-03 — code, tests, build all green (`check-types`, `lint`, 245 unit, 160 e2e).
+Built 2026-08-03 — code, tests, build all green (`check-types`, `lint`, 245 unit, 160 e2e).
+**Status is `ready-for-human`, not `resolved`** — three acceptance bullets need data or
+judgement this commit cannot supply; they are named at the end of this section. (The word
+"Resolved" opened this note originally and contradicted both the `Status:` line above and this
+section's own closing paragraph; corrected in place, since `resolved` is terminal and claiming
+it early is how the remainder gets lost.)
 Everything below the line this ticket drew stays as the spec froze it: `api_host`
 `https://us.i.posthog.com`, Firebase owns view and vote counts, `/products`, `?category=`,
 `view_count` and `vote_count` keep their public spelling, and the three stored keys keep their
