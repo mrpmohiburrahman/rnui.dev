@@ -59,7 +59,11 @@ const NewsletterForm: React.FC = () => {
     <form onSubmit={handleSubmit}>
       <div className="flex items-center gap-[9px]">
         <input
-          id="email"
+          // Not "email": /contactus and /subscribe each carry their own
+          // id="email" label pair, and this footer form renders on the same
+          // page as both (ticket 12). A duplicate id would make the contact
+          // page's <label for="email"> ambiguous.
+          id="newsletter-email"
           name="email"
           type="email"
           placeholder="youremail@example.com"
@@ -72,7 +76,7 @@ const NewsletterForm: React.FC = () => {
         <button
           type="submit"
           disabled={isPending}
-          className="h-[34px] shrink-0 rounded-[9px] bg-acc px-[14px] text-[11.5px] font-medium text-on-acc transition-opacity duration-160 hover:opacity-80 disabled:opacity-60"
+          className="h-[34px] shrink-0 rounded-[9px] bg-acc px-[14px] text-[11.5px] font-medium text-on-acc transition-colors duration-120 disabled:opacity-60"
         >
           {isPending ? "Subscribing…" : "Subscribe"}
         </button>

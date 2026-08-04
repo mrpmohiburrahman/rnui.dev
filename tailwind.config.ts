@@ -105,6 +105,12 @@ const config = {
         "bar-fill": "var(--bar-fill)",
         "new-bg": "var(--new-bg)",
         dock: "var(--dock)",
+        // The design's one failure colour, promoted by ticket 12 (open
+        // question 2). #F5B3A4 was drawn once, dark-only, on Tile.dc.html:21;
+        // the maintainer chose to promote it, so it gained a light counterpart
+        // #9E3A2C and a measured ratio (dark 11.13/10.59, light 6.16/6.78 —
+        // both clear 4.5). Text on it must still be chosen for contrast.
+        fail: "var(--fail)",
 
         base: {
           black: "#0A0A0A",

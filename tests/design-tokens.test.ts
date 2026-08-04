@@ -43,6 +43,7 @@ const EXPECTED: Record<"dark" | "light", Record<string, string>> = {
     "--bar-fill": "rgba(16,18,22,0.34)",
     "--new-bg": "rgba(255,238,190,0.94)",
     "--dock": "rgba(239,239,235,0.96)",
+    "--fail": "#9E3A2C",
   },
   dark: {
     "--canvas": "#0A0B0D",
@@ -72,6 +73,7 @@ const EXPECTED: Record<"dark" | "light", Record<string, string>> = {
     "--bar-fill": "rgba(255,255,255,0.34)",
     "--new-bg": "rgba(235,208,138,0.22)",
     "--dock": "rgba(12,13,17,0.94)",
+    "--fail": "#F5B3A4",
   },
 }
 
@@ -107,11 +109,11 @@ describe("studio dark tokens", () => {
     expect(darkBlock).toBeTruthy()
   })
 
-  it("all twenty-seven palette tokens are declared in :root with the exact values", () => {
+  it("all 28 palette tokens are declared in :root with the exact values", () => {
     expect(rootVars).toMatchObject(EXPECTED.light)
   })
 
-  it("all twenty-seven palette tokens are declared in .dark with the exact values", () => {
+  it("all 28 palette tokens are declared in .dark with the exact values", () => {
     expect(darkVars).toMatchObject(EXPECTED.dark)
   })
 

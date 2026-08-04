@@ -50,19 +50,11 @@ export function formatAspect(aspect: number): string {
   return `${best[0]}:${best[1]}`
 }
 
-/** The Contributor block avatar's initials, Detail.dc.html:52. The uppercased
- * first character of the first two whitespace-separated words that begin with a
- * letter, so `Thomino` gives `T`, `Daehyeon Mun (文…)` gives `DM`, and
- * `Epicode | 0xV` gives `E` rather than `E|`. */
-export function contributorInitials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter((word) => /^[A-Za-z]/.test(word))
-    .slice(0, 2)
-    .map((word) => word[0]!.toUpperCase())
-    .join("")
-}
-
+/** The Contributor block avatar's initials. Lives in lib/ so the server-rendered
+ *  /aboutus page can call it too (a client component cannot be imported from a
+ *  server component); imported here for use and re-exported for the tests. */
+import { contributorInitials } from "@/lib/contributor-initials"
+export { contributorInitials } from "@/lib/contributor-initials"
 export function RecordingDetail({
   recording,
   // The heading element. Radix logs an error on every open unless a DialogTitle
