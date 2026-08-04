@@ -41,6 +41,20 @@ for (const recording of allRecordings) {
 /** One row of the rail: a facet's display name and its whole-catalogue count. */
 export type FacetCount = { name: string; count: number }
 
+// Categories, alphabetical, each carrying its whole-catalogue count. A peer of
+// contributorsByCount rather than one function returning both: the two are
+// wanted separately — /bookmarks wants neither, and the rail and the phone
+// sheet order them differently — and a pair would make every caller take the
+// one it does not use. Three surfaces render this list (the rail from the
+// layout, and the two catalogue routes for the phone sheet) and each spelled
+// the map itself until this existed.
+export function categoriesWithCounts(): FacetCount[] {
+  return getUniqueCategories().map((name) => ({
+    name,
+    count: RECORDINGS_PER_CATEGORY[name] ?? 0,
+  }))
+}
+
 // The rail shows four Contributors and "the four with the most Recordings" is
 // the only defensible four, so the list is ranked rather than alphabetical. The
 // localeCompare tie-break keeps it stable when the data changes.

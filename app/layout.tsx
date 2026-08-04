@@ -7,9 +7,8 @@ import { JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { allRecordings } from "@/data/catalogue"
 import { metadata } from "@/data/meta-data"
 import {
+  categoriesWithCounts,
   contributorsByCount,
-  getUniqueCategories,
-  RECORDINGS_PER_CATEGORY,
 } from "@/data/recording"
 import { Analytics } from "@vercel/analytics/next"
 
@@ -56,10 +55,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   // Contributors ranked by their whole-catalogue counts (ticket 05). The counts
   // are never of the filtered result set, so a layout — which is never handed
   // searchParams — is exactly where they belong.
-  const categories = getUniqueCategories().map((name) => ({
-    name,
-    count: RECORDINGS_PER_CATEGORY[name] ?? 0,
-  }))
+  const categories = categoriesWithCounts()
   const contributors = contributorsByCount()
 
   return (
@@ -100,8 +96,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <SiteHeader
                 recordingCount={allRecordings.length}
                 contributorCount={contributors.length}
-                categories={categories}
-                contributors={contributors}
               />
               <div className="flex flex-1 items-stretch">
                 <NavSidebar

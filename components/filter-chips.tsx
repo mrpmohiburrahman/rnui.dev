@@ -28,8 +28,14 @@ import { cn } from "@/lib/utils"
 import { searchHref } from "./catalogue-search"
 import { facetHref } from "./nav/catalogue-nav"
 
-/** The mock's own aria-labels (Catalogue.dc.html:78,79,80) and mono prefixes. */
-const CHIPS: Record<FilterKey, { prefix: string; label: string }> = {
+/** The mock's own aria-labels (Catalogue.dc.html:78,79,80) and mono prefixes.
+ *
+ * Exported for the phone header's own chips row (components/site-header.tsx),
+ * which draws shorter prefixes — `CAT` against `CATEGORY` — but must not respell
+ * the accessible names. The mock's own `aria-label="Remove"`
+ * (CatalogueMobile.dc.html:26) is ambiguous between two chips; the long form
+ * here is the one both rows say. */
+export const CHIPS: Record<FilterKey, { prefix: string; label: string }> = {
   category: { prefix: "CATEGORY", label: "Remove category filter" },
   contributor: { prefix: "BY", label: "Remove contributor filter" },
   search: { prefix: "SEARCH", label: "Clear search" },

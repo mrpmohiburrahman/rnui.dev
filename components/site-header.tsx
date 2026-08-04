@@ -9,32 +9,25 @@
 // carries the whole control set, as the rail's fallback does.
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
-import type { FacetCount } from "@/data/recording"
-import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
 import { applySort, type SortType } from "@/hooks/use-sorted-data"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { formatUpdatedCompact, lastCommitDate } from "@/components/last-updated"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
-import { Logo } from "./logo"
-import { CatalogueNav } from "./nav/catalogue-nav"
+import { CHIPS } from "./filter-chips"
+import { facetHref, reportFacetClick } from "./nav/catalogue-nav"
 
 export type SiteHeaderProps = {
   /** allRecordings.length, computed in the root layout — never imported here. */
   recordingCount: number
   /** contributors.length — likewise a prop, not a data import. */
   contributorCount: number
-  /** The two count-bearing facet lists, for the phone sheet's CatalogueNav. */
-  categories: FacetCount[]
-  contributors: FacetCount[]
 }
 
 type SortValue = SortType
@@ -57,8 +50,6 @@ function ActiveSiteHeader(props: SiteHeaderProps) {
 function SiteHeaderBar({
   recordingCount,
   contributorCount,
-  categories,
-  contributors,
   // Absent means "the URL has not been read yet"; every `.get` below returns
   // null, which is the unhighlighted control set the fallback wants.
   searchParams = new URLSearchParams(),
@@ -66,11 +57,12 @@ function SiteHeaderBar({
   const pathname = usePathname()
   const { ids: bookmarks } = useRememberedSet(BOOKMARKS_KEY)
 
-  const [isSheetOpen, setSheetOpen] = useState(false)
-  const handleLinkClick = () => setSheetOpen(false)
-
   const savedCount = bookmarks?.length ?? 0
   const onBookmarks = pathname === "/bookmarks"
+  // The two routes a Category or Contributor actually filters. /bookmarks
+  // passes no searchParams to getRecordings and filters by the Remembered set
+  // instead, and the other eight routes hold no Recordings at all.
+  const facetsApply = pathname === "/" || pathname === "/products"
   const sort = searchParams.get("sort")
   const activeSort: SortValue =
     sort === "top-voted" || sort === "top-viewed" ? sort : "recent"
@@ -193,75 +185,15 @@ function SiteHeaderBar({
         <ModeToggle />
       </div>
 
-      {/* Phone: two rows, 36px controls (CatalogueMobile.dc.html:12-23). The
-          filter dock, chips row and contentTop offsets in that file are ticket
-          11's; the menu trigger below is the one route to the filters on a phone
-          until then. */}
+      {/* Phone: three rows, 36px controls (CatalogueMobile.dc.html:12-23). The
+          filter surface itself — the dock and the bottom sheet — is the filter
+          dock's (components/filter-dock.tsx), rendered by the Catalogue page
+          below `md`. The left drawer this block used to open is gone: what it
+          held is on screen at 390px — the wordmark links /, the ◆ chip goes to
+          /bookmarks, Subscribe lives in the footer's NOTIFY column, and the
+          mode toggle is the glyph below. */}
       <div className="md:hidden">
         <div className="flex items-center gap-[10px] px-[14px] pb-[8px] pt-[12px]">
-          <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="flex min-h-[36px] items-center rounded-chip border border-line bg-field px-[10px] text-[12px] text-t2 sm:hidden"
-              >
-                <PanelLeftIcon />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="left"
-              className="border-r border-primary/10 py-4 pl-1 sm:max-w-[15rem]"
-            >
-              <div className="ml-4 mt-1 md:hidden">
-                <Logo />
-              </div>
-              <nav className="flex h-full flex-col justify-between">
-                <div className="flex flex-col items-start gap-4 px-2 py-1">
-                  <CatalogueNav
-                    categories={categories}
-                    contributors={contributors}
-                    handleLinkClick={handleLinkClick}
-                  />
-                  <div className="my-4 space-y-3">
-                    <Link
-                      href="/subscribe"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <Rss className="h-5 w-5" />
-                      Subscribe
-                    </Link>
-                    <Link
-                      href="/bookmarks"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <Bookmark className="h-5 w-5" />
-                      Bookmarks
-                    </Link>
-                    <Link
-                      href="/"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <HomeIcon className="h-5 w-5" />
-                      Home
-                    </Link>
-                  </div>
-                </div>
-                <div className="flex flex-col items-start pl-4">
-                  <nav className="mb-6 flex flex-col gap-4">
-                    <ModeToggle />
-                  </nav>
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
-
           <Link
             href="/"
             className="text-[15px] font-bold tracking-[-0.02em] text-t1"
@@ -301,7 +233,89 @@ function SiteHeaderBar({
             searchParams={searchParams}
           />
         </div>
+
+        {/* The phone chips row (CatalogueMobile.dc.html:24-29), a second
+            component from the desktop bar above the heading row — no count, no
+            SEARCH chip, no Clear all, CAT / BY at mono 8.5px. Only the two
+            facets: a search term has no chip here, exactly as in the desktop
+            bar's non-separate FACETS rule and the filter dock's badge.
+
+            Gated on the route, which the desktop bar gets for free by living
+            inside the grid behind `!bookmarkedOnly`. This header is rendered
+            from app/layout.tsx, so without the gate `/aboutus?category=Buttons`
+            draws a CAT chip for a filter that route does not apply — and so
+            does `/bookmarks`, where the saved set is what filters and the
+            chip's remove link points at another route entirely. A chip naming a
+            filter that filters nothing is what decision 2 forbids. */}
+        {facetsApply && <PhoneFilterChips searchParams={searchParams} />}
       </div>
     </header>
+  )
+}
+
+/** The chips row in the phone header. Renders only when a facet is applied,
+ *  horizontally scrollable with the scrollbar hidden — two chips at up to
+ *  186px plus the gutters fit at 390px but the second chip's remove button
+ *  would be unreachable at 320px (the mock's `overflow:hidden` is an element
+ *  scrolling, not the document).
+ *
+ * A separate component from the desktop bar: the mock draws it with a different
+ * sentence (no `N ACTIVE`, no SEARCH chip, no Clear all) at a different size
+ * (mono 8.5 against 9), so a breakpoint on ticket 08's bar would render the
+ * desktop copy at the wrong width.
+ */
+function PhoneFilterChips({
+  searchParams = new URLSearchParams(),
+}: {
+  searchParams?: URLSearchParams
+}) {
+  const category = searchParams.get("category")
+  const contributor = searchParams.get("contributor")
+  const chips = [
+    category ? { key: "category" as const, value: category } : null,
+    contributor ? { key: "contributor" as const, value: contributor } : null,
+  ].filter((chip): chip is NonNullable<typeof chip> => chip !== null)
+
+  if (chips.length === 0) return null
+
+  return (
+    <div className="no-scrollbar flex gap-[7px] overflow-x-auto px-[14px] pb-[10px]">
+      {chips.map(({ key, value }) => {
+        const isContributor = key === "contributor"
+        return (
+          <span
+            key={key}
+            className={cn(
+              "flex min-h-[34px] flex-none items-center gap-[7px] rounded-[9px] border border-acc bg-acc-soft pl-[10px] pr-2 text-[11.5px] text-t1",
+              isContributor && "max-w-[186px]"
+            )}
+          >
+            <span className="flex-none font-mono text-[8.5px] text-acc">
+              {isContributor ? "BY" : "CAT"}
+            </span>
+            <span
+              className={cn(
+                isContributor &&
+                  "overflow-hidden text-ellipsis whitespace-nowrap"
+              )}
+            >
+              {value}
+            </span>
+            <Link
+              href={facetHref(searchParams, key, value)}
+              // The desktop bar's own label, not a second spelling of it: the
+              // two rows remove the same facet and an accessible name that
+              // drifts between them is the drift catalogue-nav.tsx:76-78 names.
+              aria-label={CHIPS[key].label}
+              prefetch={false}
+              className="grid size-5 flex-none place-items-center rounded-[6px] bg-x-bg text-[10px] leading-none text-t1 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+              onClick={() => reportFacetClick(searchParams, key, value)}
+            >
+              ✕
+            </Link>
+          </span>
+        )
+      })}
+    </div>
   )
 }

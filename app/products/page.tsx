@@ -4,6 +4,8 @@ import type { ReactElement } from "react"
 import { permanentRedirect } from "next/navigation"
 import { allRecordings } from "@/data/catalogue"
 import {
+  categoriesWithCounts,
+  contributorsByCount,
   getUniqueCategories,
   getUniqueContributors,
   RECORDINGS_PER_CONTRIBUTOR,
@@ -73,6 +75,12 @@ const RecordingsPage = async ({
       ? catalogueDiagnosis(allRecordings, { category, contributor, search })
       : null
 
+  // The phone filter sheet's two facet lists, the same two the rail's layout
+  // hands NavSidebar, threaded here rather than imported into the client page
+  // (ticket 11).
+  const categories = categoriesWithCounts()
+  const contributors = contributorsByCount()
+
   return (
     <div className="flex">
       <div className=" max-w-full pt-4">
@@ -83,6 +91,8 @@ const RecordingsPage = async ({
           // set (ticket 09 step 1), so deriving the count would give the size
           // of the filter.
           perContributor={RECORDINGS_PER_CONTRIBUTOR}
+          categories={categories}
+          contributors={contributors}
           showHero={false}
           topViewCount={topViewCount}
           diagnosis={diagnosis}

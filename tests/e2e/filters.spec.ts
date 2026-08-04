@@ -140,63 +140,336 @@ test("an unknown sort renders Recent order, not an empty grid", async ({
 test.describe("on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 } })
 
-  // The trigger was `position: absolute` under no positioned ancestor, so its
-  // containing block was the document: past ~10px of scroll it was gone, and
-  // with the desktop aside `hidden sm:flex` a phone visitor had no route to the
-  // filters at all.
-  test("the filter trigger is still on screen after a scroll", async ({
-    page,
-  }) => {
+  // The dock's Filters button. The ⚙ at :45 is `aria-hidden` and the count
+  // badge is not, so the accessible name is "Filters 2" — matched by regex
+  // because the number is the thing under test in two of these.
+  const dockFilters = (page: Page) =>
+    page.getByRole("button", { name: /Filters/ })
+  const sheet = (page: Page) => page.getByRole("dialog")
+
+  // The dock is `fixed` to the bottom of the viewport (filter-dock.tsx:183),
+  // and its trigger opens the only filter surface a phone visitor has below
+  // `md` — the rail and its route to the filters are `md` and up. The regression
+  // the old header trigger hit, the one this scroll guards, is a control that
+  // scrolls away with the document: a `fixed` element cannot.
+  test("the dock stays on screen after a scroll", async ({ page }) => {
     await page.goto("/products")
     await page.evaluate(() => window.scrollTo(0, 2_000))
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1_000)
 
+    // Both buttons, which is what the acceptance says: "holds `⚙ Filters` with
+    // a count badge and `↕ Recent`, and both are still in the viewport".
+    await expect(dockFilters(page)).toBeInViewport()
     await expect(
-      page.getByRole("button", { name: "Toggle Menu" })
+      page.locator("[data-testid='dock']").getByRole("button", {
+        name: "Recent",
+      })
     ).toBeInViewport()
-
-    // …and it stays inside the header instead of floating over the grid. The
-    // old check — hit-test 8px right of the pill and expect the card, not the
-    // wrapper's dead strip — guarded a `position: fixed` pill with a padded
-    // wrapper that the redesign removed: the trigger is now a 36px inline
-    // button in the sticky header (CatalogueMobile.dc.html:16), so nothing of
-    // it hangs over a card to eat taps. In-flow is the geometry that replaced
-    // the pointer-events fix, and it is asserted the same way.
-    const trigger = page.getByRole("button", { name: "Toggle Menu" })
-    const [box, header] = await Promise.all([
-      trigger.boundingBox(),
-      page.locator("header").boundingBox(),
-    ])
-    expect(box).not.toBeNull()
-    expect(header).not.toBeNull()
-    expect(box!.x + box!.width).toBeLessThanOrEqual(header!.x + header!.width)
-    expect(box!.y + box!.height).toBeLessThanOrEqual(header!.y + header!.height)
   })
 
-  test("the drawer carries Contributors, and its last row can be reached", async ({
+  // The tap-swallowing guard, re-aimed from the header pill (the padded
+  // `wrapper` strip ate taps on the card behind it, commit 02c3730) to the
+  // fixed dock. `main` keeps a `calc(96px + safe-area)` clearance under the
+  // grid so the dock never covers the last row; this probes the seam: 8px
+  // above the dock's top edge, over the Filters button's centre, must be the
+  // grid, not the dock.
+  test("a fixed dock swallows no tap above it", async ({ page }) => {
+    await page.goto("/products")
+    // The Filters button sits inside the dock's 12px inset, so its box is not
+    // the dock's: probe off the bar's own bounds, from `[data-testid='dock']`.
+    const dock = page.locator("[data-testid='dock']")
+    const box = await dock.boundingBox()
+    expect(box).not.toBeNull()
+
+    const hit = (x: number, y: number) =>
+      page.evaluate(
+        ([px, py]) => {
+          const el = document.elementFromPoint(px, py)
+          if (!el) return "none"
+          if (el.closest("[data-testid='dock']")) return "dock"
+          if (el.closest("main")) return "grid"
+          return "other"
+        },
+        [x, y]
+      )
+
+    // Above the dock, dead over the Filters button.
+    expect(await hit(box!.x + box!.width / 2, box!.y - 8)).toBe("grid")
+
+    // The dock is `inset-x-0`, so there is nothing to its left to probe — the
+    // point 8px left of the button is the dock's own painted bar, which is
+    // correct: that bar is visible, not a transparent wrapper that eats grid
+    // taps. The second point is therefore the seam the drawing is actually
+    // about: over the dock's left gutter, 8px above its top — a transparent
+    // wrapper pinned to the dock's left would overhang there exactly as the old
+    // strip hung off the pill.
+    expect(await hit(box!.x + 8, box!.y - 8)).toBe("grid")
+  })
+
+  test("the sheet shows every Category and Contributor, and the last row is reachable", async ({
     page,
   }) => {
     await page.goto("/products")
-    await page.evaluate(() => window.scrollTo(0, 2_000))
-    await page.getByRole("button", { name: "Toggle Menu" }).click()
+    await dockFilters(page).click()
+    await expect(sheet(page)).toBeVisible()
 
-    const drawer = page.getByRole("dialog")
-    await expect(drawer).toBeVisible()
+    // All 18 Category chips, alphabetical as `getUniqueCategories()` orders
+    // them — the drawn CATEGORY · 18 of CatalogueMobile.dc.html:58.
+    await expect(sheet(page).getByText("CATEGORY · 18")).toBeVisible()
+    await expect(sheet(page).locator('a[href*="category="]')).toHaveCount(18)
 
-    // The contributor facet used to be passed only to the desktop call. The
-    // label carries the count (`CONTRIBUTORS · 24`) and the "All … contributors"
-    // link below it contains the same word, so the match is exact.
-    await expect(drawer.getByText(/^CONTRIBUTORS · \d+$/)).toBeVisible()
+    // The Contributors all appear, label and rows — the acceptance's "a
+    // CONTRIBUTOR · label whose number is contributors.length over that many
+    // rows". The count is a real length, and ticket 10 trims a trailing-space
+    // duplicate so the figure moves; read it from the label, never a literal.
+    const contributorCount = (await sheet(page)
+      .getByText(/^CONTRIBUTOR · \d+$/)
+      .textContent())!.match(/\d+/)?.[0]
+    expect(contributorCount).toBeTruthy()
+    await expect(sheet(page).locator('a[href*="contributor="]')).toHaveCount(
+      Number(contributorCount)
+    )
 
-    // The last row of the list, which is what the ScrollArea's fixed height puts
-    // at risk: a box taller than the panel never scrolls to its own bottom, and
-    // the drawer is `fixed` with body scroll locked, so there is no outer scroll
-    // to fall back on.
-    const last = drawer.locator('a[href*="contributor="]').last()
+    // The last row can be reached: the scroll body is capped at 85svh and the
+    // sheet is `fixed` over the dock, so there is no outer scroll to fall back
+    // on — the row must be reachable inside the panel.
+    const last = sheet(page).locator('a[href*="contributor="]').last()
     await last.scrollIntoViewIfNeeded()
     await expect(last).toBeInViewport()
     await last.click()
     await expect(page).toHaveURL(/contributor=/)
+  })
+
+  // Step 5 exists so the sheet stays open across a facet tap: a facet link is a
+  // real navigation that remounts the tree, so component state would close it;
+  // `?filters=open` rides in the href and survives. Clicking the applied facet
+  // clears it through the same rule.
+  test("composing facets keeps the sheet open and the dock badge honest", async ({
+    page,
+  }) => {
+    await page.goto("/products")
+    await dockFilters(page).click()
+    await expect(sheet(page)).toBeVisible()
+
+    // By accessible name, not by href: an applied facet's href is the one that
+    // *clears* it, so it carries no `category=` at all and an href selector
+    // stops matching the moment the chip is on. The counts are aria-hidden, so
+    // the name is the bare facet.
+    await sheet(page).getByRole("link", { name: "Misc", exact: true }).click()
+    await expect(page).toHaveURL(/category=Misc/)
+    await expect(sheet(page)).toBeVisible()
+
+    await sheet(page)
+      .getByRole("link", { name: "Hewad Mubariz", exact: true })
+      .click()
+    await expect(page).toHaveURL(/category=Misc/)
+    await expect(page).toHaveURL(/contributor=Hewad\+Mubariz/)
+    await expect(sheet(page)).toBeVisible()
+
+    // Both rows in the applied treatment, the acceptance's own words — the
+    // soft accent fill the rail's applied rows also wear, asserted the same way
+    // the desktop facet tests assert it.
+    await expect(
+      sheet(page).getByRole("link", { name: "Misc", exact: true })
+    ).toHaveClass(/bg-acc-soft/)
+    await expect(
+      sheet(page).getByRole("link", { name: "Hewad Mubariz", exact: true })
+    ).toHaveClass(/bg-acc-soft/)
+
+    // The dock badge reads 2 — two facets, and never the search term. Scoped to
+    // the bar, not a button role: Radix marks the app `aria-hidden`/`inert`
+    // behind the open dialog, so the dock's controls drop out of the role tree
+    // while the sheet is up (they are still rendered and painted).
+    await expect(
+      page.locator("[data-testid='dock']").getByText("2")
+    ).toBeVisible()
+
+    // Tapping Misc again removes only `category=`, leaving the contributor and
+    // the sheet open.
+    await sheet(page).getByRole("link", { name: "Misc", exact: true }).click()
+    await expect(page).not.toHaveURL(/category=/)
+    await expect(page).toHaveURL(/contributor=/)
+    await expect(sheet(page)).toBeVisible()
+  })
+
+  // A search term is not a Facet: it has an event of its own, and the badge is
+  // the same number `active_filter_count` reports, so one applied Category next
+  // to a search box with something in it is 1.
+  test("the badge counts facets and not the search term", async ({ page }) => {
+    await page.goto("/products?category=Misc&search=ticket")
+    await expect(dockFilters(page)).toHaveAccessibleName("Filters 1")
+  })
+
+  // Clear all keeps `sort`, because on this surface the sort lives inside the
+  // same sheet — a Clear all that also re-sorted the list is the surprise. And
+  // it is disabled with nothing to clear: a control that answers nothing is a
+  // $dead_click, and the mock only ever draws it with filters applied.
+  test("Clear all drops both facets and leaves the sort alone", async ({
+    page,
+  }) => {
+    await page.goto("/products?filters=open&sort=top-viewed")
+    await expect(sheet(page)).toBeVisible()
+    await expect(
+      sheet(page).getByRole("link", { name: "Clear all", exact: true })
+    ).toBeDisabled()
+
+    await page.goto(
+      "/products?filters=open&sort=top-viewed&category=Misc&contributor=Hewad+Mubariz"
+    )
+    await sheet(page)
+      .getByRole("link", { name: "Clear all", exact: true })
+      .click()
+
+    await expect(page).not.toHaveURL(/category=/)
+    await expect(page).not.toHaveURL(/contributor=/)
+    await expect(page).toHaveURL(/sort=top-viewed/)
+  })
+
+  test("Escape closes the sheet and hands focus back to the dock", async ({
+    page,
+  }) => {
+    await page.goto("/products")
+    await dockFilters(page).click()
+    await expect(sheet(page)).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(sheet(page)).toHaveCount(0)
+    await expect(dockFilters(page)).toBeFocused()
+    await expect(page).not.toHaveURL(/filters=open/)
+  })
+
+  // Opening the filters is a mode, not a step, so it is written with
+  // replaceState: Back must return to wherever the visitor came from and not
+  // peel the panel open again. The shared-link half of the same param is the
+  // cold load above it.
+  test("the open sheet is the address, and costs no history entry", async ({
+    page,
+  }) => {
+    await page.goto("/products?filters=open")
+    await expect(sheet(page)).toBeVisible()
+
+    await page.goto("/products")
+    const before = await page.evaluate(() => history.length)
+    await dockFilters(page).click()
+    await expect(sheet(page)).toBeVisible()
+    await expect(page).toHaveURL(/filters=open/)
+
+    // `Show N recordings` closes it and does nothing else — the filters were
+    // applied on the way in — and N is the first number in the result line.
+    const shown = (await page
+      .getByText(/^\d+ OF \d+ · /)
+      .first()
+      .textContent())!.match(/^\d+/)![0]
+    await page.getByRole("button", { name: `Show ${shown} recordings` }).click()
+
+    await expect(sheet(page)).toHaveCount(0)
+    await expect(page).not.toHaveURL(/filters=open/)
+    expect(await page.evaluate(() => history.length)).toBe(before)
+  })
+
+  // The Specimen gives this surface one line — "Bottom sheet (mobile) · 260ms
+  // spring, no overshoot" — and it has to be an animation rather than a
+  // transition twice over: Radix portals the panel in already `data-state=open`
+  // so a transition has no frame to start from, and Radix's Presence waits on
+  // `animationend` and unmounts a transitioned close before it paints. Both
+  // failures look identical from outside — the sheet just appears — so the
+  // assertion is on the computed properties, not on a frame count.
+  test("the sheet animates at the Specimen's 260ms", async ({ page }) => {
+    await page.goto("/products")
+    await dockFilters(page).click()
+    await expect(sheet(page)).toBeVisible()
+
+    const style = await sheet(page).evaluate((el) => {
+      const computed = getComputedStyle(el)
+      return {
+        name: computed.animationName,
+        duration: computed.animationDuration,
+        ease: computed.animationTimingFunction,
+      }
+    })
+    expect(style.name).not.toBe("none")
+    expect(style.duration).toBe("0.26s")
+    expect(style.ease).toBe("cubic-bezier(0.2, 0.8, 0.2, 1)")
+  })
+
+  // /bookmarks passes neither facet list — it is "use client" and a value
+  // import of @/data/* would drag the catalogue into a client chunk — and no
+  // facet applies to a set the Remembered ids define. So there is nothing for a
+  // Filters button to open, and the dock is the sort button alone.
+  test("the dock on /bookmarks is the sort button alone", async ({ page }) => {
+    await page.goto("/bookmarks")
+    const dock = page.locator("[data-testid='dock']")
+    await expect(dock).toBeVisible()
+    await expect(dock.getByRole("button", { name: /Filters/ })).toHaveCount(0)
+    await expect(dock.getByRole("button", { name: "Recent" })).toBeVisible()
+  })
+
+  // A plural that is wrong is the same lie as a count that is wrong. Derived
+  // from the catalogue rather than written down, so the day a second Recording
+  // lands in that Category this fails instead of quietly asserting nothing.
+  test("Show N recordings is singular at one", async ({ page }) => {
+    const only = Object.entries(
+      allRecordings.reduce<Record<string, number>>((counts, recording) => {
+        counts[recording.category] = (counts[recording.category] ?? 0) + 1
+        return counts
+      }, {})
+    ).find(([, count]) => count === 1)
+    expect(only).toBeTruthy()
+
+    await page.goto(
+      `/products?filters=open&category=${encodeURIComponent(only![0])}`
+    )
+    await expect(
+      sheet(page).getByRole("button", { name: "Show 1 recording" })
+    ).toBeVisible()
+  })
+
+  test.describe("reduced motion", () => {
+    // Under contextOptions, not as a bare option: Playwright 1.60 moved it
+    // there (recording-route.spec.ts:455).
+    test.use({ contextOptions: { reducedMotion: "reduce" } })
+
+    // The Specimen's rule for this surface is "all durations 0ms", and the
+    // panel's own 260ms is a keyframe animation — so the assertion is that no
+    // frame of it ever paints, sampled at the frame clock rather than over a
+    // CDP round-trip.
+    test("the sheet appears with no intermediate frame", async ({ page }) => {
+      await page.goto("/products")
+
+      await page.evaluate(() => {
+        const w = window as unknown as {
+          __sheetFrames: string[]
+          __stopSheet: () => void
+        }
+        w.__sheetFrames = []
+        let running = true
+        w.__stopSheet = () => {
+          running = false
+        }
+        const tick = () => {
+          const panel = document.querySelector('[role="dialog"]')
+          if (panel) w.__sheetFrames.push(getComputedStyle(panel).transform)
+          if (running) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      })
+
+      await dockFilters(page).click()
+      await expect(sheet(page)).toBeVisible()
+      await page.keyboard.press("Escape")
+      await expect(sheet(page)).toHaveCount(0)
+
+      const frames = await page.evaluate(() => {
+        const w = window as unknown as {
+          __sheetFrames: string[]
+          __stopSheet: () => void
+        }
+        w.__stopSheet()
+        return w.__sheetFrames
+      })
+      expect(frames.length).toBeGreaterThan(0)
+      expect([...new Set(frames)]).toHaveLength(1)
+    })
   })
 })
 
@@ -273,8 +546,11 @@ test.describe("the filter bar", () => {
   // chip is that control's parent span. Not scoped to a role: the two facet ✕
   // are Links, because a facet has an href, and the search ✕ is a button,
   // because clearing a term is a replace on the route the visitor is on.
+  // `filter({ visible: true })` because the phone header's chips row carries
+  // its own copy of the same label below `md`, hidden by `md:hidden` — at a
+  // desktop width it is still in the DOM and getByLabel matches it.
   const chip = (page: Page, label: string) =>
-    page.getByLabel(label).locator("..")
+    page.getByLabel(label).locator("..").filter({ visible: true })
 
   test("counts the active facets and names each one", async ({ page }) => {
     await page.goto(BAR_URL)
@@ -382,7 +658,10 @@ test.describe("the filter bar", () => {
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto(BAR_URL)
 
-    const chipEl = page.getByLabel("Remove category filter").locator("..")
+    const chipEl = page
+      .getByLabel("Remove category filter")
+      .locator("..")
+      .filter({ visible: true })
     expect(
       await chipEl.evaluate((el) => getComputedStyle(el).transitionDuration)
     ).toBe("0s")

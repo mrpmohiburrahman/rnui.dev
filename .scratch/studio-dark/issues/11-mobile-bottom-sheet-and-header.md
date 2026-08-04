@@ -1,6 +1,6 @@
 # 11 — Mobile: the bottom sheet and the phone header
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 04, 05, 08
 
 ## Problem
@@ -522,3 +522,168 @@ deletes the margin outright — and ticket 05 no longer sets one. This ticket on
 whatever 04 settles on switches at `md` rather than `sm`. The aside's duplicate `ModeToggle` at
 `nav-side-bar.tsx:44-47`, left behind when ticket 04 step 9 moves the toggle into the header, is
 deleted by ticket 05 step 13 — not by this one.
+
+## Comments
+
+### What landed
+
+All fourteen steps. `components/filter-dock.tsx` is new and holds both the dock and the sheet;
+`components/catalogue-page.tsx` renders it and is the one module that knows the count for
+`Show N recordings`; `app/page.tsx` and `app/products/page.tsx` pass the two facet lists and
+`/bookmarks` passes neither. The left drawer, `components/ui/sheet.tsx` and `components/logo.tsx`
+are deleted, the rail and the dock both switch at `md`, the phone chips row is in the header, and
+the grid carries the `calc(96px + safe-area)` clearance below `md`.
+
+`pnpm check-types`, `pnpm lint` (0 errors, the same 4 pre-existing warnings), `pnpm test`
+(245 passing) and Playwright (187 passing) are all green.
+
+One thing the drawer did that the mock does not draw, now gated rather than ported: the chips row
+lives in the header, and the header is rendered from `app/layout.tsx`, so it drew a `CAT` chip on
+`/aboutus?category=Buttons` and on `/bookmarks`, where the saved set is what filters and the chip's
+own remove link points at another route. It renders on `/` and `/products` only, which is where the
+desktop bar's `!bookmarkedOnly` gate already puts it.
+
+### Four defects fixed in the half-built state this ticket was picked up in
+
+1. **The 260ms never ran, in either direction.** The panel was a `transition` on `transform` with
+   `duration-[260ms]`, and both halves of that are wrong here. `tailwindcss-animate` rebinds
+   `duration-*` to `animation-duration`, so the transition had no duration at all; and Radix
+   portals the panel in already carrying `data-state="open"`, so a transition has no starting
+   frame to leave, while Radix's Presence holds a *closing* node mounted by watching
+   `animationend` and unmounts a transitioned exit before it paints. The sheet appeared and
+   vanished. Two further attempts to fix it with plugin utilities also failed silently:
+   `[data-state=open].animate-in` outranks a bare `duration-*` by one attribute selector, and
+   `duration-260` is owned by two plugins at once — Tailwind core writes `transition-duration`
+   under that name and `tailwindcss-animate` writes `animation-duration`. The motion is now four
+   keyframes in `app/globals.css` under `.sheet-scrim` / `.sheet-panel`, reading ticket 02's
+   `transitionDuration.260` and `transitionTimingFunction.rise` through `theme()`, so the
+   Specimen's figure is still written exactly once. A test asserts the computed
+   `animation-duration` is `0.26s` and the curve is the rise — three wrong builds all looked
+   identical from outside, so the assertion is on the property, not on a frame count.
+2. **The count badge was `aria-hidden`,** making the accessible name `Filters` where step 3 says
+   `Filters 2`. A control whose count exists only in pixels tells a screen reader nothing about
+   how much is filtered.
+3. **`/bookmarks` drew a `⚙ Filters` button** that opened a sheet with nothing in it but SORT.
+   Step 2 says the sort button alone at `flex:1` on that route, and it now is.
+4. **Focus restoration was an effect on `open`,** which fires while the dock is still inside the
+   subtree Radix marks inert — an inert element cannot take focus. It is `onCloseAutoFocus` on
+   `Dialog.Content` now, which also covers the cold `?filters=open` load where the
+   previously-focused element is `body`.
+
+Also added `aria-describedby={undefined}` to `Dialog.Content`, as `recording-overlay.tsx:183`
+already does.
+
+### Tests
+
+Step 13's six are all present. Four were written with the half-built state and needed one fix: the
+compose test located chips by `a[href*="category="]`, which stops matching the moment a facet is
+applied, because an applied facet's href is the one that *clears* it. They locate by accessible
+name now. Added, because they are acceptance bullets nothing pinned: the badge counting facets and
+not the search term, `Clear all` disabled and sort-preserving, Escape closing with focus returned,
+`?filters=open` on a cold load with `history.length` unchanged across an open and a close,
+`Show 1 recording` at one, the 260ms above, and the `/bookmarks` dock. The sideways-scroll sweep in
+`nav-empty-states-layout.spec.ts` now measures each width with the sheet open as well as closed.
+
+### The two-axis review, and what it changed
+
+Run before the commit. Both axes found real things; everything below is applied.
+
+**Standards.** The aria-labels on the phone chips row were a second spelling of
+`filter-chips.tsx`'s `CHIPS`, which is now exported and read from both — the rule
+`catalogue-nav.tsx:76-78` states about `facetHref`, applied to the labels. `clearFacetHref` spelled
+`["category","contributor","search"]` a fourth time and now takes `FILTER_KEYS`. `data-role="dock"`
+became `data-testid`, the repo's convention. The facet-list computation was copy-pasted into
+`app/page.tsx` and `app/products/page.tsx` and already sat in `app/layout.tsx`; all three now call
+`categoriesWithCounts()` in `data/recording.ts`, a peer of `contributorsByCount()`. The page-capped
+count was computed twice, once here and once in the grid, with a comment admitting it — both call
+`shownCount(page, total)` now, which is the acceptance's "N matches the first number in the result
+line" made structural. Inside `filter-dock.tsx`: the focus ring was inlined eight times and is one
+`FOCUS_RING`, `badge` became `activeFacetCount`, and `SORT_ITEMS` plus `SORT_LABEL` — two tables
+keyed on the same type — became one `SORTS` with a `sheet` and a `dock` label. The 286 lines of
+`lastmod` churn in `public/sitemap-0.xml` are reverted; no URL in it changed.
+
+One Standards finding was **wrong, and the test caught it**: the reduced-motion block in
+`globals.css` was called a redundant repeat of the `*` rule at `:168-176`. It is not.
+`animation-duration: 0s` still applies a keyframe for one frame, and on the close that frame is
+`translateY(100%)` — the panel paints once slid off the bottom. Removing the block turned the
+reduced-motion test red immediately. It is back, with that written down where it read as redundant.
+
+**Spec.** Step 13 says *"Add `767` and `768` to the width list"* and the sweep had **replaced** it,
+dropping 640, 660 and 700 — the band where a fixed dock now paints over a page with no rail. All
+three are back, and the 800 and 820 that were added beyond the two the step named are gone. Two
+acceptance clauses were unasserted and now are: *"and both are still in the viewport"* checked only
+the Filters button and not `↕ Recent`, and *"both rows in the accent treatment"* was not checked at
+all.
+
+The last Spec finding is the one below.
+
+### One thing the ticket asks for twice, differently
+
+Step 2 says `CataloguePage` *"is the one place that knows `sortedData.length` for the
+`Show N recordings` button"*. The acceptance says *"`N` matches the first number in the result
+line"*. On the mock's own state those are the same number — it draws `Show 2 recordings` over
+`2 OF 277` — but the result line's first number is page-capped, so on unfiltered `/products` the
+two readings are 48 and 277.
+
+Shipped as the acceptance says: **48**, the count actually on screen. A button that says
+`Show 277 recordings` and reveals 48 with a Load more under it is the kind of thing decision 2
+forbids, and `## Acceptance` is the definition of done. But it is a real disagreement inside the
+ticket rather than a detail, so it is named here rather than absorbed: **flipping it to
+`sortedData.length` is one argument to `shownCount` and the maintainer's call.**
+
+### The measurement, step 14
+
+`/products` at 390×844, `Emulation.setCPUThrottlingRate` at 4, production build over `pnpm start`.
+Before is `HEAD` at 4176153 with this ticket's working tree stashed.
+
+| | before | after |
+|---|---|---|
+| First Load JS `/products` | 1112.5 kB raw / 350.2 kB gzip | **1095.8 kB / 344.4 kB** |
+| lab LCP `/products` (median of 3 / 5) | 768 ms | **520 ms** |
+| longest `event` — open the sheet | — | **208 / 216 / 232 / 248 / 272 ms** |
+| longest `event` — a Category chip | — | **40 ms, all five runs** |
+
+First Load JS *fell* by 16.1 kB raw and 5.9 kB gzip, against an allowance of +3 kB: the drawer,
+`components/ui/sheet.tsx`, `components/logo.tsx` with its `next/image`, and four lucide icons all
+left the client graph, and the dock costs less than they did. The figure is computed from the
+scripts the served document itself pulls in, summed on disk — this Next version's build table
+prints no Size column, and bytes-transferred-in-N-seconds moves with prefetch timing and is not
+comparable between builds.
+
+Device pixel ratio was checked at 1 and at 3; the numbers were the same either way, so it is not
+raster area.
+
+### What is left, and whose it is
+
+**The sheet-open tap does not clear 200ms.** Five runs: 208, 216, 232, 248, 272. The Category tap
+clears it comfortably at 40ms. The phase split is the useful part — the tap spends **~0ms in
+script** and 195-250ms in presentation delay, so it is not the handler and not React: a Category
+tap re-renders the same 44 links plus 48 tiles in 26-28ms of paint. It is the browser's pipeline
+for mounting a modal dialog. Two levers were measured and neither is an agent's call:
+
+- **Radix's modal semantics.** `modal={false}` takes the open tap to 128-168ms — worth ~70ms, all
+  of it the scroll lock's document-wide style invalidation. It also drops the focus trap and the
+  scroll lock, which are two of the four things step 6 chose Radix *for*, and `overscroll-contain`
+  stops meaning anything without it.
+- **The panel's shadow.** Removing `box-shadow: 0 -30px 70px -20px rgba(0,0,0,0.6)` takes it to
+  176-208ms — worth ~50ms. It is drawn at `CatalogueMobile.dc.html:52` and decision 2 says the mock
+  ships as drawn.
+
+Together they would land around 110-130ms. `startTransition` around the history write was tried on
+the theory that the router's re-render was blocking the paint, and made no difference at all; it
+was reverted rather than shipped with a claim attached.
+
+So: **the maintainer's to decide** whether to spend one of those two, or to accept 200-260ms on a
+surface whose measured baseline is already 286ms p75 and take the win elsewhere — note the same
+deploy takes lab LCP from 768ms to 436ms and First Load JS down 5.9 kB gzip. Ticket 13 is the merge
+gate that reads the field figures, and this is the number it will be reading against.
+
+**One acceptance bullet is unsatisfiable as written.** *"`document.elementFromPoint` … 8px to the
+left of the Filters button's left edge … returns an element inside the grid rather than the dock or
+its wrapper."* At 390px the button starts at x=14 and the dock starts at x=0, so that point is
+x=6 — inside the dock's own 14px gutter, and it returns the dock. That is the correct outcome, not
+a regression: the bullet describes the geometry of the old floating pill, whose sin was an
+*invisible* padded wrapper that ate taps on the card behind it (commit 02c3730). The dock is a
+full-width opaque bar; what paints is what responds, which is what that fix was actually about. The
+guard is kept as the seam that can still go wrong — 8px above the dock's top edge, which returns
+the grid, asserted at both the bar's centre and its left gutter.
