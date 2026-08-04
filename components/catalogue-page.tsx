@@ -11,8 +11,8 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
-import { usePathname } from "next/navigation"
-import type { Recording } from "@/data/recording"
+import { usePathname, useSearchParams } from "next/navigation"
+import type { FacetCount, Recording } from "@/data/recording"
 
 import type { CatalogueDiagnosis } from "@/lib/catalogue-filters"
 import {
@@ -22,9 +22,10 @@ import {
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
 import type { EmptyState } from "@/components/catalogue-empty"
+import { FilterDock } from "@/components/filter-dock"
 import { Hero } from "@/components/hero"
 import { PlaybackOwner } from "@/components/playback-owner"
-import { RecordingCardGrid } from "@/components/recording-card-grid"
+import { RecordingCardGrid, shownCount } from "@/components/recording-card-grid"
 import { RecordingOverlay } from "@/components/recording-overlay"
 
 interface CataloguePageProps {
@@ -71,6 +72,13 @@ interface CataloguePageProps {
   diagnosis?: CatalogueDiagnosis | null
   /** Rendered above the sort controls: a heading, a hero, a newsletter form. */
   children?: ReactNode
+  /** The phone filter sheet's two facet lists. Passed by the routes that can
+   *  (server components reading data/recording.ts), and absent on /bookmarks,
+   *  which is "use client" and must not value-import @/data/* into a client
+   *  chunk (components/catalogue-search.tsx:54-57). On that route the dock
+   *  renders the sort button alone and the sheet shows only its SORT block. */
+  categories?: FacetCount[]
+  contributors?: FacetCount[]
 }
 
 export function CataloguePage({
@@ -83,6 +91,8 @@ export function CataloguePage({
   diagnosis,
   children,
   topViewCount,
+  categories,
+  contributors,
 }: CataloguePageProps) {
   const { ids: bookmarks, toggle: toggleBookmark } =
     useRememberedSet(BOOKMARKS_KEY)
@@ -118,6 +128,13 @@ export function CataloguePage({
     [bookmarkedOnly, bookmarks, recordings]
   )
   const { sortedData, sort, setSort } = useSortedData(visible)
+
+  // The filter dock's `Show N recordings` names the count the grid actually
+  // has on screen — page-capped, which is the first number in the result line
+  // (recording-card-grid.tsx computes the same figure from the same `page`).
+  const searchParams = useSearchParams()
+  const page = Math.max(1, Number(searchParams.get("page")) || 1)
+  const resultCount = shownCount(page, sortedData.length)
 
   // Which of the two empty states an empty list is, decided here because this is
   // the only place that knows. null means "not known yet, so say nothing".
@@ -204,13 +221,24 @@ export function CataloguePage({
           toggleBookmark={toggleBookmark}
           votedRecordingIds={votedRecordingIds ?? []}
           toggleVote={toggleVote}
-          setSort={setSort}
           currentSort={sort}
           topViewCount={topViewCount}
         >
           {children}
         </RecordingCardGrid>
       </PlaybackOwner>
+
+      {/* The phone's filter surface: the fixed dock and the bottom sheet. Below
+          `md` only, and only on the three catalogue routes — this is the one
+          module they all render, and the reason it lives here rather than in
+          the layout, which is never handed searchParams or a filtered count. */}
+      <FilterDock
+        categories={categories}
+        contributors={contributors}
+        resultCount={resultCount}
+        sort={sort}
+        setSort={setSort}
+      />
 
       {/* history.back() is the whole close path, so every close — Escape, the
           close button, the scrim, browser Back — does one identical thing. Safe

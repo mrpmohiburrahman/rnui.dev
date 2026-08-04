@@ -1,7 +1,7 @@
 // components/recording-card-grid.tsx
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
@@ -14,6 +14,18 @@ import { RecordingCard } from "./recording-card"
 
 /** How many Recordings one page of the grid renders. The catalogue is 277. */
 const PAGE_SIZE = 48
+
+/**
+ * How many Recordings are on screen: whole pages, capped at what exists. This
+ * is the first number in the result line, and the filter dock's
+ * `Show N recordings` is the same figure — the acceptance pins the two together
+ * ("N matches the first number in the result line"), so they share the
+ * arithmetic rather than each doing it. `page` is read from the URL by both
+ * callers, which is where pagination lives.
+ */
+export function shownCount(page: number, total: number): number {
+  return Math.min(page * PAGE_SIZE, total)
+}
 
 /**
  * The mock's tile width at both of the two widths it draws — 208px desktop
@@ -48,14 +60,9 @@ export interface RecordingCardGridProps {
   toggleBookmark: (id: string) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
-  /** The phone's only sort control. The desktop pills this grid used to render
-   * moved into the header (ticket 04 step 7), and below `md` the header draws no
-   * sort control at all (step 10) — so this dropdown, `flex sm:hidden`, is the
-   * only one there is on a phone until ticket 11 replaces it with the filter
-   * dock's sort. It writes the same `?sort=` the header writes, through the same
-   * hook.
-   */
-  setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void
+  /** The current sort, for the result line's SORTED tail. The controls that
+   *  change it live in the header (desktop) and the filter dock's sheet
+   *  (phone), both of which write the same `?sort=` through the same hook. */
   currentSort?: "recent" | "top-voted" | "top-viewed"
   /**
    * The catalogue hero, rendered above the heading row and outside the framed
@@ -89,7 +96,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   toggleBookmark,
   votedRecordingIds,
   toggleVote,
-  setSort,
   currentSort,
   hero,
   heading,
@@ -97,7 +103,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   bookmarkedOnly,
   topViewCount,
 }) => {
-  const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
   // Pagination lives in the URL, not in state, so a page is shareable and Back
   // returns to the previous count. `page` is the only reader of the param that
   // catalogue-search.tsx has been deleting on every keystroke all along, which
@@ -105,10 +110,13 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   const searchParams = useSearchParams()
   const page = Math.max(1, Number(searchParams.get("page")) || 1)
   const total = sortedData?.length ?? 0
-  const shownCount = page * PAGE_SIZE
-  const hasMore = total > shownCount
+  // `pageEnd` is where the slice stops and may run past the data; `shown` is
+  // what is actually on screen, and is the number the result line and the
+  // filter dock's `Show N recordings` both print.
+  const pageEnd = page * PAGE_SIZE
+  const hasMore = total > pageEnd
   const isEmpty = total === 0
-  const shown = Math.min(shownCount, total)
+  const shown = shownCount(page, total)
 
   // The number of category / contributor / search filters that are on, read
   // from the same useSearchParams already in hand. It drives the FILTERS tail of
@@ -141,7 +149,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     // The page and count the click arrives at, not the ones it left. The last
     // page is short, so `recordings_shown` is capped at what exists rather than
     // being page × 48.
-    loadMoreClicked(page + 1, Math.min((page + 1) * PAGE_SIZE, total))
+    loadMoreClicked(page + 1, shownCount(page + 1, total))
   }
 
   // `search_performed` is reported from here rather than from the search box,
@@ -164,86 +172,26 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   }, [search, total])
 
   return (
-    <div className="relative flex w-full flex-col gap-4 overflow-hidden pb-4 md:items-start">
+    // `pb-[calc(96px+...)] md:pb-4`: below `md` the filter dock is a fixed bar
+    // at the bottom of the viewport (CatalogueMobile.dc.html:32 draws the 96px
+    // as the dock's clearance), and without the reserve the last row of the
+    // grid sits under it forever. At `md` the dock is gone and the padding
+    // returns to the grid's own 1rem.
+    <div className="relative flex w-full flex-col gap-4 overflow-hidden pb-[calc(96px+env(safe-area-inset-bottom,0px))] md:items-start md:pb-4">
       {hero && <div className="w-full">{hero}</div>}
       {children && <div className="w-full">{children}</div>}
-      {/* The desktop sort pills, the counter line and the Last updated / Total
-          items pills all moved into the site header (ticket 04 steps 7 and 4);
-          the only sort control left here is the phone dropdown below, `flex
-          sm:hidden`, which the header below `md` does not replace. */}
-      <div className="flex sm:hidden flex-col w-full">
-        <button
-          type="button"
-          className="w-full px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-inner border-2 border-transparent flex justify-between items-center transition-colors duration-200"
-          onClick={() => setSortDropdownOpen(!isSortDropdownOpen)}
-          aria-haspopup="true"
-          aria-expanded={isSortDropdownOpen}
-        >
-          <span>
-            {currentSort === "recent"
-              ? "Recent"
-              : currentSort === "top-viewed"
-                ? "Top Viewed"
-                : "Top Voted"}
-          </span>
-          <svg
-            className={`w-4 h-4 transition-transform duration-200 ${
-              isSortDropdownOpen ? "transform rotate-180" : ""
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
-        {isSortDropdownOpen && (
-          <div className="mt-2 w-full bg-white dark:bg-[#1E1E1E] rounded-[1rem] shadow-inner border border-transparent">
-            <button
-              type="button"
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-t-[1rem] transition-colors duration-200"
-              onClick={() => {
-                setSort?.("recent")
-                setSortDropdownOpen(false)
-              }}
-            >
-              Recent
-            </button>
-            <button
-              type="button"
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] transition-colors duration-200"
-              onClick={() => {
-                setSort?.("top-viewed")
-                setSortDropdownOpen(false)
-              }}
-            >
-              Top Viewed
-            </button>
-            <button
-              type="button"
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-b-[1rem] transition-colors duration-200"
-              onClick={() => {
-                setSort?.("top-voted")
-                setSortDropdownOpen(false)
-              }}
-            >
-              Top Voted
-            </button>
-          </div>
-        )}
-      </div>
-      {/* The filter bar, Catalogue.dc.html:76-82, above the heading row exactly
-          as the mock stacks them. It draws itself only when a facet is on, so
-          every unfiltered route renders nothing. Not on the saved view: the
-          three params do not filter it, and a chip naming a filter that filters
+      {/* The desktop filter bar, Catalogue.dc.html:76-82, above the heading row
+          exactly as the mock stacks them — below `md` the phone's own chips row
+          (components/site-header.tsx) is the filter surface and this bar is
+          `md` and up only. It draws itself only when a facet is on, so every
+          unfiltered route renders nothing. Not on the saved view: the three
+          params do not filter it, and a chip naming a filter that filters
           nothing is the sort of thing decision 2 forbids. */}
-      {!bookmarkedOnly && <FilterChips />}
+      {!bookmarkedOnly && (
+        <div className="hidden w-full md:block">
+          <FilterChips />
+        </div>
+      )}
       {/* The heading row, Catalogue.dc.html:85-88: the section head on the
           left and the mono result line right-aligned on a reserved width. The
           heading is an h2 when the hero is present and an h1 when it is not, so
@@ -292,7 +240,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
                   every key changed when the list reordered and a sort toggle
                   unmounted and remounted all 277 cards, restarting every Demo.
                   Ids are unique — tests/data-integrity.test.ts enforces it. */}
-              {sortedData?.slice(0, shownCount).map((recording, i, shown) => (
+              {sortedData?.slice(0, pageEnd).map((recording, i, shown) => (
                 <RecordingCard
                   key={recording.id}
                   recording={recording}

@@ -1,6 +1,8 @@
 // app/page.tsx
 import { allRecordings } from "@/data/catalogue"
 import {
+  categoriesWithCounts,
+  contributorsByCount,
   getUniqueCategories,
   getUniqueContributors,
   RECORDINGS_PER_CONTRIBUTOR,
@@ -32,6 +34,12 @@ async function Page({
   const data = await getRecordings(params.search)
   const topViewCount = await getTopViewCount()
 
+  // The phone filter sheet's two facet lists, count-bearing, the same two the
+  // rail's layout hands NavSidebar — computed here so this server component
+  // can pass them to the client page without a value import (ticket 11).
+  const categories = categoriesWithCounts()
+  const contributors = contributorsByCount()
+
   // The term is the only filter this route applies, so it is the only one the
   // zero panel can diagnose. Same reason as /products for computing it here.
   const diagnosis =
@@ -47,6 +55,8 @@ async function Page({
         // The whole-catalogue map, because ?search= narrows `data` and a
         // Contributor count derived from a narrowed set is the size of the search.
         perContributor={RECORDINGS_PER_CONTRIBUTOR}
+        categories={categories}
+        contributors={contributors}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
         heading={catalogueHeading({ total: data.length })}

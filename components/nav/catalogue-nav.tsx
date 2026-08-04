@@ -103,8 +103,11 @@ const FACETS: Facet[] = ["category", "contributor"]
  * What a facet click reports, decided by the same test `facetHref` navigates on:
  * the link that clears is the link that is already applied. Written next to that
  * function because the two disagreeing means every clear is logged as an apply.
+ *
+ * Exported for the filter dock's sheet, which renders the same two lists the
+ * rail does and must not spell the apply/clear rule a second time.
  */
-function reportFacetClick(
+export function reportFacetClick(
   current: URLSearchParams,
   facet: Facet,
   value: string

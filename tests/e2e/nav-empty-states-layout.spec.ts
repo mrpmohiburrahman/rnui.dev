@@ -30,11 +30,12 @@ const NO_MATCHES: Record<string, string> = {
 }
 
 test.describe("the full catalogue is reachable from the nav", () => {
-  // Wide enough for the desktop aside (`hidden sm:flex`). The header draws its
-  // desktop row at `md` and up and its two-row phone block below that, so at
-  // 700px the aside is the desktop-width rail under a phone-width header — the
-  // point is that the aside is present and reachable here at all.
-  test.use({ viewport: { width: 700, height: 900 } })
+  // Wide enough for the desktop aside, which is now `hidden md:flex` (the rail
+  // moved from `sm` to `md` in ticket 11). The header draws its desktop row at
+  // `md` and up and its two-row phone block below that, so a desktop width sees
+  // the rail as drawn. 1024px is comfortably past the `md` joint and asserts
+  // only that the aside is present and reachable at all.
+  test.use({ viewport: { width: 1024, height: 900 } })
 
   test("the aside link lands on the unfiltered catalogue", async ({ page }) => {
     await page.goto("/products?category=Buttons")
@@ -72,17 +73,27 @@ test.describe("the full catalogue is reachable from the nav", () => {
   })
 })
 
-test("the sheet carries the same link on a phone", async ({ page }) => {
+// On a phone the aside is below `md`, and the route to the full catalogue is
+// the sheet: the dock's Filters button opens it, and with a Category applied
+// its "Clear all" link is the sheet's equivalent of the aside's "All
+// recordings" — the drawing's chips row (CatalogueMobile.dc.html:24-29) has no
+// "All recordings" of its own, only the two facet chips.
+test("the sheet carries a route to the full catalogue on a phone", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("/products?category=Buttons")
 
-  await page.getByRole("button", { name: "Toggle Menu" }).click()
+  await page.getByRole("button", { name: /Filters/ }).click()
   await page
     .getByRole("dialog")
-    .getByRole("link", { name: "All recordings", exact: true })
+    .getByRole("link", { name: "Clear all", exact: true })
     .click()
 
-  await expect(page).toHaveURL(/\/products$/)
+  // Clear all keeps `sort` and `filters` (filter-dock.tsx), so the sheet stays
+  // open — what the visitor asked for is gone, the Category.
+  await expect(page).toHaveURL(/\/products/)
+  await expect(page).not.toHaveURL(/category=/)
 })
 
 test.describe("something is rendered when there is nothing to render", () => {
@@ -367,23 +378,38 @@ test.describe("a card fills its track instead of overflowing it", () => {
 })
 
 test.describe("the page never scrolls sideways", () => {
-  // 640px is where the sidebar appears (`hidden sm:flex`) and `main` picks up
-  // its 168px left margin, and where the sort controls turn horizontal. For a
-  // 30px-wide band above it the three sort pills and the two status pills had a
-  // 470px min-content against the 440px `main` had left, and a flex item cannot
-  // shrink below its min-content — so `main` was floored wider than the
-  // viewport and the whole document scrolled. 700px is past the band, 639px is
-  // below the margin, and both were always clean.
-  for (const width of [390, 639, 640, 660, 700, 768, 1024, 1280, 1440]) {
+  // 768px is where the sidebar appears (`hidden md:flex`) and `main` picks up
+  // its 168px left margin, and where the dock gives way to the rail's filter
+  // route. For a 30px-wide band above the old 640px boundary the three sort
+  // pills and the two status pills had a 470px min-content against the 440px
+  // `main` had left, and a flex item cannot shrink below its min-content — so
+  // `main` was floored wider than the viewport and the whole document scrolled.
+  //
+  // 640, 660 and 700 stay in the list even though the boundary moved: that band
+  // is now where a fixed dock paints over a page that has no rail, which is the
+  // other half of the same question. 767 is the new width either side of the
+  // joint, and 768 was already here.
+  for (const width of [390, 639, 640, 660, 700, 767, 768, 1024, 1280, 1440]) {
     for (const path of ["/", "/products", "/bookmarks"]) {
       test(`${path} at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 })
+        const measure = () =>
+          page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+          }))
+
         await page.goto(path)
-        const measured = await page.evaluate(() => ({
-          scrollWidth: document.documentElement.scrollWidth,
-          clientWidth: document.documentElement.clientWidth,
-        }))
-        expect(measured.scrollWidth).toBeLessThanOrEqual(measured.clientWidth)
+        const closed = await measure()
+        expect(closed.scrollWidth).toBeLessThanOrEqual(closed.clientWidth)
+
+        // And with the filter sheet up. `?filters=open` is the whole open
+        // state, so it opens on a cold load at any width — a panel pinned
+        // `inset-x-0` over the document is exactly the shape that widens it if
+        // a padding is added outside the box instead of inside.
+        await page.goto(`${path}?filters=open`)
+        const open = await measure()
+        expect(open.scrollWidth).toBeLessThanOrEqual(open.clientWidth)
       })
     }
   }

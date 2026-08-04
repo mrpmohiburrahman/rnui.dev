@@ -257,6 +257,99 @@
   }
 }
 
+/* The phone chips row's own scrollbar, hidden (CatalogueMobile.dc.html:25
+   draws overflow:hidden; a real 320px viewport needs horizontal scroll for the
+   second chip, and the scrollbar is the part the drawing leaves out). */
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* The filter sheet's one motion moment, Specimen.dc.html:166 — "Bottom sheet
+   (mobile) · 260ms spring, no overshoot" — as the decelerate curve the 220ms
+   and 240ms moments already use. A critically damped spring and a decelerate
+   cubic-bezier are the same shape; "no overshoot" is what makes them
+   interchangeable. Transform and opacity only, so both directions are
+   composited and cost the main thread nothing after the class flips.
+
+   Written here rather than as tailwindcss-animate utilities on the element,
+   after that cost two wrong builds. `animate-in` carries the plugin's own
+   150ms and is reached through a variant, so `[data-state=open].animate-in`
+   outranks a bare `duration-*`; and `duration-260` itself is owned by two
+   plugins at once — Tailwind core writes `transition-duration` under that name
+   and tailwindcss-animate writes `animation-duration` — so which property the
+   class ends up setting depends on emission order. Neither is something a
+   component should be depending on. The figures are still ticket 02's tokens,
+   read through theme().
+
+   Keyframes, not transitions, twice over: Radix portals the panel in already
+   carrying data-state="open", so a transition has no starting frame to leave
+   and the enter never plays; and Radix's Presence holds a closing node mounted
+   by watching animationend, which a transition never fires, so a transitioned
+   exit is unmounted before it paints. Both failures look identical from
+   outside — the sheet simply appears and vanishes.
+
+   The reduced-motion block below is not a local repeat of the `*` rule at
+   :168-176, which was the first guess and is wrong: that rule zeroes
+   `animation-duration`, and a 0s animation still applies its keyframes for one
+   frame. On the close that frame is `translateY(100%)` — the panel paints once
+   slid off the bottom before Radix unmounts it, which is exactly the
+   intermediate frame the Specimen's "all durations 0ms" is about. `animation:
+   none` is what actually stops it: no animation-name, so no keyframe is ever
+   applied, and Radix's Presence unmounts in the same tick. The two rules set
+   different properties, so the shorthand here wins without !important. */
+@layer utilities {
+  .sheet-scrim[data-state="open"] {
+    animation: sheet-scrim-in theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-scrim[data-state="closed"] {
+    animation: sheet-scrim-out theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-panel[data-state="open"] {
+    animation: sheet-panel-in theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-panel[data-state="closed"] {
+    animation: sheet-panel-out theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet-scrim[data-state],
+    .sheet-panel[data-state] {
+      animation: none;
+    }
+  }
+}
+
+@keyframes sheet-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes sheet-panel-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-panel-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
 /* The state chip, Ticket 07 step 5 (Tile.dc.html:26-28, 102-105). Its text is
    CSS `::before` rather than DOM text on purpose: the resting label reads
    `❙❙ PAUSED` for one visitor and `❙❙ STILLS ONLY` for another, and a text
