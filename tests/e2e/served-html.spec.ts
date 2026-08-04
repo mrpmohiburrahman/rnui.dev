@@ -73,6 +73,23 @@ test("the served HTML of /bookmarks carries its heading", async ({
   expect(html).toMatch(/<h1[^>]*>Saved on this device<\/h1>/)
 })
 
+// Ticket 13 step 4a: the served HTML contains no <video> for anybody, not only
+// reduced-motion visitors. demo-tile.tsx:49's server snapshot of `() => true`
+// is what buys this — the element appears only after hydration, and only for
+// visitors who did not ask for less motion. A served document that ships a
+// <video> would fetch and decode a first frame before hydration ever ran.
+test("no route serves a <video> in its document", async ({ request }) => {
+  const recording = await (await request.get(`/recording/${allRecordings[0].id}`)).text()
+  for (const html of [
+    await (await request.get("/")).text(),
+    await (await request.get("/products")).text(),
+    await (await request.get("/bookmarks")).text(),
+    recording,
+  ]) {
+    expect(html).not.toContain("<video")
+  }
+})
+
 for (const route of ROUTES) {
   test(`the served HTML of ${route} paints nothing at zero opacity`, async ({
     request,

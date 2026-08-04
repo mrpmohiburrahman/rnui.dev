@@ -362,6 +362,7 @@ export function RecordingDetail({
               type="button"
               onClick={handleVote}
               aria-pressed={voted}
+              aria-keyshortcuts={keyboardControls ? "v" : undefined}
               aria-label={`${voted ? "Unvote" : "Vote"}, ${voteCount}`}
               className={cn(
                 "flex items-center gap-2 text-[13px] font-medium px-3.5 py-2.5 rounded-[10px] border",
@@ -385,6 +386,7 @@ export function RecordingDetail({
               type="button"
               onClick={handleSave}
               aria-pressed={saved}
+              aria-keyshortcuts={keyboardControls ? "s" : undefined}
               className={cn(
                 "flex items-center gap-2 text-[13px] font-medium px-3.5 py-2.5 rounded-[10px] border",
                 saved
@@ -488,6 +490,7 @@ export function RecordingDetail({
         <button
           type="button"
           onClick={handleVote}
+          aria-keyshortcuts={keyboardControls ? "v" : undefined}
           aria-label={voted ? "Unvote" : "Vote"}
           className="flex items-center gap-2 font-mono text-xs px-[13px] py-3 rounded-[11px] border min-h-[44px] border-line2 bg-ctrl text-t1"
         >
@@ -496,6 +499,7 @@ export function RecordingDetail({
         <button
           type="button"
           onClick={handleSave}
+          aria-keyshortcuts={keyboardControls ? "s" : undefined}
           aria-label={saved ? "Saved" : "Save"}
           className="flex items-center px-3 py-3 rounded-[11px] border min-h-[44px] text-[12.5px] border-acc bg-acc-soft text-acc"
         >

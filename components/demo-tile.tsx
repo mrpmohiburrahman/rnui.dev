@@ -15,7 +15,7 @@
 // the same element (Tile.dc.html:11).
 "use client"
 
-import { useCallback, useRef, useState, useSyncExternalStore } from "react"
+import { useCallback, useRef, useState } from "react"
 
 import type { Recording } from "@/data/recording"
 import {
@@ -26,6 +26,7 @@ import {
 import { getCdnUrl } from "@/lib/cdn"
 
 import { usePlaybackOwner } from "./playback-owner"
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
 
 // MediaError codes, so a failure is reported as "decode" or "network" rather
 // than as a number. The distinction is the whole point: "network" means the
@@ -47,27 +48,6 @@ const FAILURE_LABELS: Record<string, string> = {
   decode: "◺ DECODE FAILED",
   unsupported: "◺ FORMAT UNSUPPORTED",
 }
-
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
-
-const subscribeToReducedMotion = (onChange: () => void) => {
-  const query = matchMedia(REDUCED_MOTION)
-  query.addEventListener("change", onChange)
-  return () => query.removeEventListener("change", onChange)
-}
-
-/**
- * React's own hook rather than framer-motion's `useReducedMotion`: that one
- * reports `false` on the server, which mounts a <video> for one frame in exactly
- * the case decision 3 says must never mount one. The server snapshot here
- * assumes reduced, so the served HTML ships no <video> to hydrate away.
- */
-const usePrefersReducedMotion = () =>
-  useSyncExternalStore(
-    subscribeToReducedMotion,
-    () => matchMedia(REDUCED_MOTION).matches,
-    () => true
-  )
 
 export function DemoTile({
   recording,
@@ -214,7 +194,7 @@ export function DemoTile({
               // It never fades back. Returning to a Poster two seconds ahead of
               // the paused frame would reintroduce the same jump, in the other
               // direction.
-              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-[160ms] ease-linear ${
+              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-160 ease-linear ${
                 hasPlayed ? "opacity-100" : "opacity-0"
               }`}
               onPlaying={() => {
