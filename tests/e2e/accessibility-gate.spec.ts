@@ -63,7 +63,8 @@ for (const mode of ["no-preference", "reduce"] as const) {
             .forEach((hidden) => hidden.remove())
           return (
             el.getAttribute("aria-label") ||
-            (clone.textContent || "")
+            clone.textContent ||
+            ""
           ).trim()
         }
 
@@ -123,9 +124,10 @@ test("step 9 · detail Contributor links are named, and /contributors rows are d
     const names = rows.map((r) => (r.textContent || "").trim())
     return { count: names.length, distinct: new Set(names).size }
   })
-  expect(rowNames.distinct, `duplicate contributor rows: ${JSON.stringify(rowNames)}`).toBe(
-    rowNames.count
-  )
+  expect(
+    rowNames.distinct,
+    `duplicate contributor rows: ${JSON.stringify(rowNames)}`
+  ).toBe(rowNames.count)
 })
 
 // Step 8 — Tab through every focusable element on each route, in dark and light,
@@ -159,9 +161,11 @@ for (const mode of ["dark", "light"] as const) {
             outline: getComputedStyle(el).outlineStyle,
             // Identity across round-trips: activeElement cannot cross the
             // bridge, so key on what distinguishes a stop.
-            key: `${el.tagName}|${el.getAttribute("href") ?? ""}|${
-              (el.textContent || "").trim().slice(0, 40)
-            }`,
+            key: `${el.tagName}|${el.getAttribute("href") ?? ""}|${(
+              el.textContent || ""
+            )
+              .trim()
+              .slice(0, 40)}`,
           }
         })
         if (!stop) break
@@ -173,6 +177,21 @@ for (const mode of ["dark", "light"] as const) {
         // every route reported a phantom `BODY has no visible ring` failure at
         // the end of its tab order.
         if (stop.tag === "BODY" && i > 0) break
+
+        // Same class of artefact, found by `/review-animations` fallout rather
+        // than by this ticket: `NEXTJS-PORTAL` is the custom element Next injects
+        // for its own dev-tools/error overlay. It is not authored here, renders
+        // no affordance a visitor can use, and cannot be given a focus ring by
+        // this codebase — so asserting one on it fails 14 cases (7 routes x 2
+        // modes) for a control the site does not own. Skipped, not ended on: it
+        // appears mid-walk at stop 46, and `break` here would silently stop
+        // asserting every real control after it. Narrow on purpose — one tag
+        // name, not a blanket allow-list, so a real unfocusable control still
+        // fails the sweep.
+        if (stop.tag === "NEXTJS-PORTAL") {
+          await page.keyboard.press("Tab")
+          continue
+        }
 
         if (i === 0) firstKey = stop.key
         stops.push({ index: i, tag: stop.tag, outline: stop.outline })
@@ -187,16 +206,106 @@ for (const mode of ["dark", "light"] as const) {
         const next = await page.evaluate(() => {
           const el = document.activeElement as HTMLElement | null
           if (!el) return null
-          return `${el.tagName}|${el.getAttribute("href") ?? ""}|${
-            (el.textContent || "").trim().slice(0, 40)
-          }`
+          return `${el.tagName}|${el.getAttribute("href") ?? ""}|${(
+            el.textContent || ""
+          )
+            .trim()
+            .slice(0, 40)}`
         })
         // Wrapped the focusable set — every stop visited has been asserted.
         if (i > 0 && next === firstKey) break
       }
 
       // A route with no focusable element at all would pass vacuously.
-      expect(stops.length, `no focus stops found on ${route} (${mode})`).toBeGreaterThan(0)
+      expect(
+        stops.length,
+        `no focus stops found on ${route} (${mode})`
+      ).toBeGreaterThan(0)
     })
   }
+}
+
+// studio-dark ticket 13 step 14 fallout — the pointer-target sweep the gate
+// never ran. `/review-animations` found the filter chips' ✕ at `size-4`, a
+// 16x16 CSS-pixel target, which is the only way to drop a facet on a phone.
+// `review-animations`'s STANDARDS.md (~/.claude/skills/) puts the floor at 44x44; WCAG 2.2 SC 2.5.8 (AA) puts it at 24x24
+// and is the one that is normative, so the assertion below is written against
+// 44 and the failure message names both.
+//
+// Scoped to the chips row rather than every control on the page: a route-wide
+// sweep would fail on inherited chrome this ticket did not draw and cannot fix
+// without a spec override, and a gate that fails for reasons outside its own
+// diff gets muted rather than fixed.
+const TARGET_MIN = 44
+
+// Hit-tested, not measured. `boundingBox()` returns the border box, which
+// cannot see a transparent `::before` hit area — the standard way to widen a
+// small control without redrawing it. Asserting the box would therefore fail a
+// correct fix and pass a control that merely looks big, so this probes the four
+// corners and the centre of the required square with elementFromPoint and
+// requires every probe to land on the control itself. Pseudo-elements are not
+// returned by elementFromPoint; their originating element is, which is the
+// answer this needs.
+// Both viewports, because the two chip rows swap at `md` and each has its own
+// ✕. The desktop bar's was 16x16 and the phone header's 20x20, and a
+// desktop-only sweep silently skips the phone one — `isVisible()` filters it out
+// rather than failing on it, which is how a 20x20 target on the one row that is
+// only ever touched stayed invisible to a gate that was already looking for it.
+const VIEWPORTS = [
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "phone", width: 390, height: 844 },
+] as const
+
+for (const viewport of VIEWPORTS) {
+  test(`every filter-chip control clears the pointer-target floor · ${viewport.name}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    })
+    await page.goto("/products?category=Misc&search=wheel")
+
+    const controls = page.getByLabel(/Remove .* filter|Clear search|Clear all/)
+    const count = await controls.count()
+    expect(
+      count,
+      "no chip controls found — the fixture stopped filtering"
+    ).toBeGreaterThan(0)
+
+    const misses: string[] = []
+    for (let i = 0; i < count; i++) {
+      const control = controls.nth(i)
+      if (!(await control.isVisible())) continue
+      const label = await control.getAttribute("aria-label")
+
+      const hit = await control.evaluate((el, min) => {
+        const box = el.getBoundingClientRect()
+        const cx = box.left + box.width / 2
+        const cy = box.top + box.height / 2
+        const half = min / 2 - 1 // inset a pixel so rounding cannot fail an exact-size target
+        const probes: [number, number][] = [
+          [cx, cy],
+          [cx - half, cy - half],
+          [cx + half, cy - half],
+          [cx - half, cy + half],
+          [cx + half, cy + half],
+        ]
+        const landed = probes.filter(([x, y]) => {
+          const at = document.elementFromPoint(x, y)
+          return at === el || el.contains(at)
+        })
+        return { landed: landed.length, probes: probes.length }
+      }, TARGET_MIN)
+
+      if (hit.landed < hit.probes) {
+        misses.push(`${label}: ${hit.landed}/${hit.probes} probes landed`)
+      }
+    }
+
+    expect(
+      misses,
+      `controls whose hit area is smaller than ${TARGET_MIN}x${TARGET_MIN} (WCAG 2.2 SC 2.5.8 floor is 24x24): ${misses.join(", ")}`
+    ).toEqual([])
+  })
 }

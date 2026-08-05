@@ -279,7 +279,15 @@ function PhoneFilterChips({
   if (chips.length === 0) return null
 
   return (
-    <div className="no-scrollbar flex gap-[7px] overflow-x-auto px-[14px] pb-[10px]">
+    // `-mt-[5px] pt-[5px]` cancels out, so nothing moves — it exists to grow the
+    // clip box. `overflow-x-auto` computes `overflow-y` to `auto` rather than
+    // leaving it visible, so this row clips its children vertically, and it was
+    // shearing 4px off the top of the ✕'s 44px hit area (measured: reach up 17px
+    // where 21 is needed, against 21/22/21 on the other three sides). Padding
+    // alone would push the chips down 5px against CatalogueMobile.dc.html; the
+    // negative margin pulls the border box back up by the same 5px, so the
+    // chips paint exactly where they did and only the clip region grows.
+    <div className="no-scrollbar -mt-[5px] flex gap-[7px] overflow-x-auto px-[14px] pb-[10px] pt-[5px]">
       {chips.map(({ key, value }) => {
         const isContributor = key === "contributor"
         return (
@@ -308,7 +316,13 @@ function PhoneFilterChips({
               // drifts between them is the drift catalogue-nav.tsx:76-78 names.
               aria-label={CHIPS[key].label}
               prefetch={false}
-              className="grid size-5 flex-none place-items-center rounded-[6px] bg-x-bg text-[10px] leading-none text-t1 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+              // The glyph stays 20px as drawn (CatalogueMobile.dc.html:26); the
+              // hit area is 44x44 via a transparent ::before, same treatment and
+              // same reason as the desktop bar's ✕ (filter-chips.tsx X_CHROME).
+              // 20 + 2*12 = 44. This is the row that actually matters for the
+              // finding — it is the phone's only control for dropping a facet,
+              // and it was the smaller of the two at 20x20.
+              className="relative grid size-5 flex-none place-items-center rounded-[6px] bg-x-bg text-[10px] leading-none text-t1 before:absolute before:-inset-[12px] before:content-[''] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
               onClick={() => reportFacetClick(searchParams, key, value)}
             >
               ✕

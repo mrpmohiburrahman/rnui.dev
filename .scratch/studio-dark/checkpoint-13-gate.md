@@ -22,10 +22,59 @@ framer writes `transition-duration` per animation frame, so `getComputedStyle` s
 |---|---|---|---|---|
 | Tile enters view → Demo swaps in | `160ms opacity, linear` | `transition-duration: 0.16s; transition-timing-function: linear` | `getComputedStyle(.tile-media video)` on a playing tile | ✅ |
 | Playing tile brightness + glow | `220ms cubic-bezier(.2,.8,.2,1)` | `transition-duration: 0.22s, 0.22s; transition-timing-function: cubic-bezier(.2,.8,.2,1)` | `getComputedStyle(.tile-media[data-playing])` | ✅ |
-| Filter chip add / remove | `120ms ease-out` | `transition-duration: .12s; transition-timing-function: ease-out` (source `components/filter-chips.tsx:85-87`) | class + source | ✅ |
+| Filter chip add / remove | `120ms ease-out` | `MOTION = { duration: 0.12, ease: "easeOut" }` (`components/filter-chips.tsx`), played frames sampled by e2e | **corrected 2026-08-05** — sampled frame + source constant, was class + source | ✅ |
 | Overlay open (scrim + 8px rise) | `240ms cubic-bezier(.2,.8,.2,1)` | `ENTER_MS = 0.24`, `RISE = [0.2,0.8,0.2,1]` (`recording-overlay.tsx:27-29`) | source constant | ✅ |
 | Overlay close on Escape | `160ms ease-in` | `EXIT_MS = 0.16`, `ease: "easeIn"` (`recording-overlay.tsx:27-29`) | source constant | ✅ |
 | Bottom sheet | `260ms spring, no overshoot` | `animation-duration: 0.26s; animation-timing-function: cubic-bezier(.2,.8,.2,1)` (`.sheet-panel`) | `getComputedStyle(.sheet-panel[data-state=open])` | ✅ |
+
+### 2026-08-05 — the chip row above was wrong, and the method is why
+
+Step 14's `/review-animations` pass found that "Filter chip add / remove" **never played a
+frame in either direction**, while this table certified it ✅. The other five rows were read
+with `getComputedStyle` on a live element; this one alone was read from *"class + source"* —
+and a class is not a played animation. A CSS transition on a node React mounts and unmounts
+outright has no starting frame to leave on entry, and is gone before it can paint on exit.
+
+Confirmed, not inferred: sampling `getComputedStyle(chip).opacity` every frame across a
+removal returned **50 consecutive frames at exactly 1, then nothing**. The regression test is
+`tests/e2e/filters.spec.ts` *"a removed chip plays its exit instead of vanishing"*, which
+asserts a fractional opacity — the only thing a class cannot fake.
+
+**The first cut of that fix broke a binding constraint, and `/code-review-mp`'s Spec axis caught
+it.** It shipped `ease: [0.19, 1, 0.22, 1]` against the Specimen's `120ms ease-out` — the exact
+"a bare keyword is too weak, substitute a real curve" move this ticket's Problem section lists
+as collision 3, where *the mock wins*. Worse, that curve is `.scratch/ui-ux-overhaul/motion-brief-overlay.md`'s,
+the superseded brief step 3 exists to retire. And the row above had been edited to show the
+substituted curve while still reading ✅ — a mismatch certified as a match, which is the same
+failure this very section indicts. Corrected to `ease: "easeOut"`, framer's spelling of the
+drawn value. Recorded rather than quietly amended: a gate that silently fixes its own wrong
+rows is worth nothing.
+
+The fix is `AnimatePresence` + `motion.span`. That is the opposite call to
+`components/filter-dock.tsx:84`, which refuses framer-motion for the sheet, so it was measured
+rather than argued. Both arms one sitting, same machine and port, iPhone 13 at 4x CPU throttle,
+seven repeats, Event Timing:
+
+| Arm | samples (ms) | median | spread |
+|---|---|---|---|
+| before (no tween) | 24,16,16,16,16,16,16 | **16ms** | 8ms |
+| after (tween) | 32,24,24,16,16,32,24 | **24ms** | 16ms |
+| after, second run | 24,32,24,24,32,24,16 | **24ms** | 16ms |
+
+**+8ms**, against a 32ms bar. `filter-dock.tsx:84`'s objection is to a *spring* running physics
+every frame on a full-screen panel; a 120ms tween on one ~100px span is a different cost, and
+that is now measured rather than asserted.
+
+**Do not read those numbers against the 248ms in the step-12 table.** That is a cold figure
+dominated by the router re-rendering the grid; this protocol warms three full loads first and
+reads the interaction alone. Two different quantities. The 248ms is unchanged by this work.
+
+Two traps in the measurement tooling, both of which report *nothing* rather than something
+wrong — the safe failure mode, but only for someone who knows to look:
+`scripts/checkpoint-13-inp.mjs` discards an entire interaction when a control is missing on
+repeat 1 (`if (absent) break`), so an unwarmed server yields "control not present" instead of a
+slow number; and the scratch `inp-run.mjs` imports from `playwright`, which pnpm does not hoist
+— only `@playwright/test` resolves here.
 
 **One real defect this inventory caught.** The demo cross-fade originally shipped at
 `0.15s` (Tailwind's bundled default) rather than the Specimen's `160ms`. Root cause:
