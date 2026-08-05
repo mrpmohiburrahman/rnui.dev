@@ -117,26 +117,45 @@ export default async function RecordingPage(props: Params) {
         </Link>
         <Link
           href="/"
-          className="text-[12.5px] text-acc underline underline-offset-3"
+          className="whitespace-nowrap text-[12.5px] text-acc underline underline-offset-3"
         >
           ← All recordings
         </Link>
-        <span className="font-mono text-[10px] tracking-[0.1em] text-t3">
+        {/* The two context labels are desktop-only. Detail.dc.html:12 gates this
+            whole header on `isPage`, so the drawing gives the phone form no
+            header at all — but this route is where a shared link lands, and a
+            phone visitor with no wordmark and no way back is a worse answer
+            than the drawing's. Keeping the two functional items and dropping
+            the two informational ones is what holds the drawn 62px to one row:
+            all four at 390 wrapped `← All recordings` onto a second line and
+            broke the height. */}
+        <span className="hidden font-mono text-[10px] tracking-[0.1em] text-t3 sm:inline">
           {recording.category.toUpperCase()} ·{" "}
           {withCounts.filter((r) => r.category === recording.category).length}{" "}
           {/* Detail.dc.html:16 draws "148 ENTRIES"; the mock predates the
               rename and decision 3 renames in copy too. */}
           RECORDINGS
         </span>
-        <span className="ml-auto font-mono text-[9.5px] tracking-[0.12em] text-t3">
+        <span className="ml-auto hidden font-mono text-[9.5px] tracking-[0.12em] text-t3 sm:inline">
           OPENED FROM A SHARED LINK
         </span>
       </nav>
 
-      {/* The page form's own gutters, `padding: 34px 26px 44px`
-          (Detail.dc.html:131) — not `main`'s 22/26/34, which this route no
-          longer sits inside. */}
-      <div className="px-[26px] pb-[44px] pt-[34px]">
+      {/* All three of the drawing's gutters, not just the page's
+          (Detail.dc.html:131):
+
+            mobile  16px 16px 20px   shell 390
+            overlay 26px 28px 28px   shell 1080
+            page    34px 26px 44px   shell 1440
+
+          The breakpoints are the ones recording-detail.tsx already switches its
+          media width on (358 → sm:380 → lg:414, Detail.dc.html:132), so the
+          padding and the column it wraps change forms together. Spending the
+          page's 26px side gutter at every width was starving the media on a
+          phone: `w-[358px] max-w-full` resolved to 390 − 52 = 338 where the
+          drawing fits exactly 390 − 32 = 358, and the vertical gutters ran
+          double. */}
+      <div className="px-4 pb-5 pt-4 sm:px-7 sm:pb-7 sm:pt-[26px] lg:px-[26px] lg:pb-[44px] lg:pt-[34px]">
         {/* This route counts its own open (ADR-0007:3), through countsOwnOpen. */}
         <RecordingBody
           recording={current}
