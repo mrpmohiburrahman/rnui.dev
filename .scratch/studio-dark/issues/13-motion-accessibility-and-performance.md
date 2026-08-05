@@ -652,6 +652,16 @@ tests, aria-keyshortcuts):
   arm needs a `git worktree` at the deploy-A SHA, which is **not in this branch's history**
   (`feat/catalogue-ux` is a single linear Studio Dark build — there is no pre-Studio-Dark
   ancestor to diff against). Recorded as a maintainer run in the checkpoint file.
+
+  > **2026-08-05 correction.** The "no pre-Studio-Dark ancestor" claim above is false. `76651a3`
+  > ("docs: clear the PostHog remainder, and fix a tile that would have lied") is the parent of
+  > `4a663a5`, the first commit touching Studio Dark styling, and already carries the rename, the
+  > 13 PostHog events and the `ui-ux-overhaul` behaviour work with no restyle — it IS the "before"
+  > state steps 10 and 12 need. Verified 2026-08-05 in a disposable `git worktree`: it builds
+  > clean and its 184 unit tests pass. The before-arm SHA is runnable on this machine; what is
+  > still the maintainer's is running the actual before/after Lighthouse pass. Full detail and the
+  > exact commands are in `checkpoint-13-gate.md`'s *Does not prove* section and
+  > `.scratch/studio-dark/deploy-a-handback.md`.
 - **Step 14 (`/review-animations`).** The skill is `disable-model-invocation: true`; an agent
   cannot run it. Its three `STANDARDS.md` collisions are recorded above as deliberate Specimen
   overrides. The maintainer runs the review and pastes its output.
