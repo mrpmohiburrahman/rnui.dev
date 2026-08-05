@@ -86,8 +86,20 @@ const pairs: Pair[] = [
     brightnessTrap: true,
   },
   { name: "● LIVE, dark", fg: "#8FF0DC", bg: "rgba(111,227,204,0.20)" },
+  // candidate — same accent hue (--acc #6FE3CC family), fill raised toward opaque so it
+  // decouples from the Poster; fg swapped to the palette's own --on-acc (dark mode), the
+  // token the Specimen already pairs with a solid --acc fill (bg-acc/text-on-acc buttons).
+  { name: "● LIVE, dark — candidate 0.80", fg: "#06120F", bg: "rgba(111,227,204,0.80)" },
+  { name: "● LIVE, dark — candidate 0.90", fg: "#06120F", bg: "rgba(111,227,204,0.90)" },
+  { name: "● LIVE, dark — candidate", fg: "#06120F", bg: "rgba(111,227,204,0.94)" },
   { name: "● LIVE, light", fg: "#8FF0DC", bg: "rgba(6,20,18,0.72)" },
   { name: "NEW, dark", fg: "#F3DEA6", bg: "rgba(235,208,138,0.22)" },
+  // candidate — same amber hue dark mode already uses for --new-bg (235,208,138, the
+  // #EBD08A family), fill raised toward opaque; fg swapped to #5C4204, the dark-amber
+  // text light mode's own --new-fg already uses against a near-opaque amber fill.
+  { name: "NEW, dark — candidate 0.80", fg: "#5C4204", bg: "rgba(235,208,138,0.80)" },
+  { name: "NEW, dark — candidate 0.90", fg: "#5C4204", bg: "rgba(235,208,138,0.90)" },
+  { name: "NEW, dark — candidate", fg: "#5C4204", bg: "rgba(235,208,138,0.94)" },
   { name: "NEW, light", fg: "#5C4204", bg: "rgba(255,238,190,0.94)" },
   { name: "◺ DECODE FAILED", fg: "#F5B3A4", bg: "rgba(4,5,8,0.9)" },
   { name: "failure message", fg: "rgba(255,255,255,0.86)", bg: "rgba(4,5,8,0.9)" },
