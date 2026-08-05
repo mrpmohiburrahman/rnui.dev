@@ -418,8 +418,11 @@ export function FilterDock({
               </div>
             </div>
 
-            {/* The actions row (:75-78), fixed below the scroll body. */}
-            <div className="flex gap-[9px] pt-1">
+            {/* The actions row (:75-78), fixed below the scroll body. No top
+                padding of its own: the SORT block above already ends on
+                `padding-bottom:16px` (:70), which is the whole of the gap the
+                drawing leaves here. A `pt-1` on top of it stacked to 20. */}
+            <div className="flex gap-[9px]">
               <Link
                 // The sheet keeps `sort` and `filters`; Clear all that also
                 // re-sorted would be the surprise above.

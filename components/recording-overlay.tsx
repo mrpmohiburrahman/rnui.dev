@@ -271,8 +271,14 @@ export function RecordingOverlay({
                 {/* min-h-0 or this flex child refuses to shrink and gets
                     clipped by the panel's overflow-hidden instead of scrolling. */}
                 {/* `padding: 26px 28px 28px` — Detail.dc.html:131's overlay
-                    figure. The bottom is 28, not the top's 26. */}
-                <div className="min-h-0 overflow-y-auto px-7 pb-7 pt-[26px]">
+                    figure. The bottom is 28, not the top's 26.
+
+                    Below `sm` it drops to the drawing's mobile figure,
+                    `16px 16px 20px`: a phone opening this panel is looking at
+                    the mobile form (recording-detail.tsx switches its media to
+                    358 at the same breakpoint), and the overlay's 28px sides
+                    left that column 44px short of the width it is drawn at. */}
+                <div className="min-h-0 overflow-y-auto px-4 pb-5 pt-4 sm:px-7 sm:pb-7 sm:pt-[26px]">
                   <RecordingDetail
                     recording={recording}
                     form="overlay"

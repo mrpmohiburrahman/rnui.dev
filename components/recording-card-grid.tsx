@@ -235,7 +235,11 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
       {/* 15px/500 on a phone and 17px on the desktop (CatalogueMobile.dc.html:34
           against Catalogue.dc.html:86); the mono line likewise drops to 9.5px on
           a 96px reservation from 10px on 180. */}
-      <div className="flex w-full items-baseline justify-between gap-4 pb-[14px]">
+      {/* The row's own bottom padding is 11 on a phone and 14 from `md`, the
+          same way its type is — the two drawings disagree on this figure and
+          each is right for its own width. The desktop 14 was being spent at
+          every width, so the phone's first tile row sat 3px low. */}
+      <div className="flex w-full items-baseline justify-between gap-4 pb-[11px] md:pb-[14px]">
         {hero ? (
           <h2 className="m-0 text-[15px] font-medium text-t1 md:text-section">
             {heading}

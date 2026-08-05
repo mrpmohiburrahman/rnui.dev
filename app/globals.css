@@ -614,6 +614,19 @@ html {
   white-space: nowrap;
 }
 
+/* Clear of the play control, which only exists in the `still` state — the
+   drawing has no such control (its media is always live), so it centres this
+   caption on the box and nothing contends for the middle. Here a 40px circle
+   sits dead centre and the caption ran straight under it: measured on the page
+   form, caption x139-276 / y442-455 against the circle's x187-227 / y429-469.
+
+   20 clears the circle's half-height, 10 is the gap, 6 is the caption's own
+   half-height. In `playing` and `failed` the control is gone and the caption
+   stays exactly where the drawing puts it. */
+.detail-media[data-state="still"] .detail-media-center {
+  transform: translate(-50%, calc(-50% + 36px));
+}
+
 .detail-media-center::after {
   content: " · STILL FRAME";
 }
