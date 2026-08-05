@@ -135,32 +135,21 @@ export function DemoTile({
       className={`tile-media relative aspect-[9/16] rounded-tile overflow-hidden bg-plinth w-full ${className}`}
       style={{ "--tile-hue": tileHue } as React.CSSProperties}
     >
-      {failureReason ? (
-        <div
-          role="alert"
-          data-testid="demo-error"
-          className="absolute inset-0 bg-[rgba(4,5,8,0.9)] flex flex-col items-center justify-center gap-[11px] p-[18px] text-center"
-        >
-          <div
-            className="font-mono text-[9px] tracking-[0.14em] text-[#F5B3A4]"
-            aria-hidden
-          >
-            {FAILURE_LABELS[failureReason] ?? "◺ PLAYBACK FAILED"}
-          </div>
-          <div className="text-xs leading-[1.45] text-[rgba(255,255,255,0.86)] text-pretty">
-            This recording won’t play in your browser. The source is still there.
-          </div>
-          <a
-            href={recording.source}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onRepoClick}
-            className="text-[11.5px] font-medium text-[#08090C] bg-[#F1F2F4] px-[11px] py-[7px] rounded-[9px]"
-          >
-            Open repo <span aria-hidden>↗</span>
-          </a>
-        </div>
-      ) : (
+      {/* The drawing's three media layers (Tile.dc.html:12-14) — the hue wash,
+          the 135° hatch, the notch bar — behind the recording, not over it.
+
+          The drawing paints them over the plinth because it has no <video> to
+          draw: there, the wash *is* the recording. Reproducing that stacking
+          literally puts a green cast and a stripe pattern across every real
+          screen capture, which is the one thing a catalogue of screen captures
+          must not do. So they stay as the plinth's own treatment: what shows
+          while the Poster is still loading, and in any letterbox a recording
+          that is not exactly 9:16 leaves behind. */}
+      <div className="tile-wash" />
+      <div className="tile-hatch" />
+      <div className="tile-notch" />
+
+      {!failureReason && (
         <>
           {/* The browser's own lazy gate, rather than a hand-rolled one: this
               used to be a CSS background-image, which every card fetched the
@@ -217,12 +206,43 @@ export function DemoTile({
               preload="none"
             />
           )}
-          {/* The state chip, `aria-hidden` in full — it describes a purely
-              visual state, and 48 of them announced is noise. Its text is the
-              CSS ::before in globals.css, so the served HTML holds one element
-              and both kinds of visitor read their own label from it. */}
-          <div aria-hidden className="state-chip font-mono text-[8.5px] tracking-[0.13em] px-[7px] py-1 rounded-[6px]" />
         </>
+      )}
+
+      {failureReason ? (
+        <div
+          role="alert"
+          data-testid="demo-error"
+          className="absolute inset-0 bg-[rgba(4,5,8,0.9)] flex flex-col items-center justify-center gap-[11px] p-[18px] text-center"
+        >
+          <div
+            className="font-mono text-[9px] tracking-[0.14em] text-[#F5B3A4]"
+            aria-hidden
+          >
+            {FAILURE_LABELS[failureReason] ?? "◺ PLAYBACK FAILED"}
+          </div>
+          <div className="text-xs leading-[1.45] text-[rgba(255,255,255,0.86)] text-pretty">
+            This recording won’t play in your browser. The source is still there.
+          </div>
+          <a
+            href={recording.source}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onRepoClick}
+            className="text-[11.5px] font-medium text-[#08090C] bg-[#F1F2F4] px-[11px] py-[7px] rounded-[9px]"
+          >
+            Open repo <span aria-hidden>↗</span>
+          </a>
+        </div>
+      ) : (
+        /* The state chip, `aria-hidden` in full — it describes a purely
+           visual state, and 48 of them announced is noise. Its text is the
+           CSS ::before in globals.css, so the served HTML holds one element
+           and both kinds of visitor read their own label from it. */
+        <div
+          aria-hidden
+          className="state-chip font-mono text-[8.5px] tracking-[0.13em] px-[7px] py-1 rounded-[6px]"
+        />
       )}
       {/* The NEW chip: top-right inside the media, and it survives a failed
           Demo the way the mock's sc-if does — a Recording being recent and a

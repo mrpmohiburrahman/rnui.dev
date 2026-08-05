@@ -268,6 +268,11 @@ export function RecordingDetail({
             } as React.CSSProperties
           }
         >
+          {/* The drawing's three media layers, behind the recording rather than
+              over it — see components/demo-tile.tsx for why. */}
+          <span className="detail-wash" />
+          <span className="detail-hatch" />
+          <span className="detail-notch" />
           <InteractiveVideo
             src={recording.demoPath}
             facts={facts}

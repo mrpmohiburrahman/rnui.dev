@@ -59,7 +59,7 @@ export const parallaxes: Recording[] = [
     durationMs: 6495,
     aspect: 0.4611,
     hue: 209,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-3d-parallax",
     twitterId: "reactiive_",

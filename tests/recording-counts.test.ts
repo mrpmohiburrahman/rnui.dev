@@ -48,7 +48,7 @@ describe("RECORDINGS_PER_CONTRIBUTOR", () => {
   it("counts 23 contributors, the whole catalogue again", () => {
     expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(23)
     expect(
-      RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano ( Reactiive )"]
+      RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]
     ).toBe(124)
     expect(RECORDINGS_PER_CONTRIBUTOR["Hewad Mubariz"]).toBe(31)
 
@@ -71,7 +71,7 @@ describe("contributorsByCount", () => {
     const ranked = contributorsByCount()
 
     expect(ranked).toEqual([
-      { name: "Enzo Manuel Mangano ( Reactiive )", count: 124 },
+      { name: "Enzo Manuel Mangano (Reactiive)", count: 124 },
       { name: "Hewad Mubariz", count: 31 },
       { name: "Daniel Friyia", count: 19 },
       { name: "Arunabh Verma", count: 16 },
@@ -90,7 +90,7 @@ describe("contributorsByCount", () => {
       { name: "Lucas Lima", count: 3 },
       { name: "Pushkar Tandon", count: 3 },
       { name: "Yassire Mtioui", count: 3 },
-      { name: "Arnaud Dellinger ( evening kid )", count: 2 },
+      { name: "Arnaud Dellinger (evening kid)", count: 2 },
       { name: "Enes Öztürk", count: 2 },
       { name: "Epicode | 0xV", count: 2 },
       { name: "Zakaria Kerkeb", count: 2 },

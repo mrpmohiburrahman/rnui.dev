@@ -116,7 +116,7 @@ test.describe("something is rendered when there is nothing to render", () => {
   }) => {
     await page.goto(
       `/products?category=Misc&contributor=${encodeURIComponent(
-        "Enzo Manuel Mangano ( Reactiive )"
+        "Enzo Manuel Mangano (Reactiive)"
       )}&search=wheel`
     )
 
@@ -126,7 +126,7 @@ test.describe("something is rendered when there is nothing to render", () => {
     ).toBeVisible()
     await expect(
       page.getByText(
-        "Nothing in Misc by Enzo Manuel Mangano ( Reactiive ) matches “wheel”."
+        "Nothing in Misc by Enzo Manuel Mangano (Reactiive) matches “wheel”."
       )
     ).toBeVisible()
     await expect(
@@ -193,7 +193,7 @@ test.describe("something is rendered when there is nothing to render", () => {
     // catalogue matches the term — so every pair is empty too.
     await page.goto(
       `/products?category=Accordions&contributor=${encodeURIComponent(
-        "Enzo Manuel Mangano ( Reactiive )"
+        "Enzo Manuel Mangano (Reactiive)"
       )}&search=zzzzz`
     )
 

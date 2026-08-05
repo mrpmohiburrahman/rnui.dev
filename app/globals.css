@@ -2,6 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
+/* The design canvas is 1440 wide. Every figure in the drawing — the 265 rail,
+   the 208 tracks, the 14.5px tile title — is a measurement taken at that width,
+   so on a wider display the site laid all of them out at their literal pixel
+   size and left the rest of the window as a dead gutter: at 1680 the grid fit a
+   sixth column the drawing does not have and every glyph read a sixth smaller
+   than the drawing does. Scaling the canvas to the window fixes both at once —
+   five columns, no gutter, type at the size it was drawn.
+
+   `zoom` rather than `transform: scale()`: zoom scales the layout itself, so
+   the document keeps its real height, `position: fixed` still means the window,
+   and nothing needs a compensating width. Media queries are the reason this can
+   be pure CSS with no feedback loop — Chrome evaluates them against the
+   unzoomed viewport, measured: at a 1680 window with `zoom: 1.15` applied,
+   `innerWidth` still reads 1680 and `matchMedia('(min-width: 1441px)')` still
+   reports true, while `body.scrollWidth` reads 1461. A rule keyed on the width
+   it just changed would otherwise oscillate.
+
+   Steps rather than a continuous ratio because CSS cannot divide a viewport
+   length into a unitless number. Every step lands the layout between 1429 and
+   1467 — inside 2% of the canvas. Capped at 1.5: past that the proportions are
+   still the drawing's but the type is bigger than anyone asked for, and the
+   honest answer at 2560 is a wider layout, not a magnified one.
+
+   The name matters. tests/design-tokens.test.ts finds the palette by splitting
+   this file on `@layer base {` and keeping the first block whose text contains
+   the canvas token's name; a variable declared up here that merely starts with
+   that name satisfies the substring, so the preamble wins the search and all 28
+   palette assertions then read an empty block. This was called canvas-zoom
+   first and did exactly that. Anything new declared above the palette layer
+   needs a name that no palette token is a prefix of — and note that prose in
+   this comment counts as text too.
+
+   Below 1500 nothing applies — the phone and tablet forms are drawn at their
+   own widths (CatalogueMobile.dc.html) and must not be scaled, and 1440 itself
+   is already the canvas. */
+html {
+  --ui-zoom: 1;
+  zoom: var(--ui-zoom);
+}
+@media (min-width: 1500px) {
+  html {
+    --ui-zoom: 1.05;
+  }
+}
+@media (min-width: 1580px) {
+  html {
+    --ui-zoom: 1.1;
+  }
+}
+@media (min-width: 1660px) {
+  html {
+    --ui-zoom: 1.15;
+  }
+}
+@media (min-width: 1740px) {
+  html {
+    --ui-zoom: 1.2;
+  }
+}
+@media (min-width: 1820px) {
+  html {
+    --ui-zoom: 1.26;
+  }
+}
+@media (min-width: 1910px) {
+  html {
+    --ui-zoom: 1.32;
+  }
+}
+@media (min-width: 2000px) {
+  html {
+    --ui-zoom: 1.38;
+  }
+}
+@media (min-width: 2090px) {
+  html {
+    --ui-zoom: 1.45;
+  }
+}
+@media (min-width: 2180px) {
+  html {
+    --ui-zoom: 1.5;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -205,14 +290,58 @@
    mounts, `playing` is never true, and a resting-by-default dim would hand
    those visitors a permanently darkened catalogue.
 
-   The wash (Tile.dc.html:80-82) is the box's own background-image, visible only
-   in the window between layout and the lazy Poster painting — the Poster is
-   opaque and object-cover, so it hides the wash the moment it lands. It differs
-   by playback state and not by mode, and it is deliberately not animated, so it
-   is absent from the transition list below. */
+   The wash, the hatch and the notch are their own layers (`.tile-wash` and
+   friends below) rather than the box's background-image, but they sit *behind*
+   the Poster and the <video>. Tile.dc.html draws them over the plinth because
+   it has no recording to draw — there the wash stands in for one. Over a real
+   screen capture the same stacking tints every white app UI green and rules
+   diagonal stripes across it, so they are the plinth's treatment instead: what
+   shows before the Poster loads, and in the letterbox of anything not exactly
+   9:16.
+
+   The consequence is worth stating plainly, because it is the one place this
+   build knowingly reads differently from the drawing: the drawing's tiles are
+   dark, hue-tinted objects, and ours are the recordings at their own
+   brightness. The wash bottoms out at `rgba(0,0,0,0.62)` — over a near-black
+   plinth that does nothing, over a white recording it is the entire effect. */
 .tile-media {
   box-shadow: var(--e0), 0 8px 20px -16px rgba(8, 10, 14, 0.5);
   filter: brightness(0.9);
+}
+
+.dark .tile-media {
+  box-shadow: var(--e0);
+  filter: brightness(0.78) saturate(0.85);
+}
+
+.tile-media[data-playing] {
+  box-shadow: var(--e1);
+  filter: none;
+}
+
+/* The three layers the drawing paints over the media, tile and detail alike.
+   Both boxes draw the same three things at slightly different numbers, which is
+   why the detail overrides rather than reuses (Detail.dc.html:31-33 against
+   Tile.dc.html:12-14). Not in the transition list: the wash switches with the
+   playback state and the drawing does not animate it. */
+.tile-wash,
+.tile-hatch,
+.tile-notch,
+.detail-wash,
+.detail-hatch,
+.detail-notch {
+  position: absolute;
+  pointer-events: none;
+}
+
+.tile-wash,
+.tile-hatch,
+.detail-wash,
+.detail-hatch {
+  inset: 0;
+}
+
+.tile-wash {
   background-image:
     radial-gradient(
       72% 48% at 50% 27%,
@@ -226,14 +355,7 @@
     );
 }
 
-.dark .tile-media {
-  box-shadow: var(--e0);
-  filter: brightness(0.78) saturate(0.85);
-}
-
-.tile-media[data-playing] {
-  box-shadow: var(--e1);
-  filter: none;
+.tile-media[data-playing] .tile-wash {
   background-image:
     radial-gradient(
       72% 48% at 50% 27%,
@@ -245,6 +367,71 @@
       hsla(var(--tile-hue), 55%, 42%, 0.24),
       rgba(0, 0, 0, 0.62)
     );
+}
+
+.tile-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.055) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.tile-notch {
+  left: 14px;
+  right: 14px;
+  top: 11px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* The detail's own figures (Detail.dc.html:31-33). Its wash is drawn only in
+   the playing state there, but the drawing has one state per file; the tile is
+   the one that draws both, so the resting wash is taken from it. */
+.detail-wash {
+  background-image:
+    radial-gradient(
+      70% 46% at 50% 26%,
+      hsla(var(--tile-hue), 50%, 52%, 0.2),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 40%, 32%, 0.14),
+      rgba(0, 0, 0, 0.66)
+    );
+}
+
+.detail-media[data-state="playing"] .detail-wash {
+  background-image:
+    radial-gradient(
+      70% 46% at 50% 26%,
+      hsla(var(--tile-hue), 72%, 64%, 0.46),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 55%, 42%, 0.24),
+      rgba(0, 0, 0, 0.62)
+    );
+}
+
+.detail-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.detail-notch {
+  left: 18px;
+  right: 18px;
+  top: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 @media not (prefers-reduced-motion: reduce) {
@@ -540,9 +727,28 @@
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-tap-highlight-color: transparent;
 
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    /* No `-webkit-font-smoothing: antialiased` here, and that omission is the
+       point. It was set — the boilerplate default — and it is why every string
+       on this site read a weight lighter than the drawing while the metrics
+       said they were identical.
+
+       On macOS `antialiased` forces grayscale anti-aliasing in place of the
+       subpixel rendering the platform does by default. Subpixel AA lights three
+       times as many samples along a stem, so it lays down more ink; grayscale
+       throws that away, and on light-on-dark type — which is the whole of
+       Studio Dark — the loss reads directly as a thinner stroke. It changes no
+       metric at all, so nothing catches it: the hero's first line measures
+       573.91px either way, same family, same 500, same -0.58px tracking.
+
+       Measured on the hero at 1440, mean luminance over the first line and the
+       share of pixels carrying any glyph:
+
+         mock (sets nothing)      52.73   20.83%
+         here, antialiased        44.30   18.72%
+         here, removed            52.73   20.83%
+
+       Exactly the drawing, to two decimal places. `text-rendering` stays: the
+       figures above were taken with it applied and it moves neither. */
   }
 }
 

@@ -272,9 +272,9 @@ test("a Contributor with many Recordings renders their whole-catalogue total and
   page,
 }) => {
   const enzo = allRecordings.find(
-    (r) => r.contributor === "Enzo Manuel Mangano ( Reactiive )"
+    (r) => r.contributor === "Enzo Manuel Mangano (Reactiive)"
   )!
-  const total = RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano ( Reactiive )"]
+  const total = RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]
   await page.goto(`/recording/${enzo.id}`)
 
   await expect(
@@ -442,7 +442,7 @@ test("the panel sits 64px down, 1080px wide, horizontally centred", async ({
 test("the Contributor total is the whole catalogue's on a filtered route", async ({
   page,
 }) => {
-  const enzo = "Enzo Manuel Mangano ( Reactiive )"
+  const enzo = "Enzo Manuel Mangano (Reactiive)"
   const theirs = RECORDINGS_PER_CONTRIBUTOR[enzo]
   const category = allRecordings.find(
     (r) => r.contributor === enzo && r.category === "Charts"

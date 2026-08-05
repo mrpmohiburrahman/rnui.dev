@@ -23,10 +23,10 @@ describe("catalogueHeading", () => {
   it("returns the Contributor's name verbatim when only one is set", () => {
     expect(
       catalogueHeading({
-        contributor: "Enzo Manuel Mangano ( Reactiive )",
+        contributor: "Enzo Manuel Mangano (Reactiive)",
         total: 7,
       })
-    ).toBe("Enzo Manuel Mangano ( Reactiive )")
+    ).toBe("Enzo Manuel Mangano (Reactiive)")
   })
 
   it("returns '<category>, by one contributor' when both are set", () => {
