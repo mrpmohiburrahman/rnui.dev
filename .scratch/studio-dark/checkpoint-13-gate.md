@@ -344,6 +344,17 @@ Contrast in composition is measured, not assumed, and the two failing pairs are 
 **The glow A/B is measured** on real playing tiles in dark mode, five repeats per arm: the glow
 costs ~2.8× paint-plus-composite but adds no frames over 16ms, inside the ticket's 20% bar.
 
+> **2026-08-05 correction — `cdn.rnui.dev` is not returning 404.** The note below says the CDN
+> "returns **404** from this machine" and builds the local-mirror workaround on that. Re-tested
+> today: the CDN serves real Asset paths fine — `https://cdn.rnui.dev/thumbnails/misc/masonry_grid_thomino.avif`
+> returns **200, 18,263 bytes** and `.../demo/misc/masonry_grid_thomino.mp4` returns **200,
+> 516,193 bytes**, from any `Referer` (no hotlink protection) and with
+> `cache-control: public, max-age=31536000, immutable`. Only the **root** `https://cdn.rnui.dev/`
+> 404s, which is ordinary for a CDN with no index. So the first glow run's void was not caused by
+> an unreachable CDN, and that diagnosis should not be trusted by whoever reads this next. The
+> local-mirror fix is still the right way to run the A/B — it removes the network from a paint
+> measurement — but it is a control, not a workaround for an outage.
+
 **A note on measuring the glow at all.** The A/B is only meaningful when Demo and Poster assets
 load, and `https://cdn.rnui.dev` returns **404** from this machine. Its first run was therefore
 void — both arms sampled the same E0 hairline because no tile ever reached the playing state
