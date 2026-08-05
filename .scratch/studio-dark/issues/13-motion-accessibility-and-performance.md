@@ -667,3 +667,40 @@ tests, aria-keyshortcuts):
   overrides. The maintainer runs the review and pastes its output.
 - **The two failing contrast pairs** (LIVE dark, NEW dark over a light Poster) — repaint is the
   maintainer's call under decision 2.
+
+### 2026-08-05 — Steps 10 and 12 are measured. Still `ready-for-human`, now for a number rather than a missing arm.
+
+Both were handed off on the belief that no pre-Studio-Dark ancestor existed to diff against.
+`76651a3` is that ancestor (see the correction above), so both arms were run here, same machine,
+same sitting, same port, both local production builds. Full method and tables are in
+`.scratch/studio-dark/checkpoint-13-gate.md` under *Load metrics (step 10)* and *Interaction
+latency (step 12)*.
+
+**Step 10 — the headline.** Mobile `/products` LCP **3,253ms → 3,991ms**, a +738ms median delta
+against a 296ms after-spread. Ticket 02's stop condition — *"if the median mobile LCP delta
+exceeds the spread of the five runs, stop"* — fires. Mobile `/` is +213ms against a 239ms
+before-spread and does not fire. Desktop is flat (799→819ms, 735→818ms, Performance 100 on all
+four). Lab CLS is 0 on both arms.
+
+**Not the fonts.** `spec.md`'s Constraints predicted the two webfonts and the per-tile glow as
+the two things most able to undo the performance work. On mobile `/products` the fonts are 62KB
+of a 545KB increase; Demo video is +378KB and Posters +98KB. The mechanism is that the Studio
+Dark grid brings more tiles into view and more of them reach the playing state inside the
+measurement window — `MAX_PLAYING = 5` approached where the before arm reached 1. The glow's cost
+was already measured in step 11 and is paint time, not bytes.
+
+**The one unambiguous win.** DOM elements **2,150 → 1,305** on `/products`, 39% down, and it is
+the metric that does not depend on the network — the same class of number
+`checkpoint-01-03-lighthouse.md` called comparable.
+
+**Step 12.** The slower-than-before rule holds everywhere it can be evaluated (overlay open +32ms
+inside a 72ms spread, Escape +8ms inside 40ms, `Load more` 32ms *faster*). The 200ms rule is
+breached three times: overlay open 464ms, filter chip remove 248ms, bottom sheet open 432ms. The
+overlay was already at 432ms on the before arm, so that breach is inherited from
+`ui-ux-overhaul`; the other two are new surfaces. Filter chips and the bottom sheet do not exist
+at `76651a3` and are recorded as absent, not as zero.
+
+**What is left, and whose.** The maintainer decides whether +738ms median mobile LCP is a price
+this effort pays, and whether the three interactions over 200ms block deploy B. Both are
+decisions the tickets reserve to a person; neither is a further measurement. `Status` stays
+`ready-for-human`.

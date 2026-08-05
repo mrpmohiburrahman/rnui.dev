@@ -207,6 +207,132 @@ at any moment while the other 43 tiles carry a 1px hairline with no blur. That i
 count (A: 1–7, B: 1–4) is wider than the median difference, which is exactly why the ticket asks
 for repeats and why a single run would have been unreadable.
 
+## Load metrics (step 10) — run 2026-08-05
+
+The hand-off above said this arm could not be run here. It can, and it was. Lighthouse
+12.8.2, headless Chrome, same machine, same sitting, mobile and desktop presets, on `/`
+and `/products`, **five runs per arm per preset per route** — the tooling of
+`.scratch/ui-ux-overhaul/checkpoint-01-03-lighthouse.md:8-12`, and its flaw fixed: both
+arms are local production builds on the same port, so no part of the gap is the loopback.
+
+Reproducible via `pnpm exec node scripts/checkpoint-13-lighthouse.mjs <arm>` and
+`pnpm exec node scripts/checkpoint-13-inp.mjs <arm>`; both headers carry the install step.
+
+- **before** — `76651a3`, deploy A's SHA, in a `git worktree`, `pnpm build && pnpm start`
+  on `localhost:3111`.
+- **after** — `feat/catalogue-ux` at `0bf8b85`, same commands, same port, immediately
+  afterwards.
+
+Both arms were built with `NEXT_PUBLIC_CDN_URL="http://localhost:3111"` and served the
+same local Asset mirror (`public/demo`, `public/thumbnails`, symlinked into the worktree —
+ADR-0003 makes an Asset path identify bytes that never change, so one mirror is fair to
+both), and both read counters from `rnui-dev`, verified identical via
+`/api/counters-collection`. Both rendered 48 cards of 277.
+
+**One void run, recorded so it is not repeated.** The first before-arm sitting was built
+with an invented collection name. Firestore answered `permission-denied`,
+`get-recordings.ts`'s `catch` returned `[]`, and every page rendered `Total Items: 0` —
+276 DOM elements and 26 requests, an empty catalogue measured as if it were a catalogue.
+Those numbers were discarded. Anyone reproducing this must check the card count before
+believing a number.
+
+| mobile `/` | before `76651a3` | after `0bf8b85` | spread b / a |
+|---|---|---|---|
+| Performance | 85 | 85 | 2 / 13 |
+| LCP | 3,779ms | **3,992ms** | 239ms / 2,323ms |
+| CLS | 0 | 0 | 0 / 0 |
+| FCP | 912ms | 922ms | 3ms / 26ms |
+| TBT | 212ms | 212ms | 7ms / 60ms |
+| Speed Index | 912ms | 922ms | 3ms / 1,781ms |
+| Bytes | 625KB | 810KB | 1KB / 33KB |
+| Requests | 32 | 52 | 3 / 4 |
+| DOM elements | 2,166 | **1,317** | 0 / 0 |
+
+| mobile `/products` | before `76651a3` | after `0bf8b85` | spread b / a |
+|---|---|---|---|
+| Performance | 89 | 85 | 1 / 3 |
+| LCP | 3,253ms | **3,991ms** | 15ms / 296ms |
+| CLS | 0 | 0 | 0 / 0 |
+| FCP | 914ms | 909ms | 7ms / 9ms |
+| TBT | 236ms | 189ms | 37ms / 36ms |
+| Speed Index | 914ms | 909ms | 7ms / 9ms |
+| Bytes | 551KB | **1,094KB** | 0KB / 2KB |
+| Requests | 31 | 56 | 0 / 0 |
+| DOM elements | 2,150 | **1,305** | 0 / 0 |
+
+| desktop | `/` before → after | `/products` before → after |
+|---|---|---|
+| Performance | 100 → 100 | 100 → 100 |
+| LCP | 799ms → 819ms | 735ms → 818ms |
+| CLS | 0 → 0 | 0 → 0 |
+| TBT | 0ms → 0ms | 4ms → 0ms |
+| Bytes | 1,470KB → 1,285KB | 1,467KB → 1,285KB |
+| Requests | 81 → 69 | 81 → 69 |
+| DOM elements | 2,166 → 1,317 | 2,150 → 1,305 |
+
+**The stop condition fires on `/products`.** Ticket 02's acceptance says *"if the median
+mobile LCP delta exceeds the spread of the five runs, stop: set `ready-for-human` and hand
+the numbers to the maintainer rather than resolving"*. On mobile `/products` the delta is
+**+738ms against a 296ms after-spread** — it fires. On mobile `/` the delta is +213ms
+against a 239ms before-spread and does not fire, though the after-arm spread there is
+2,323ms on the strength of one 5,956ms first run; excluding it the four remaining runs sit
+at 3,633–4,024ms and the conclusion is unchanged.
+
+**Where the bytes went, and it is not the fonts.** `spec.md`'s Constraints name *"two
+webfonts and a per-tile glow"* as the two things most able to undo the performance work.
+Measured on mobile `/products`, one run each, they are not:
+
+| Resource | before | after | delta |
+|---|---|---|---|
+| Media (Demo video) | 1 req / 35KB | 4 reqs / 413KB | **+378KB** |
+| Image (Posters) | 5 reqs / 24KB | 16 reqs / 122KB | **+98KB** |
+| Font | 0 / 0KB | 2 reqs / 62KB | +62KB |
+| Script | 22 reqs / 425KB | 23 reqs / 423KB | −2KB |
+| Stylesheet | 11KB | 13KB | +2KB |
+
+The two webfonts are the **smallest** of the three additions. 476KB of the 545KB is media:
+the Studio Dark grid gets more tiles into view and more of them reach the playing state
+inside the measurement window, so `MAX_PLAYING = 5` is being approached where the before
+arm reached 1. The glow, separately, was already measured in step 11 and costs paint time
+rather than bytes. Desktop moved the other way on every byte metric — 1,467KB → 1,285KB
+and 81 → 69 requests — which is consistent with the same mechanism at a viewport where the
+before arm was already loading a full grid.
+
+DOM elements fall **2,150 → 1,305** on `/products`, a 39% reduction, and that is the one
+number here `checkpoint-01-03-lighthouse.md:30-33` would call unambiguously comparable: it
+does not depend on the network. Lab CLS is 0 on both arms, which per that same file is a
+regression guard and nothing more.
+
+## Interaction latency (step 12) — run 2026-08-05
+
+Mobile emulation (iPhone 13), 4× CPU throttle, three repeats per interaction, per arm.
+Measured with the Event Timing API — the same primitive INP is computed from — rather than
+a wall-clock delta around the click, which would miss the paint the visitor waits for. Lab
+INP is not the 286ms field p75 and is not reported as if it were.
+
+| Interaction | before | after | spread b / a | ≤ 200ms |
+|---|---|---|---|---|
+| Overlay open from a tile | 432ms | 464ms | 72ms / 224ms | ❌ both arms |
+| Overlay close on Escape | 24ms | 32ms | 24ms / 40ms | ✅ |
+| Filter chip remove | *absent* | 248ms | — / 32ms | ❌ |
+| `Load more` | 216ms | **184ms** | 120ms / 16ms | ✅ after only |
+| Mobile bottom sheet open | *absent* | 432ms | — / 264ms | ❌ |
+
+Two interactions are marked *absent* rather than 0: neither the filter chips
+(`components/filter-chips.tsx`) nor the bottom sheet (`filter-dock.tsx`) exists at
+`76651a3` — they are Studio Dark tickets 08 and 11. There is no before number to compare
+against and inventing one would be worse than the gap.
+
+**Neither rule is clean.** The first — *"no interaction may be slower after than before by
+more than the spread of three repeats"* — holds everywhere it can be evaluated: overlay
+open +32ms inside a 72ms before-spread, Escape +8ms inside 40ms, and `Load more` is 32ms
+*faster*. The second — *"no interaction may exceed 200ms"* — is breached three times, at
+464ms, 248ms and 432ms. Per the ticket, *"either breach is a hand-back, not a fail"*.
+
+Worth separating: the overlay open was **already** over the bar at 432ms on the before arm,
+so that one is inherited from `ui-ux-overhaul`, not introduced here. The chip remove and
+the sheet are new surfaces and are new breaches.
+
 ## What this does and does not prove
 
 **Proves.** Every motion moment equals the Specimen value, read from the built site. The
@@ -260,6 +386,20 @@ that way; a default build measures nothing.
   > not who executes the comparison. See `.scratch/studio-dark/deploy-a-handback.md` for the exact
   > commands, the PostHog annotation, and which `posthog-expansion` tickets unblock the moment this
   > SHA lands on `main`.
+  >
+  > **Second correction, same day — steps 10 and 12 have now been run, so this bullet is no
+  > longer a hand-off for want of a measurement.** See *Load metrics (step 10)* and *Interaction
+  > latency (step 12)* above for the tables. Two further claims in the paragraph above them were
+  > also wrong: `lighthouse` is **not** installed at 13.4.1 or any version — not on `PATH`, not in
+  > `node_modules`, not global under either nvm node — so the run installed **12.8.2**, which is
+  > what ticket 02's acceptance asks for anyway ("Lighthouse 12", matching the reference run). And
+  > ticket 02's numbers are no longer "the only lab deltas this branch can show".
+  >
+  > What remains the maintainer's is now a **decision, not an execution**: ticket 02's stop
+  > condition fires on mobile `/products` (+738ms median LCP against a 296ms spread), and step 12's
+  > 200ms bar is breached three times. Both are hand-backs by the tickets' own wording. The
+  > measurement also contradicts `spec.md`'s Constraints on where the cost lives — the two webfonts
+  > are 62KB of a 545KB mobile increase, and Demo video plus Posters are 476KB of it.
 - **`/review-animations` (step 14).** The skill is `disable-model-invocation: true`; an
   agent cannot run it. Its three `STANDARDS.md` collisions (never `ease-in` on UI — the
   overlay's 160ms `ease-in` close; never animate keyboard-initiated actions — the same

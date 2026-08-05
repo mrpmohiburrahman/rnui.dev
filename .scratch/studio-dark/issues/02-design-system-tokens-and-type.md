@@ -556,3 +556,30 @@ The acceptance names this file explicitly.
 change. The regenerated `public/sitemap-0.xml` (which had gone stale with pre-rename `/entry/`
 URLs and new timestamps, produced by this ticket's own `pnpm build`) lands as a separate chore
 commit so the token commit stays reviewable.
+
+### 2026-08-05 — The font cost, now measured against everything else that moved.
+
+This ticket was handed back with *"the maintainer reads the two numbers above and says ship or
+trim"*, the numbers being +358ms home-mobile LCP and 624→688KB from the font commit alone. A full
+before/after against deploy A's SHA `76651a3` has since been run (`checkpoint-13-gate.md`, *Load
+metrics (step 10)*), and it puts those numbers in proportion.
+
+On mobile `/products`, total transferred bytes go 551KB → 1,094KB across the whole effort. The
+breakdown, one Lighthouse run per arm:
+
+| Resource | before | after | delta |
+|---|---|---|---|
+| Media (Demo video) | 1 req / 35KB | 4 reqs / 413KB | +378KB |
+| Image (Posters) | 5 reqs / 24KB | 16 reqs / 122KB | +98KB |
+| Font | 0 | 2 reqs / 62KB | +62KB |
+| Script | 22 reqs / 425KB | 23 reqs / 423KB | −2KB |
+
+**The two webfonts are the smallest of the three additions**, and `Script` did not grow at all.
+That does not retire this ticket's stop condition — the fonts do sit on the throttled mobile
+connection ahead of the poster fetches, which is the mechanism recorded on 2026-08-02 — but it
+does change what "trim" would buy: dropping the mono face from first paint recovers at most a
+fraction of 62KB, where the media path is 476KB. If the decision is about mobile LCP rather than
+about typography, the lever is elsewhere.
+
+`Status` unchanged. The decision this ticket is waiting on is still the maintainer's, and it is
+now better informed rather than answered.
