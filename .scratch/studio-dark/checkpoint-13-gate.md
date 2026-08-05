@@ -269,3 +269,96 @@ that way; a default build measures nothing.
 
 **Two colours to decide (the failing contrast pairs).** `● LIVE` dark and `NEW` dark at
 1.22:1 over a light Poster. The mock ships as drawn; repainting is the maintainer's call.
+
+## Contrast repaint — costed, not applied (task 4)
+
+Two of the seven measured pairs fail 4.5:1: `● LIVE` dark and `NEW` dark, both **1.22:1**
+against a light Poster (the table above, step 7). Both candidates below clear 4.5:1 at
+*both* composited bounds (over `#000000` and over `#FFFFFF`), reproducible with
+`pnpm exec tsx scripts/checkpoint-13-contrast.ts` — the candidate rows are added to that
+script, clearly labelled `— candidate`, alongside the shipped rows in one table:
+
+| Pair | over black | over white | worse | 4.5:1 |
+|---|---|---|---|---|
+| ● LIVE, dark (shipped) | 10.82:1 | 1.22:1 | **1.22:1** | ❌ |
+| ● LIVE, dark — candidate | 10.81:1 | 12.59:1 | **10.81:1** | ✅ |
+| NEW, dark (shipped) | 10.20:1 | 1.22:1 | **1.22:1** | ❌ |
+| NEW, dark — candidate | 5.48:1 | 6.39:1 | **5.48:1** | ✅ |
+
+**The lever, and why.** Both fills are translucent light colour over a light Poster,
+which composites to near-white — the light foreground then has nowhere to go. Both
+candidates raise the fill's alpha toward opaque (0.20→0.94 and 0.22→0.94 — 0.94 isn't a
+new number, it's what `NEW, light` already ships) so the chip decouples from the Poster
+underneath, and darken the text by *reuse*, not invention:
+- `● LIVE` dark's foreground becomes `#06120F`, dark mode's own `--on-acc` — the token the
+  Specimen already pairs with a solid `--acc` fill (`bg-acc`/`text-on-acc` buttons on
+  `/aboutus`, `/contactus`, `/subscribe`).
+- `NEW` dark's foreground becomes `#5C4204`, light mode's own `--new-fg` value, unchanged —
+  the Specimen's own swatch table already measures this exact colour "8.6:1 on tag fill",
+  i.e. already proven against a near-opaque fill in the same amber hue.
+
+Neither candidate changes hue: `111,227,204` stays inside `--acc`/`#6FE3CC`;
+`235,208,138` stays inside dark mode's own `--new-bg` (`#EBD08A` family). Nothing outside
+the Specimen's palette is introduced.
+
+**The patch.** `.scratch/studio-dark/contrast-repaint.patch`, four lines, touching only
+token values in `app/globals.css`:
+- `.dark { --new-fg: #F3DEA6 → #5C4204; --new-bg: rgba(235,208,138,0.22) → rgba(235,208,138,0.94); }`
+- `.dark .tile-media[data-playing] .state-chip { background: rgba(111,227,204,0.2) → rgba(111,227,204,0.94); color: #8ff0dc → #06120f; }`
+
+`git apply --check` on it returns clean (no output, exit 0). It is **not applied** — the
+working tree's `app/globals.css` is byte-identical to `HEAD`. Applying it is one command:
+`git apply .scratch/studio-dark/contrast-repaint.patch`.
+
+**Rendered proof (not this ticket's step).** A later agent captures
+`.scratch/studio-dark/contrast-live-new-before.png` (shipped) and
+`.scratch/studio-dark/contrast-live-new-after.png` (patch applied) so the maintainer sees
+the chips, not just the ratios.
+
+**The honest counter-argument.** `spec.md` decision 2 is explicit: *"the mock ships as
+drawn... nothing on screen lies."* These two colours are exactly what
+`assets/new-ui/Tile.dc.html` draws. Applying this patch means the built site's `● LIVE`
+and `NEW` chips in dark mode would render a materially different colour than the mock —
+more opaque, darker text — which is a real deviation from "ships as drawn," not a
+rounding error. The Specimen's own dark-mode swatch table (`Specimen.dc.html:115`,
+"New tag text… 13.1:1 on canvas") only ever measured this colour against the page canvas,
+never against its own chip fill, so the failure is arguably the mock's own oversight
+rather than something this effort introduced — but that's an argument for the maintainer
+to accept or reject, not license to repaint the shipped palette in place. This is why the
+change is a patch file the maintainer applies (or doesn't), not an edit already in the tree.
+
+**One more thing found, not fixed.** The exact failing `● LIVE, dark` pair
+(`#8ff0dc` / `rgba(111,227,204,0.2)`) is hardcoded a second time, unconditionally (not
+`.dark`-scoped), at `.detail-media[data-state="playing"] .detail-pip`
+(`app/globals.css:458-460`) — the Recording detail overlay's own LIVE indicator. Because
+it isn't mode-split, it's out of the two pairs the checkpoint script measures and its
+real backdrop (the detail overlay's media plinth, not a Poster the script's bounds model)
+isn't proven either way, so it is **not** in this patch — flagging it for whoever picks
+this up next rather than silently expanding scope.
+
+Proof table:
+Real output of `pnpm exec tsx scripts/checkpoint-13-contrast.ts` after adding the candidate rows (script edit left in the working tree at scripts/checkpoint-13-contrast.ts, not applied to app/globals.css):
+
+| Pair | over black | over white | worse | pass 4.5 |
+|---|---|---|---|---|
+| ❙❙ PAUSED / ❙❙ STILLS ONLY | 10.33:1 | 5.40:1 | **5.40:1** | ✅ |
+| ● LIVE, dark | 10.82:1 | 1.22:1 | **1.22:1** | ❌ |
+| ● LIVE, dark — candidate 0.80 | 7.82:1 | 13.34:1 | **7.82:1** | ✅ |
+| ● LIVE, dark — candidate 0.90 | 9.89:1 | 12.80:1 | **9.89:1** | ✅ |
+| ● LIVE, dark — candidate | 10.81:1 | 12.59:1 | **10.81:1** | ✅ |
+| ● LIVE, light | 14.55:1 | 5.68:1 | **5.68:1** | ✅ |
+| NEW, dark | 10.20:1 | 1.22:1 | **1.22:1** | ❌ |
+| NEW, dark — candidate 0.80 | 3.96:1 | 6.78:1 | **3.96:1** | ❌ |
+| NEW, dark — candidate 0.90 | 5.01:1 | 6.50:1 | **5.01:1** | ✅ |
+| NEW, dark — candidate | 5.48:1 | 6.39:1 | **5.48:1** | ✅ |
+| NEW, light | 7.14:1 | 8.22:1 | **7.14:1** | ✅ |
+| ◺ DECODE FAILED | 11.55:1 | 9.42:1 | **9.42:1** | ✅ |
+| failure message | 14.90:1 | 12.57:1 | **12.57:1** | ✅ |
+
+10 pass the 4.5:1 bar at their worse bound; 3 fail (the two shipped pairs plus one rejected intermediate candidate, kept in the table to show why 0.80 alpha wasn't enough for NEW).
+
+The unsuffixed "— candidate" rows are the final proposal (alpha 0.94, matching NEW-light's own precedent): ● LIVE dark candidate clears at **10.81:1** worst-case (was 1.22:1); NEW dark candidate clears at **5.48:1** worst-case (was 1.22:1). The 0.80/0.90 rows are kept as the alpha sweep that justifies landing on 0.94 rather than the minimum that technically clears (NEW at 0.90 only clears by 0.51, a thin margin; 0.94 gives ~1.0 of headroom and isn't a new number — it's what NEW-light already uses).
+
+Patch: `.scratch/studio-dark/contrast-repaint.patch` — `git apply --check .scratch/studio-dark/contrast-repaint.patch` → no output, exit code 0 (verified twice, once immediately after writing the patch and once again as a final check before reporting). The patch applies cleanly against the current working tree.
+Rendered proof: `.scratch/studio-dark/contrast-live-new-before.png` and
+`.scratch/studio-dark/contrast-live-new-after.png` (captured separately; reference them by path).
