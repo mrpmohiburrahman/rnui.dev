@@ -199,3 +199,21 @@ the undebounced-search hypothesis in `## Problem` still stands unproven.
 `ready-for-human`. What is left is bullet 3 and the search-input cause. Whoever picks it up
 should know the player renders fine in a normal browser tab — the seeking failure above looks
 like an automation artefact, not a PostHog fault.
+
+
+### 2026-08-05 (later) — precision on "the deployed site", after checking Vercel
+
+The note above says the deployed site is `main`. That is loose, and Vercel says so: production is
+`dpl_5E3YdTLSTq7qh5ppkD6LbAUnTy8m`, built from **`ba8ffbc`**, which is `origin/main`. **Local
+`main` (`3ff21a1`) is 16 commits ahead and unpushed.** So "what visitors run" is `origin/main`,
+not the branch I read.
+
+**The conclusions are unaffected, and that was checked rather than assumed.** The two files they
+rest on are byte-identical between `origin/main` and local `main` —
+`components/interactive-video.tsx` and `lib/posthog-provider.tsx`, compared by hash — and the
+deployed `package.json` pins `posthog-js ^1.203.1`, the version the masking argument depends on.
+So: click-to-play is still live, the `<video>` still mounts only on click, and no
+`session_recording` block is deployed.
+
+Recorded because the looser phrasing would have been wrong the moment someone pushed, and because
+the same slip sat in `deploy-a-handback.md`, where it mattered more — corrected there too.
