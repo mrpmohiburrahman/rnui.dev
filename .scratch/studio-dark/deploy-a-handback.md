@@ -177,9 +177,14 @@ Read directly from each ticket's own `Status:` / `Blocked by:` line and its own 
 - **02 — Enable error tracking.** No `Blocked by:` line. Partially gated: `capture_exceptions:
   true` and the `@posthog/nextjs-config` source-map wrapper are both already in `76651a3`, but
   its acceptance bullet asks for verification "in a preview deployment," and it separately
-  needs `POSTHOG_API_KEY` / `POSTHOG_PROJECT_ID` added to the Vercel project's environment —
-  that credential step is independent of deploy A and is still the maintainer's regardless.
-  Landing `76651a3` makes the check possible but does not complete it alone.
+  needed `POSTHOG_API_KEY` / `POSTHOG_PROJECT_ID` added to the Vercel project's environment.
+  **That credential step is done as of 2026-08-05** — both are on `rnui-dev`, type Sensitive,
+  Production only. What it changes: the remaining work is now purely the verification, and the
+  verification moved from preview to production, because Production-only scoping is what keeps
+  the pair matched and stops every preview build printing the half-configured warning at
+  `next.config.ts:54`. So landing `76651a3` is now the *only* thing standing between here and
+  ticket 02's first acceptance bullet — and that bullet's wording ("in a preview deployment")
+  is stale; ticket 02 records why.
 
 **Not gated on deploy A at all — already actionable today, verified by reading each ticket's
 own text rather than assuming:**

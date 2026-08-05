@@ -32,6 +32,11 @@ that it must not be pre-populated with guesses.
 Ripe once `POSTHOG_API_KEY` and `POSTHOG_PROJECT_ID` are on Vercel, a build has shipped with
 them, and a week of `$exception` events exists. Ticket 02's own acceptance is the gate.
 
+First of those three is now met: both are on Vercel as of 2026-08-05, Production-scoped (see
+ticket 02's "Left for the maintainer"). The clock still has not started — no build has shipped
+carrying them, because deploy A has not happened. Count the week from that deploy, not from
+the credentials landing.
+
 ### 2. Dead clicks — two weeks after ticket 04 lands
 
 **The clock starts at the deploy, not at ticket 04's commit.** `capture_dead_clicks` went into
