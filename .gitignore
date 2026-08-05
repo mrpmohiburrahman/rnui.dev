@@ -63,3 +63,7 @@ __data__
 # The visual QA contact sheet — 21MB of PNG, same bargain as the recordings
 # above: reproducible from `node scripts/visual-qa.mjs` against a build.
 .scratch/studio-dark/visual-qa/
+
+# Reproducible from scripts/checkpoint-13-lighthouse.mjs and -inp.mjs against two builds.
+.scratch/studio-dark/lighthouse-*.json
+.scratch/studio-dark/inp-*.json
