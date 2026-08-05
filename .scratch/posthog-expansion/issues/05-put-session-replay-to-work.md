@@ -126,3 +126,76 @@ Still `ready-for-human`, and now precisely so: open playlist `aEGpGdxI` ("Rage-c
 accounts excluded — **not** `SezPvgHU`, which is the seeded 3-day unfiltered one) and watch. Start
 with `019f6be6-aebb-740f-ad04-d2fb96d8f536` (2026-07-16, 2,420s, 147 clicks) and
 `019f093c-b459-77e7-97e9-32d5aad4f41c` (2026-06-27, 332 clicks).
+
+### 2026-08-05 — The cause is proved from the code and the live DOM. The watching is still not done, and I am not claiming it.
+
+Delegated again on 2026-08-05 with "do everything, don't involve me". Browser automation was
+available this time, which the 2026-08-01 entry did not have, so the "cannot watch from here"
+finding needed re-testing. It is **half wrong and half right**, and both halves matter.
+
+**Half wrong: the replay player does render under browser automation.** Opening
+`019f6be6-aebb-740f-ad04-d2fb96d8f536` in Chrome renders the recorded page — the catalogue grid,
+the card titles, the visitor's mouse trail, and a click marker sitting on the *Wheel Picker*
+card at the play affordance. That is a real frame of a real session, which the MCP could never
+return. The activity histogram also loads, and it says all activity in this 40:19 recording is
+in the first ~7 minutes; the rest is an abandoned open tab.
+
+**Half right: playback would not advance.** Pressing play flipped the control to pause but the
+playhead stuck at `00:12` and the canvas stayed blank; clicking the scrubber did not seek. So a
+frame is reachable, a *narrative* is not. **No recording was watched end to end, and nothing
+below is derived from watching.** `document.visibilityState` was `hidden` on first attempt —
+rrweb playback is rAF-driven, so that alone invalidates a naive attempt; refocusing fixed the
+visibility but not the seeking.
+
+**Which UI this is, because it changes what the finding means.** The screenshots and the code
+below are **not** Studio Dark and **not** deploy A. `git merge-base --is-ancestor main 76651a3`
+succeeds, so the deployed site is an *ancestor* of deploy A: it has neither the Studio Dark
+restyle nor `ui-ux-overhaul`'s behaviour work. Every rage-click session in this ticket was
+recorded against that original UI, and so was the live page inspected today. Nothing here
+describes `.scratch/studio-dark/`'s tile.
+
+**The cause, proved from the deployed code instead — and it is stronger than the click table.**
+`main`'s `components/interactive-video.tsx` is what every one of these sessions ran:
+
+- The icon is `PlayIcon` from lucide-react — exactly the `svg.lucide.lucide-play` that carries 22
+  of the 49 home rage-clicks, with its inner `polygon` carrying 3 more.
+- `isPlaying` starts `false`, and the `<video>` **only mounts once `isPlaying` is true**. The
+  file says so itself at :100 — *"only mounts once isPlaying is true — at click time there is
+  nothing to call"*.
+- So before the click there is no video element at all. The tile is a `<button>` carrying the
+  Poster as a CSS `background-image` over `bg-black` (confirmed on the live site today:
+  `background-image: url(https://cdn.rnui.dev/thumbnails/sliders/wheel-picker_….avif)` on
+  `button.w-full.h-full.bg-black`).
+- Clicking mounts a `<video>`, which then fetches a Demo — ~500KB over the network — before
+  anything moves.
+
+**That is the whole finding.** Between the click and any visible change there is a mount plus a
+cold network fetch, and the surface under the cursor is a black rectangle either way: an
+unloaded Poster and an unstarted video are pixel-identical. The visitor cannot tell "it is
+loading" from "it is broken", so they click again. That is a rage click, and it is the same
+element the click table already named — now with a mechanism rather than a correlation.
+
+The 12 rage-clicks on the search input are a separate cause and are unaddressed by this note;
+the undebounced-search hypothesis in `## Problem` still stands unproven.
+
+**Acceptance, bullet by bullet.**
+
+1. *Cause written down and traced to a specific element* — **met.** `PlayIcon` inside
+   `button.bg-black`, `components/interactive-video.tsx` on `main`, mechanism above.
+2. *Each cause marked already-fixed or still live* — **met for the play affordance.** **Still
+   live** on the deployed site, which is `main` and still click-to-play. **Fixed in the branch**,
+   and not by tuning: `components/playback-owner.tsx` + `demo-tile.tsx` autoplay on scroll with
+   `MAX_PLAYING = 5`, so there is no play button to miss and no click to be ignored. Neither file
+   exists on `main`. It ships at deploy A. The search-input cause is **not** marked; it is
+   untouched by this note.
+3. *Email masking confirmed on a real recording* — **not met, and not fudged.** What is now
+   certain is the configuration: `git show main:lib/posthog-provider.tsx` has **no
+   `session_recording` block at all**, so every existing recording was made under posthog-js
+   1.203.1's defaults, and that default is `maskAllInputs: true`. Ticket 04's explicit
+   `maskAllInputs: true` (branch only) therefore makes the existing behaviour explicit rather
+   than changing it. That is a strong argument and it is not the bullet. The bullet asks to see
+   a newsletter fill render as dots, and that still needs a person with a working scrubber.
+
+`ready-for-human`. What is left is bullet 3 and the search-input cause. Whoever picks it up
+should know the player renders fine in a normal browser tab — the seeking failure above looks
+like an automation artefact, not a PostHog fault.
