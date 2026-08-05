@@ -704,3 +704,60 @@ at `76651a3` and are recorded as absent, not as zero.
 this effort pays, and whether the three interactions over 200ms block deploy B. Both are
 decisions the tickets reserve to a person; neither is a further measurement. `Status` stays
 `ready-for-human`.
+
+### 2026-08-05 — Step 14 has run. `/review-animations` output, and the fallout fixed
+
+The maintainer ran `/review-animations` over `76651a3..HEAD`. Step 14's own text says an agent
+cannot run it (`disable-model-invocation: true`) and that the prep is to argue the design
+rather than rediscover it; the three `STANDARDS.md` collisions above were carried in as
+deliberate Specimen overrides and the review engaged with them as such.
+
+**Verdict: Block** on the rubric, from two criteria that are both the known overrides —
+`ease-in` on UI, and animation on a keyboard-initiated action (the Escape close). One
+correction the review is owed: `STANDARDS.md:23` puts *entering **or exiting*** the screen on
+`ease-out`, so "it is an exit" does not soften collision 1. Both remain the maintainer's call
+under `spec.md`'s binding Constraints; neither was changed here.
+
+**Four findings the Specimen has not ruled on.** Two were defects and are fixed; two are
+deliberately left alone.
+
+1. **The chip moment never animated.** Fixed. Full detail, the paired +8ms measurement and why
+   the gate's own row certified it wrongly are in `checkpoint-13-gate.md`.
+2. **Pointer targets below the floor.** The desktop bar's ✕ was **16x16** and the phone
+   header's **20x20** — the latter being the only way to drop a facet on a phone. Both are now
+   44x44 hit areas via a transparent `::before`, with the drawn glyph unchanged, so no mock
+   moves. `site-header.tsx`'s row needed `-mt-[5px] pt-[5px]` (cancelling, so nothing shifts)
+   because `overflow-x-auto` computes `overflow-y` to `auto` and was shearing 4px off the top
+   of the target — measured reach up 17px against 21/22/21 on the other three sides.
+   The gate's a11y sweep had never measured pointer size at all: no `44` anywhere in it.
+3. **FM `x`/`y` shorthands on the overlay** (`STANDARDS.md:145`). Left alone, deliberately.
+   Step 10/12's own numbers refuse it: overlay open is +32ms inside a 72ms before-arm spread,
+   so the 464ms is inherited mount cost. Churning verified motion for no measurable gain is
+   cargo-culting the standard against the evidence this ticket collected.
+4. **Reduced motion is two languages.** `app/globals.css:181-188` zeroes every duration, while
+   the overlay keeps its 240/160ms fades — framer writes inline styles per frame and never
+   reads a CSS transition, so the `!important` cannot reach it. `STANDARDS.md` wants *gentler,
+   not zero*, which makes the framer path the correct one and the CSS blanket the wrong half.
+   Not changed: "all durations 0ms" is `Specimen.dc.html:95` and binding. Maintainer's call.
+
+**A gate the ticket owns was failing, and is now fixed.** `accessibility-gate.spec.ts`'s step-8
+sweep failed 14 cases (7 routes x 2 modes) on `NEXTJS-PORTAL`, the element Next injects for its
+own dev-tools overlay — not authored here, no affordance, no way to give it a focus ring. It is
+skipped with `continue`, not `break`: it appears mid-walk at stop 46, and ending there would
+silently stop asserting every real control after it. One tag name, not an allow-list.
+
+**Three pre-existing failures, verified as not this work's and left alone.** `home.spec.ts:175`
+and `recording-route.spec.ts:261` both fail with these components reverted. `filters.spec.ts:41`
+passes at `--workers=1` and fails only under a full-suite run at four workers. All three predate
+this ticket and are out of its scope; the first two are real and want an owner.
+
+**Verification.** Killed the persistent `next-server` first — `playwright.config.ts` sets
+`reuseExistingServer: !CI`, so local runs had been feeding a long-lived server rather than each
+fresh build. On a guaranteed-fresh server: **83 specs, 0 failures** across `filters`,
+`accessibility-gate` and `contributors`. Both new tests were confirmed to go red when the fix is
+reverted, and both hold at `--workers=4 --repeat-each=3` (exit 3/0, pointer targets 6/0) — the
+exit test needed its window widened from 1.5s to 5s, since it waits on a client navigation that
+is slower under contention and it passed alone while failing in a full run.
+
+`Status` stays `ready-for-human`: the review's Block rests on the two Specimen overrides, and
+the LCP and 200ms decisions from the previous entry are still a person's.

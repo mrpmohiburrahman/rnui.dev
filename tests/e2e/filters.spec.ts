@@ -650,21 +650,129 @@ test.describe("the filter bar", () => {
     ])
   })
 
-  // The Specimen's "all durations 0ms" (Specimen.dc.html:95). The chip's own
-  // 120ms is written as a CSS transition precisely so the global rule in
-  // app/globals.css can reach it; ticket 13 owns that mechanism, this asserts
-  // the chip is inside it.
-  test("a chip's transition is zero under reduced motion", async ({ page }) => {
+  // The Specimen's "all durations 0ms" (Specimen.dc.html:95).
+  //
+  // This asserts the *behaviour* now, not `transitionDuration`. The chip's 120ms
+  // used to be a CSS transition, reached by the global rule in app/globals.css,
+  // and reading the computed duration was a fair proxy for it. It is a framer
+  // transition since step 14, gated by `useReducedMotion()` — and framer writes
+  // inline styles per frame and never reads a CSS transition, so the old
+  // assertion would now pass on a chip with no rule at all and no gate at all.
+  // A swapped-out guard must not take its test with it.
+  test("a chip does not animate out under reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto(BAR_URL)
 
-    const chipEl = page
-      .getByLabel("Remove category filter")
-      .locator("..")
-      .filter({ visible: true })
+    const opacities = await page.evaluate(async () => {
+      const x = Array.from(
+        document.querySelectorAll('[aria-label="Remove category filter"]')
+      ).find((el) => (el as HTMLElement).offsetParent !== null) as
+        | HTMLElement
+        | undefined
+      if (!x) return null
+      const chip = x.parentElement!
+      const seen: number[] = []
+      let gone = false
+      let frame = 0
+      const sample = () => {
+        if (document.body.contains(chip)) {
+          seen.push(Number.parseFloat(getComputedStyle(chip).opacity))
+        } else if (seen.length) {
+          gone = true
+          return
+        }
+        frame = requestAnimationFrame(sample)
+      }
+      sample()
+      x.click()
+      for (let waited = 0; waited < 5000 && !gone; waited += 50) {
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      }
+      cancelAnimationFrame(frame)
+      return seen
+    })
+
+    expect(opacities, "the category chip was not on the page").not.toBeNull()
+    // The exact inverse of the test below: there, a fractional opacity proves the
+    // exit played; here, its absence proves the chip snapped.
     expect(
-      await chipEl.evaluate((el) => getComputedStyle(el).transitionDuration)
-    ).toBe("0s")
+      opacities!.filter((o) => o > 0 && o < 1),
+      `the chip faded under reduced motion instead of snapping. Sampled: ${opacities?.join(", ")}`
+    ).toEqual([])
+  })
+
+  // studio-dark ticket 13 step 14 fallout. The test above passes on a chip that
+  // never animates at all — it reads the declared duration, not a played frame,
+  // which is exactly how "Filter chip add / remove · 120ms ease-out"
+  // (Specimen.dc.html:163) shipped as dead classes: a CSS transition on a node
+  // React mounts and unmounts outright has no starting frame to leave on entry
+  // and is gone before it can paint on exit.
+  //
+  // Presence is deliberately not the assertion. Removing a facet is a client
+  // navigation that re-renders the grid, measured at 248ms, so the chip is
+  // still in the DOM a frame later whether or not anything animated — a
+  // presence check would pass on the broken build. A fractional opacity can
+  // only come from a played frame.
+  test("a removed chip plays its exit instead of vanishing", async ({
+    page,
+  }) => {
+    await page.goto(BAR_URL)
+
+    const opacities = await page.evaluate(async () => {
+      // The *visible* one. Two rows carry this label — this bar and the phone
+      // header's own chips row (components/site-header.tsx), which is in the DOM
+      // at a desktop width behind `md:hidden`. `querySelector` returns the
+      // header's copy, which this bar's motion does not own; sampling it reads a
+      // chip that was never meant to animate and reports the wrong verdict.
+      // The `chip()` helper above filters on visibility for the same reason.
+      const x = Array.from(
+        document.querySelectorAll('[aria-label="Remove category filter"]')
+      ).find((el) => (el as HTMLElement).offsetParent !== null) as
+        | HTMLElement
+        | undefined
+      if (!x) return null
+      const chip = x.parentElement!
+      const seen: number[] = []
+      let frame = 0
+      let gone = false
+      const sample = () => {
+        if (document.body.contains(chip)) {
+          seen.push(Number.parseFloat(getComputedStyle(chip).opacity))
+        } else if (seen.length) {
+          gone = true
+          return
+        }
+        frame = requestAnimationFrame(sample)
+      }
+      sample()
+      x.click()
+      // Generous, and deliberately so. The exit cannot start until the client
+      // navigation has re-rendered and dropped the chip from `active` — measured
+      // at ~300ms here, against the 248ms median in checkpoint-13-gate.md and a
+      // spread on top. A 400ms window ended while the chip was still sitting at
+      // opacity 1 waiting to be removed, and read that as "never animated".
+      // Sampling stops as soon as the node leaves the DOM, so the ceiling only
+      // costs time on an actual failure.
+      // 5s, not the 1.5s this first carried. The wait is for a client navigation
+      // to re-render and drop the chip, and under the suite's four workers that
+      // takes materially longer than it does alone — at 1.5s this test passed in
+      // isolation and failed in a full run, which is the worst way for a test to
+      // behave. The loop exits the moment the node leaves the DOM, so a healthy
+      // build still finishes in ~300ms and only a real failure pays the ceiling.
+      const deadline = 5000
+      const step = 50
+      for (let waited = 0; waited < deadline && !gone; waited += step) {
+        await new Promise((resolve) => setTimeout(resolve, step))
+      }
+      cancelAnimationFrame(frame)
+      return seen
+    })
+
+    expect(opacities, "the category chip was not on the page").not.toBeNull()
+    expect(
+      opacities!.some((o) => o > 0 && o < 1),
+      `never sampled a partial opacity — the chip disappeared without playing its exit. Sampled: ${opacities?.join(", ")}`
+    ).toBe(true)
   })
 })
 
