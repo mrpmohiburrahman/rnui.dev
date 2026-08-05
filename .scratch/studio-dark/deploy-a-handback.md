@@ -105,6 +105,36 @@ exactly what `spec.md`'s "Why two deploys" section (line 136) says to avoid: "on
 carrying pagination, playback, URLs, type, colour and layout at once would move every metric
 and explain none of it."
 
+> **2026-08-05 correction — `main` here means the *local* branch, and it is not what is
+> deployed.** Checked against Vercel rather than assumed (project `prj_oJwJ…TIGO5i4MqVVGqjLaPIOfc`,
+> `rnui-dev`):
+>
+> - The live production deployment is `dpl_5E3YdTLSTq7qh5ppkD6LbAUnTy8m`, built from
+>   **`ba8ffbc`** on branch `main` — *"fix(posters): let the documented command produce a Poster
+>   the suite accepts"*.
+> - `origin/main` is at that same `ba8ffbc`. **Local `main` (`3ff21a1`) is 16 commits ahead of
+>   it and unpushed** (`git rev-list --left-right --count main...origin/main` → `16  0`).
+>
+> **The commands above still work**, and that was verified rather than hoped:
+> `git merge-base --is-ancestor ba8ffbc 76651a3` succeeds, so the push is still a clean
+> fast-forward with no rebase and no conflict.
+>
+> **But deploy A ships more than this document said.** It carries the 16 unpushed commits as
+> well, and they are not cosmetic. Among them: `0afe884 fix(votes): bill one view per vote
+> click, not two or three`; `7c5e134 fix(search): find Categories and Authors, not just
+> captions`; `87f518c`, `059597b` and `a34ff3b`, the counter/hooks/catalogue consolidations;
+> `1682f14 build(lint): make the linter run, and have CI run it`; and `e9cb6c4 refactor: delete
+> the Codex layer the grant was written for`. Anyone reading a metric move after deploy A should
+> know these are in it — the boundary is `ba8ffbc → 76651a3`, not `3ff21a1 → 76651a3`.
+>
+> **One free side effect.** Dependabot PR #16 (`dependabot/npm_and_yarn/ai-da764df078`, bumping
+> `ai` 4.0.20 → 7.0.44) currently fails its Vercel preview build with
+> `Module not found: Can't resolve 'zod/v4'` — `ai@7` needs zod's v4 export path and this repo
+> pins `zod ^3.24.1`. It does not need fixing: `ai`, `@ai-sdk/anthropic` and `@ai-sdk/openai`
+> are **already deleted** from `package.json` in the unpushed work, along with the
+> `app/api/search/route.ts` that imported them. Once deploy A lands, that PR is bumping
+> dependencies the project no longer has. **Close it rather than merging it.**
+
 ## The PostHog annotation
 
 Project **117415** (`rnui.dev dashboard`). `posthog-expansion` ticket 09 already specifies the
