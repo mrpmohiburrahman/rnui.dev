@@ -239,6 +239,27 @@ that way; a default build measures nothing.
   before/after on the machine that holds the deploy-A SHA. The numbers ticket 02 recorded
   (home mobile LCP +358ms from the font commit, CLS 0→0) are the only lab deltas this branch
   can show.
+
+  > **2026-08-05 correction — a pre-Studio-Dark ancestor does exist, and it builds.** The claim
+  > above — that `feat/catalogue-ux` is "a single linear Studio Dark build with no pre-Studio-Dark
+  > ancestor to diff against" — is false. `76651a3` ("docs: clear the PostHog remainder, and fix a
+  > tile that would have lied") is the parent of `4a663a5` ("feat: put the Studio Dark design
+  > system in Tailwind, and the fonts it ships"), the first commit that touches Studio Dark styling
+  > — confirmed via `git rev-parse --short 4a663a5^` and `git diff --stat` between the two, which
+  > shows only `app/globals.css`, `app/layout.tsx` and `tailwind.config.ts` changing at `4a663a5`
+  > and nothing styling-related changing at `76651a3`. `76651a3` already carries the rename, the 13
+  > PostHog events (`lib/analytics.ts`) and the `ui-ux-overhaul` behaviour work, with no restyle —
+  > it IS the "before" state steps 10–12 need, and it is exactly `spec.md`'s Sequence step 2,
+  > "DEPLOY A". It builds clean (`NEXT_PUBLIC_CDN_URL="http://localhost:3000" pnpm build`) and its
+  > 184 unit tests pass, verified 2026-08-05 in a disposable `git worktree` (`git worktree add
+  > /tmp/deploy-a-check 76651a3`) so this branch's own working tree was never touched.
+  >
+  > Steps 10–12 no longer need to be handed off *for the reason stated above* — the before-arm SHA
+  > exists and runs on this machine. What is still genuinely the maintainer's is running the actual
+  > before/after Lighthouse pass and recording the delta — the SHA being runnable is what changed,
+  > not who executes the comparison. See `.scratch/studio-dark/deploy-a-handback.md` for the exact
+  > commands, the PostHog annotation, and which `posthog-expansion` tickets unblock the moment this
+  > SHA lands on `main`.
 - **`/review-animations` (step 14).** The skill is `disable-model-invocation: true`; an
   agent cannot run it. Its three `STANDARDS.md` collisions (never `ease-in` on UI — the
   overlay's 160ms `ease-in` close; never animate keyboard-initiated actions — the same
