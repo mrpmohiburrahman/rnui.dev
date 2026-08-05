@@ -3,6 +3,10 @@ import { defineConfig, devices } from "@playwright/test"
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
+  // Runs after webServer is confirmed up (reused or freshly started) and
+  // before any test — refuses to run at all if that server is writing votes
+  // to the production Firestore collection. See tests/e2e/collection-guard.ts.
+  globalSetup: "./tests/e2e/global-setup.ts",
   use: {
     baseURL: "http://localhost:3000",
     // Playback here is started by a real click, but the play() call lands in an

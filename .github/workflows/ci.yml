@@ -82,6 +82,13 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:dummy"
           NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
+          # Set on the *build*, not on the test step: the value is inlined into
+          # the server bundle, and tests/e2e/global-setup.ts refuses to run the
+          # suite against a server that says it is writing to "rnui". Without
+          # this line CI would build the production collection into the server
+          # and the guard would stop every PR — which is the guard working, and
+          # still a red job every time.
+          NEXT_PUBLIC_FIRESTORE_COLLECTION: rnui-e2e
       - run: npx playwright install --with-deps chromium
       - run: pnpm exec playwright test
         env:
