@@ -87,6 +87,33 @@ html {
   }
 }
 
+/* Radix poppers, un-double-scaled. The zoom above broke every one of them, and
+   the mode toggle — the only dropdown this site renders — could not be opened
+   at all above 1500px: the menu was there and `data-state="open"`, just painted
+   past the right edge of the window.
+
+   Radix positions a popper by reading the trigger's getBoundingClientRect,
+   which is in visual pixels and therefore already carries the zoom, and then
+   writing that number as a `transform: translate()` on a wrapper that lives
+   *inside* the zoomed subtree — where it is scaled a second time. Measured at a
+   1680 window: trigger right edge 1650, wrapper translate 1522, menu painted at
+   x=1750 in a 1680-wide viewport.
+
+   Cancelling the zoom on the wrapper puts its transform back in visual
+   coordinates, and re-applying it to the content restores the size. After:
+   menu right edge 1650, exactly the trigger's. At or below 1440 `--ui-zoom` is
+   1, both calcs are 1, and this is inert.
+
+   It keys on the wrapper's own attribute rather than on a component, so the
+   tooltip primitive is covered by the same two rules without knowing about
+   them. Any future popper is too. */
+[data-radix-popper-content-wrapper] {
+  zoom: calc(1 / var(--ui-zoom));
+}
+[data-radix-popper-content-wrapper] > * {
+  zoom: var(--ui-zoom);
+}
+
 @layer base {
   :root {
     --background: 0 0% 98%;
