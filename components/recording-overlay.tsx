@@ -39,6 +39,10 @@ export function RecordingOverlay({
   voted,
   onToggleSave,
   onToggleVote,
+  savedIds,
+  votedIds,
+  onToggleSaveId,
+  onToggleVoteId,
   // The Category sequence the arrows walk: the Recordings the page was handed,
   // filtered to the open one's Category, in the order they arrived — never the
   // sorted grid, so a sort control cannot reorder under the panel and an
@@ -58,6 +62,12 @@ export function RecordingOverlay({
   voted: boolean
   onToggleSave: () => void
   onToggleVote: () => void
+  /** Relayed to the body's MORE FROM THIS CONTRIBUTOR strip, which draws the
+   *  catalogue's own Tile and so needs both Remembered sets. */
+  savedIds: string[]
+  votedIds: string[]
+  onToggleSaveId: (id: string) => void
+  onToggleVoteId: (id: string) => void
   sequence: Recording[]
 }) {
   // Under reduced motion the clean fades survive and the transform does not.
@@ -260,9 +270,12 @@ export function RecordingOverlay({
 
                 {/* min-h-0 or this flex child refuses to shrink and gets
                     clipped by the panel's overflow-hidden instead of scrolling. */}
-                <div className="px-7 py-[26px] overflow-y-auto min-h-0">
+                {/* `padding: 26px 28px 28px` — Detail.dc.html:131's overlay
+                    figure. The bottom is 28, not the top's 26. */}
+                <div className="min-h-0 overflow-y-auto px-7 pb-7 pt-[26px]">
                   <RecordingDetail
                     recording={recording}
+                    form="overlay"
                     Title={Dialog.Title}
                     // S and V belong to the body, because the controls they
                     // operate do. See the comment on the keydown effect above.
@@ -275,6 +288,10 @@ export function RecordingOverlay({
                     voted={voted}
                     onToggleSave={onToggleSave}
                     onToggleVote={onToggleVote}
+                    savedIds={savedIds}
+                    votedIds={votedIds}
+                    onToggleSaveId={onToggleSaveId}
+                    onToggleVoteId={onToggleVoteId}
                   />
                 </div>
               </motion.div>

@@ -97,13 +97,24 @@ export default async function RecordingPage(props: Params) {
 
   return (
     <div className="w-full">
-      {/* The shared-link nav row (Detail.dc.html:13-18). The wordmark is ticket
-          04's concern, not rebuilt here; this row continues whatever header the
-          shell has. */}
+      {/* The shared-link header (Detail.dc.html:13-18) — this route's whole
+          header, not a row under the catalogue's: components/site-shell.tsx
+          gives `/recording/*` no catalogue header and no rail, because the
+          drawing puts its own wordmark here and would otherwise draw two.
+          `gap:16px`, `height:62px`, `padding:0 26px`, one hairline below. The
+          fill is `bg-rail`: Detail.dc.html's own `headerBg` is `#0C0D11` dark /
+          `#EFEFEB` light, which is the rail token, not the catalogue header's
+          translucent `rgba(10,11,13,0.92)`. Nothing scrolls under this one. */}
       <nav
-        className="flex items-center gap-4 h-[62px] px-[26px] border-b border-line bg-rail"
+        className="flex h-[62px] items-center gap-4 border-b border-line bg-rail px-[26px]"
         aria-label="Recording navigation"
       >
+        <Link
+          href="/"
+          className="text-[16px] font-bold tracking-[-0.02em] text-t1"
+        >
+          rnui<span className="text-acc">.dev</span>
+        </Link>
         <Link
           href="/"
           className="text-[12.5px] text-acc underline underline-offset-3"
@@ -122,14 +133,19 @@ export default async function RecordingPage(props: Params) {
         </span>
       </nav>
 
-      {/* This route counts its own open (ADR-0007:3), through countsOwnOpen. */}
-      <RecordingBody
-        recording={current}
-        topViewCount={topViewCount}
-        catalogueTotal={catalogueTotal}
-        contributorTotal={contributorTotal}
-        more={more}
-      />
+      {/* The page form's own gutters, `padding: 34px 26px 44px`
+          (Detail.dc.html:131) — not `main`'s 22/26/34, which this route no
+          longer sits inside. */}
+      <div className="px-[26px] pb-[44px] pt-[34px]">
+        {/* This route counts its own open (ADR-0007:3), through countsOwnOpen. */}
+        <RecordingBody
+          recording={current}
+          topViewCount={topViewCount}
+          catalogueTotal={catalogueTotal}
+          contributorTotal={contributorTotal}
+          more={more}
+        />
+      </div>
     </div>
   )
 }

@@ -152,6 +152,15 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     reducedMotion,
   })
 
+  // The phone drops the sort tail: CatalogueMobile.dc.html's `resultLine` is
+  // `48 OF 277` where the desktop draws `48 OF 277 · SORTED RECENT`. Split
+  // rather than computed twice, so the served HTML carries the whole sentence
+  // and a media query decides how much of it shows — the same reason the
+  // counter line in the header is `lg:` rather than absent.
+  const tailAt = resultLine.indexOf(" · SORTED ")
+  const resultHead = tailAt === -1 ? resultLine : resultLine.slice(0, tailAt)
+  const resultTail = tailAt === -1 ? "" : resultLine.slice(tailAt)
+
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
   // not move the scroll position, and Back pops to the previous count.
@@ -190,8 +199,19 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     // as the dock's clearance), and without the reserve the last row of the
     // grid sits under it forever. At `md` the dock is gone and the padding
     // returns to the grid's own 1rem.
-    <div className="relative flex w-full flex-col gap-4 overflow-hidden pb-[calc(96px+env(safe-area-inset-bottom,0px))] md:items-start md:pb-4">
-      {hero && <div className="w-full">{hero}</div>}
+    // No `gap`: the mock spaces this column from the blocks themselves, and
+    // each of them already carries its own figure — the hero's
+    // `padding-bottom:20px` (Catalogue.dc.html:62), the filter bar's
+    // `margin-bottom:20px` (:76) and the heading row's `padding-bottom:14px`
+    // (:85). A `gap-4` on top of those added 16px twice over, which put the
+    // grid's first row 32px below where the drawing has it.
+    <div className="relative flex w-full flex-col overflow-hidden pb-[calc(96px+env(safe-area-inset-bottom,0px))] md:items-start md:pb-4">
+      {/* Desktop only. CatalogueMobile.dc.html draws no hero at any variant —
+          its content block starts at the heading row (:32-36) — and the Hero
+          does not hide itself, so the gate is here. Below `md` the phone header
+          and the filter dock are the surface, and a 29px headline pushed the
+          first tile row off a 844px screen. */}
+      {hero && <div className="hidden w-full md:block">{hero}</div>}
       {children && <div className="w-full">{children}</div>}
       {/* The desktop filter bar, Catalogue.dc.html:76-82, above the heading row
           exactly as the mock stacks them — below `md` the phone's own chips row
@@ -212,14 +232,24 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           The `min-width:180px` and tabular-nums are not decoration: the result
           count occupies its exact reserved width as tabular monospace so
           nothing reflows when the real number replaces an estimate. */}
-      <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">
+      {/* 15px/500 on a phone and 17px on the desktop (CatalogueMobile.dc.html:34
+          against Catalogue.dc.html:86); the mono line likewise drops to 9.5px on
+          a 96px reservation from 10px on 180. */}
+      <div className="flex w-full items-baseline justify-between gap-4 pb-[14px]">
         {hero ? (
-          <h2 className="text-section m-0 text-t1">{heading}</h2>
+          <h2 className="m-0 text-[15px] font-medium text-t1 md:text-section">
+            {heading}
+          </h2>
         ) : (
-          <h1 className="text-section m-0 text-t1">{heading}</h1>
+          <h1 className="m-0 text-[15px] font-medium text-t1 md:text-section">
+            {heading}
+          </h1>
         )}
-        <span className="text-[10px] font-mono tracking-[0.1em] text-t3 min-w-[180px] text-right tabular-nums">
-          {resultLine}
+        <span className="min-w-[96px] text-right font-mono text-[9.5px] tracking-[0.1em] text-t3 tabular-nums md:min-w-[180px] md:text-[10px]">
+          {resultHead}
+          {resultTail && (
+            <span className="hidden md:inline">{resultTail}</span>
+          )}
         </span>
       </div>
       <div className="w-full">

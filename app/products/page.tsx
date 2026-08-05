@@ -88,7 +88,8 @@ const RecordingsPage = async ({
   // `repeat(auto-fill, 208px)` resolved against the chip row's width instead of
   // the viewport's and the catalogue rendered one column.
   return (
-    <div className="max-w-full pt-4">
+    // No top padding — see app/page.tsx. `main` already spends the mock's 22px.
+    <div className="max-w-full">
       <CataloguePage
         recordings={data}
         stats={stats}

@@ -82,7 +82,13 @@ export function CatalogueSearch({
     // `min-w-0` lets the field shrink below its placeholder's width in the
     // header's flex row instead of pushing the document sideways between md and
     // lg, where the six control groups nearly fill the viewport.
-    <div className="relative w-full min-w-0 flex-1 max-w-[400px]">
+    //
+    // 424, not the mock's literal `max-width:400px` (Catalogue.dc.html:19): the
+    // mock has no reset, so that 400 is a *content* max — the drawn field is
+    // 400 + `padding:0 11px` + a 1px border on each side = 424 across. This box
+    // is border-box, so 400 here drew a field 24px narrower than the drawing.
+    // Same content-box-vs-border-box reading as the rail (nav-side-bar.tsx).
+    <div className="relative w-full min-w-0 flex-1 max-w-[424px]">
       {/* The rotating Category hint this component used to feed the input is
           gone, and with it the module-scope getUniqueCategories() call — the
           last value import of @/data/* from any client component, so

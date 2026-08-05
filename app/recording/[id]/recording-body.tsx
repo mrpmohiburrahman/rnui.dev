@@ -51,6 +51,12 @@ export function RecordingBody({
       voted={voted?.includes(recording.id) ?? false}
       onToggleSave={() => toggleBookmark(recording.id)}
       onToggleVote={() => toggleVote(recording.id)}
+      // The same two sets for the MORE FROM THIS CONTRIBUTOR strip's cards.
+      // `[]` until localStorage has been read, as everywhere else.
+      savedIds={bookmarks ?? []}
+      votedIds={voted ?? []}
+      onToggleSaveId={toggleBookmark}
+      onToggleVoteId={toggleVote}
     />
   )
 }

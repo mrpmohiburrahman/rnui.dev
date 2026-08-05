@@ -277,7 +277,9 @@ export function FilterDock({
               <Dialog.Close
                 aria-label="Close filters"
                 className={cn(
-                  "ml-auto flex min-h-[36px] min-w-[36px] items-center justify-center rounded-[9px] border border-acc bg-acc-soft text-[12px] text-t1",
+                  // 38, not the mock's 36: content-box plus its 1px accent
+                  // border (CatalogueMobile.dc.html's Close filters button).
+                  "ml-auto flex min-h-[38px] min-w-[38px] items-center justify-center rounded-[9px] border border-acc bg-acc-soft text-[12px] text-t1",
                   FOCUS_RING
                 )}
               >
@@ -315,7 +317,9 @@ export function FilterDock({
                           }
                           prefetch={false}
                           className={cn(
-                            "flex min-h-[34px] items-center gap-[6px] rounded-[9px] border px-[10px] text-[12px]",
+                            // 36, not the mock's 34: content-box plus its 1px
+                            // border (CatalogueMobile.dc.html's sheet rows).
+                            "flex min-h-[36px] items-center gap-[6px] rounded-[9px] border px-[10px] text-[12px]",
                             FOCUS_RING,
                             on
                               ? "border-acc bg-acc-soft text-t1"

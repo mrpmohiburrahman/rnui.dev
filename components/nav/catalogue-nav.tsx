@@ -161,10 +161,6 @@ function CatalogueNavList({
   // null — which is exactly the unhighlighted list the fallback wants.
   searchParams = new URLSearchParams(),
 }: CatalogueNavProps & { searchParams?: URLSearchParams }) {
-  // The whole catalogue's size, from the counts themselves rather than a separate
-  // prop: a rail that prints its own total cannot drift from its own rows.
-  const total = categories?.reduce((sum, c) => sum + c.count, 0) ?? 0
-
   // Four rows by count, plus the active Contributor if it is not among them —
   // without the pin a filter on any of the other twenty draws a rail that shows
   // no filter at all (decision 2). The pin depends on the query, so it lives here
@@ -182,36 +178,18 @@ function CatalogueNavList({
 
   return (
     <div className="flex flex-col">
-      {/* The whole catalogue. /products carries twice the traffic of / and is
-          where 18 legacy Category paths redirect (middleware.ts:23-43), but
-          every link that reached it — the facets below, those redirects —
-          arrived with a filter already applied. The unfiltered page had no
-          route to it from anywhere on the site (decision 13), so it stays, as a
-          row in the same grammar as the facets it sits above. The mock does not
-          draw it; spec.md checkpoint 4 was read before keeping it. */}
-      {/* The margin lives on a wrapper, not the link: the row's class list is
-          asserted to equal a Category row's (nav-empty-states-layout.spec.ts),
-          which has no margin of its own. */}
-      <div className="mb-2">
-        <Link
-          href="/products"
-          onClick={handleLinkClick}
-          prefetch={false}
-          className={cn(
-            ROW_CHROME,
-            "items-center gap-2 text-[12.5px]",
-            ROW_IDLE
-          )}
-        >
-          <span className="min-w-0 truncate">All recordings</span>
-          <span
-            aria-hidden="true"
-            className="ml-auto font-mono text-[10px] tabular-nums text-t3"
-          >
-            {total}
-          </span>
-        </Link>
-      </div>
+      {/* No `All recordings` row. It used to sit here, above CATEGORIES, on
+          decision 13's reasoning — /products unfiltered has no route to it from
+          anywhere else on the site. The mock does not draw it (Catalogue.dc.html
+          :36-56 is the label, 18 Category rows, the label again, four
+          Contributor rows, the See-all link and nothing else), and the rail is
+          built to the drawing: the row and its 8px margin pushed CATEGORIES and
+          everything under it 37px down the column.
+
+          The route itself is unaffected — /products still exists, still takes
+          the 18 legacy Category redirects, and every facet row below still
+          lands on it with a filter applied. What is gone is the one link that
+          reached it with none. */}
 
       {/* Categories — alphabetical, all 18, each with its whole-catalogue count.
           The mock's label (Catalogue.dc.html:37) and rows (:38-44). */}

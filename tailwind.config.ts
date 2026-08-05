@@ -172,36 +172,57 @@ const config = {
       fontSize: {
         // Seven steps, Specimen.dc.html:137-145. Each tuple bakes its own
         // weight, tracking and leading so `text-hero` is one class that cannot
-        // drift from the specimen; all samples are drawn at line-height 1.1.
+        // drift from the specimen.
         // The two mono steps (metric, label) cannot name a family inside a
         // fontSize tuple, so they are written with `font-mono` alongside.
+        //
+        // The leadings are each step's *use site* in the mock, not the 1.1 the
+        // Specimen draws its own samples at. That 1.1 is the specimen sheet's
+        // display convention — one line per row, set tight so the seven rows
+        // stack evenly — and baking it made every heading in the build shorter
+        // than the drawing. Measured against the mocks:
+        //   36px  Detail.dc.html:33  1.12
+        //   29px  Catalogue.dc.html:64  1.15   (the only 29px in any mock)
+        //   17px  Catalogue.dc.html:86  none -> normal
+        //   14.5  Tile.dc.html:45  1.32
+        //   12px  Tile.dc.html:47  1.32
+        //   10px / 9px  bare everywhere -> normal
+        // `normal` is the same value the html rule in globals.css restores, so
+        // an un-leaded step and an un-leaded arbitrary size agree.
         detail: [
           "36px",
-          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.025em" },
+          { lineHeight: "1.12", fontWeight: "500", letterSpacing: "-0.025em" },
         ],
         hero: [
           "29px",
-          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.02em" },
+          { lineHeight: "1.15", fontWeight: "500", letterSpacing: "-0.02em" },
         ],
         section: [
           "17px",
-          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" },
+          { lineHeight: "normal", fontWeight: "500", letterSpacing: "-0.01em" },
         ],
         "tile-title": [
           "14.5px",
-          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "-0.01em" },
+          { lineHeight: "1.32", fontWeight: "500", letterSpacing: "-0.01em" },
         ],
         "body-sm": [
           "12px",
-          { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" },
+          { lineHeight: "1.32", fontWeight: "400", letterSpacing: "0" },
         ],
         metric: [
           "10px",
-          { lineHeight: "1.1", fontWeight: "400", letterSpacing: "0" },
+          { lineHeight: "normal", fontWeight: "400", letterSpacing: "0" },
         ],
+        // Weight 400, not the 500 the Specimen's own row prints
+        // (Specimen.dc.html's `mono 9 / +14% · labels`). Every 9px mono label
+        // the four surface mocks actually draw declares no font-weight and so
+        // renders at 400 — `CATEGORIES`, `CONTRIBUTORS · 24`, the tile's
+        // Category line, the filter bar's `3 ACTIVE`. The Specimen row is a
+        // specimen: it sets the weight to show the step exists. The surfaces
+        // are what ships.
         label: [
           "9px",
-          { lineHeight: "1.1", fontWeight: "500", letterSpacing: "0.14em" },
+          { lineHeight: "normal", fontWeight: "400", letterSpacing: "0.14em" },
         ],
       },
       // Spacing is deliberately not extended. The Specimen's seven steps

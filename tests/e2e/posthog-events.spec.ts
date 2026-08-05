@@ -72,8 +72,16 @@ test.beforeEach(async ({ page }) => {
 test("S and the Save button emit one bookmark_added with identical properties", async ({
   browser,
 }) => {
+  // Scoped to the dialog and taken first, not last: the panel's MORE FROM THIS
+  // CONTRIBUTOR strip now draws the catalogue's own Tile with its own Save
+  // (Detail.dc.html:83), so `.last()` clicked a strip card and reported that
+  // Recording's id. Inside the dialog the panel's own control comes first.
   const fromButton = await eventsFrom(browser, (page) =>
-    page.getByRole("button", { name: /^Saved?$/ }).last().click()
+    page
+      .getByRole("dialog")
+      .getByRole("button", { name: /^Saved?$/ })
+      .first()
+      .click()
   )
   const fromKey = await eventsFrom(browser, (page) =>
     page.keyboard.press("s")
@@ -98,8 +106,13 @@ test("S and the Save button emit one bookmark_added with identical properties", 
 test("V and the Vote control emit one vote_cast with identical properties", async ({
   browser,
 }) => {
+  // Same scoping as the Save case above, and for the same reason.
   const fromButton = await eventsFrom(browser, (page) =>
-    page.getByRole("button", { name: /^Vote/ }).last().click()
+    page
+      .getByRole("dialog")
+      .getByRole("button", { name: /^Vote/ })
+      .first()
+      .click()
   )
   const fromKey = await eventsFrom(browser, (page) =>
     page.keyboard.press("v")

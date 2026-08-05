@@ -189,7 +189,10 @@ export function FilterChips() {
               CHIP_CHROME,
               // The stored Contributor string is 33 characters — it wraps rather
               // than pushing Clear all off the row (Catalogue.dc.html:79).
-              key === "contributor" && "max-w-[330px]"
+              // 350, not that line's literal `max-width:330px`: content-box
+              // again — 330 + `padding:6px 8px 6px 10px` + 1px border each side
+              // is 350 across as drawn (see nav-side-bar.tsx).
+              key === "contributor" && "max-w-[350px]"
             )}
           >
             <span className="flex-none font-mono text-[9px] text-acc">

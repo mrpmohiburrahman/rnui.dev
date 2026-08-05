@@ -265,6 +265,13 @@ export function CataloguePage({
         }
         onToggleSave={() => openRecording && toggleBookmark(openRecording.id)}
         onToggleVote={() => openRecording && toggleVote(openRecording.id)}
+        // The same two sets again, by id, for the detail's MORE FROM THIS
+        // CONTRIBUTOR strip — which draws the catalogue's own Tile, controls
+        // included, exactly as Detail.dc.html:83 imports it.
+        savedIds={bookmarks ?? []}
+        votedIds={votedRecordingIds ?? []}
+        onToggleSaveId={toggleBookmark}
+        onToggleVoteId={toggleVote}
       />
     </>
   )

@@ -37,39 +37,41 @@ test.describe("the full catalogue is reachable from the nav", () => {
   // only that the aside is present and reachable at all.
   test.use({ viewport: { width: 1024, height: 900 } })
 
-  test("the aside link lands on the unfiltered catalogue", async ({ page }) => {
-    await page.goto("/products?category=Buttons")
-
-    await page
-      .locator("aside")
-      .getByRole("link", { name: "All recordings", exact: true })
-      .click()
-
-    // No query string at all: the Category the visitor arrived with is dropped,
-    // which is the whole point of a link to the *full* catalogue.
-    await expect(page).toHaveURL(/\/products$/)
-  })
-
-  // The class attribute, not a screenshot: the link is authorised by decision 13
-  // to exist, not to introduce a treatment of its own. A category link at rest is
-  // the only appearance it is allowed to have.
-  test("it is dressed exactly like an inactive category link", async ({
+  // The rail used to open with an `All recordings` row on decision 13's
+  // reasoning. The drawing has no such row — Catalogue.dc.html:36-56 is the
+  // CATEGORIES label, 18 Category rows, the CONTRIBUTORS label, four
+  // Contributor rows and the See-all link — so it is gone, and the rail now
+  // starts on its first Category.
+  test("the rail opens on CATEGORIES, with no row above it", async ({
     page,
   }) => {
     await page.goto("/products?category=Buttons")
     const aside = page.locator("aside")
 
-    const link = await aside
-      .getByRole("link", { name: "All recordings", exact: true })
-      .getAttribute("class")
-    // Accordions, not Buttons: Buttons is the active one and carries the
-    // highlight.
-    const inactive = await aside
-      .getByRole("link", { name: "Accordions", exact: true })
-      .getAttribute("class")
+    await expect(
+      aside.getByRole("link", { name: "All recordings", exact: true })
+    ).toHaveCount(0)
 
-    expect(link).toBe(inactive)
-    expect(link).not.toContain("bg-yellow-400")
+    // The first link in the rail is the first Category, alphabetically.
+    await expect(aside.getByRole("link").first()).toHaveAccessibleName(
+      /Accordions/
+    )
+  })
+
+  // The route to the unfiltered catalogue on a desktop is the filter bar's own
+  // `Clear all`, which is drawn (Catalogue.dc.html:81) and is on screen exactly
+  // when there is a filter to drop — which is the only time the question comes
+  // up.
+  test("the filter bar's Clear all lands on the unfiltered catalogue", async ({
+    page,
+  }) => {
+    await page.goto("/products?category=Buttons")
+
+    await page.getByRole("link", { name: "Clear all", exact: true }).click()
+
+    // No query string at all: the Category the visitor arrived with is dropped,
+    // which is the whole point of a route to the *full* catalogue.
+    await expect(page).toHaveURL(/\/products$/)
   })
 })
 

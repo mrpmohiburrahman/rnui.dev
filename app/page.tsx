@@ -48,7 +48,10 @@ async function Page({
       : null
 
   return (
-    <div className="max-w-full pt-2">
+    // No top padding: the mock's `main` is `padding:22px 26px 34px`
+    // (Catalogue.dc.html:59) and the hero is its first child, so anything added
+    // here sits on top of a figure the drawing already spends.
+    <div className="max-w-full">
       <CataloguePage
         recordings={data}
         stats={stats}
