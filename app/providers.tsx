@@ -41,7 +41,15 @@ export function ModeToggle({ compact = false }: { compact?: boolean }) {
   // keeps System as the default, and a two-state switch would delete the way back
   // to it (ui-ux-overhaul ticket 13's Work section).
   return (
-    <DropdownMenu>
+    // `modal={false}` so opening this does not lock body scroll. The default
+    // locks it, which removes the scrollbar and adds a compensating
+    // `padding-right` measured in visual pixels — written into a document the
+    // canvas zoom then scales, so the compensation overshoots and the whole
+    // header slides left the moment the menu opens. Nothing here needs a
+    // modal: it is a three-item theme menu that already closes on outside
+    // click, Escape and scroll. Visitors whose platform draws overlay
+    // scrollbars never saw it, because for them the compensation is zero.
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         className={cn(
           "flex items-center rounded-chip border border-line text-[12.5px] text-t2",

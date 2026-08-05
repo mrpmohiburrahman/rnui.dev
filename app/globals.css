@@ -759,6 +759,24 @@ html {
      blurb, 1.55 zero-state) all carry it explicitly on the element and still win. */
   html {
     line-height: normal;
+
+    /* The scrollbar in the site's own palette rather than the platform's. A
+       default light scrollbar down the right edge of a near-black page is the
+       one piece of chrome Studio Dark never got to style, and it inherits, so
+       the rail, the overlay body and the filter sheet all pick it up too.
+
+       `--line2` is the drawing's own second hairline, which is what this is —
+       a rule against a surface — and it is mode-aware, so the bar follows the
+       theme with nothing further to declare.
+
+       The standard properties only, deliberately: adding `::-webkit-scrollbar`
+       would force classic scrollbars on every platform, including the ones
+       drawing overlay bars today, and permanently take ~10px of canvas from
+       them to style something they cannot currently see. `scrollbar-width` and
+       `scrollbar-color` colour whatever the platform already draws and take
+       nothing. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--line2) transparent;
   }
 
   body {
