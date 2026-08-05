@@ -94,7 +94,7 @@ export const onboarding: Recording[] = [
     durationMs: 3351,
     aspect: 0.4611,
     hue: 212,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-onboarding",
     twitterId: "reactiive_",

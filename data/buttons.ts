@@ -62,7 +62,7 @@ export const buttons: Recording[] = [
     durationMs: 5167,
     aspect: 1,
     hue: 348,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/21-animated-split-button",
     twitterId: "reactiive_",
@@ -223,7 +223,7 @@ export const buttons: Recording[] = [
       "thumbnails/buttons/atlas-button_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2992,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/atlas-button",
     twitterId: "reactiive_",
@@ -242,7 +242,7 @@ export const buttons: Recording[] = [
     durationMs: 2606,
     aspect: 0.4611,
     hue: 358,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/delete-button",
     twitterId: "reactiive_",
@@ -260,7 +260,7 @@ export const buttons: Recording[] = [
       "thumbnails/buttons/geometry-button_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1721,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/geometry-button",
     twitterId: "reactiive_",
@@ -279,7 +279,7 @@ export const buttons: Recording[] = [
     durationMs: 4792,
     aspect: 0.4611,
     hue: 206,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/loading-button",
     twitterId: "reactiive_",
@@ -297,7 +297,7 @@ export const buttons: Recording[] = [
       "thumbnails/buttons/particles-button_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2436,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/particles-button",
     twitterId: "reactiive_",
@@ -315,7 +315,7 @@ export const buttons: Recording[] = [
       "thumbnails/buttons/record-button_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5858,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/record-button",
     twitterId: "reactiive_",
@@ -333,7 +333,7 @@ export const buttons: Recording[] = [
       "thumbnails/buttons/split-button_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3699,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/split-button",
     twitterId: "reactiive_",

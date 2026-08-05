@@ -41,7 +41,7 @@ export const tabbars: Recording[] = [
       "thumbnails/tabbars/custom_segmented_control_enzo_manuel_mangano_reactiive.avif",
     durationMs: 9567,
     aspect: 1.4361,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/19-segmented-control",
     twitterId: "reactiive_",
@@ -160,7 +160,7 @@ export const tabbars: Recording[] = [
     durationMs: 4188,
     aspect: 0.4611,
     hue: 24,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-bottom-bar",
     twitterId: "reactiive_",
@@ -179,7 +179,7 @@ export const tabbars: Recording[] = [
     durationMs: 3668,
     aspect: 0.4611,
     hue: 250,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bottom-bar-skia",
     twitterId: "reactiive_",
@@ -199,7 +199,7 @@ export const tabbars: Recording[] = [
     durationMs: 3754,
     aspect: 0.4611,
     hue: 114,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-blur-tabs",
     twitterId: "reactiive_",
@@ -219,7 +219,7 @@ export const tabbars: Recording[] = [
     durationMs: 3292,
     aspect: 0.4611,
     hue: 25,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dynamic-tab-indicator",
     twitterId: "reactiive_",
@@ -238,7 +238,7 @@ export const tabbars: Recording[] = [
     durationMs: 2232,
     aspect: 0.4611,
     hue: 219,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/exclusion-tabs",
     twitterId: "reactiive_",
@@ -257,7 +257,7 @@ export const tabbars: Recording[] = [
       "thumbnails/tabbars/floating-bottom-bar_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4969,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-bottom-bar",
     twitterId: "reactiive_",
@@ -276,7 +276,7 @@ export const tabbars: Recording[] = [
       "thumbnails/tabbars/fluid-tab-interaction_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3606,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-tab-interaction",
     twitterId: "reactiive_",
@@ -295,7 +295,7 @@ export const tabbars: Recording[] = [
     durationMs: 4902,
     aspect: 0.4611,
     hue: 208,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/metaball",
     twitterId: "reactiive_",
@@ -313,7 +313,7 @@ export const tabbars: Recording[] = [
       "thumbnails/tabbars/tab-navigation_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3097,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/tab-navigation",
     twitterId: "reactiive_",
@@ -331,7 +331,7 @@ export const tabbars: Recording[] = [
       "thumbnails/tabbars/twitter-tab-bar_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3605,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twitter-tab-bar",
     twitterId: "reactiive_",

@@ -539,7 +539,7 @@ test("a filter on a Contributor outside the top four pins that row to the rail",
 // above the heading row is the one place all three are visible at once.
 test.describe("the filter bar", () => {
   const BAR_URL = `/products?category=Misc&contributor=${encodeURIComponent(
-    "Enzo Manuel Mangano ( Reactiive )"
+    "Enzo Manuel Mangano (Reactiive)"
   )}`
 
   // A chip, by the ✕ that removes it — the label is the mock's own, and the
@@ -563,7 +563,7 @@ test.describe("the filter bar", () => {
     // tidies them and the data does not, and the chip renders what
     // `?contributor=` actually holds.
     await expect(chip(page, "Remove contributor filter")).toHaveText(
-      "BYEnzo Manuel Mangano ( Reactiive )✕"
+      "BYEnzo Manuel Mangano (Reactiive)✕"
     )
   })
 

@@ -42,7 +42,7 @@ export const carousels: Recording[] = [
     durationMs: 12400,
     aspect: 1,
     hue: 255,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/24-story-list",
     twitterId: "reactiive_",
@@ -78,7 +78,7 @@ export const carousels: Recording[] = [
     durationMs: 10633,
     aspect: 1.1067,
     hue: 25,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/17-circular-carousel",
     twitterId: "reactiive_",
@@ -96,7 +96,7 @@ export const carousels: Recording[] = [
       "thumbnails/carousels/circular-carousel_enzo_manuel_mangano_reactiive.avif",
     durationMs: 6770,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/circular-carousel",
     twitterId: "reactiive_",
@@ -115,7 +115,7 @@ export const carousels: Recording[] = [
     durationMs: 5773,
     aspect: 0.4611,
     hue: 213,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/color-carousel",
     twitterId: "reactiive_",
@@ -134,7 +134,7 @@ export const carousels: Recording[] = [
       "thumbnails/carousels/coverflow-carousel_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4089,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/coverflow-carousel",
     twitterId: "reactiive_",
@@ -154,7 +154,7 @@ export const carousels: Recording[] = [
     durationMs: 5510,
     aspect: 0.4611,
     hue: 212,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/infinite-carousel",
     twitterId: "reactiive_",
@@ -173,7 +173,7 @@ export const carousels: Recording[] = [
       "thumbnails/carousels/stacked-carousel_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2197,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-carousel",
     twitterId: "reactiive_",

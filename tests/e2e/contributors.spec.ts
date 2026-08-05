@@ -83,7 +83,7 @@ test("a row lands on that Contributor's filtered catalogue", async ({
 // unambiguous inside `?contributor=`, and each has to survive the round trip
 // through the URL to the filtered catalogue.
 for (const [name, expected] of [
-  ["Enzo Manuel Mangano ( Reactiive )", 124],
+  ["Enzo Manuel Mangano (Reactiive)", 124],
   ["Daehyeon Mun (문대현)", 4],
   ["Epicode | 0xV", 2],
 ] as const) {
@@ -129,13 +129,13 @@ test("the longest name renders in full at 1440px", async ({ page }) => {
   const name = page
     .locator("main")
     .getByRole("link", {
-      name: "Enzo Manuel Mangano ( Reactiive )",
+      name: "Enzo Manuel Mangano (Reactiive)",
       exact: true,
     })
     .locator("span")
     .first()
 
-  await expect(name).toHaveText("Enzo Manuel Mangano ( Reactiive )")
+  await expect(name).toHaveText("Enzo Manuel Mangano (Reactiive)")
   const overflow = await name.evaluate(
     (el) => el.scrollWidth > el.clientWidth + 1
   )

@@ -250,7 +250,7 @@ export const misc: Recording[] = [
     durationMs: 9960,
     aspect: 0.4787,
     hue: 315,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source: "https://github.com/enzomanuelmangano/mnist-expo",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
@@ -399,7 +399,7 @@ export const misc: Recording[] = [
     durationMs: 4317,
     aspect: 1,
     hue: 185,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/22-stacked-cards",
     twitterId: "reactiive_",
@@ -609,7 +609,7 @@ export const misc: Recording[] = [
     durationMs: 6508,
     aspect: 0.8738,
     hue: 5,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/react-native-skia-gesture/tree/main/example",
     twitterId: "reactiive_",
@@ -625,7 +625,7 @@ export const misc: Recording[] = [
     posterPath: "thumbnails/misc/skeleton_enzo_manuel_mangano_reactiive.avif",
     durationMs: 6941,
     aspect: 0.4639,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/18-skeleton-animation",
     twitterId: "reactiive_",
@@ -643,7 +643,7 @@ export const misc: Recording[] = [
     durationMs: 6467,
     aspect: 0.688,
     hue: 226,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/20-shake-animation",
     twitterId: "reactiive_",
@@ -677,7 +677,7 @@ export const misc: Recording[] = [
     durationMs: 13583,
     aspect: 0.7913,
     hue: 304,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/grid-magnification",
     twitterId: "reactiive_",
@@ -695,7 +695,7 @@ export const misc: Recording[] = [
     durationMs: 9933,
     aspect: 0.7913,
     hue: 215,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/metaball",
     twitterId: "reactiive_",
@@ -713,7 +713,7 @@ export const misc: Recording[] = [
     durationMs: 9350,
     aspect: 0.4752,
     hue: 95,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/animated-gradient",
     twitterId: "reactiive_",
@@ -865,7 +865,7 @@ export const misc: Recording[] = [
     durationMs: 5272,
     aspect: 0.4609,
     hue: 209,
-    contributor: "Arnaud Dellinger ( evening kid )",
+    contributor: "Arnaud Dellinger (evening kid)",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
     linkedInId: "arnaud-dellinger",
@@ -884,7 +884,7 @@ export const misc: Recording[] = [
     durationMs: 14450,
     aspect: 1.2229,
     hue: 224,
-    contributor: "Arnaud Dellinger ( evening kid )",
+    contributor: "Arnaud Dellinger (evening kid)",
     source:
       "https://gist.github.com/eveningkid/a894c86db4ee1091611e9dc6a2470348",
     linkedInId: "arnaud-dellinger",
@@ -1538,7 +1538,7 @@ export const misc: Recording[] = [
     durationMs: 5650,
     aspect: 0.4611,
     hue: 218,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/action-tray",
     twitterId: "reactiive_",
@@ -1556,7 +1556,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
     durationMs: 6939,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/add-to-cart",
     twitterId: "reactiive_",
@@ -1575,7 +1575,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3739,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-flip-interaction",
     twitterId: "reactiive_",
@@ -1594,7 +1594,7 @@ export const misc: Recording[] = [
     durationMs: 2985,
     aspect: 0.4611,
     hue: 209,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-clip-box",
     twitterId: "reactiive_",
@@ -1612,7 +1612,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4638,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-count-text",
     twitterId: "reactiive_",
@@ -1631,7 +1631,7 @@ export const misc: Recording[] = [
     durationMs: 6258,
     aspect: 0.4611,
     hue: 252,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/audio-player",
     twitterId: "reactiive_",
@@ -1651,7 +1651,7 @@ export const misc: Recording[] = [
     durationMs: 9921,
     aspect: 0.4611,
     hue: 29,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bezier-curve-outline",
     twitterId: "reactiive_",
@@ -1670,7 +1670,7 @@ export const misc: Recording[] = [
     durationMs: 4133,
     aspect: 0.4611,
     hue: 255,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-circles",
     twitterId: "reactiive_",
@@ -1689,7 +1689,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1680,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/card-shader-reflections",
     twitterId: "reactiive_",
@@ -1708,7 +1708,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2389,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/checkbox-interactions",
     twitterId: "reactiive_",
@@ -1726,7 +1726,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
     durationMs: 10529,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clerk-toast",
     twitterId: "reactiive_",
@@ -1744,7 +1744,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1550,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/composable-text",
     twitterId: "reactiive_",
@@ -1762,7 +1762,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5641,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/draggable-panel",
     twitterId: "reactiive_",
@@ -1780,7 +1780,7 @@ export const misc: Recording[] = [
     durationMs: 5657,
     aspect: 0.4611,
     hue: 212,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
     twitterId: "reactiive_",
@@ -1799,7 +1799,7 @@ export const misc: Recording[] = [
     durationMs: 6789,
     aspect: 0.4611,
     hue: 45,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
     twitterId: "reactiive_",
@@ -1817,7 +1817,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1317,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/everybody-can-cook",
     twitterId: "reactiive_",
@@ -1836,7 +1836,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4474,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/expandable-mini-player",
     twitterId: "reactiive_",
@@ -1854,7 +1854,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
     durationMs: 7642,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/family-number-input",
     twitterId: "reactiive_",
@@ -1873,7 +1873,7 @@ export const misc: Recording[] = [
     durationMs: 5120,
     aspect: 0.4611,
     hue: 263,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader",
     twitterId: "reactiive_",
@@ -1893,7 +1893,7 @@ export const misc: Recording[] = [
     durationMs: 11045,
     aspect: 0.4611,
     hue: 276,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader-grid",
     twitterId: "reactiive_",
@@ -1911,7 +1911,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
     durationMs: 13433,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fourier-visualizer",
     twitterId: "reactiive_",
@@ -1930,7 +1930,7 @@ export const misc: Recording[] = [
     durationMs: 4051,
     aspect: 0.4611,
     hue: 37,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fractal-glass",
     twitterId: "reactiive_",
@@ -1950,7 +1950,7 @@ export const misc: Recording[] = [
     durationMs: 2450,
     aspect: 0.4583,
     hue: 133,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-contributions",
     twitterId: "reactiive_",
@@ -1968,7 +1968,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1840,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/gl-transitions",
     twitterId: "reactiive_",
@@ -1986,7 +1986,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5891,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/grid-visualizer",
     twitterId: "reactiive_",
@@ -2005,7 +2005,7 @@ export const misc: Recording[] = [
     durationMs: 3550,
     aspect: 0.4611,
     hue: 25,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/image-cropper",
     twitterId: "reactiive_",
@@ -2025,7 +2025,7 @@ export const misc: Recording[] = [
     durationMs: 5377,
     aspect: 0.4611,
     hue: 356,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/inner-shared-transition",
     twitterId: "reactiive_",
@@ -2045,7 +2045,7 @@ export const misc: Recording[] = [
     durationMs: 2127,
     aspect: 0.4611,
     hue: 176,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/instagram-shared-transition",
     twitterId: "reactiive_",
@@ -2065,7 +2065,7 @@ export const misc: Recording[] = [
     durationMs: 1949,
     aspect: 0.4615,
     hue: 36,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/interaction-appearance",
     twitterId: "reactiive_",
@@ -2083,7 +2083,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
     durationMs: 14433,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-bouncy",
     twitterId: "reactiive_",
@@ -2101,7 +2101,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3861,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-grid",
     twitterId: "reactiive_",
@@ -2120,7 +2120,7 @@ export const misc: Recording[] = [
     durationMs: 8847,
     aspect: 0.4611,
     hue: 231,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/mobile-input",
     twitterId: "reactiive_",
@@ -2138,7 +2138,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5456,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/motion-blur",
     twitterId: "reactiive_",
@@ -2156,7 +2156,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3933,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/online-offline",
     twitterId: "reactiive_",
@@ -2174,7 +2174,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2733,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/paper-folding",
     twitterId: "reactiive_",
@@ -2192,7 +2192,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
     durationMs: 7335,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/pomodoro-timer",
     twitterId: "reactiive_",
@@ -2211,7 +2211,7 @@ export const misc: Recording[] = [
     durationMs: 3581,
     aspect: 0.4611,
     hue: 144,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/popup-handler",
     twitterId: "reactiive_",
@@ -2230,7 +2230,7 @@ export const misc: Recording[] = [
     durationMs: 8228,
     aspect: 0.4611,
     hue: 285,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
     twitterId: "reactiive_",
@@ -2248,7 +2248,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2242,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shake-to-delete",
     twitterId: "reactiive_",
@@ -2267,7 +2267,7 @@ export const misc: Recording[] = [
     durationMs: 3751,
     aspect: 0.4611,
     hue: 223,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shared-transitions",
     twitterId: "reactiive_",
@@ -2285,7 +2285,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
     durationMs: 10794,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/slide-to-reveal",
     twitterId: "reactiive_",
@@ -2303,7 +2303,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3050,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/smooth-dropdown",
     twitterId: "reactiive_",
@@ -2321,7 +2321,7 @@ export const misc: Recording[] = [
     durationMs: 4567,
     aspect: 0.4611,
     hue: 107,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
     twitterId: "reactiive_",
@@ -2339,7 +2339,7 @@ export const misc: Recording[] = [
     durationMs: 8971,
     aspect: 0.4611,
     hue: 275,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
     twitterId: "reactiive_",
@@ -2358,7 +2358,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1930,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/staggered-card-number",
     twitterId: "reactiive_",
@@ -2376,7 +2376,7 @@ export const misc: Recording[] = [
     durationMs: 3609,
     aspect: 0.4611,
     hue: 215,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
     twitterId: "reactiive_",
@@ -2394,7 +2394,7 @@ export const misc: Recording[] = [
     durationMs: 16543,
     aspect: 0.4583,
     hue: 218,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
     twitterId: "reactiive_",
@@ -2413,7 +2413,7 @@ export const misc: Recording[] = [
     durationMs: 8815,
     aspect: 0.4611,
     hue: 195,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/swipe-cards",
     twitterId: "reactiive_",
@@ -2433,7 +2433,7 @@ export const misc: Recording[] = [
     durationMs: 5047,
     aspect: 0.4611,
     hue: 206,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/telegram-theme-switch",
     twitterId: "reactiive_",
@@ -2453,7 +2453,7 @@ export const misc: Recording[] = [
     durationMs: 4844,
     aspect: 0.4611,
     hue: 174,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/theme-canvas-animation",
     twitterId: "reactiive_",
@@ -2472,7 +2472,7 @@ export const misc: Recording[] = [
     durationMs: 3957,
     aspect: 0.4583,
     hue: 260,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/threads-holo-ticket",
     twitterId: "reactiive_",
@@ -2490,7 +2490,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4982,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/time-machine",
     twitterId: "reactiive_",
@@ -2507,7 +2507,7 @@ export const misc: Recording[] = [
     posterPath: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4419,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
     twitterId: "reactiive_",
@@ -2526,7 +2526,7 @@ export const misc: Recording[] = [
     durationMs: 4820,
     aspect: 0.4611,
     hue: 34,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twodos-slide",
     twitterId: "reactiive_",
@@ -2544,7 +2544,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
     durationMs: 6740,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code",
     twitterId: "reactiive_",
@@ -2563,7 +2563,7 @@ export const misc: Recording[] = [
       "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
     durationMs: 6518,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code-face",
     twitterId: "reactiive_",

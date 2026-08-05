@@ -275,7 +275,7 @@ describe("clearAllHref", () => {
 describe("the mock's own query, against the real catalogue", () => {
   const ACTIVE: ActiveFilters = {
     category: "Misc",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     search: "wheel",
   }
 
@@ -293,7 +293,7 @@ describe("the mock's own query, against the real catalogue", () => {
   it("writes the headline in the stored Contributor spelling", () => {
     const d = catalogueDiagnosis(allRecordings, ACTIVE)!
     expect(catalogueSentences(ACTIVE, d).headline).toBe(
-      "Nothing in Misc by Enzo Manuel Mangano ( Reactiive ) matches “wheel”."
+      "Nothing in Misc by Enzo Manuel Mangano (Reactiive) matches “wheel”."
     )
   })
 })

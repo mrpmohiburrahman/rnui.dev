@@ -89,7 +89,7 @@ export const list: Recording[] = [
     durationMs: 17083,
     aspect: 0.4731,
     hue: 179,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/15-animated-flatlist",
     twitterId: "reactiive_",
@@ -141,7 +141,7 @@ export const list: Recording[] = [
     durationMs: 3936,
     aspect: 0.4611,
     hue: 25,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-grid-list",
     twitterId: "reactiive_",
@@ -160,7 +160,7 @@ export const list: Recording[] = [
       "thumbnails/lists/animated-indicator-list_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4795,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-indicator-list",
     twitterId: "reactiive_",
@@ -179,7 +179,7 @@ export const list: Recording[] = [
     durationMs: 4557,
     aspect: 0.4611,
     hue: 244,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/drag-to-sort",
     twitterId: "reactiive_",
@@ -198,7 +198,7 @@ export const list: Recording[] = [
     durationMs: 4033,
     aspect: 0.4611,
     hue: 32,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/imessage-stack",
     twitterId: "reactiive_",
@@ -218,7 +218,7 @@ export const list: Recording[] = [
     durationMs: 10202,
     aspect: 0.4611,
     hue: 197,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/selectable-grid-list",
     twitterId: "reactiive_",
@@ -237,7 +237,7 @@ export const list: Recording[] = [
       "thumbnails/lists/stacked-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4980,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-bottom-sheet",
     twitterId: "reactiive_",
@@ -256,7 +256,7 @@ export const list: Recording[] = [
     durationMs: 6297,
     aspect: 0.4611,
     hue: 197,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-list",
     twitterId: "reactiive_",
@@ -274,7 +274,7 @@ export const list: Recording[] = [
       "thumbnails/lists/stacked-modals_enzo_manuel_mangano_reactiive.avif",
     durationMs: 12696,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/stacked-modals",
     twitterId: "reactiive_",
@@ -293,7 +293,7 @@ export const list: Recording[] = [
     durationMs: 3601,
     aspect: 0.4611,
     hue: 4,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/story-list",
     twitterId: "reactiive_",

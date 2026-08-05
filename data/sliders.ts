@@ -78,7 +78,7 @@ export const sliders: Recording[] = [
     durationMs: 5902,
     aspect: 0.4611,
     hue: 175,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/3d-scroll-transition",
     twitterId: "reactiive_",
@@ -97,7 +97,7 @@ export const sliders: Recording[] = [
     durationMs: 2692,
     aspect: 0.4611,
     hue: 212,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-slider",
     twitterId: "reactiive_",
@@ -115,7 +115,7 @@ export const sliders: Recording[] = [
       "thumbnails/sliders/balance-slider_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4008,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/balance-slider",
     twitterId: "reactiive_",
@@ -134,7 +134,7 @@ export const sliders: Recording[] = [
     durationMs: 4150,
     aspect: 0.4667,
     hue: 258,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blurred-scroll",
     twitterId: "reactiive_",
@@ -153,7 +153,7 @@ export const sliders: Recording[] = [
       "thumbnails/sliders/clock-time-picker_enzo_manuel_mangano_reactiive.avif",
     durationMs: 1931,
     aspect: 0.4583,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clock-time-picker",
     twitterId: "reactiive_",
@@ -171,7 +171,7 @@ export const sliders: Recording[] = [
       "thumbnails/sliders/cuberto-slider_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5215,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/cuberto-slider",
     twitterId: "reactiive_",
@@ -190,7 +190,7 @@ export const sliders: Recording[] = [
     durationMs: 5266,
     aspect: 0.4611,
     hue: 348,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/duration-slider",
     twitterId: "reactiive_",
@@ -209,7 +209,7 @@ export const sliders: Recording[] = [
     durationMs: 7333,
     aspect: 0.4611,
     hue: 246,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fluid-slider",
     twitterId: "reactiive_",
@@ -228,7 +228,7 @@ export const sliders: Recording[] = [
     durationMs: 4274,
     aspect: 0.4611,
     hue: 145,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/prequel-slider",
     twitterId: "reactiive_",
@@ -246,7 +246,7 @@ export const sliders: Recording[] = [
       "thumbnails/sliders/scroll-progress_enzo_manuel_mangano_reactiive.avif",
     durationMs: 2399,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scroll-progress",
     twitterId: "reactiive_",
@@ -266,7 +266,7 @@ export const sliders: Recording[] = [
     durationMs: 7767,
     aspect: 0.4611,
     hue: 226,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scrollable-bottom-sheet",
     twitterId: "reactiive_",
@@ -286,7 +286,7 @@ export const sliders: Recording[] = [
     durationMs: 3333,
     aspect: 0.4611,
     hue: 95,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/skia-color-picker",
     twitterId: "reactiive_",
@@ -304,7 +304,7 @@ export const sliders: Recording[] = [
       "thumbnails/sliders/wheel-picker_enzo_manuel_mangano_reactiive.avif",
     durationMs: 4359,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/wheel-picker",
     twitterId: "reactiive_",

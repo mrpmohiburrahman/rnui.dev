@@ -63,7 +63,7 @@ test.describe("heading rows", () => {
     page,
   }) => {
     await page.goto(
-      "/products?category=Misc&contributor=Enzo%20Manuel%20Mangano%20(%20Reactiive%20)"
+      "/products?category=Misc&contributor=Enzo%20Manuel%20Mangano%20(Reactiive)"
     )
     await expect(
       page.getByRole("heading", {

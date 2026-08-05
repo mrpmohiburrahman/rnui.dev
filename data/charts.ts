@@ -110,7 +110,7 @@ export const charts: Recording[] = [
       "thumbnails/charts/miles-bar-chart_enzo_manuel_mangano_reactiive.avif",
     durationMs: 5651,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/miles-bar-chart",
     twitterId: "reactiive_",
@@ -129,7 +129,7 @@ export const charts: Recording[] = [
     durationMs: 3724,
     aspect: 0.4611,
     hue: 182,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/radar-chart",
     twitterId: "reactiive_",
@@ -148,7 +148,7 @@ export const charts: Recording[] = [
       "thumbnails/charts/steddy-graph-interaction_enzo_manuel_mangano_reactiive.avif",
     durationMs: 3235,
     aspect: 0.4611,
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steddy-graph-interaction",
     twitterId: "reactiive_",
