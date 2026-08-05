@@ -46,15 +46,23 @@ export function ModeToggle({ compact = false }: { compact?: boolean }) {
         className={cn(
           "flex items-center rounded-chip border border-line text-[12.5px] text-t2",
           compact
-            ? "min-h-[36px] bg-field px-[10px] text-[12px]"
+            ? // 38, not the mock's `min-height:36px`: content-box plus the 1px
+              // border the trigger already carries above.
+              "min-h-[38px] bg-field px-[10px] text-[12px]"
             : "px-[9px] py-[6px]"
         )}
       >
+        {/* The phone draws the glyph alone — CatalogueMobile.dc.html:17's
+            `modeToggle` is `◐` / `◑` with no word beside it, where the desktop
+            header draws `◐ Dark` (Catalogue.dc.html:31, :243). The name is in
+            the sr-only label either way, so nothing is lost when it goes. */}
         <span className="hidden dark:inline">
-          <span aria-hidden="true">◐</span> Dark
+          <span aria-hidden="true">◐</span>
+          {!compact && " Dark"}
         </span>
         <span className="inline dark:hidden">
-          <span aria-hidden="true">◑</span> Light
+          <span aria-hidden="true">◑</span>
+          {!compact && " Light"}
         </span>
         <span className="sr-only">Toggle theme</span>
       </DropdownMenuTrigger>

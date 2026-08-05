@@ -49,7 +49,11 @@ export function PlaceholdersAndVanishInput({
   return (
     <form
       className={cn(
-        "flex w-full relative h-[34px] items-center gap-[9px] rounded-[10px] overflow-hidden border bg-field transition duration-200",
+        // 42 on a phone, 34 on the desktop: CatalogueMobile.dc.html:20 draws
+        // `min-height:40px` with a 1px border each side against
+        // Catalogue.dc.html:19's `height:34px`, and both of those are
+        // content-box figures.
+        "relative flex h-[42px] w-full items-center gap-[9px] overflow-hidden rounded-[10px] border bg-field transition duration-200 md:h-[34px]",
         // The value-present state the mock draws (searchBorder/searchGlow,
         // Catalogue.dc.html:230-233), and the focus ring it uses elsewhere
         // (:78): the mock never draws focus on this field, so it gets the

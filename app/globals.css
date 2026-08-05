@@ -521,6 +521,19 @@
     @apply border-border;
   }
 
+  /* The mock ships no CSS reset, so every element it draws without a
+     `line-height` renders at the browser's `normal` — 1.28 for Space Grotesk,
+     1.3 for JetBrains Mono. Tailwind's preflight sets `html { line-height: 1.5 }`
+     instead, which inherits everywhere and made every un-leaded box 2-3px taller
+     than the drawing: the rail's 18 Category rows ran 77px long by `Tab bars`,
+     and each tile stood 542px against the mock's 536.
+     Restoring `normal` here is the one-line root fix — the ~20 places the mock
+     *does* declare a leading (1.15 hero, 1.32 tile title and by-line, 1.5 footer
+     blurb, 1.55 zero-state) all carry it explicitly on the element and still win. */
+  html {
+    line-height: normal;
+  }
+
   body {
     @apply bg-canvas text-t1;
 

@@ -776,7 +776,13 @@ test.describe("the filter bar", () => {
   })
 })
 
-test("the rail is 232px wide and main starts exactly beside it", async ({
+// 265, not the mock's literal `width:232px` (Catalogue.dc.html:36). The drawing
+// has no CSS reset, so its nav is content-box and that 232 is the content: plus
+// `padding:20px 16px 30px` either side and the 1px right border, the rail is
+// 265 across as drawn — measured on the mock at a 1440 canvas, nav 8->273 with
+// the body's own 8px margin. This aside is border-box, so 232 here drew a rail
+// 33px narrower than the drawing and started the grid 33px left of it.
+test("the rail is 265px wide and main starts exactly beside it", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
@@ -789,7 +795,7 @@ test("the rail is 232px wide and main starts exactly beside it", async ({
   })
 
   expect(box.railLeft).toBe(0)
-  expect(box.width).toBe(232)
+  expect(box.width).toBe(265)
   // No gap or overlap: main starts where the rail ends.
-  expect(box.mainLeft).toBe(box.railLeft + 232)
+  expect(box.mainLeft).toBe(box.railLeft + 265)
 })

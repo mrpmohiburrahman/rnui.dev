@@ -261,11 +261,17 @@ test("save, vote and close each carry their aria-keyshortcuts", async ({
   await page.getByRole("heading", { level: 3 }).first().click()
   await expect(page.getByRole("dialog")).toBeVisible()
 
+  // Scoped to the dialog and taken first, not last. The panel's own controls are
+  // no longer the last Save and Vote on the page: MORE FROM THIS CONTRIBUTOR
+  // now draws the catalogue's own Tile, controls included, as the drawing has it
+  // (Detail.dc.html:83) — so `.last()` reached a strip card. Inside the dialog
+  // the panel's controls come before the strip.
+  const panel = page.getByRole("dialog")
   await expect(
-    page.getByRole("button", { name: /^Save/ }).last()
+    panel.getByRole("button", { name: /^Save/ }).first()
   ).toHaveAttribute("aria-keyshortcuts", "s")
   await expect(
-    page.getByRole("button", { name: /^Vote/ }).last()
+    panel.getByRole("button", { name: /^Vote/ }).first()
   ).toHaveAttribute("aria-keyshortcuts", "v")
   await expect(
     page.getByRole("button", { name: "Close, or press Escape" })

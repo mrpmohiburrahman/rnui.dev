@@ -18,6 +18,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { NavSidebar } from "@/components/nav/nav-side-bar"
 import { SiteFooter } from "@/components/site-footer"
+import { ShellChrome } from "@/components/site-shell"
 import { SiteHeader } from "@/components/site-header"
 
 import { ThemeProvider } from "./providers"
@@ -93,22 +94,25 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             disableTransitionOnChange
           >
             <TooltipProvider>
-              <SiteHeader
-                recordingCount={allRecordings.length}
-                contributorCount={contributors.length}
-              />
-              <div className="flex flex-1 items-stretch">
-                <NavSidebar
-                  categories={categories}
-                  contributors={contributors}
-                />
-                {/* The mock's main gutter: 22px top, 26px sides, 34px bottom
-                    (Catalogue.dc.html:59). `min-w-0` so a wide child cannot push
-                    the document past the viewport. */}
-                <main className="w-full flex-1 min-w-0 p-[22px_26px_34px]">
-                  {children}
-                </main>
-              </div>
+              {/* Which shell the route gets, and the mock's `main` gutters —
+                  both live in components/site-shell.tsx, because the Recording
+                  detail draws a header of its own and no rail. */}
+              <ShellChrome
+                header={
+                  <SiteHeader
+                    recordingCount={allRecordings.length}
+                    contributorCount={contributors.length}
+                  />
+                }
+                rail={
+                  <NavSidebar
+                    categories={categories}
+                    contributors={contributors}
+                  />
+                }
+              >
+                {children}
+              </ShellChrome>
             </TooltipProvider>
             <Toaster richColors />
           </ThemeProvider>

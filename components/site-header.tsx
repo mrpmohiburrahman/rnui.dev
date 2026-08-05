@@ -148,13 +148,21 @@ function SiteHeaderBar({
               ["top-viewed", "MOST VIEWED"],
               ["top-voted", "MOST VOTED"],
             ] as const
-          ).map(([value, label]) => (
+          ).map(([value, label], index) => (
             <button
               key={value}
               type="button"
               onClick={() => changeSort(value)}
               className={cn(
-                "rounded-badge px-[9px] py-[5px] font-mono text-[9.5px] tracking-[0.08em]",
+                "px-[9px] py-[5px] font-mono text-[9.5px] tracking-[0.08em]",
+                // As drawn: the mock gives the first two segments a
+                // `border-radius:6px` unconditionally and the third none at all
+                // (Catalogue.dc.html:25-27) — its variants never light MOST
+                // VOTED, so it drew that one as bare text. Here the third is a
+                // live control, so it takes the radius when it carries a fill;
+                // on a transparent background the property is invisible either
+                // way, which is why the drawing could leave it off.
+                (index < 2 || activeSort === value) && "rounded-badge",
                 activeSort === value ? "bg-acc-soft text-t1" : "text-t3"
               )}
             >
@@ -163,26 +171,41 @@ function SiteHeaderBar({
           ))}
         </div>
 
-        {/* The Saved chip (Catalogue.dc.html:29-30). Accent on /bookmarks,
-            plain elsewhere. */}
-        <Link
-          href="/bookmarks"
-          className={cn(
-            "flex items-center gap-[6px] rounded-chip border px-[10px] py-[6px] text-[12.5px]",
-            onBookmarks
-              ? "border-acc bg-acc-soft text-t1"
-              : "border-line bg-transparent text-t2"
-          )}
-        >
-          <span aria-hidden="true">◆</span> Saved{" "}
-          {/* `min-w-[2ch]` reserves a digit: 0 → 3 must not shove the mode
-              toggle sideways. */}
-          <span className="min-w-[2ch] font-mono text-[10px] text-t3 tabular-nums">
-            {savedCount}
-          </span>
-        </Link>
+        {/* The Saved chip and the mode toggle are one `margin-left:auto` group
+            at `gap:10px` in the drawing (Catalogue.dc.html:29-32), not two
+            children of the 18px row. Without the wrapper the pair rode on the
+            sort control's heels and the header's right end stopped 13px short
+            of the gutter. */}
+        <div className="ml-auto flex items-center gap-[10px]">
+          {/* The Saved chip (Catalogue.dc.html:30). Accent on /bookmarks,
+              plain elsewhere. */}
+          <Link
+            href="/bookmarks"
+            className={cn(
+              "flex items-center gap-[6px] rounded-chip border px-[10px] py-[6px] text-[12.5px]",
+              onBookmarks
+                ? "border-acc bg-acc-soft text-t1"
+                : "border-line bg-transparent text-t2"
+            )}
+          >
+            {/* `◆ Saved` is one flex item, as the mock has it — a text node and
+                the count span, so the 6px gap is spent once. Split into three
+                the glyph bought a second gap the drawing does not have. */}
+            <span>
+              <span aria-hidden="true">◆</span> Saved
+            </span>
+            {/* No width reservation. It used to carry `min-w-[2ch]` so 0 → 3
+                could not shove the mode toggle sideways; the mock reserves
+                nothing (Catalogue.dc.html:30). `tabular-nums` still holds the
+                digits on one advance width, so the reflow is one character wide
+                at 3 → 10. */}
+            <span className="font-mono text-[10px] text-t3 tabular-nums">
+              {savedCount}
+            </span>
+          </Link>
 
-        <ModeToggle />
+          <ModeToggle />
+        </div>
       </div>
 
       {/* Phone: three rows, 36px controls (CatalogueMobile.dc.html:12-23). The
@@ -213,7 +236,9 @@ function SiteHeaderBar({
           <Link
             href="/bookmarks"
             className={cn(
-              "ml-auto flex min-h-[36px] items-center gap-[6px] rounded-chip border px-[11px] text-[12px]",
+              // 38, not the mock's `min-height:36px`: content-box plus its 1px
+              // border (CatalogueMobile.dc.html's ◆ chip).
+              "ml-auto flex min-h-[38px] items-center gap-[6px] rounded-chip border px-[11px] text-[12px]",
               onBookmarks
                 ? "border-acc bg-acc-soft text-t1"
                 : "border-line bg-field text-t2"
@@ -294,8 +319,11 @@ function PhoneFilterChips({
           <span
             key={key}
             className={cn(
-              "flex min-h-[34px] flex-none items-center gap-[7px] rounded-[9px] border border-acc bg-acc-soft pl-[10px] pr-2 text-[11.5px] text-t1",
-              isContributor && "max-w-[186px]"
+              // 36 and 206, not the mock's `min-height:34px` / `max-width:186px`:
+              // both are content-box figures and the chip carries a 1px accent
+              // border, plus 18px of horizontal padding for the width.
+              "flex min-h-[36px] flex-none items-center gap-[7px] rounded-[9px] border border-acc bg-acc-soft pl-[10px] pr-2 text-[11.5px] text-t1",
+              isContributor && "max-w-[206px]"
             )}
           >
             <span className="flex-none font-mono text-[8.5px] text-acc">

@@ -127,7 +127,12 @@ test("a Recording opened cold counts one view, and playing its Demo adds none", 
 
   // Played, not merely mounted. Past the two-second threshold on purpose: a Demo
   // stopped at 0.1s would satisfy "the press billed nothing" vacuously.
-  const video = page.locator("video")
+  // The detail's own media box, not any <video> on the route. MORE FROM THIS
+  // CONTRIBUTOR now draws the catalogue's own Tile (Detail.dc.html:83), and a
+  // Tile mounts its Demo at `preload="none"` behind the Poster — two more
+  // <video> elements, neither of which ever plays here (their playback owner is
+  // suspended), but enough to make a bare `locator("video")` ambiguous.
+  const video = page.locator(".detail-media video")
   await expect
     .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime), {
       timeout: 20_000,

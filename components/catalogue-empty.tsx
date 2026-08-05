@@ -39,9 +39,14 @@ export type EmptyState =
 // The shell both panels share, Catalogue.dc.html:99 and :112. 14px is off the
 // Specimen's 16/12/9/6 radius scale; shipped as drawn (ticket 08 open question
 // 3).
+//
+// 802, not the mock's literal `max-width:720px`: the mock is content-box, so
+// the drawn panel is 720 + `padding:52px 40px` + a 1px dashed border each side
+// = 802 across. Border-box here, so 720 drew a panel 82px narrower than the
+// drawing. Same reading as the rail and the search field.
 const PANEL = [
   "flex",
-  "max-w-[720px]",
+  "max-w-[802px]",
   "flex-col",
   "items-start",
   "rounded-[14px]",
@@ -152,7 +157,9 @@ function EmptySaved() {
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="h-[60px] w-[34px] rounded-[7px] border border-dashed border-line2"
+            // 36x62, not the mock's literal 34x60: content-box plus the 1px
+            // dashed border on each side (Catalogue.dc.html:114-116).
+            className="h-[62px] w-[36px] rounded-[7px] border border-dashed border-line2"
           />
         ))}
       </div>

@@ -64,7 +64,8 @@ const BookmarksPage = () => {
   // blank. Which Recordings this route shows is decided by localStorage, so the
   // grid itself was never going to be in that HTML.
   return (
-    <div className="max-w-full pt-2">
+    // No top padding — see app/page.tsx. `main` already spends the mock's 22px.
+    <div className="max-w-full">
       <Suspense
         fallback={
           <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">

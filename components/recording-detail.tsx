@@ -23,13 +23,13 @@ import {
   repoClicked,
   voteCast,
 } from "@/lib/analytics"
-import { getCdnUrl } from "@/lib/cdn"
 import { cn } from "@/lib/utils"
 import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
 import { incrementVoteCount } from "@/app/actions/increment-vote-count"
 
 import InteractiveVideo, { type MediaState } from "./interactive-video"
-import { countView } from "./playback-owner"
+import { countView, PlaybackOwner } from "./playback-owner"
+import { RecordingCard } from "./recording-card"
 
 /** Turn a measured width÷height aspect (ticket 03) into the "a:b" the media
  * chrome reads — 0.5625 becomes 9:16. The mock drew 9:16 everywhere; the real
@@ -69,6 +69,7 @@ export function RecordingDetail({
   // decided for itself would double-bill every open from the grid.
   countsOwnOpen = false,
   keyboardControls = false,
+  form = "page",
   topViewCount,
   catalogueTotal,
   contributorTotal,
@@ -77,10 +78,21 @@ export function RecordingDetail({
   voted,
   onToggleSave,
   onToggleVote,
+  savedIds,
+  votedIds,
+  onToggleSaveId,
+  onToggleVoteId,
 }: {
   recording: Recording
   Title?: React.ElementType
   countsOwnOpen?: boolean
+  /** Which of the mock's two desktop forms this is (Detail.dc.html:124-140).
+   *  The third, `mobile`, is a viewport and stays a breakpoint — but page and
+   *  overlay are the same viewport at different sizes, so no media query can
+   *  tell them apart. It shows: the media box is 414 on the page and 380 in the
+   *  overlay (`mW`, :132), and the title is 36 against 30 (`titleSize`, :138).
+   *  Left to `lg:`/`xl:` the overlay drew both at the page's figures. */
+  form?: "page" | "overlay"
   /** Listen for `S` and `V` while mounted. The overlay sets it, because the
    * overlay is the surface that draws the `S SAVE | V VOTE` legend; the
    * standalone route does not, and neither does anything else.
@@ -112,6 +124,16 @@ export function RecordingDetail({
   voted: boolean
   onToggleSave: () => void
   onToggleVote: () => void
+  /** The same two sets, as ids and id-taking toggles, for the MORE FROM THIS
+   *  CONTRIBUTOR strip. The drawing renders that strip with the catalogue's own
+   *  Tile (Detail.dc.html:83), controls included, so those two cards need the
+   *  sets the same way a grid card does — and for the same reason as the four
+   *  props above, they arrive from the caller rather than from a second
+   *  useRememberedSet in here. */
+  savedIds: string[]
+  votedIds: string[]
+  onToggleSaveId: (id: string) => void
+  onToggleVoteId: (id: string) => void
 }) {
   // No local view count here, and no counting on play. This component used to
   // mount before anything was selected, so the count it held was seeded from
@@ -229,7 +251,13 @@ export function RecordingDetail({
       {/* Media column. A fixed-width column with the box's height declared from
           the measured aspect — never measured after load, so nothing reflows
           when a Poster or Demo lands (CLS is acceptance at checkpoint 5). */}
-      <div className="flex-none w-[358px] sm:w-[380px] lg:w-[414px] max-w-full">
+      <div
+        className={cn(
+          // 358 phone, 380 overlay, 414 page — Detail.dc.html:132's `mW`.
+          "w-[358px] max-w-full flex-none sm:w-[380px]",
+          form === "page" && "lg:w-[414px]"
+        )}
+      >
         <div
           data-state={mediaState}
           className="detail-media relative overflow-hidden rounded-[16px] lg:rounded-[20px] bg-plinth shadow-media w-full"
@@ -265,7 +293,9 @@ export function RecordingDetail({
       </div>
 
       {/* Information column */}
-      <div className="flex-none lg:flex-1 lg:min-w-0 flex flex-col gap-[22px] lg:gap-5">
+      {/* `infoGap`, Detail.dc.html:139: 18 on a phone and 22 on both desktop
+          forms. It was 22 then 20, which is the pair the other way round. */}
+      <div className="flex flex-none flex-col gap-[18px] lg:min-w-0 lg:flex-1 lg:gap-[22px]">
         {/* Category line and title */}
         <div>
           <div className="flex items-center gap-2 pb-[9px]">
@@ -287,7 +317,13 @@ export function RecordingDetail({
             )}
           </div>
           <Title
-            className="text-[24px] lg:text-[30px] xl:text-detail font-medium leading-[1.12] tracking-[-0.025em] text-t1 text-pretty m-0"
+            // 24 phone, 30 overlay, 36 page — Detail.dc.html:138's `titleSize`.
+            // The `xl:` step is the page's alone; the overlay stops at 30 however
+            // wide the viewport is.
+            className={cn(
+              "m-0 text-[24px] font-medium leading-[1.12] tracking-[-0.025em] text-t1 text-pretty lg:text-[30px]",
+              form === "page" && "xl:text-detail"
+            )}
             style={{ textWrap: "pretty" } as React.CSSProperties}
           >
             {recording.caption}
@@ -409,7 +445,10 @@ export function RecordingDetail({
                 countView(recording.id)
                 repoClicked(facts, "detail")
               }}
-              className="flex-1 min-w-[200px] flex items-center justify-center gap-[9px] text-[13.5px] font-medium px-4 py-3 rounded-[10px] bg-acc text-on-acc no-underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
+              // 232, not the mock's `min-width:200px` (Detail.dc.html): that
+              // 200 is a content minimum and the button carries `padding:12px
+              // 16px`, so the drawn control is 232 across at its narrowest.
+              className="flex-1 min-w-[232px] flex items-center justify-center gap-[9px] text-[13.5px] font-medium px-4 py-3 rounded-[10px] bg-acc text-on-acc no-underline focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
             >
               Open source repo on GitHub <span aria-hidden>↗</span>
             </a>
@@ -426,60 +465,36 @@ export function RecordingDetail({
             <div className="font-mono text-[9px] tracking-[0.14em] text-t3 pb-[11px]">
               MORE FROM THIS CONTRIBUTOR
             </div>
-            <div className="flex gap-3.5">
-              {more.map((related) => (
-                <a
-                  key={related.id}
-                  href={`/recording/${related.id}`}
-                  className="group no-underline w-[150px] lg:w-[140px] cursor-pointer"
-                >
-                  {/* A paused tile: the Poster over the plinth with the glow, no
-                      live <video>. This body renders on the standalone page too,
-                      where there is no playback owner to grant one — and the
-                      strip is by definition paused, so a poster is all it is. */}
-                  <div className="relative aspect-[9/16] rounded-tile overflow-hidden bg-plinth shadow-e0 w-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getCdnUrl(related.posterPath)}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover"
+            {/* The catalogue's own card at the drawing's width — `<dc-import
+                name="Tile" w="{{ moreW }}">`, 140 desktop and 150 on a phone
+                (Detail.dc.html:83, :140). It used to be a hand-cut copy that
+                stopped after the views bar: no by-line, a 13px/1.2 title where
+                the Tile draws 14.5/1.32, and none of the ▲ / ◇ Save / Repo ↗
+                row, which left each card 102px short of the drawn one.
+
+                `<PlaybackOwner suspended>`: the card mounts a Demo and
+                usePlaybackOwner throws with no provider above it, and the
+                standalone page has none. Suspended grants nothing, so both
+                cards hold their Poster — which is the state the drawing gives
+                them (`state:'paused'`, Detail.dc.html:111-112). Inside the
+                overlay this nests within the catalogue's own owner, itself
+                already suspended while the overlay is open. */}
+            <PlaybackOwner suspended>
+              <div className="flex gap-3.5">
+                {more.map((related) => (
+                  <div key={related.id} className="w-[150px] lg:w-[140px]">
+                    <RecordingCard
+                      recording={related}
+                      topViewCount={topViewCount}
+                      isBookmarked={savedIds.includes(related.id)}
+                      toggleBookmark={onToggleSaveId}
+                      isVoted={votedIds.includes(related.id)}
+                      toggleVote={onToggleVoteId}
                     />
-                    {related.isNew && (
-                      <span
-                        aria-hidden
-                        className="absolute right-[10px] top-[10px] font-mono text-[8.5px] tracking-[0.13em] px-[7px] py-1 rounded-[6px] bg-new-bg text-new-fg"
-                      >
-                        NEW
-                      </span>
-                    )}
                   </div>
-                  <div className="flex flex-col gap-[7px] pt-2">
-                    <div className="text-[13px] font-medium leading-[1.2] tracking-[-0.01em] text-t1 [overflow-wrap:anywhere] text-pretty min-h-[31px]">
-                      {related.caption}
-                    </div>
-                    <div className="font-mono text-[9px] tracking-[0.12em] text-t3 uppercase">
-                      {related.category}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 h-[3px] rounded-[2px] bg-bar-track">
-                        <div
-                          className="h-[3px] rounded-[2px] bg-bar-fill"
-                          style={{
-                            width: `${topViewCount > 0 ? Math.max(4, Math.round(((related.view_count ?? 0) / topViewCount) * 100)) : 4}%`,
-                          }}
-                        />
-                      </div>
-                      <span className="font-mono text-[10px] text-t3 tabular-nums whitespace-nowrap">
-                        {(related.view_count ?? 0).toLocaleString("en-US")}{" "}
-                        views
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
+                ))}
+              </div>
+            </PlaybackOwner>
           </div>
         )}
       </div>
