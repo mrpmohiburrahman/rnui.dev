@@ -812,3 +812,19 @@ commit cannot supply — the Firestore-backed view-count bullet (a Recording wit
 Firestore renders it; needs deploy A's counts), the Lighthouse CLS=0 run, and the light/dark
 screenshot + 4.5:1 contrast pass, which checkpoint 5 (`spec.md:207-208`) assigns to deploy B /
 ticket 13. Everything else on the Acceptance list is covered by the suite above.
+
+### 2026-08-05 — Ticket 06's half of Open question 1 is answered; this ticket's half is not
+
+Ticket 06's own open question — its hero sub-line, `Every entry is a silent
+screen recording…` — is answered as of commit `0bf8b85`: it now reads `Each one
+is a silent screen recording of a real phone, and a link to the repo that made
+it.` (`components/hero.tsx`), decided by spec.md decision 3 and by
+`components/site-footer.tsx:25-27` having already gone that way for the
+footer's twin sentence. Full record in
+`06-hero-stats-and-headings.md`'s 2026-08-05 comment.
+
+That leaves two of the four strings this ticket's 2026-08-03 review comment
+counted — `MISC · 148 ENTRIES` and `39% OF TOP ENTRY` — still saying "entry,"
+and they are this ticket's own, not 06's or 04's. The maintainer's call is now
+down to those two rather than all four; Open question 1 above still stands
+until they are made.
