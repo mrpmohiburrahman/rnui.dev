@@ -12,10 +12,21 @@ packages:
 # executed the rules. Pinning the major is the fix; drop it when
 # eslint-config-next ships a plugin that no longer reaches for the v4 subpath.
 #
-# It lives here and not in package.json because pnpm 10 stopped reading the
-# `pnpm` field there: "The 'pnpm' field in package.json is no longer read by
-# pnpm." Vercel pins pnpm 9, which cannot read overrides from this file — it
-# installs from the frozen lockfile, which already records the resolution.
+# It is declared TWICE — here and in package.json's `pnpm.overrides` — because the
+# two pnpm versions that build this repo read different files, and each refuses to
+# install if it cannot see the override the lockfile records:
+#
+#   pnpm 11 (local, CI)  reads this file; ignores package.json's `pnpm` field
+#   pnpm 9   (Vercel)    reads package.json; cannot read overrides from this file
+#
+# An earlier version of this comment claimed pnpm 9 would be fine because it
+# "installs from the frozen lockfile, which already records the resolution." That
+# is wrong. pnpm 9 compares the lockfile's `overrides` block against what it reads
+# from package.json, finds nothing there, and fails the build with
+# ERR_PNPM_LOCKFILE_CONFIG_MISMATCH. Deploy A hit exactly this on 2026-08-14.
+#
+# Keep the two values byte-identical. Drop both together when eslint-config-next
+# ships a plugin that no longer reaches for the v4 subpath.
 overrides:
   zod-validation-error: "^4.0.0"
 
