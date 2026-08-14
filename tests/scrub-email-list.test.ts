@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import {
   isGeneratedString,
+  looksGenerated,
   normalise,
   verdict,
 } from "../scripts/scrub-email-list"
@@ -48,6 +49,35 @@ describe("isGeneratedString", () => {
   })
 })
 
+// The corroborating signature, not a drop rule. Its value is entirely in what it
+// does NOT match: relax the strict consonant-vowel syllable and it starts
+// swallowing real people, which would turn a second opinion into a false one.
+describe("looksGenerated", () => {
+  it("matches the generator's syllable-plus-digits shape", () => {
+    expect(looksGenerated("wucabepaz18@gmail.com")).toBe(true)
+  })
+
+  it("matches it through gmail's dot-obfuscation too", () => {
+    expect(looksGenerated("f.o.b.a.z.i.q.u.4.2@gmail.com")).toBe(true)
+  })
+
+  it("spares a real name carrying a consonant digraph", () => {
+    expect(looksGenerated("banoduweshira922@example.com")).toBe(false)
+  })
+
+  it("spares a real name with a consonant cluster", () => {
+    expect(looksGenerated("viktoradeshina922@example.com")).toBe(false)
+  })
+
+  it("needs the trailing digits — a bare word is not the shape", () => {
+    expect(looksGenerated("samoloba@gmail.com")).toBe(false)
+  })
+
+  it("needs at least three syllables, so short locals do not match", () => {
+    expect(looksGenerated("niko240@example.com")).toBe(false)
+  })
+})
+
 describe("verdict", () => {
   it("keeps an ordinary address", () => {
     expect(verdict("someone@gmail.com", SIGNUP, [], true)).toEqual({
@@ -72,9 +102,11 @@ describe("verdict", () => {
     })
   })
 
-  // The mirror of the above, and the more expensive mistake: a real subscriber
-  // whose address happens to read like the generator's output. Nothing paired
-  // with it, so it stays.
+  // The mirror of the above, and the more expensive mistake: a real person's
+  // pending address that happens to read like the generator's output. (Pending,
+  // not a Subscriber — the map reserves that word for a confirmed address, and
+  // nothing on this list is confirmed until ticket 06's double opt-in.) Nothing
+  // paired with it, so it stays.
   it("keeps a syllabic-looking address that no contact submission pairs with", () => {
     expect(verdict("banoduwesira922@example.com", SIGNUP, [], true)).toEqual({
       keep: true,
