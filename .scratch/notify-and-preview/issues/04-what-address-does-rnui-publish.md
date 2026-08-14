@@ -104,13 +104,13 @@ maintainer's city and postal catchment, and no later decision retracts it from a
 Accepted knowingly, by the person whose address it is, after being shown the alternative and its
 cost.
 
-**One unverified fact, carried deliberately.** The postcode `3502` is **secondary-sourced, not
-primary-verified.** Four independent compilations agree on it and it is internally consistent with
-the Cumilla Sadar cluster (Cumilla HO 3500, Cantonment 3501, Halimanagar 3502, Courtbari 3503,
-Suaganj 3504), but no Bangladesh Post government source was reachable — `bdpost.gov.bd` failed on a
-TLS certificate error. It is recorded here rather than silently pasted. The maintainer lives there
-and can confirm or correct it in seconds; a wrong postcode does not invalidate the address for
-compliance purposes, since the office name and district carry the routing.
+**The postcode was checked, then confirmed.** `3502` was first established from four independent
+compilations, internally consistent with the Cumilla Sadar cluster (Cumilla HO 3500, Cantonment
+3501, Halimanagar 3502, Courtbari 3503, Suaganj 3504) — but *no* Bangladesh Post government source
+was reachable, `bdpost.gov.bd` failing on a TLS certificate error, so it was recorded as
+secondary-sourced rather than silently pasted. **The maintainer confirmed it on 2026-08-14.** They
+live in that catchment, which is a better authority than the government page would have been.
+Treated as settled.
 
 ### The From:, fixed
 
@@ -198,9 +198,7 @@ and 06 is the first consumer, so 06 owns creating it. Not built here — nothing
 
 ### Left for the maintainer
 
-**Confirm the postcode is 3502.** You live there; this is a five-second check against any envelope
-you have received, and it is the one fact in this ticket that no source I could reach was
-authoritative for. If it is wrong, correct it in the two blocks above — nothing else moves.
+**~~Confirm the postcode is 3502.~~ Done — confirmed by the maintainer, 2026-08-14.**
 
 **Make `hello@rnui.dev` receive mail.** A second maintainer task, missing from this list until
 review caught it. The address is published in both blocks above and must stay reachable for **60
