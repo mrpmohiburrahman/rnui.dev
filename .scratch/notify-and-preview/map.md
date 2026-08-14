@@ -86,22 +86,27 @@ reason to avoid that vendor, not a reason to send the email.
 ## Decisions so far
 
 <!-- one line per resolved ticket: gist, then the link -->
+<!-- a ticket whose decision is final but whose acceptance still has a human step is marked
+     (ready-for-human) — the decision binds now; the ticket is not closed -->
 
 - The branch is `feat/studio-dark`, and it lives only on this machine — it was never pushed, so
   decision 5's "references updated with it" was six markdown files, not a remote rename.
   [01](issues/01-rename-the-branch.md)
-- The 48 are 29. The list was a third bot: 18 of the 23 `userFeedback` rows are machine-generated
-  and every one of those addresses signed up within 43 seconds of filing, so the pairing — not a
-  pattern match — is what identified them. No Firestore row was written to.
-  [03](issues/03-scrub-the-list.md)
-- rnui.dev publishes a **Bangladesh PO box**, not the maintainer's home, and mails as
-  `rnui.dev <digest@mail.rnui.dev>` with `Reply-To: hello@rnui.dev` — permanently, since changing
-  it resets sender reputation. The box beat a US CMRA on cost and beat the home address on being
-  reversible; the footer block is written and waits on one token, the box number.
+- The 48 are 29 — the list was a third bot, caught by pairing signups against `userFeedback` junk
+  rather than by pattern-matching addresses. (ready-for-human) [03](issues/03-scrub-the-list.md)
+- rnui.dev publishes `Halima Nagar, Cumilla 3502, Bangladesh` — the maintainer's home postal
+  locality, chosen over a PO box knowing it cannot be unpublished — and mails permanently as
+  `rnui.dev <digest@mail.rnui.dev>` / `Reply-To: hello@rnui.dev`.
   [04](issues/04-what-address-does-rnui-publish.md)
 
 ## Not yet specified
 
+- **Who makes `hello@rnui.dev` receive mail, and keeps it receiving.** Ticket 04 published it in
+  the Digest footer and the signup block, and CASL s.6(2)/(3) and s.11 require it to stay reachable
+  for 60 days after *every* send — a standing obligation, not a launch step. No ticket owns it: 05's
+  acceptance covers *sending* DNS on `mail.rnui.dev` and says nothing about *receiving* on the apex.
+  A forward to an existing inbox discharges it. Cheapest home is one more bullet on 05 while it is
+  already in DNS. Surfaced by review of 04, not by 04 itself.
 - **What is done with the survey answers.** Who reads the open text, how often, and what turns a
   complaint into a ticket. Needs at least one round of real answers before it can be specified —
   at 2–5 responses/week that is a month away.
