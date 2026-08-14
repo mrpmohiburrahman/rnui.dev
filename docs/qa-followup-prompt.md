@@ -1,7 +1,7 @@
 # Close the four items the 2026-08-04 QA pass left open
 
 Work in `/Users/mrp/Documents/1-Projects/OpenSource/awesome-react-native-ui/rnui.dev`, on branch
-`feat/catalogue-ux`. Read `CLAUDE.md`, `.scratch/studio-dark/spec.md` and
+`feat/studio-dark`. Read `CLAUDE.md`, `.scratch/studio-dark/spec.md` and
 `.scratch/posthog-expansion/spec.md` before you touch anything — their Goals, Non-goals,
 Constraints and Checkpoints bind this work.
 
@@ -17,7 +17,7 @@ Verified during the QA pass. Check them if you like; do not spend a subagent red
 |---|---|
 | Branch is 60 commits ahead of `main` | `git rev-list --count main..HEAD` |
 | **Deploy A's SHA is `76651a3`** | `4a663a5` is the first Studio Dark *code* commit ("put the Studio Dark design system in Tailwind"); its parent is `76651a3`, which carries the `ui-ux-overhaul` behaviour, the 13 PostHog events and the rename, with no restyle |
-| `checkpoint-13-gate.md` says no such ancestor exists | Its *Does not prove (hand-offs)* section claims `feat/catalogue-ux` is "a single linear Studio Dark build with no pre-Studio-Dark ancestor to diff against". That is false, and steps 10–12's whole hand-off rests on it |
+| `checkpoint-13-gate.md` says no such ancestor exists | Its *Does not prove (hand-offs)* section claims `feat/studio-dark` is "a single linear Studio Dark build with no pre-Studio-Dark ancestor to diff against". That is false, and steps 10–12's whole hand-off rests on it |
 | Counter collection falls back to production | `lib/counters-firestore.ts:27` — `process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION \|\| "rnui"`, with a startup `console.warn` at `:32-36` that says so |
 | The e2e suite writes real votes | `tests/e2e/vote.spec.ts` and `tests/e2e/posthog-events.spec.ts` click the real Vote control, which runs the server action |
 | Measured damage | `vote_count` on Recording `01KAY9B2AMN590C8YP5WTNDTHQ` ("Wheel Picker") went **402 → 419** across one session of test runs |

@@ -5,7 +5,7 @@ reduced motion, accessibility and the performance measurement). Its shape follow
 `.scratch/ui-ux-overhaul/checkpoint-01-03-lighthouse.md`: how it was measured, the
 tables, and an explicit *what this does and does not prove* section.
 
-Run against the finished effort on branch `feat/catalogue-ux`, one sitting, on one
+Run against the finished effort on branch `feat/studio-dark`, one sitting, on one
 machine (Mac, Apple Silicon, Chrome 137 / Playwright 1.60). Numbers from different
 machines are not a before/after, so the cross-build comparison in steps 10–12 is
 deliberately left as a hand-off (see *What this does and does not prove*).
@@ -269,7 +269,7 @@ Reproducible via `pnpm exec node scripts/checkpoint-13-lighthouse.mjs <arm>` and
 
 - **before** — `76651a3`, deploy A's SHA, in a `git worktree`, `pnpm build && pnpm start`
   on `localhost:3111`.
-- **after** — `feat/catalogue-ux` at `0bf8b85`, same commands, same port, immediately
+- **after** — `feat/studio-dark` at `0bf8b85`, same commands, same port, immediately
   afterwards.
 
 Both arms were built with `NEXT_PUBLIC_CDN_URL="http://localhost:3111"` and served the
@@ -420,14 +420,14 @@ that way; a default build measures nothing.
 **Does not prove (hand-offs).**
 - **LCP / CLS / INP (steps 10–12).** `lighthouse` 13.4.1 is installed, but the "before"
   arm requires a `git worktree` at the deploy-A SHA (the `ui-ux-overhaul` + rename state),
-  which is **not in this branch's history** — `feat/catalogue-ux` is a single linear Studio
+  which is **not in this branch's history** — `feat/studio-dark` is a single linear Studio
   Dark build with no pre-Stúdio-Dark ancestor to diff against. The maintainer runs the
   before/after on the machine that holds the deploy-A SHA. The numbers ticket 02 recorded
   (home mobile LCP +358ms from the font commit, CLS 0→0) are the only lab deltas this branch
   can show.
 
   > **2026-08-05 correction — a pre-Studio-Dark ancestor does exist, and it builds.** The claim
-  > above — that `feat/catalogue-ux` is "a single linear Studio Dark build with no pre-Studio-Dark
+  > above — that `feat/studio-dark` is "a single linear Studio Dark build with no pre-Studio-Dark
   > ancestor to diff against" — is false. `76651a3` ("docs: clear the PostHog remainder, and fix a
   > tile that would have lied") is the parent of `4a663a5` ("feat: put the Studio Dark design
   > system in Tailwind, and the fonts it ships"), the first commit that touches Studio Dark styling
