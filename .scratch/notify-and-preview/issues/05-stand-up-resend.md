@@ -132,3 +132,48 @@ let an agent write every record above and the `hello@` rule in one pass.
 could in principle be discharged there instead of via Cloudflare Email Routing. It is not
 recommended — it would mean repointing apex MX away from Cloudflare, which is a bigger change than
 the routing rule that is merely inconvenient to click.
+
+### 2026-08-15 — three of the four records are live. DMARC is not, and the reason is the dashboard.
+
+Written after doing the work rather than planning it. **No API token was used.** One was created
+(`rnui-dev-mail-dns`, scoped `rnui.dev` → DNS:Edit + Email Routing Rules:Edit) but its value was
+never captured — the browser tooling refuses to read sensitive keys, and that guard was respected
+rather than worked around with a screenshot. **That token is therefore unusable by anyone and
+should be revoked**; it is pure liability with no holder. The records below were written straight
+through the already-authenticated dashboard instead, which is what should have been tried first —
+the token was solving a problem that did not exist.
+
+**Live and confirmed by `dig` against 1.1.1.1, not by reading the dashboard back:**
+
+```
+resend._domainkey.mail.rnui.dev  TXT  p=MIGf…ZatQIDAQAB
+send.mail.rnui.dev               MX   10 feedback-smtp.us-east-1.amazonses.com.
+send.mail.rnui.dev               TXT  v=spf1 include:amazonses.com ~all
+```
+
+**`_dmarc.rnui.dev` is still absent.** After the third record saved, the Cloudflare dashboard
+stopped opening modals altogether: "Add record" and "Import" both became no-ops, clicked by
+coordinate and by element reference, and a full page reload did not clear it. This is the same
+failure class the 2026-08-14 session hit on Email Routing, where Save spun forever — that session
+blamed the freshly force-migrated Email Routing UI, but the fault is evidently wider than that one
+screen. **No partial or duplicate records were created**; the count moved 34 → 37 and stopped, and
+`dig` agrees.
+
+So two things remain, and neither is blocked on a decision:
+
+1. `TXT _dmarc` → `v=DMARC1; p=none; rua=mailto:hello@rnui.dev`, at the **apex** (it is inherited,
+   so this covers `mail.` too; publishing only on `mail.` would leave the apex bare). Cloudflare's
+   own Recommendations banner is flagging the same gap.
+2. The `hello@rnui.dev` routing rule, not attempted — the UI was already in the stuck state, and
+   the `rua=` above depends on it, since cross-domain DMARC reporting to a Gmail address is refused
+   by compliant senders.
+
+`scratchpad/write-mail-dns.sh` does both idempotently and is syntax-checked; it needs a *readable*
+token in `.env.local` as `CLOUDFLARE_API_TOKEN_RNUI_DNS`. Retrying the dashboard later is equally
+valid — the stuck state may simply clear.
+
+**Resend still reads `pending`.** Verification was triggered twice via
+`POST /domains/{id}/verify` and all three records still report `pending`. That is expected rather
+than wrong: the records went live minutes ago and Resend's DKIM poll lags. It should flip to
+`verified` unattended; if it has not within an hour, re-trigger before suspecting the records,
+because `dig` already proves they resolve.
