@@ -90,6 +90,15 @@ reason to avoid that vendor, not a reason to send the email.
 - The branch is `feat/studio-dark`, and it lives only on this machine — it was never pushed, so
   decision 5's "references updated with it" was six markdown files, not a remote rename.
   [01](issues/01-rename-the-branch.md)
+- The 48 are 29. The list was a third bot: 18 of the 23 `userFeedback` rows are machine-generated
+  and every one of those addresses signed up within 43 seconds of filing, so the pairing — not a
+  pattern match — is what identified them. No Firestore row was written to.
+  [03](issues/03-scrub-the-list.md)
+- rnui.dev publishes a **Bangladesh PO box**, not the maintainer's home, and mails as
+  `rnui.dev <digest@mail.rnui.dev>` with `Reply-To: hello@rnui.dev` — permanently, since changing
+  it resets sender reputation. The box beat a US CMRA on cost and beat the home address on being
+  reversible; the footer block is written and waits on one token, the box number.
+  [04](issues/04-what-address-does-rnui-publish.md)
 
 ## Not yet specified
 
