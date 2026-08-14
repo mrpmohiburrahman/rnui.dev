@@ -23,9 +23,11 @@ import { resolve } from "node:path"
 import { pathToFileURL } from "node:url"
 
 const PROJECT = "rnui-pixellog-d1008"
-const OUT = resolve(
-  ".scratch/notify-and-preview/research/scrub-result.local.json"
-)
+const RESEARCH = resolve(process.cwd(), ".scratch/notify-and-preview/research")
+/** Carries addresses — gitignored. */
+const OUT = resolve(RESEARCH, "scrub-result.local.json")
+/** Carries no addresses — committed, so the consent dates are auditable. */
+const MANIFEST = resolve(RESEARCH, "scrub-survivors.json")
 
 /**
  * RFC 2142 plus the generic mailboxes bulk verifiers treat as role accounts.
@@ -83,6 +85,7 @@ const PAIR_WINDOW_MS = 120_000
 
 type Doc = {
   name: string
+  createTime?: string
   fields: Record<string, { stringValue?: string; timestampValue?: string }>
 }
 
@@ -138,9 +141,34 @@ export function isGeneratedString(s: string): boolean {
 const isJunkFeedback = (d: Doc) =>
   isGeneratedString(str(d, "message")) || isGeneratedString(str(d, "firstName"))
 
+/**
+ * The shape the bot's address generator produced: an optional leading vowel,
+ * three or more consonant-vowel syllables, an optional trailing consonant, then
+ * one to three digits.
+ *
+ * **This is not a drop rule and must not become one.** It is a second opinion on
+ * the pairing below, and the only reason the bot finding rests on two
+ * independent methods rather than one. Run over the real list on 2026-08-14 it
+ * matched 17 of the 18 the pairing caught and nothing the pairing missed — the
+ * 18th wore an ordinary human name, which is exactly why the pairing leads.
+ *
+ * The strict single-consonant syllable matters: relax it to admit digraphs and
+ * it starts matching real people's names. Left as a check so that claim in
+ * research/scrub-2026-08-14.md is reproducible instead of a one-off command.
+ */
+export function looksGenerated(email: string): boolean {
+  const local = normalise(email).split("@")[0]
+  return /^[aeiou]?(?:[bcdfghjklmnpqrstvwxyz][aeiou]){3,}[bcdfghjklmnpqrstvwxyz]?\d{1,3}$/.test(
+    local
+  )
+}
+
+/** In ladder order, so the summary below prints them the way they are applied. */
+export const RULES = ["syntax", "mx", "bot", "role"] as const
+
 export type Verdict =
   | { keep: true }
-  | { keep: false; rule: "syntax" | "mx" | "bot" | "role"; detail: string }
+  | { keep: false; rule: (typeof RULES)[number]; detail: string }
 
 /**
  * The rule ladder, in order. Bot beats role beats survivor: an address caught
@@ -172,7 +200,9 @@ export function verdict(
       detail: `junk contact submission ${gap >= 0 ? "+" : ""}${gap}s away`,
     }
   }
-  if (ROLE_LOCALS.has(local.replaceAll(".", ""))) {
+  // Via normalise, so dots are folded only where gmail actually ignores them.
+  // Off gmail a dot is significant and `in.fo@` is not `info@`.
+  if (ROLE_LOCALS.has(normalise(email).split("@")[0])) {
     return { keep: false, rule: "role", detail: `${local}@ is a role mailbox` }
   }
   return { keep: true }
@@ -187,9 +217,16 @@ async function main() {
   for (const d of feedback) {
     if (!isJunkFeedback(d)) continue
     const key = normalise(str(d, "email").trim().toLowerCase())
-    const at = Date.parse(time(d, "submittedAt") || d.name)
-    if (!Number.isNaN(at))
-      junkByAddress.set(key, [...(junkByAddress.get(key) ?? []), at])
+    // createTime, not d.name — the name is a document path, and parsing it as a
+    // date yields NaN, which would drop this junk row from the pairing and let
+    // the bot it belongs to survive the scrub.
+    const stamp = time(d, "submittedAt") || d.createTime
+    const at = stamp ? Date.parse(stamp) : NaN
+    if (Number.isNaN(at)) {
+      console.warn(`skipped junk row ${id(d)}: no usable timestamp`)
+      continue
+    }
+    junkByAddress.set(key, [...(junkByAddress.get(key) ?? []), at])
   }
 
   // Collapse duplicates onto the earliest createdAt — that is the consent date.
@@ -231,7 +268,11 @@ async function main() {
   )
 
   const survivors: Row[] = []
-  const dropped: { docId: string; rule: string; detail: string }[] = []
+  const dropped: {
+    docId: string
+    rule: (typeof RULES)[number]
+    detail: string
+  }[] = []
 
   for (const [key, row] of byAddress) {
     const v = verdict(
@@ -269,16 +310,50 @@ async function main() {
     )}\n`
   )
 
+  // The same 29, minus the addresses, so the consent dates ticket 03 bullet 7
+  // turns on are auditable in the repo. A Firestore document id identifies
+  // nobody outside the project; rejoin it to an address there if you need one.
+  writeFileSync(
+    MANIFEST,
+    `${JSON.stringify(
+      {
+        note: "Consent dates for the surviving list. Addresses deliberately absent — this file is committed to a public repo. Rejoin docId against Firestore emails/ for the address.",
+        survivors: survivors.length,
+        verified: false,
+        consent: survivors
+          .map((r) => ({ docId: r.docId, createdAt: r.createdAt }))
+          .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+      },
+      null,
+      2
+    )}\n`
+  )
+
   console.log(`rows                 ${emails.length}`)
   console.log(
     `unique               ${byAddress.size}  (${collapsed} duplicate rows collapsed)`
   )
-  for (const rule of ["syntax", "mx", "bot", "role"]) {
+  for (const rule of RULES) {
     const hits = dropped.filter((d) => d.rule === rule)
     if (hits.length) console.log(`dropped: ${rule.padEnd(12)}${hits.length}`)
   }
   console.log(`survivors            ${survivors.length}`)
-  console.log(`\nwrote ${OUT} (gitignored)\n`)
+
+  // The second opinion. `missed` is the number that matters: an address wearing
+  // the generator's shape that no junk submission paired with is a bot the
+  // pairing cannot see, and every one is a reason to distrust the count.
+  const bots = dropped.filter((d) => d.rule === "bot")
+  const corroborated = [...byAddress.values()].filter(
+    (r) => looksGenerated(r.email) && bots.some((b) => b.docId === r.docId)
+  ).length
+  const missed = survivors.filter((r) => looksGenerated(r.email)).length
+  console.log(
+    `\nsignature check      ${corroborated}/${bots.length} of the bot drops match the generator shape` +
+      `\n                     ${missed} survivor(s) match it without a pairing`
+  )
+
+  console.log(`\nwrote ${OUT} (gitignored)`)
+  console.log(`wrote ${MANIFEST} (committed, no addresses)\n`)
   console.log("disposition by document id:")
   for (const d of dropped.sort((a, b) => a.rule.localeCompare(b.rule))) {
     console.log(`  ${d.docId}  ${d.rule.padEnd(7)} ${d.detail}`)

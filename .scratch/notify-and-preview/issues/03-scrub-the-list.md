@@ -35,7 +35,7 @@ open path, so some of the 48 may be planted. One spamtrap hit can blocklist the 
 **2026-08-14 — scrubbed. 29 survive, provisionally.** Seven of the eight acceptance bullets are
 met; the verifier bullet is not, and cannot be by an agent. Full working in
 `research/scrub-2026-08-14.md`, consent evidence in `research/consent-evidence-form-copy.md`,
-re-runnable as `pnpm scrub:emails` (`scripts/scrub-email-list.ts`, 14 unit tests in
+re-runnable as `pnpm scrub:emails` (`scripts/scrub-email-list.ts`, 20 unit tests in
 `tests/scrub-email-list.test.ts`).
 
 ```
@@ -92,3 +92,25 @@ blocklisted — the exact outcome this bullet exists to prevent.
 
 **Treat 29 as provisional until then.** `scrub-result.local.json` carries `"verified": false` so
 ticket 10 cannot mistake it for a cleared list.
+
+**2026-08-14, second pass after review.** Counts unchanged — still 29 — but four things were wrong
+or weak enough to fix:
+
+- **A latent bug.** A junk contact row missing `submittedAt` fell back to parsing the Firestore
+  _document path_ as a date, which yields `NaN` and silently dropped that row from the pairing —
+  letting the bot behind it survive. Now falls back to `createTime` and warns loudly if neither
+  exists. All 23 current rows have `submittedAt`, so no number moved; it was a trap for the re-run.
+- **An unreproducible claim.** The "two independent methods converge" evidence rested on a regex I
+  ran once by hand and never committed. It is now `looksGenerated()` in the script, printed on
+  every run as `signature check`, and covered by six tests. It is explicitly not a drop rule.
+- **`createdAt` was unevidenced in-repo.** The report tabled the 19 dropped docIds but none of the
+  29 survivors', so bullet 7 rested on my word. The script now also writes
+  `research/scrub-survivors.json` — the 29 as docId plus `createdAt`, no addresses — which is
+  committed. By the same argument that makes the disposition table safe, this is safe.
+- **The role check stripped dots on every domain**, not just gmail, where alone they are ignored.
+  Off gmail a dot is significant and `in.fo@` is not `info@`.
+
+One review point accepted but not acted on: bullet 4 says "`createdAt` clustering", and what the
+script does is an exact address join within a ±120s window. The join is strictly stronger evidence
+than clustering would be, and the signature check now covers the gap it leaves (a bot address that
+never filed feedback), so the wording is looser than the method rather than the other way round.
