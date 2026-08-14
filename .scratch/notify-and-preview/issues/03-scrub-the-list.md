@@ -80,15 +80,33 @@ document id, which identifies nobody. The script, not its output, is the durable
 
 ### Left for the maintainer
 
-**Run a bulk verifier over the 29 in `scrub-result.local.json`** (ZeroBounce, Kickbox,
-NeverBounce, Emailable — all need an account and a card, which is why this is not an agent's).
-Drop whatever comes back undeliverable or spamtrap, then correct the count here and in
-`research/scrub-2026-08-14.md`. Two survivors are specifically flagged there as worth the
-verifier's opinion.
+**Run a bulk verifier over the 29 in `scrub-result.local.json`.** Drop whatever comes back
+undeliverable or spamtrap, then correct the count here and in `research/scrub-2026-08-14.md`. Two
+survivors are specifically flagged there as worth the verifier's opinion.
 
-Do not substitute an SMTP `RCPT TO` probe: gmail accepts every recipient and bounces later, so it
-would say nothing about 44 of the 48, and probing from an unaccredited IP is itself a way to get
-blocklisted — the exact outcome this bullet exists to prevent.
+It is still not an agent's job — it needs an account and someone's judgement on the "risky" and
+"catch-all" verdicts — but the reason given here first, that it needs a card, was wrong. **29
+addresses fit inside a free tier with no card at all.** Checked 2026-08-14 against each vendor's own
+pricing page: **Bouncer** is the cleanest fit (100 free credits, "No credit card required to start"
+and "credits never expire" both stated on their own page). NeverBounce also states no card is
+needed for a first list, but its free allotment may be as low as 10 credits, which would not cover
+29 in one pass. ZeroBounce (100/month) and Emailable (250) cover it too, but neither restates the
+no-card claim on its own pricing page.
+
+Do not substitute a hand-rolled SMTP `RCPT TO` probe. That still stands, but on one reason rather
+than two: **probing from an unaccredited IP is itself a way to get blocklisted** — the exact outcome
+this bullet exists to prevent — and a real verifier also cross-references spamtrap and
+known-complainer lists that a probe cannot see.
+
+**A claim made here earlier is contested, and the action does not change.** This ticket said gmail
+"accepts every recipient and bounces later, so it would say nothing about 44 of the 48". A check on
+2026-08-14 found the opposite documented: consumer `gmail.com` is not an accept-all domain and
+answers `RCPT TO` definitively, so verification is reported as reliable there; the real Gmail
+limitation at scale is rate-limiting, which does not bite at 29. **Confidence medium, not high** —
+the clearest supporting source was a vendor's own marketing page, and no source was found stating
+the original claim either. Recorded rather than rewritten: it does not move a single number, and
+both versions point at the same action, which is to use a verifier rather than a probe. If accept-all
+behaviour matters to a verdict, it will matter for the ~15% on business domains, not the gmail bulk.
 
 **Treat 29 as provisional until then.** `scrub-result.local.json` carries `"verified": false` so
 ticket 10 cannot mistake it for a cleared list.
