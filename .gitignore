@@ -67,3 +67,8 @@ __data__
 # Reproducible from scripts/checkpoint-13-lighthouse.mjs and -inp.mjs against two builds.
 .scratch/studio-dark/lighthouse-*.json
 .scratch/studio-dark/inp-*.json
+
+# The scrubbed mailing list (notify-and-preview ticket 03). This repo is public
+# and .scratch/ is tracked, so the one artifact that carries real addresses stays
+# out of it — reproducible from `pnpm scrub:emails` against Firestore.
+.scratch/notify-and-preview/research/*.local.json

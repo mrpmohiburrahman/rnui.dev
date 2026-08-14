@@ -19,6 +19,7 @@
     "postbuild": "next-sitemap",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "metrics:update": "tsx scripts/metrics-update.ts",
+    "scrub:emails": "tsx scripts/scrub-email-list.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
