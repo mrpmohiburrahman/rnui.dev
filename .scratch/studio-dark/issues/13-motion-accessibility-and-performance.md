@@ -650,7 +650,7 @@ tests, aria-keyshortcuts):
   VOID message** when arm A never glows, so that failure cannot be reported as a pass again.
 - **Steps 10 and 12 (LCP/CLS/INP).** `lighthouse` 13.4.1 is installed, but the "before"
   arm needs a `git worktree` at the deploy-A SHA, which is **not in this branch's history**
-  (`feat/catalogue-ux` is a single linear Studio Dark build — there is no pre-Studio-Dark
+  (`feat/studio-dark` is a single linear Studio Dark build — there is no pre-Studio-Dark
   ancestor to diff against). Recorded as a maintainer run in the checkpoint file.
 
   > **2026-08-05 correction.** The "no pre-Studio-Dark ancestor" claim above is false. `76651a3`

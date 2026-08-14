@@ -478,7 +478,7 @@ inside a ticket the table describes as a component.
 
 ## Comments
 
-Implemented 2026-08-03 on `feat/catalogue-ux`. Every `## Acceptance` bullet is met;
+Implemented 2026-08-03 on `feat/studio-dark`. Every `## Acceptance` bullet is met;
 `pnpm check-types`, `pnpm lint` (0 errors), `pnpm test` (217 passed), `pnpm build` and the
 Playwright suite (132 passed) are all green.
 

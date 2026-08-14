@@ -16,7 +16,7 @@ it. Worse, "before" names three different things, and picking the wrong one make
 | | State | What it is | Who has seen it |
 |---|---|---|---|
 | S1 | `main` | rnui.dev as served today. Pre-overhaul. | every visitor |
-| S2 | deploy A | `feat/catalogue-ux` — pagination, autoplay, the five slots, the view signal, the overlay, the filters, the rename | nobody |
+| S2 | deploy A | `feat/studio-dark` — pagination, autoplay, the five slots, the view signal, the overlay, the filters, the rename | nobody |
 | S3 | deploy B | Studio Dark | nobody |
 
 A single S1 → S3 clip credits the restyle with all of `ui-ux-overhaul`'s behaviour work —
@@ -90,7 +90,7 @@ Two things drift under all three captures:
 - `playwright.tour.config.ts` exists, has no `webServer` block, and running the default
   `pnpm exec playwright test` still collects exactly the 119 e2e specs and no tour.
 - `tests/tour/catalogue.spec.ts` contains at most one `expect`, and it is before the tour begins.
-- The tour runs green against a `main` checkout, against `feat/catalogue-ux` at deploy A, and
+- The tour runs green against a `main` checkout, against `feat/studio-dark` at deploy A, and
   against Studio Dark, with no per-state edits beyond the declared selector map.
 - Six recordings exist under `.scratch/studio-dark/recordings/`, all six captured within one
   sitting, all six the same viewport, and the directory is gitignored.
