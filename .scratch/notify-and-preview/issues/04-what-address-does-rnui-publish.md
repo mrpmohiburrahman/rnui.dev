@@ -1,6 +1,6 @@
 # What postal address and sender identity does rnui.dev publish?
 
-Status: ready-for-human
+Status: resolved
 Type: grilling
 
 ## Question
@@ -38,43 +38,79 @@ forever — changing it later resets whatever sender reputation has accrued.
 
 ## Comments
 
-**2026-08-14 — decided, with the maintainer, in one round.** All three sub-decisions taken.
-Two of the three acceptance bullets are met outright; the second is met in every part except one
-token, because the thing it names does not exist yet. Details below, then what is left.
+**2026-08-14 — decided, with the maintainer, over two rounds.** All three sub-decisions taken and
+all three acceptance bullets met. The postal question was decided twice: a PO box was chosen first,
+then the maintainer supplied a home postal locality instead and, on being shown what that changes,
+confirmed it. **The second answer is the decision.** The first is recorded below because the
+reasoning that was used to reject the home address is the reasoning the maintainer then overrode
+with their eyes open, and a record that hides that is worse than useless.
 
 ### The decision
 
-**Option 3, in its PO box form: a Bangladesh post-office box.** Not the home address, not a
-registered business, not silence.
+**Option 1, in its coarsest available form: the maintainer's home postal locality.**
 
-Reasoning, and what was weighed against what:
+```
+Halima Nagar, Cumilla 3502, Bangladesh
+```
 
-- **Option 1 is the only irreversible one on the list.** A home address sent to 29 inboxes cannot
-  be recalled from any of them, and the research advises against it twice (§CAN-SPAM, §D.2). Every
-  other option can be swapped later by editing one footer line. That asymmetry decided it before
-  cost did.
-- **Option 4 was the real competitor**, and it is not a silly position — a digest of new Recordings
-  from a free, non-commercial catalogue may well fall outside CAN-SPAM's "commercial" primary
-  purpose, and may fall outside CASL entirely (s.1(2), while there is no sponsorship or affiliate
-  link). It was rejected because the whole cure-at-send-time argument in the research's §D rests on
-  the Digest footer carrying the disclosures the old form lacked. Dropping the mailing address
-  drops one of the four things CASL's ECPR s.4 wanted, in the one message built to supply them. It
-  saves a trip to the post office and costs the argument its load-bearing member.
-- **Option 2 was not seriously in play** — registering a company to send 29 people a weekly list of
-  React Native components is the definition of the framework this effort was warned not to grow.
-- **Between a BD PO box and a US virtual mailbox / CMRA**, the CMRA is the literally-compliant one
-  and costs $120–240/year against a site with no revenue. The box is a few hundred BDT.
+No box number, because no box was rented. This is the sub-post-office catchment the maintainer
+lives in, published as the sender's mailing address.
 
-**Accepted as a risk, explicitly:** a Bangladesh PO box is *not* one of the three things the FTC's
-guidance names. It contemplates a street address, a **USPS-registered** PO box, or a CMRA. Ours is
-a real physical postal facility that receives mail addressed to it, which is the substance of the
-requirement, but the literal text is not satisfied and nothing here pretends otherwise. This is
-accepted because the exposure is 29 recipients of a non-commercial digest, and because it is the
-question the research already parked as needing a real lawyer and never got one for — see
-`research/research-consent-and-deliverability.md`, *Where a real lawyer is genuinely needed*, item
-4. If that opinion is ever obtained and comes back unfavourable, the upgrade is a CMRA
-subscription and one edited line. **That is the whole reason this option beat the home address:
-being wrong here is cheap, and being wrong on option 1 is permanent.**
+**This reverses the first answer, which was a rented Bangladesh PO box (option 3).** That was
+chosen on one argument: of the four options only the home address is irreversible, since an address
+in 29 inboxes cannot be recalled from any of them, and the research advises against it twice
+(§CAN-SPAM, §D.2). The maintainer was shown that argument explicitly, together with the fact that
+this shares option 1's one-way property, and chose it anyway. **That is their call to make and it is
+made.** What follows is what the choice actually costs and what genuinely blunts it — not a
+re-argument.
+
+**What it costs.** Permanence. Every other option on the list could be swapped later by editing one
+footer line; this one cannot be unpublished from inboxes or archives. If it is ever regretted, the
+remedy changes the address for *future* sends only.
+
+**What genuinely blunts it, and is why this is defensible rather than merely chosen.** A Bangladeshi
+sub-office is not a street address. `Halima Nagar` is Halimanagar SO, a real office in the Bangladesh
+Post network whose delivery catchment runs to several square kilometres and covers multiple
+mahallas. `PO, district` sits one rung above street level: it names the office that does final-mile
+delivery, not a house, a road or even reliably a neighbourhood. Publishing it discloses a city and a
+postal catchment, which is a genuinely smaller disclosure than the "home address" the research warns
+against — the research's warning is aimed at a street address, and this is not one.
+
+**The compliance side of the trade moves the other way, and improves.** A residential postal locality
+is closer to CAN-SPAM's contemplated "street address" than a foreign PO box would have been, and it
+sidesteps the open question the first decision had to accept as a risk — whether a *non-US*,
+non-USPS-registered box satisfies "valid physical postal address" at all, which the research parks as
+needing a real lawyer (`research/research-consent-and-deliverability.md`, *Where a real lawyer is
+genuinely needed*, item 4). That question no longer has to be answered. **So this decision buys
+compliance certainty with privacy, where the first bought privacy with compliance uncertainty.**
+Both were coherent; they price the same trade in opposite directions.
+
+The other two options stayed rejected, on unchanged reasoning:
+
+- **Option 4 (publish nothing)** is not a silly position — the Digest may fall outside CASL entirely
+  (s.1(2), while there is no sponsorship or affiliate link). But it does **not** get CAN-SPAM's
+  non-commercial carve-out: the research grants that only to a promotion-free survey and puts the
+  Digest inside the regime, "fine with postal address + opt-out". Rejected because the whole
+  cure-at-send-time argument in the research's §D rests on the Digest footer carrying the
+  disclosures the old form lacked; dropping the mailing address takes the postal address out of the
+  one message built to carry it — CAN-SPAM's requirement directly, and CASL s.6(2)'s sender
+  identification with it.
+- **Option 2 (register a business)** was never seriously in play — registering a company to send 29
+  people a weekly list of React Native components is the definition of the framework this effort was
+  warned not to grow.
+
+**Accepted as a risk, explicitly:** the address is permanent once sent, it identifies the
+maintainer's city and postal catchment, and no later decision retracts it from a delivered message.
+Accepted knowingly, by the person whose address it is, after being shown the alternative and its
+cost.
+
+**One unverified fact, carried deliberately.** The postcode `3502` is **secondary-sourced, not
+primary-verified.** Four independent compilations agree on it and it is internally consistent with
+the Cumilla Sadar cluster (Cumilla HO 3500, Cantonment 3501, Halimanagar 3502, Courtbari 3503,
+Suaganj 3504), but no Bangladesh Post government source was reachable — `bdpost.gov.bd` failed on a
+TLS certificate error. It is recorded here rather than silently pasted. The maintainer lives there
+and can confirm or correct it in seconds; a wrong postcode does not invalidate the address for
+compliance purposes, since the office name and district carry the routing.
 
 ### The From:, fixed
 
@@ -100,18 +136,18 @@ is already in DNS and is the cheapest place to land the route.
 
 ### The footer identity block, verbatim
 
-For the Digest (ticket 09). `{{POSTAL_ADDRESS}}` is the one unfilled token; `{{SIGNUP_DATE}}` is
-per-recipient and comes from the `createdAt` ticket 03 preserved on all 29 survivors.
+For the Digest (ticket 09). Complete and ready to paste. `{{SIGNUP_DATE}}` is the only token, it is
+per-recipient, and it comes from the `createdAt` ticket 03 preserved on all 29 survivors.
 
 ```
 You signed up for the rnui.dev Digest at rnui.dev on {{SIGNUP_DATE}}.
 
 rnui.dev — MD. MOHIBUR RAHMAN
-{{POSTAL_ADDRESS}}
+Halima Nagar, Cumilla 3502, Bangladesh
 hello@rnui.dev
 
 A weekly Digest of Recordings added to rnui.dev. No sponsor mail, no third-party
-marketing, and your address is never sold or shared.
+marketing, and your address is never shared.
 
 Unsubscribe · Privacy Policy
 ```
@@ -124,20 +160,37 @@ word ticket 06 was told to fix:
 Get the weekly Digest
 
 New Recordings added to rnui.dev, once a week. Sent by MD. MOHIBUR RAHMAN,
-{{POSTAL_ADDRESS}}, hello@rnui.dev. No sponsor mail, no third-party marketing, and
-your address is never shared. Unsubscribe any time — link in every email.
-See our Privacy Policy.
+Halima Nagar, Cumilla 3502, Bangladesh, hello@rnui.dev. No sponsor mail, no
+third-party marketing, and your address is never shared. Unsubscribe any time
+— link in every email. See our Privacy Policy.
 ```
 
-Between them these carry all four things CASL's ECPR s.4 wants in a consent request (name, mailing
-address, contact method, withdrawal statement), all four ICO wants for informed consent (controller
-identity, purpose, processing, withdrawal), and CAN-SPAM's postal address plus opt-out.
+**These two blocks do different legal jobs, and must not be swapped or conflated.**
 
-`{{POSTAL_ADDRESS}}` renders as a single line, and should read:
+- **The signup block is a consent request**, so CASL's ECPR s.4 binds it: name, mailing address,
+  contact method, and a statement that consent can be withdrawn — all four are in it, which carries
+  ICO's four for informed consent (controller identity, purpose, processing, withdrawal) with them.
+- **The Digest footer is not a consent request and cannot become one.** ECPR s.4 binds the moment of
+  capture, and for the 29 that moment has passed — the research is explicit that it cannot be
+  retro-fitted and that no email can fix it. What the footer does is carry CAN-SPAM's postal address
+  and opt-out, and cure the live defects: ePD Art 13(4), transparency, and CASL **s.6(2)** sender
+  identification with s.11's unsubscribe.
+
+The distinction is load-bearing, not pedantry. Reading the footer as a consent request is one step
+from sending a re-permission email, which map decision at *The three sending verdicts* forbids
+outright — it is itself marketing, and is what the ICO fined Flybe and Honda for.
+
+The address renders as one line and must be byte-identical in both blocks and in the privacy policy:
 
 ```
-PO Box <number>, <post office>, <city> <postcode>, Bangladesh
+Halima Nagar, Cumilla 3502, Bangladesh
 ```
+
+Spelling note, so nobody "corrects" it later: **Cumilla** is the official romanisation since 2018;
+*Comilla* is the older spelling and is still widely used, including by the maintainer. Either
+delivers — the postcode and office name carry the routing — but pick one and never vary it, because
+an identity block that changes between the form, the policy and the footer is worse than either
+spelling. This ticket picks `Cumilla`.
 
 **Ticket 06 should put these in one module and import them**, rather than pasting into the form,
 the policy and the Digest separately. Three copies of an address is three places for it to drift,
@@ -145,17 +198,33 @@ and 06 is the first consumer, so 06 owns creating it. Not built here — nothing
 
 ### Left for the maintainer
 
-**Rent the box, then replace `{{POSTAL_ADDRESS}}` above.** Nobody but you can do this; it is a
-trip to a post office and a small annual fee. Until then it is `ready-for-human` rather than
-`resolved`, because a block with a blank in it is not "ready to paste" and tickets 06, 07 and 09
-would paste the blank.
+**Confirm the postcode is 3502.** You live there; this is a five-second check against any envelope
+you have received, and it is the one fact in this ticket that no source I could reach was
+authoritative for. If it is wrong, correct it in the two blocks above — nothing else moves.
 
-**Ticket 05 does not have to wait for the box.** It lists `Blocked by: 04`, but everything 05 reads
-from this ticket — the `From:` name, the sending domain, the alignment target — is final as of
-today; its acceptance bullets never mention a postal address. If you want the DNS and the test
-broadcast moving while the box is being arranged, clear 05's `Blocked by:` line and it is takeable.
-**06 and 07 genuinely are blocked** — both paste `{{POSTAL_ADDRESS}}` — and 09 behind them.
+**Make `hello@rnui.dev` receive mail.** A second maintainer task, missing from this list until
+review caught it. The address is published in both blocks above and must stay reachable for **60
+days after every send** (CASL s.6(2)/(3), s.11), so it is a standing obligation, not a launch step.
+A forward to an existing inbox discharges it. Nothing currently owns this: ticket 05's acceptance
+covers *sending* DNS on `mail.rnui.dev` and has no bullet for *receiving* on the apex. Simplest fix
+is to add one there while 05 is already in DNS, rather than inventing a ticket for a single MX or
+forwarding rule.
 
-**Do not let the token reach a send.** If ticket 09 renders `{{POSTAL_ADDRESS}}` literally, the
-Digest goes out with a placeholder where the compliance disclosure should be, to the one audience
-this whole effort exists to treat properly. Worth one grep in 09's own check.
+**Nothing is blocked by this ticket any more.** 05, 06 and 07 all list `Blocked by: 04`, and all
+three read values that are now final:
+
+- **05** takes the `From:` name, the sending domain and the alignment target.
+- **07** takes "the contact method from ticket 04" — `hello@rnui.dev`. *(An earlier version of this
+  comment called 07 blocked. That was wrong: its bullets never ask for the postal address, and the
+  same test that freed 05 frees it.)* Its acceptance is the definition of done, though note the
+  research's §D.2 also lists a postal address among what a privacy policy should carry — now
+  available, so 07 can include it first time rather than needing a second pass.
+- **06** takes the disclosure block, which is complete.
+
+Their `Blocked by: 04` lines can all be cleared. **09** stays blocked, but on 03, 05, 06, 07 and 08
+— not on anything here.
+
+**One thing must not reach a send.** `{{SIGNUP_DATE}}` is still a token in the Digest footer, by
+design — it is per-recipient and ticket 09 fills it from each survivor's `createdAt`. If 09 renders
+it literally, the Digest goes out with a placeholder in the line that tells someone when they
+consented, to the one audience this effort exists to treat properly. Worth one grep in 09's check.
