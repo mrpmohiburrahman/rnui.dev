@@ -37,3 +37,10 @@ Flybe and Honda fined.
 - Survey ask present, after the content, linking to `preview.rnui.dev`.
 - Honest subject line — no "re:", no fake thread, no urgency.
 - Recording count and window stated match what ticket 03's surviving list will actually receive.
+- **`{{SIGNUP_DATE}}` filled per-recipient from each survivor's `createdAt`, and grepped for before
+  sending.** It is a live token in the footer by design and this ticket is what fills it. If it
+  renders literally, the Digest ships the string `{{SIGNUP_DATE}}` inside the very sentence that
+  tells someone when they consented — the one line that has to be true.
+- **The privacy policy linked from the footer.** Ticket 07 met every other bullet and left
+  `privacyUrl(origin)` in `lib/sender-identity.ts` for exactly this; 07's last bullet is unsatisfiable
+  until this footer exists, so the link is owned here.
