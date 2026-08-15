@@ -20,6 +20,7 @@
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "metrics:update": "tsx scripts/metrics-update.ts",
     "scrub:emails": "tsx scripts/scrub-email-list.ts",
+    "broadcast:test": "tsx scripts/resend-broadcast.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
