@@ -202,10 +202,24 @@ addresses belong in `scrub-result.local.json`**, which `.gitignore:74` covers vi
 scratchpad. This is the same reasoning as the research checklist's "any export or sharing of these
 addresses with a third party" — publishing to a public repo is that, with no recipient list.
 
-Redacting the working tree does **not** close it. `9301fee` still carries the addresses in its
-blob, `git log -p` reads it, and a push publishes history rather than just the tip. That commit is
-unpushed and two back from the branch head, so it can still be rewritten; until it is, this branch
-must not be pushed. Owner: the maintainer, since it rewrites history.
+Redacting the working tree did **not** close it, so the history was rewritten too. A push publishes
+every commit, not just the tip, and `9301fee` still carried the addresses in its blob where
+`git log -p` would read them. Four commits were replayed with the addresses substituted, on
+2026-08-16, while the branch was still unpushed. Verified after: no commit reachable from
+`feat/studio-dark` contains any of the seven, the working tree is byte-identical to before
+(same tree hash, `bcc0b2f`), all 66 commits survive, and 294 unit tests still pass.
+
+**One trap left behind.** The pre-rewrite commits still exist locally, under
+`refs/original/refs/heads/feat/studio-dark` and the tag
+`backup/pre-redact-rewrite-2026-08-16` — deliberately, as the undo. Neither is pushed by
+`git push origin feat/studio-dark`, which sends only what the branch reaches. But
+**`git push --tags` or `--follow-tags` would publish that tag and every address in it.** Delete
+both refs once the rewrite is known good, and until then never push tags from this repo.
+
+Not fixed, and judged not worth 23 more replayed commits: `75d3454` carries
+`niko240@example.com` in a test fixture. The local part was lifted from a real signup, the domain
+was not, so it reaches nobody and identifies nobody without the private list. The fixture itself is
+invented as of this ticket's commit; only the old commit still holds it.
 
 ### 2026-08-16 — the bulk run happened, over all 29
 
