@@ -25,6 +25,11 @@ open path, so some of the 48 may be planted. One spamtrap hit can blocklist the 
 - Bot-pattern addresses identified by cross-checking `createdAt` clustering against the timestamps
   on the `userFeedback` junk, and dropped.
 - A bulk verifier run over the survivors. It costs cents; a spamtrap costs the domain.
+- **If a bulk verifier is run, add it to the privacy policy's processor list.** Ticket 07 names six
+  processors and no verifier, because when 07 was written none had been picked. Running the 29 real
+  addresses through a third party the policy does not name is the gap, and it opens the moment the
+  bullet above is done — so it closes here, in the ticket that actually runs it, not in 07, which is
+  terminal and will not be reopened.
 - The 3 duplicates collapsed, keeping the **earliest** `createdAt` of each.
 - `createdAt` preserved on every surviving record — several providers reserve the right to demand
   per-contact proof of opt-in, and this is it.
