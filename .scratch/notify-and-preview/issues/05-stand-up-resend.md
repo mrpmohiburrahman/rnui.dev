@@ -1,6 +1,6 @@
 # Stand up Resend on mail.rnui.dev
 
-Status: ready-for-agent
+Status: ready-for-human
 Type: task
 Blocked by: 04
 
@@ -217,3 +217,160 @@ deliverable, which was the reason it had to be an `@rnui.dev` address rather tha
 - The remaining acceptance bullets that need a *sent* message: `From:` alignment, the test
   broadcast, the one-click unsubscribe POST verified to actually remove an address, and Google
   Postmaster Tools. None can be done until the domain verifies.
+
+### 2026-08-15 (claimed) — the sender script exists, and DKIM is the only thing still pending
+
+**`scripts/resend-broadcast.ts`, `pnpm broadcast:test`.** This is the "Broadcasts created **via the
+API**, not the dashboard" bullet. Four functions — `ensureAudience`, `addContact`,
+`createBroadcast`, `sendBroadcast` — plus a `main()` that is ticket 05's own one-off test send.
+Ticket 11's weekly job calls the four; it does not call `main()`. No `resend` SDK: it would be a
+dependency for four `fetch` calls. `pnpm check-types` passes.
+
+It reuses the **existing `General` audience** (empty, auto-created 2025-07-18) rather than inventing
+a Digest audience, because **ticket 08 has not decided who owns "unsubscribed" yet** and naming an
+audience now would prejudge it.
+
+**One guard is deliberate and should not be simplified away.** A Resend broadcast goes to the
+*whole* audience, so `main()` refuses to send if the audience holds any contact other than the
+single test recipient. Once 09/11 populate an audience from the 29 survivors, a careless
+`pnpm broadcast:test` would otherwise mail all of them a test — 1 complaint in 29 is 3.4%, roughly
+eleven times Google's 0.3% threshold.
+
+**Run end to end; it stops exactly where it should.** `POST /broadcasts` returns:
+
+```
+403  "The mail.rnui.dev domain is not verified."
+```
+
+So env loading, audience lookup and contact creation are all confirmed working against the live
+API. **No debris**: the 403 comes from `POST /broadcasts` itself, so no broadcast was created —
+`GET /broadcasts` is still empty. The only side effect is the maintainer's address now sitting in
+`General`, `unsubscribed: false`, which is what the test needs.
+
+**DKIM is the last pending record, and the record itself is provably correct.** Status moved
+`pending` → the two SPF records (`send.mail` MX and TXT) are now `verified`; only DKIM lags. Before
+waiting on it, the record was checked against the **authoritative** nameserver rather than a
+resolver cache:
+
+```
+dig TXT resend._domainkey.mail.rnui.dev @harleigh.ns.cloudflare.com
+→ exactly one record, md5-identical to the value Resend is asking for
+```
+
+One record, no duplicate, byte-exact. **So `pending` is Resend's DKIM poll lag, not a bad record** —
+do not go re-editing DNS on the strength of the dashboard saying pending.
+
+**`RESEND_API_KEY` re-confirmed uncommitted**: `git check-ignore` resolves it to `.gitignore:39`
+(`.env*.local`) and `git ls-files` has never tracked it.
+
+Unrelated but fixed while here: `HANDOFF.md` had been renamed to `HA_NDOFF.md` with its `#` heading
+turned into `a`, evidently one stray keystroke. Restored — `CLAUDE.md`'s workflow points the next
+session at that filename.
+
+### 2026-08-15 (later) — the script is committed and tested, and the DKIM bullet cannot be met as written
+
+Handing back as `ready-for-human`. Everything an agent can do here is done; the four remaining
+acceptance bullets all need either a person at a dashboard or a domain Resend has not verified.
+
+**The send guard had a hole, and it was the dangerous one.** The previous entry described the guard
+as deliberate and not to be simplified away, which was right — but it read only `data` from
+`GET /audiences/{id}/contacts` and ignored `has_more`. That endpoint is paginated (confirmed against
+the live API: the response carries `has_more`, and Resend's API reference has a Pagination page). A
+page that happens to show only the maintainer proves nothing about the pages after it, so once
+tickets 09/11 populate an audience from the 29 survivors, a truncated first page would have let
+`pnpm broadcast:test` mail all of them a message whose subject says "test send". Fixed by lifting the
+decision out of `main()` into an exported `refuseSendReason(page, to)`, which now refuses on
+`has_more` as well as on any other contact, and compares addresses case- and whitespace-insensitively.
+
+`tests/resend-broadcast.test.ts` covers it — 7 cases, including the truncated-page one, following
+`tests/scrub-email-list.test.ts`'s pattern of testing a script's decision logic without its API.
+Every address in it is invented, per the same rule. Committed with the script as `9ad2988`.
+`pnpm check-types` clean; full suite 273 passed across 15 files.
+
+**Acceptance bullet 1 asks for 2048-bit DKIM. Resend issued 1024-bit, and it is not a knob.**
+Decoded from live DNS rather than assumed:
+
+```
+dig +short TXT resend._domainkey.mail.rnui.dev | sed 's/^p=//' | base64 -d | openssl rsa -pubin -inform DER -text -noout
+→ Public-Key: (1024 bit)
+```
+
+The `MIGf…` prefix is the giveaway — a 2048-bit SubjectPublicKeyInfo starts `MIIBIjANBgkqhkiG9w0…`.
+`POST /domains` takes only `name`, `region` and `custom_return_path`; there is no key-size parameter,
+and the key is generated by Resend. **So this bullet is a spec defect, not an implementation gap** —
+it cannot be satisfied by doing this ticket more carefully. It needs a decision, and there is a real
+option:
+
+Resend's *current* `POST /domains` documentation returns DKIM as **three CNAMEs** to
+`…dkim.amazonses.com` — SES Easy DKIM, which is 2048-bit. Our domain got the legacy single-TXT
+`resend._domainkey` scheme with an inline 1024-bit key. Deleting and re-adding `mail.rnui.dev` would
+plausibly provision it under the modern scheme and satisfy the bullet. **Not done, deliberately**: it
+burns the one free-tier domain slot on a gamble, needs three new records through a dashboard that is
+currently not cooperating (below), and the records we have are provably correct. Maintainer's call.
+Accepting 1024-bit is also defensible at 29 recipients — it is what Resend's free tier ships and it
+authenticates fine; the bullet was written from best practice, not from a constraint anyone imposes.
+
+**DKIM is still `pending`, and the record is not the problem — do not touch DNS.** Pending
+continuously from domain creation (2026-08-14 22:55 UTC) through 01:13 UTC, across two independent
+pollers and roughly ten `POST /domains/{id}/verify` re-triggers. Both SPF records are `verified`.
+The DKIM record was checked against the **authoritative** nameserver, not a resolver cache, and
+md5-compared against the exact value Resend's API says it wants:
+
+```
+expected md5: 8a724b0c6b8bfffffe9d9528f3c0888a
+live     md5: 8a724b0c6b8bfffffe9d9528f3c0888a   (one record, no duplicate)
+```
+
+Byte-identical. This is vendor-side latency — Resend documents DKIM propagation taking up to 72
+hours. The previous entry's advice stands and is now backed by a second measurement: **do not go
+re-editing DNS on the strength of the dashboard saying pending.**
+
+**Google Postmaster Tools: `mail.rnui.dev` is registered, and is `Not Verified` pending one TXT.**
+Added under `mrpmohiburrahman@gmail.com`, listed as added Aug 15 2026. `mail.rnui.dev` is the right
+domain to register because it is the DKIM `d=` and the `From:` domain. Verification needs this TXT
+**on `mail.rnui.dev`** (Cloudflare name `mail`, which currently holds no TXT at all — `dig` confirms,
+so there is no duplicate risk):
+
+```
+google-site-verification=cQik8LFc9_0b3qjPYyHyiaQyTHKllZeQ8SWWNWydk1Y
+```
+
+That value was read out of the DOM, **not off a screenshot** — the rendered glyphs make `THKllZ`
+(two lowercase L) look like `THKIlZ` (capital i). Transcribing it by eye will fail verification for a
+reason nothing will explain. Google also offers a CNAME as an alternate, and notes that verifying
+here grants the account Search Console access to the domain.
+
+**The Cloudflare "Add record" modal would not open, and last session's diagnosis of that failure is
+wrong.** The entry above concluded the tab was at fault and that a fresh tab clears it. This session
+opened a **brand-new tab**, loaded the DNS page cleanly (38 of 200 records, table fully rendered),
+and "Add record" was a no-op by screen coordinate *and* by element reference — with no dialog
+present anywhere in the accessibility tree, so it was not a modal rendered off-screen. Three
+attempts, then stopped rather than ground on it. The fresh-tab remedy is therefore **not** a
+general fix; it worked once and that looks like coincidence. Recording the correction rather than
+editing the earlier claim away, since acting on it costs the next session a wasted tab cycle.
+
+Confirmed live while there, both by `dig` against 1.1.1.1:
+
+```
+_dmarc.rnui.dev  TXT  v=DMARC1; p=none; rua=mailto:hello@rnui.dev
+mail.rnui.dev    TXT  (none — greenfield for the Postmaster record)
+```
+
+Cloudflare's Recommendations panel now reads **All set**, where last session it was flagging the
+DMARC gap. That gap is closed.
+
+**What is left, and who does it**
+
+1. **Maintainer, Cloudflare dashboard** — add `TXT mail` = the `google-site-verification=…` value
+   above, then click Verify in Postmaster Tools. Retry the modal in a new tab or session; if it is
+   still dead, a token with Zone → DNS → Edit makes it one API call and `scratchpad/write-mail-dns.sh`
+   already exists for exactly this.
+2. **Maintainer, a decision** — accept Resend's 1024-bit DKIM, or delete and re-add `mail.rnui.dev`
+   hoping for the 3×CNAME SES scheme. Nothing else in this effort blocks on the answer.
+3. **Unattended, then an agent** — when Resend flips to `verified`, `pnpm broadcast:test` sends the
+   test Digest, and the last three bullets (`From:` alignment, the test broadcast, and the one-click
+   unsubscribe POST **verified** to actually flip the contact to `unsubscribed`) can all be closed in
+   one sitting. Ticket 08 depends on knowing exactly what that POST removes it from, so verify it
+   rather than assuming.
+
+Not `resolved`: bullets 2, 5 and 6 are unmet, and bullet 1 is unmet as written.

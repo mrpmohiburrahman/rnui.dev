@@ -26,16 +26,19 @@ way — see *Landmines* below.
 | # | Ticket | Status | Really blocked by |
 |---|---|---|---|
 | 01 | rename the branch | `resolved` | — |
-| 02 | merge deploy A | `ready-for-agent` | **the maintainer** — this is a checkpoint, not agent work |
+| 02 | merge deploy A | `ready-for-human` | **the maintainer** — this is a checkpoint, not agent work |
 | 03 | scrub the list | `ready-for-human` | a verifier run (see below) |
 | 04 | postal + sender identity | `resolved` | — |
-| 05 | stand up Resend | `ready-for-agent` | **nothing** — but mostly HITL |
+| 05 | stand up Resend | `ready-for-human` | a DNS write, and Resend's DKIM poll — see its Comments |
 | 06 | double opt-in + disclosure | `ready-for-agent` | nothing |
 | 07 | rewrite privacy policy | `ready-for-agent` | nothing |
 | 08–13 | | `ready-for-agent` | genuine dependencies, see each `Blocked by:` |
 
-`/implement` with no ticket named takes **05** (lowest available). Read the next section before you
-do — most of 05 cannot be done by an agent.
+`/implement` with no ticket named now takes **06** (lowest available); 07 is the smaller of the two
+and equally unblocked. **05 went as far as an agent can** — the script is built, tested and
+committed, but its last four bullets need a person at a Cloudflare dashboard or a domain Resend has
+not verified yet. Its `## Comments` are the current truth for anything email-related; this file's
+*Gotchas* below are older than they are.
 
 ## What was settled this session (ticket 04, now `resolved`)
 
@@ -74,18 +77,10 @@ two. If 05 stalls waiting on the maintainer, take 06 or 07 rather than idling.
 
 ## Open items owned by the maintainer
 
-1. **`hello@rnui.dev` does not receive mail yet.** Published in both blocks; CASL s.6(2)/(3) and s.11
-   require it reachable for 60 days after *every* send. Logged in `map.md` → **Not yet specified**
-   because no ticket owns it. Cheapest home is one more bullet on 05.
-   - Cloudflare Email Routing is already enabled on the apex, so this is a dashboard rule, not
-     infrastructure: Email → Email Routing → Routing rules → Create routing rule → pattern `hello`,
-     domain `rnui.dev`, action `Send to an email`, destination the verified Gmail.
-   - **This was attempted three times this session and Cloudflare's Save hangs indefinitely.** The
-     form validates and submits; the button spins forever (13s+ observed) and the rule never
-     appears. Their new Email Routing UI had just been force-migrated and the "Use the old UI"
-     escape redirects straight back. Not a permissions problem, not a filling problem. Retry later,
-     or use the API with a proper token.
-   - **No duplicates were created** — verified after each attempt. The rule list is unchanged at 5.
+1. ~~**`hello@rnui.dev` does not receive mail yet.**~~ **Done on 2026-08-15** — the Cloudflare Email
+   Routing rule is Active and the address forwards to the verified Gmail. That discharges the CASL
+   s.6(2)/(3) and s.11 obligation `map.md` had logged under **Not yet specified**, and it is what
+   makes ticket 05's DMARC `rua=mailto:hello@rnui.dev` deliverable. Details in 05's Comments.
 2. **A bulk verifier over the 29** — ticket 03's last unmet bullet. Bouncer is the pick: 100 free
    credits, "No credit card required to start" and "credits never expire", all on their own pricing
    page, so 29 costs nothing. An agent cannot sign up (no account creation), but *can* run the
@@ -100,11 +95,12 @@ two. If 05 stalls waiting on the maintainer, take 06 or 07 rather than idling.
   verifies as active but returns an **empty zone list** — it has no permission on rnui.dev. A token
   with Zone → Email Routing Rules → Edit is needed. `wrangler` is not installed and does not manage
   routing rules regardless.
-- **DNS facts** (full detail in 05's `## Comments`): DNS is Cloudflare; Email Routing already
-  enabled on the apex; **no DMARC record exists anywhere** — publishing only on `mail.rnui.dev`
-  would leave the apex bare; the apex SPF already includes `amazonses.com`, so it carries sending
-  reputation today, which makes decision 8's "never send the Digest from the root domain" concrete
-  rather than theoretical. `mail.rnui.dev` is greenfield.
+- **DNS facts** (full detail in 05's `## Comments`, which supersede this bullet): DNS is Cloudflare
+  and Email Routing is enabled on the apex. Two claims here have since been overtaken — **DMARC now
+  exists**, at the apex, `p=none` with `rua=mailto:hello@rnui.dev`; and the apex
+  `include:amazonses.com` turned out to be **Resend itself**, not the contact form, from an account
+  that had been sitting idle since 2026-05-15. `mail.rnui.dev` is no longer greenfield either: its
+  three Resend records are live and its two SPF records verified.
 - **Two legal citations were wrong in an earlier commit and are now fixed.** ECPR s.4 binds the
   consent request, not the message. CAN-SPAM's non-commercial carve-out belongs to the survey, not
   the Digest — the research puts the Digest inside the regime, "fine with postal address + opt-out".
