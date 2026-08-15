@@ -8,13 +8,20 @@
 // is a single server action, app/actions/subscribe-email.ts — this component
 // keeps only its client concerns: the controlled input, the localStorage
 // already-subscribed gate, and the three transient states.
+//
+// notify-and-preview ticket 06 added the disclosure block and double opt-in.
+// Submitting no longer makes anyone a Subscriber — it records a pending address
+// and sends a confirmation — so the success copy says what actually happened
+// rather than "you are on the list", which was true of the old single opt-in
+// and is not true of this one.
 
 "use client"
 
 import { useEffect, useState, useTransition } from "react"
 
-import { subscribeEmail } from "@/app/actions/subscribe-email"
 import { newsletterSubmitted } from "@/lib/analytics"
+import { SignupDisclosure } from "@/components/signup-disclosure"
+import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const NewsletterForm: React.FC = () => {
   const [email, setEmail] = useState("")
@@ -22,7 +29,11 @@ const NewsletterForm: React.FC = () => {
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [isPending, startTransition] = useTransition()
 
-  // Check localStorage on component mount.
+  // Check localStorage on component mount. The key string is unchanged even
+  // though it now means "this browser has submitted an address", not "this
+  // browser belongs to a Subscriber" — renaming it would show the form again to
+  // everyone who has already signed up, which is the same reasoning CONTEXT.md
+  // gives for never renaming a Remembered set's key.
   useEffect(() => {
     const subscribed = localStorage.getItem("newsletterSubscribed")
     if (subscribed !== "true") return
@@ -54,7 +65,7 @@ const NewsletterForm: React.FC = () => {
   if (isSubscribed) {
     return (
       <p className="text-[11.5px] leading-[1.5] text-t2">
-        You are on the list — watch your inbox for new recordings.
+        Check your inbox — the Digest starts once you confirm.
       </p>
     )
   }
@@ -88,6 +99,7 @@ const NewsletterForm: React.FC = () => {
       {error && (
         <p className="mt-[6px] text-[11px] text-destructive">{error}</p>
       )}
+      <SignupDisclosure className="mt-[8px] max-w-[260px] text-[10.5px] leading-[1.45] text-t3" />
     </form>
   )
 }

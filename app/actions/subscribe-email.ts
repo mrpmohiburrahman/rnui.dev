@@ -5,19 +5,65 @@
 // now call this, so the Firestore write and its validation are not duplicated.
 // It follows the pattern app/actions/increment-view-count.ts sets: a thin
 // "use server" delegate over lib/, callable from a client component.
+//
+// notify-and-preview ticket 06 made the write the FIRST half of double opt-in.
+// What lands here is a pending address, not a Subscriber: `confirmed: false`,
+// an opaque token, and the consent record — the exact disclosure string shown,
+// the form version, the IP and the timestamp — so what somebody agreed to is
+// provable from the record rather than reconstructed from a deploy date. The
+// second half is app/api/confirm-subscription/route.ts.
 
 "use server"
 
-import { addDoc, collection, Timestamp } from "firebase/firestore"
+import { headers } from "next/headers"
+import { doc, setDoc, Timestamp } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
-
-const COLLECTION_NAME =
-  process.env.NEXT_PUBLIC_FIRESTORE_EMAIL_COLLECTION || "emails"
+import { sendEmail } from "@/lib/resend"
+import {
+  CONSENT_FORM_VERSION,
+  IDENTITY_BLOCK_HTML,
+  SIGNUP_DISCLOSURE,
+} from "@/lib/sender-identity"
+import { isUndeliverableByDefinition } from "@/lib/subscription-consent"
+import { EMAIL_COLLECTION_NAME } from "@/lib/subscription-consent-firestore"
 
 export type SubscribeResult =
   | { ok: true; message?: never }
   | { ok: false; message: string }
+
+/**
+ * The origin the confirmation link points at.
+ *
+ * `Host` is attacker-controlled — it is whatever the client sent — so trusting
+ * it alone lets a forged request make rnui.dev mail a real person a link to
+ * somebody else's domain, over rnui.dev's own authenticated sender. That is a
+ * phishing primitive, not just a wrong URL, so a deploy pins its own origin and
+ * the header is only the local-development fallback.
+ *
+ * Not NEXT_PUBLIC_UI_HOST — that one is PostHog's UI host. A per-deploy variable
+ * rather than a constant because this effort deliberately runs two deploys,
+ * rnui.dev and preview.rnui.dev, and each must confirm against itself.
+ */
+function confirmOrigin(h: Headers): string {
+  const pinned = process.env.NEXT_PUBLIC_SITE_ORIGIN
+  if (pinned) return pinned.replace(/\/$/, "")
+  const host = h.get("host") ?? "rnui.dev"
+  const proto = h.get("x-forwarded-proto") ?? "https"
+  return `${proto}://${host}`
+}
+
+function confirmationHtml(confirmUrl: string): string {
+  return `<p>Please confirm you want the rnui.dev Digest.</p>
+<p><a href="${confirmUrl}">Yes, confirm my address</a></p>
+<p>${SIGNUP_DISCLOSURE}</p>
+<p style="font-size:13px;color:#666">
+If you did not ask for this, ignore this email — nothing is sent to an address
+that is never confirmed, and this link stops working the moment it is used.
+</p>
+<hr>
+${IDENTITY_BLOCK_HTML}`
+}
 
 export async function subscribeEmail(
   formData: FormData
@@ -33,16 +79,66 @@ export async function subscribeEmail(
     return { ok: false, message: "Enter a valid email address" }
   }
 
+  // 122 bits from the platform CSPRNG. Opaque — it encodes no address and no
+  // timestamp, so holding one tells you nothing and guessing one is not a
+  // strategy.
+  //
+  // The token IS the document id, and that is a security decision rather than a
+  // convenience. Storing it as a *field* would mean the confirm route had to
+  // find it with a `where("token", "==", …)` query, and a Firestore query is a
+  // `list` operation — there is no rule that grants `list` only to someone who
+  // filtered on the right token, so the collection would have to be listable,
+  // which publishes every Subscriber's address. As an id it is a `get`, and a
+  // `get` already requires knowing the secret.
+  const token = crypto.randomUUID()
+
+  const h = await headers()
+
   try {
-    await addDoc(collection(db, COLLECTION_NAME), {
+    await setDoc(doc(db, EMAIL_COLLECTION_NAME, token), {
       email,
       createdAt: Timestamp.now(),
+      confirmed: false,
+      // The consent record. `consentText` is the disclosure as rendered, not a
+      // reference to it, because the words are the thing being evidenced.
+      consentText: SIGNUP_DISCLOSURE,
+      formVersion: CONSENT_FORM_VERSION,
+      // x-forwarded-for is a list when proxies chain; the first entry is the
+      // client. "unknown" rather than an empty string so the field always exists.
+      ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown",
     })
   } catch (err) {
     console.error("subscribeEmail: storing email failed", err)
     return {
       ok: false,
       message: "An unexpected error occurred. Please, try again later.",
+    }
+  }
+
+  // A reserved name cannot receive mail, so there is nobody to confirm and the
+  // send would be a hard bounce against a brand-new sending domain. The pending
+  // record above still stands; it simply never gets confirmed.
+  if (isUndeliverableByDefinition(email)) {
+    return { ok: true }
+  }
+
+  try {
+    const origin = confirmOrigin(h)
+    await sendEmail({
+      to: email,
+      subject: "Confirm your rnui.dev Digest subscription",
+      html: confirmationHtml(
+        `${origin}/api/confirm-subscription?token=${token}`
+      ),
+    })
+  } catch (err) {
+    // Deliberately an error rather than a quiet success: "check your inbox" is a
+    // lie if nothing was sent, and the pending row left behind is harmless
+    // because a pending row is never a Subscriber and never reaches the audience.
+    console.error("subscribeEmail: confirmation send failed", err)
+    return {
+      ok: false,
+      message: "We could not send the confirmation email. Please try again.",
     }
   }
 

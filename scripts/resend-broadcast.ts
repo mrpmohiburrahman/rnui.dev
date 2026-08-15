@@ -16,8 +16,26 @@
  * deciding who owns "unsubscribed". Those are tickets 09, 11 and 08.
  *
  * No SDK — `resend` would be a dependency for four fetch calls.
+ *
+ * `resendRequest`, `ensureAudience` and `addContact` moved to lib/resend.ts when
+ * ticket 06 needed them from the app as well; the sender identity moved to
+ * lib/sender-identity.ts, which is where ticket 04 asked for it. What is left
+ * here is what only a script ever does: broadcasts, and the guard below.
  */
 import { pathToFileURL } from "node:url"
+
+import {
+  addContact,
+  ensureAudience,
+  resendRequest,
+  type ContactPage,
+} from "../lib/resend"
+import {
+  FROM,
+  IDENTITY_BLOCK_HTML,
+  PRIVACY_PATH,
+  REPLY_TO,
+} from "../lib/sender-identity"
 
 // Same pair of files, same order, as scripts/measure-demos.ts.
 for (const file of [".env.local", ".env"]) {
@@ -26,74 +44,12 @@ for (const file of [".env.local", ".env"]) {
   } catch {}
 }
 
-const API = "https://api.resend.com"
-
-/** Fixed forever by ticket 04 — changing it later resets sender reputation. */
-export const FROM = "rnui.dev <digest@mail.rnui.dev>"
-export const REPLY_TO = "hello@rnui.dev"
-
-async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  const key = process.env.RESEND_API_KEY
-  if (!key) throw new Error("RESEND_API_KEY is not set — see .env.local")
-  const res = await fetch(`${API}${path}`, {
-    ...init,
-    headers: {
-      authorization: `Bearer ${key}`,
-      "content-type": "application/json",
-      ...init?.headers,
-    },
-  })
-  const body = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    // The status rides on the error rather than only inside its message: the
-    // message interpolates the response body, so a caller matching on the text
-    // "409" would also match an id, a count or a timestamp that happens to
-    // contain it, and swallow a failure it meant to rethrow.
-    const err = new Error(
-      `${init?.method ?? "GET"} ${path} → ${res.status} ${JSON.stringify(body)}`
-    )
-    throw Object.assign(err, { status: res.status })
-  }
-  return body as T
-}
-
-type Audience = { id: string; name: string }
-
-/** One page of `GET /audiences/{id}/contacts`. */
-type ContactPage = { data: { email: string }[]; has_more?: boolean }
-
-export async function ensureAudience(name: string): Promise<string> {
-  const { data } = await api<{ data: Audience[] }>("/audiences")
-  const found = data.find((a) => a.name === name)
-  if (found) return found.id
-  const created = await api<Audience>("/audiences", {
-    method: "POST",
-    body: JSON.stringify({ name }),
-  })
-  return created.id
-}
-
-/** Resend 409s on a duplicate address, which is a no-op here, not a failure. */
-export async function addContact(
-  audienceId: string,
-  email: string
-): Promise<void> {
-  try {
-    await api(`/audiences/${audienceId}/contacts`, {
-      method: "POST",
-      body: JSON.stringify({ email, unsubscribed: false }),
-    })
-  } catch (err) {
-    if ((err as { status?: number }).status !== 409) throw err
-  }
-}
-
 export async function createBroadcast(input: {
   audienceId: string
   subject: string
   html: string
 }): Promise<string> {
-  const { id } = await api<{ id: string }>("/broadcasts", {
+  const { id } = await resendRequest<{ id: string }>("/broadcasts", {
     method: "POST",
     body: JSON.stringify({
       audience_id: input.audienceId,
@@ -107,7 +63,7 @@ export async function createBroadcast(input: {
 }
 
 export async function sendBroadcast(id: string): Promise<void> {
-  await api(`/broadcasts/${id}/send`, { method: "POST" })
+  await resendRequest(`/broadcasts/${id}/send`, { method: "POST" })
 }
 
 /**
@@ -142,25 +98,21 @@ const TEST_HTML = `<p>Test send for notify-and-preview ticket 05. Not a Digest.<
 <p>What it is checking: that <code>digest@mail.rnui.dev</code> authenticates,
 and that the one-click unsubscribe below actually removes an address.</p>
 <hr>
-<p style="font-size:13px;color:#666">
-rnui.dev — MD. MOHIBUR RAHMAN<br>
-Halima Nagar, Cumilla 3502, Bangladesh<br>
-hello@rnui.dev
-</p>
+${IDENTITY_BLOCK_HTML}
 <p style="font-size:13px;color:#666">
 A weekly Digest of Recordings added to rnui.dev. No sponsor mail, no third-party
 marketing, and your address is never shared.
 </p>
 <p style="font-size:13px;color:#666">
 <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">Unsubscribe</a> ·
-<a href="https://rnui.dev/privacy">Privacy Policy</a>
+<a href="https://rnui.dev${PRIVACY_PATH}">Privacy Policy</a>
 </p>`
 
 async function main() {
   const to = process.argv[2] ?? "mrpmohiburrahman@gmail.com"
   const audienceId = await ensureAudience("General")
   await addContact(audienceId, to)
-  const page = await api<ContactPage>(`/audiences/${audienceId}/contacts`)
+  const page = await resendRequest<ContactPage>(`/audiences/${audienceId}/contacts`)
   const reason = refuseSendReason(page, to)
   if (reason) {
     throw new Error(

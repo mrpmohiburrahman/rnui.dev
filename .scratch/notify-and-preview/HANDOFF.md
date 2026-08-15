@@ -30,7 +30,7 @@ way — see *Landmines* below.
 | 03 | scrub the list | `ready-for-human` | a verifier run (see below) |
 | 04 | postal + sender identity | `resolved` | — |
 | 05 | stand up Resend | `ready-for-human` | a DNS write, and Resend's DKIM poll — see its Comments |
-| 06 | double opt-in + disclosure | `ready-for-agent` | nothing |
+| 06 | double opt-in + disclosure | `ready-for-human` | a Firestore rules publish — see its Comments |
 | 07 | rewrite privacy policy | `ready-for-agent` | nothing |
 | 08–13 | | `ready-for-agent` | genuine dependencies, see each `Blocked by:` |
 
@@ -117,6 +117,10 @@ two. If 05 stalls waiting on the maintainer, take 06 or 07 rather than idling.
 
 - **Never commit the 29 addresses.** They live in `research/scrub-result.local.json`, which is
   gitignored. Everything committed is keyed by Firestore document id, which identifies nobody.
+  **Ticket 06 narrowed that last claim for records created after it**: their document id *is* the
+  confirmation token, so it is a capability as well as an identifier — anyone holding one can confirm
+  that pending address. It still names nobody and is inert once `confirmed` is true, but do not
+  commit a list of new document ids the way ticket 03's survivor ids were committed.
   `research/scrub-survivors.json` (docId + `createdAt`, no addresses) is safe and is committed.
 - **Firestore has not been written to.** All 51 original rows stand, per decision 10. The scrub is a
   derived view. Keep it that way.

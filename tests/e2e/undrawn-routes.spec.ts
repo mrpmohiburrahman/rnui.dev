@@ -62,8 +62,12 @@ for (const { route, eyebrow } of ROUTES) {
       await expect(page.locator("aside")).toBeVisible()
       // Scoped to the footer: "rnui.dev" also reads the header brand and the
       // /aboutus h1 on this page, and NOTIFY the page's own eyebrow on /subscribe.
+      // `exact` because ticket 06's disclosure block names the site mid-sentence
+      // ("New Recordings added to rnui.dev, once a week…"), so a substring match
+      // inside the footer is now two elements. This assertion means the brand
+      // mark, which is the whole text of its own element.
       const footer = page.locator("footer")
-      await expect(footer.getByText("rnui.dev")).toBeVisible()
+      await expect(footer.getByText("rnui.dev", { exact: true })).toBeVisible()
       await expect(footer.getByText("NOTIFY")).toBeVisible()
     })
   })
@@ -230,6 +234,11 @@ test.describe("/contactus", () => {
 })
 
 test.describe("/subscribe", () => {
+  // notify-and-preview ticket 06 made this double opt-in, so a valid submit no
+  // longer makes anyone a Subscriber and the copy no longer says it does.
+  // @example.com is deliberate on both sides: it is what this test has always
+  // submitted, and lib/subscription-consent.ts refuses to send a confirmation to
+  // a reserved name, so a Playwright run cannot hard-bounce the sending domain.
   test("a valid submit writes the localStorage key for the footer's NOTIFY form", async ({
     page,
   }) => {
@@ -238,7 +247,9 @@ test.describe("/subscribe", () => {
     await main.getByLabel("Email address").fill("subscriber@example.com")
     await main.getByRole("button", { name: "Subscribe" }).click()
 
-    await expect(page.getByText(/You are on the list/)).toBeVisible()
+    await expect(
+      page.getByText(/the Digest starts once you confirm/)
+    ).toBeVisible()
     const key = await page.evaluate(() =>
       localStorage.getItem("newsletterSubscribed")
     )
@@ -253,7 +264,9 @@ test.describe("/subscribe", () => {
       localStorage.setItem("newsletterSubscribed", "true")
     )
     await page.goto("/")
-    await expect(page.getByText(/You are on the list/)).toBeVisible()
+    await expect(
+      page.getByText(/the Digest starts once you confirm/)
+    ).toBeVisible()
   })
 
   test("carries its own title", async ({ page }) => {

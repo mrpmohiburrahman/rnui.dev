@@ -8,8 +8,10 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Subscribe",
+  // Ticket 06: the old description promised "one email when a new recording is
+  // added", which is not the promise the form now makes and stores.
   description:
-    "One email when a new recording is added to the rnui.dev catalogue. No account, nothing else on a schedule.",
+    "A weekly Digest of the Recordings added to the rnui.dev catalogue. Confirm your address once; unsubscribe from any email. No account.",
 }
 
 export default function SubscribeLayout({

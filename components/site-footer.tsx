@@ -8,6 +8,7 @@
 import Link from "next/link"
 
 import { DARK_MODE_STAMP, LIGHT_MODE_STAMP } from "@/lib/mode-stamp"
+import { SIGNUP_HEADING } from "@/lib/sender-identity"
 import { formatUpdatedFull, lastCommitDate } from "@/components/last-updated"
 import NewsletterForm from "@/components/newsletter-form"
 
@@ -76,8 +77,12 @@ export function SiteFooter() {
           <span className="pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3">
             NOTIFY
           </span>
+          {/* Ticket 06: this used to promise "an email when a new recording is
+              added", which is a different promise from the one the form now
+              makes and stores. The heading and the disclosure block inside
+              NewsletterForm carry the real terms. */}
           <span className="max-w-[260px] text-[11.5px] leading-[1.5] text-t2">
-            Get an email when a new recording is added to the catalogue.
+            {SIGNUP_HEADING}.
           </span>
           <NewsletterForm />
           <Link

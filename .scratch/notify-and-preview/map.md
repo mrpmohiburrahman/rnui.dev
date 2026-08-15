@@ -102,6 +102,12 @@ reason to avoid that vendor, not a reason to send the email.
   allows one custom domain and the apex was holding it, unused, having never sent a thing. DKIM and
   SPF are live, DMARC sits at the apex where subdomains inherit it, and `hello@` receives.
   (ready-for-human) [05](issues/05-stand-up-resend.md)
+- Every address collected from now on is a pending address until it confirms, and the confirmation
+  token is the Firestore **document id** rather than a field — a field would have to be found with a
+  query, and a query is a `list`, which cannot be granted without publishing every Subscriber's
+  address. Firestore currently denies *all* reads on the collection, so the confirm route needs one
+  rule published before any link works. (ready-for-human)
+  [06](issues/06-double-opt-in-and-the-disclosure-block.md)
 
 ## Not yet specified
 
