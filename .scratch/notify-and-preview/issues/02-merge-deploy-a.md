@@ -97,3 +97,48 @@ Two ways out, both requiring credentials or Vercel settings an agent must not to
   dashboards for a release nobody received. It must be recreated at the real deploy timestamp.
 - `posthog-expansion` 03, 04 and 09 stay blocked. Nothing about their status changed.
 - Dependabot PR #16 still wants closing rather than merging, per `deploy-a-handback.md`.
+
+### 2026-08-15 — deploy A is live. The clock starts here.
+
+**Collection start date: `2026-08-15T00:45:37Z`.** This is the deployment's `ready` timestamp from
+the Vercel API, not the push time and not the build start — it is the moment visitors began
+receiving deploy A, which is what decision 11 measures. It agrees with the build log's
+"Deployment completed 00:45:37". **Decision 11's six weeks run to `2026-09-26`, and its four-week
+review falls on `2026-09-12`.**
+
+Production deployment `dpl_B6Yg7dQYhHdXPfqpFy418mmUMFSr`, state `READY`, built from `3d479be`
+(deploy A's `76651a3` plus the pnpm build fix). Aliased to `rnui.dev` and `www.rnui.dev`, so this
+is genuinely what visitors run.
+
+**What unblocked it was a credential, not code.** The maintainer put a valid `phx_` personal API
+key into Vercel's `POSTHOG_API_KEY` and redeployed. Worth recording *why* the wrong value was
+there: a correctly-shaped key called `vercel-sourcemaps-rnui-dev` — scope `error_tracking:write`,
+scoped to the `rnui.dev dashboard` project — had existed in PostHog since 2026-08-05 and read
+**Last used: Never**. So the 2026-08-05 session built the right key and something else reached
+Vercel. The key was rolled rather than replaced, keeping its scope and project binding; rolling
+cost nothing precisely because it had never authenticated.
+
+**Acceptance, checked against the live site rather than assumed:**
+
+- ✅ Merged to `main` and deployed.
+- ✅ PostHog annotation `392228`, project 117415, `scope: project`, `date_marker`
+  `2026-08-15T00:45:37Z`. An earlier annotation (`392081`) was created at the *failed* push and
+  deleted; this one marks the real boundary.
+- ✅ **277** `/recording/[id]` addresses in `sitemap-0.xml`, exactly the number this ticket names,
+  and a probed id returns 200.
+- ✅ Legacy redirects alive: **18 of 18**, every path in `middleware.ts`'s matcher, each 307 to
+  `/products?category=…` with the public spelling `CLAUDE.md` protects intact. *A first probe of
+  `/entry/1` returned 404 and looked like a failure — that was a guessed path, not a real one. The
+  redirects are category slugs (`/accordions`, `/buttons`, …), read from `middleware.ts` rather
+  than assumed.*
+- ✅ Collection start date recorded, above.
+- ⬜ **The `recording_id` property migration is the one bullet left**, and it is deliberately not
+  done today: `studio-dark/spec.md` sequences it for *the day after* the deploy, so the earliest it
+  can run is **2026-08-16**. Nothing else blocks it; it is agent-takeable then. This ticket stays
+  `ready-for-human` only because of that clock.
+
+**Now genuinely unblocked:** `posthog-expansion` **03** (catalogue events reaching the activity
+feed), **04** (`$dead_click` arriving), and **09** (the baseline dashboard reading non-zero) — all
+three were waiting on exactly this deploy, and all three need real traffic to accumulate before
+they can be closed. **02** also loses its last blocker now that source maps upload on a production
+build.
