@@ -117,6 +117,15 @@ reason to avoid that vendor, not a reason to send the email.
   API, not off the research. (ready-for-human — six of seven bullets met; the seventh is the Digest
   footer link, which is ticket 09's to place)
   [07](issues/07-rewrite-the-privacy-policy.md)
+- The Preview is kept out of the index by an `X-Robots-Tag: noindex` header conditional on the
+  host, not by a `robots.txt` rule — `Disallow` stops the crawl, and a page never crawled is a page
+  whose noindex is never read. It covers two hosts: `preview.rnui.dev` and the branch's own
+  `rnui-dev-git-…vercel.app` alias, which serves the same 277 Recordings and whose supposed
+  automatic noindex could not be measured from here. The condition is the whole safety of it:
+  unconditional, the same rule deindexes rnui.dev. Retirement at deploy B is a Vercel domain
+  redirect, 301, with the rule deleted in the same change. (ready-for-human — the header is built and verified against a real
+  build; the subdomain, its Vercel branch assignment and its own PostHog project are three steps
+  no connector here can reach) [12](issues/12-deploy-the-preview.md)
 
 ## Not yet specified
 
