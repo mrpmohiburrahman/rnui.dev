@@ -142,3 +142,25 @@ feed), **04** (`$dead_click` arriving), and **09** (the baseline dashboard readi
 three were waiting on exactly this deploy, and all three need real traffic to accumulate before
 they can be closed. **02** also loses its last blocker now that source maps upload on a production
 build.
+
+### 2026-08-15 — the migration bullet is real, and its target is exactly one event
+
+An audit proposed flipping this ticket to `resolved`, arguing the rename preceded ingest so
+`entry_opened`/`entry_id` never landed and there is nothing to migrate. **Checked against PostHog
+rather than reasoned about, that argument is false.** Queried over 180 days:
+
+| event | count | first seen | last seen | persons |
+|---|---|---|---|---|
+| `entry_opened` | **1** | 2026-08-01T02:39:23Z | 2026-08-01T02:39:23Z | 1 |
+| `recording_opened` | 9 | 2026-08-04T15:24:57Z | 2026-08-15T01:17:28Z | 2 |
+
+`entry_opened` is still listed in the project's event taxonomy, unmarked as stale.
+`posthog-expansion/spec.md` justified the free rename on the grounds that "these thirteen events
+have not yet been ingested in production" — true when written, and no longer true by
+2026-08-01, when one `entry_opened` arrived. A migration target therefore exists.
+
+It is one event from one person, so **this is a judgement, not a fact**, and it is the
+maintainer's: migrate it, delete it as dev noise, or leave it and accept a stray legacy name in
+the taxonomy. **Do not close this ticket on the "nothing was ingested" reading** — that reading is
+wrong even if its conclusion survives on other grounds. `studio-dark/spec.md:122` sequences the
+migration for the day after deploy A in any case, so the earliest it can run is **2026-08-16**.
