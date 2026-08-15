@@ -271,6 +271,18 @@ them, and put them last in ticket 10's staged send**, which already ramps 1 → 
 If they bounce, they bounce into a warmed domain and get dropped on the spot by the existing
 hard-bounce rule, costing nothing that dropping them now would have saved.
 
+**Decided 2026-08-16 by the maintainer: keep them, send them last.** So the mailable count is
+**28**, not 26, and ticket 10's ramp gets one extra constraint — #11 and #24 go in the final
+tranche, never in the first three. That constraint has to survive into 10, because the ordering is
+the entire reason keeping them is safe; sending them early would be strictly worse than having
+dropped them. Neither is a role, disposable or accept-all address, and both mailboxes answered
+definitively, so nothing here is being waved through on a guess — the only adverse signal is a
+dormancy score.
+
+This closes the last judgement call the ticket reserved for a human. What remains on 03 is not a
+decision: `dev@` (the role drop) is still reversible if you want it back at 29, and the
+gmail/proton pair may be one person, which would make the true headcount 27.
+
 **Emailable is now a processor, and bullet 6 is closed here rather than in 07** — which is what
 that bullet asks for. Real subscriber addresses reached it, so `app/privacypolicy/page.tsx` now
 names it as the **eighth** processor (07 named six, ZeroBounce made seven), and `POLICY_VERSION`
