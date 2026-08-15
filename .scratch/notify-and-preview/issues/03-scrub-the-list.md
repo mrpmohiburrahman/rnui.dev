@@ -137,3 +137,48 @@ One review point accepted but not acted on: bullet 4 says "`createdAt` clusterin
 script does is an exact address join within a ±120s window. The join is strictly stronger evidence
 than clustering would be, and the signature check now covers the gap it leaves (a bot address that
 never filed feedback), so the wording is looser than the method rather than the other way round.
+
+### 2026-08-15 — a verifier ran, over 5 of the 29, and all five are clean
+
+**Vendor: ZeroBounce.** Bouncer was the ticket's pick and is now unusable — it requires a business
+email address, which the maintainer does not have. ZeroBounce was the fallback, and this ticket's
+"ZeroBounce (100/month)" figure did not survive contact either: the real account carried **5
+credits**, and its Freemium plan (which does advertise 100/month) is **not self-serve** — clicking
+Subscribe returns "Please contact support to update to Freemium." Two vendor pricing pages, two
+wrong predictions about what a real signup gets you. Treat the remaining tier claims here as
+unverified.
+
+**Scope, stated honestly: 5 of 29, not a bulk run.** With 5 credits and no way to get more today,
+they were spent on the five *oldest* survivors, on the reasoning that recycled spamtraps are made
+from long-abandoned mailboxes, so age is the best available proxy for risk:
+
+| # | email | signed up | status | sub_status |
+|---|---|---|---|---|
+| 1 | `[redacted subscriber address]` | 2024-12-30 | `valid` | — |
+| 2 | `[redacted subscriber address]` | 2025-01-04 | `valid` | — |
+| 3 | `[redacted subscriber address]` | 2025-01-07 | `valid` | — |
+| 4 | `[redacted subscriber address]` | 2025-02-03 | `valid` | — |
+| 5 | `[redacted subscriber address]` | 2025-02-11 | `valid` | — |
+
+All five `valid`, no `spamtrap`, no `disposable`, no `did_you_mean`. No `risky` or `catch-all`
+verdicts came back, so the maintainer judgement this ticket reserves had nothing to decide and
+**nothing was dropped. The survivor count stays 29.** Full responses in the session scratchpad,
+not committed — they are keyed to real addresses.
+
+**What this does and does not license.** The highest-risk cohort in the list is clean, which is
+real evidence the other 24 — all newer, so less time to be abandoned — are cleaner still. It is
+**not** a bulk run over the survivors, so this ticket's fifth bullet is *partially* discharged.
+Whether that is enough is the maintainer's call. Note also that `valid` means the mailbox exists
+and accepts mail; ZeroBounce flags traps via `sub_status` and flagged none, but absence of a flag
+is weaker than a positive all-clear.
+
+**This triggers the processor bullet above.** A verifier has now actually run over real subscriber
+addresses, so **ZeroBounce must be named in the privacy policy's processor list** — ticket 07 names
+six and this makes seven. 07 is `ready-for-human`, not `resolved`, so it can still take the edit.
+Until it does, the policy under-describes where subscriber data has gone.
+
+**Also found while reading the list:** `[redacted subscriber address]` (#13) and
+`[redacted subscriber address]` (#25) are almost certainly one person. Bullet 6 collapsed duplicates
+*by address*, which cannot catch this. If they are one human they receive two Digests and the true
+count is 28. Left as-is pending a decision, since guessing identity from a local part is exactly
+the kind of inference this effort has been careful not to make.
