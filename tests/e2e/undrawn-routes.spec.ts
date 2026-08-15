@@ -281,7 +281,13 @@ test.describe("/privacypolicy and /termsofservice", () => {
   }) => {
     await page.goto("/privacypolicy")
     await expect(page.locator("h1")).toHaveCount(1)
-    await expect(page.locator("h2")).toHaveCount(8)
+    // 9 since notify-and-preview ticket 07 rewrote the page (the template had
+    // 8). This is a pinned count and it will fail whenever a section is added
+    // or removed — which is the intent, not a nuisance: on a page whose whole
+    // job is disclosure, silently losing a section is the failure worth
+    // catching. Update the number deliberately, in the same commit as the
+    // section, and bump POLICY_VERSION in the page while you are there.
+    await expect(page.locator("h2")).toHaveCount(9)
     await expect(page.locator("h6")).toHaveCount(0)
 
     await page.goto("/termsofservice")
