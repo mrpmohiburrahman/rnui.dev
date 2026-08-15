@@ -45,14 +45,22 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   })
   const body = await res.json().catch(() => ({}))
   if (!res.ok) {
-    throw new Error(
+    // The status rides on the error rather than only inside its message: the
+    // message interpolates the response body, so a caller matching on the text
+    // "409" would also match an id, a count or a timestamp that happens to
+    // contain it, and swallow a failure it meant to rethrow.
+    const err = new Error(
       `${init?.method ?? "GET"} ${path} → ${res.status} ${JSON.stringify(body)}`
     )
+    throw Object.assign(err, { status: res.status })
   }
   return body as T
 }
 
 type Audience = { id: string; name: string }
+
+/** One page of `GET /audiences/{id}/contacts`. */
+type ContactPage = { data: { email: string }[]; has_more?: boolean }
 
 export async function ensureAudience(name: string): Promise<string> {
   const { data } = await api<{ data: Audience[] }>("/audiences")
@@ -76,7 +84,7 @@ export async function addContact(
       body: JSON.stringify({ email, unsubscribed: false }),
     })
   } catch (err) {
-    if (!String(err).includes("409")) throw err
+    if ((err as { status?: number }).status !== 409) throw err
   }
 }
 
@@ -112,11 +120,13 @@ export async function sendBroadcast(id: string): Promise<void> {
  * `has_more` is half the check. `GET /audiences/{id}/contacts` is paginated, and
  * a page that happens to show only the test recipient proves nothing about the
  * rest, so an unread remainder refuses too. Returns the reason, or null to send.
+ *
+ * Deliberately *not* `normalise()` from scrub-email-list.ts, which also folds
+ * gmail dots. Folding makes more addresses compare equal, which here means fewer
+ * strangers detected and a send that should have been refused. A guard wants the
+ * stricter comparison; the two disagreeing is the point, not an oversight.
  */
-export function refuseSendReason(
-  page: { data: { email: string }[]; has_more?: boolean },
-  to: string
-): string | null {
+export function refuseSendReason(page: ContactPage, to: string): string | null {
   const key = (e: string) => e.trim().toLowerCase()
   const others = page.data.filter((c) => key(c.email) !== key(to))
   if (others.length) return `audience holds ${others.length} other contact(s)`
@@ -150,9 +160,7 @@ async function main() {
   const to = process.argv[2] ?? "mrpmohiburrahman@gmail.com"
   const audienceId = await ensureAudience("General")
   await addContact(audienceId, to)
-  const page = await api<{ data: { email: string }[]; has_more?: boolean }>(
-    `/audiences/${audienceId}/contacts`
-  )
+  const page = await api<ContactPage>(`/audiences/${audienceId}/contacts`)
   const reason = refuseSendReason(page, to)
   if (reason) {
     throw new Error(
@@ -174,9 +182,9 @@ async function main() {
   )
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   main().catch((err) => {
-    console.error(String(err))
+    console.error(err)
     process.exit(1)
   })
 }
