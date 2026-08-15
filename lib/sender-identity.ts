@@ -40,6 +40,20 @@ export const REPLY_TO = CONTACT_EMAIL
 /** The real path. There is no `/privacy` route, whatever a hand-typed link says. */
 export const PRIVACY_PATH = "/privacypolicy"
 
+/**
+ * The policy as an absolute URL, which is the only form an email can use — a
+ * relative href in an inbox resolves against the mail client, not the site.
+ *
+ * Ticket 07 requires the policy linked from the signup form and from the Digest
+ * footer. The form gets there through components/signup-disclosure.tsx and
+ * PRIVACY_PATH above; every *sent* message goes through here, so the two
+ * senders cannot drift onto different URLs and ticket 09's footer has the link
+ * already built rather than hand-typing one.
+ */
+export function privacyUrl(origin: string): string {
+  return `${origin.replace(/\/$/, "")}${PRIVACY_PATH}`
+}
+
 export const SIGNUP_HEADING = "Get the weekly Digest"
 
 /**

@@ -31,14 +31,32 @@ way — see *Landmines* below.
 | 04 | postal + sender identity | `resolved` | — |
 | 05 | stand up Resend | `ready-for-human` | a DNS write, and Resend's DKIM poll — see its Comments |
 | 06 | double opt-in + disclosure | `ready-for-human` | **nothing a human does** — only Resend's DKIM poll |
-| 07 | rewrite privacy policy | `ready-for-agent` | nothing |
+| 07 | rewrite privacy policy | `ready-for-human` | **nothing, and nobody** — see below |
 | 08–13 | | `ready-for-agent` | genuine dependencies, see each `Blocked by:` |
 
-`/implement` with no ticket named now takes **06** (lowest available); 07 is the smaller of the two
-and equally unblocked. **05 went as far as an agent can** — the script is built, tested and
-committed, but its last four bullets need a person at a Cloudflare dashboard or a domain Resend has
-not verified yet. Its `## Comments` are the current truth for anything email-related; this file's
-*Gotchas* below are older than they are.
+**`/implement` has nothing to take. The frontier is empty and the right move is to hand back.** 01
+and 04 are `resolved`; 02, 03, 05, 06 and 07 are `ready-for-human`; 08–13 are `ready-for-agent` but
+every one is blocked by a ticket that is not `resolved` — 08 by 05, the rest transitively.
+
+An earlier version of this file said the frontier was 08, on the argument that 05's *decisions* are
+made even though its status is parked. **That was wrong and is worth naming**, because it is a
+tempting mistake: `docs/agents/issue-tracker.md` says a ticket is unblocked when every file it lists
+is `resolved`, and `ready-for-human` is not `resolved`. Treating it as near enough is how a ticket
+gets built on a decision nobody actually made. Only the maintainer moves this now — 05 (a DNS write
+and Resend's DKIM poll), 03 (a bulk verifier run), 02 (deploy A).
+
+**On 07's `ready-for-human`:** six of seven acceptance bullets are met. The seventh is "linked from
+the Digest footer", and that footer does not exist — **ticket 09 builds it**, and 07 left
+`privacyUrl(origin)` in `lib/sender-identity.ts` for it. If that bullet is reckoned 09's, 07 can be
+flipped to `resolved` with no further work. **Do not read that as "07 is basically done and safe":**
+review caught four false statements in its first draft, all fixed, and the lesson is in the page's
+own header comment. The policy is now a set of claims about specific files, and it goes stale the
+moment those files change.
+
+**05 went as far as an agent can** — the script is built, tested and committed, but its last four
+bullets need a person at a Cloudflare dashboard or a domain Resend has not verified yet. Its
+`## Comments` are the current truth for anything email-related; this file's *Gotchas* below are older
+than they are.
 
 ## What was settled this session (ticket 04, now `resolved`)
 

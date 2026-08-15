@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { SIGNUP_DISCLOSURE, SIGNUP_HEADING } from "../lib/sender-identity"
+import {
+  privacyUrl,
+  SIGNUP_DISCLOSURE,
+  SIGNUP_HEADING,
+} from "../lib/sender-identity"
 import {
   createConfirmSubscription,
   isUndeliverableByDefinition,
@@ -153,5 +157,26 @@ describe("the signup disclosure", () => {
       expect(copy).not.toContain(avoided)
     }
     expect(SIGNUP_DISCLOSURE).toContain("Recordings")
+  })
+})
+
+// Ticket 07 requires the policy linked from the signup form and from what gets
+// sent. The form's link is a Next <Link> and the e2e suite covers it; this is
+// the other half, which has no DOM to assert against.
+describe("the privacy policy URL in sent mail", () => {
+  it("is absolute, because a relative href in an inbox resolves against the mail client", () => {
+    expect(privacyUrl("https://rnui.dev")).toBe(
+      "https://rnui.dev/privacypolicy"
+    )
+  })
+
+  it("does not double the slash when the origin carries a trailing one", () => {
+    // NEXT_PUBLIC_SITE_ORIGIN is hand-set per deploy, and the two deploys this
+    // effort runs mean it gets typed twice. subscribe-email.ts strips the slash
+    // on its own confirm link; this keeps the policy link from being the one
+    // place that does not.
+    expect(privacyUrl("https://preview.rnui.dev/")).toBe(
+      "https://preview.rnui.dev/privacypolicy"
+    )
   })
 })

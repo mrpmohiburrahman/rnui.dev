@@ -23,7 +23,10 @@ import { sendEmail } from "@/lib/resend"
 import {
   CONSENT_FORM_VERSION,
   IDENTITY_BLOCK_HTML,
+  privacyUrl,
   SIGNUP_DISCLOSURE,
+  SIGNUP_DISCLOSURE_BODY,
+  SIGNUP_DISCLOSURE_POLICY_SENTENCE,
 } from "@/lib/sender-identity"
 import { issueToken } from "@/lib/subscribe-token"
 import { isUndeliverableByDefinition } from "@/lib/subscription-consent"
@@ -54,10 +57,18 @@ function confirmOrigin(h: Headers): string {
   return `${proto}://${host}`
 }
 
-function confirmationHtml(confirmUrl: string): string {
+function confirmationHtml(origin: string, token: string): string {
+  const confirmUrl = `${origin}/api/confirm-subscription?token=${token}`
+  // The disclosure's last sentence is "See our Privacy Policy." — a real link on
+  // the form, and until ticket 07 dead text here, because SIGNUP_DISCLOSURE is
+  // the joined plain string that also gets stored as the consent record. Linked
+  // absolutely: a relative href in an inbox resolves against the mail client.
+  const disclosure = `${SIGNUP_DISCLOSURE_BODY} <a href="${privacyUrl(
+    origin
+  )}">${SIGNUP_DISCLOSURE_POLICY_SENTENCE}</a>`
   return `<p>Please confirm you want the rnui.dev Digest.</p>
 <p><a href="${confirmUrl}">Yes, confirm my address</a></p>
-<p>${SIGNUP_DISCLOSURE}</p>
+<p>${disclosure}</p>
 <p style="font-size:13px;color:#666">
 If you did not ask for this, ignore this email — nothing is sent to an address
 that is never confirmed, and this link stops working the moment it is used.
@@ -139,9 +150,7 @@ export async function subscribeEmail(
     await sendEmail({
       to: email,
       subject: "Confirm your rnui.dev Digest subscription",
-      html: confirmationHtml(
-        `${origin}/api/confirm-subscription?token=${issued.token}`
-      ),
+      html: confirmationHtml(origin, issued.token),
     })
   } catch (err) {
     // Deliberately an error rather than a quiet success: "check your inbox" is a

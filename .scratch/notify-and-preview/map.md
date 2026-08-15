@@ -110,6 +110,13 @@ reason to avoid that vendor, not a reason to send the email.
   never mailed. `firestore.rules` is now in the repo, deployed, and covered by `pnpm rules:verify`.
   (ready-for-human — only because Resend has not verified the sending domain yet; no human step)
   [06](issues/06-double-opt-in-and-the-disclosure-block.md)
+- The privacy policy now names its four processors — Resend, Google Firebase, PostHog and **Vercel**,
+  which `@vercel/analytics` made one without anyone recording it — states consent as the basis, and
+  states **no** sunset period, because the Digest carries neither open nor click tracking and so has
+  no engagement signal to measure one against. Every claim in it was read off the code or the live
+  API, not off the research. (ready-for-human — six of seven bullets met; the seventh is the Digest
+  footer link, which is ticket 09's to place)
+  [07](issues/07-rewrite-the-privacy-policy.md)
 
 ## Not yet specified
 
@@ -125,7 +132,12 @@ reason to avoid that vendor, not a reason to send the email.
   complaint into a ticket. Needs at least one round of real answers before it can be specified —
   at 2–5 responses/week that is a month away.
 - **The sunset rule.** The research prescribes dropping zero-engagement addresses after three
-  Digests or six months. Which of the 48 are dead cannot be known until Digests have been sent.
+  Digests or six months. Which of the 48 are dead cannot be known until Digests have been sent —
+  and, ticket 07 found, **not even then as things stand**: Resend's `open_tracking` and
+  `click_tracking` are both `false` on `mail.rnui.dev`, so no engagement signal is being collected
+  at all. So this needs a *decision* before it needs time. Turning either on is not a free
+  operational tweak: the published policy now states the Digest does not track opens or clicks, so
+  it would bump the policy version and change what Subscribers were told. Not decided either way.
 - **`userFeedback` (23 documents) is an open write path with no captcha and visible bot junk in
   it.** Same defect class as the signup form. Whether it is fixed, replaced or removed is a
   separate question this effort only exposed.
