@@ -98,15 +98,21 @@ reason to avoid that vendor, not a reason to send the email.
   locality, chosen over a PO box knowing it cannot be unpublished — and mails permanently as
   `rnui.dev <digest@mail.rnui.dev>` / `Reply-To: hello@rnui.dev`.
   [04](issues/04-what-address-does-rnui-publish.md)
+- The sending channel is Resend on `mail.rnui.dev`, which cost the apex its slot — the free tier
+  allows one custom domain and the apex was holding it, unused, having never sent a thing. DKIM and
+  SPF are live, DMARC sits at the apex where subdomains inherit it, and `hello@` receives.
+  (ready-for-human) [05](issues/05-stand-up-resend.md)
 
 ## Not yet specified
 
-- **Who makes `hello@rnui.dev` receive mail, and keeps it receiving.** Ticket 04 published it in
-  the Digest footer and the signup block, and CASL s.6(2)/(3) and s.11 require it to stay reachable
-  for 60 days after *every* send — a standing obligation, not a launch step. No ticket owns it: 05's
-  acceptance covers *sending* DNS on `mail.rnui.dev` and says nothing about *receiving* on the apex.
-  A forward to an existing inbox discharges it. Cheapest home is one more bullet on 05 while it is
-  already in DNS. Surfaced by review of 04, not by 04 itself.
+- **Keeping `hello@rnui.dev` receiving.** The *setup* is done — a Cloudflare Email Routing rule
+  forwards it to the maintainer's verified Gmail as of 2026-08-15, discharging what this entry
+  originally logged as unowned. What remains is the standing part: CASL s.6(2)/(3) and s.11 require
+  it reachable for 60 days after *every* send, so it is an obligation with no end date rather than a
+  launch step. Nothing to build; it fails silently if the forward is ever removed.
+- **Whether 1024-bit DKIM is accepted.** Ticket 05 asks for 2048-bit; Resend generates the key and
+  issued 1024-bit, with no API parameter to change it. Either accept it, or re-provision the domain
+  hoping for Resend's newer SES Easy DKIM scheme. Detail and the arithmetic in 05's Comments.
 - **What is done with the survey answers.** Who reads the open text, how often, and what turns a
   complaint into a ticket. Needs at least one round of real answers before it can be specified —
   at 2–5 responses/week that is a month away.

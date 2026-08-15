@@ -18,7 +18,7 @@ Single-context — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents
 
 `/implement` with no ticket named means **take the frontier** of the active effort. Do not ask which one, and do not re-plan — the spec is frozen.
 
-Active effort: `.scratch/notify-and-preview/`. Its frontier is **03 and 04** — 01 is `resolved`; take the lowest available. It was charted by `/wayfinder`, so its frozen artifact is `map.md` rather than a `spec.md` — the twelve decisions under **Settled at charting** bind exactly as a spec's Constraints would, and `research/` holds two reports (consent/deliverability, and email service selection) that are not to be redone.
+Active effort: `.scratch/notify-and-preview/`. Its frontier is **06 and 07** — 01 and 04 are `resolved`, and 02, 03 and 05 are all `ready-for-human`; take the lowest available. It was charted by `/wayfinder`, so its frozen artifact is `map.md` rather than a `spec.md` — the twelve decisions under **Settled at charting** bind exactly as a spec's Constraints would, and `research/` holds two reports (consent/deliverability, and email service selection) that are not to be redone.
 
 `.scratch/studio-dark/` is still open but has **no agent-takeable work left**: 7 tickets are `resolved` and the remaining 8 are all `ready-for-human`, waiting on the maintainer rather than on an agent. Do not take one of these from `/implement`. Its `spec.md` Goals, Non-goals and Constraints still bind any code that touches the site, and its checkpoints still stop an agent.
 
