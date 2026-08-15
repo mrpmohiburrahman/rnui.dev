@@ -1,6 +1,6 @@
 # Merge deploy A and start the clock
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 01
 
@@ -136,6 +136,7 @@ cost nothing precisely because it had never authenticated.
   done today: `studio-dark/spec.md` sequences it for *the day after* the deploy, so the earliest it
   can run is **2026-08-16**. Nothing else blocks it; it is agent-takeable then. This ticket stays
   `ready-for-human` only because of that clock.
+  → **Superseded 2026-08-15 by the maintainer's decision below. Bullet closed as not-applicable.**
 
 **Now genuinely unblocked:** `posthog-expansion` **03** (catalogue events reaching the activity
 feed), **04** (`$dead_click` arriving), and **09** (the baseline dashboard reading non-zero) — all
@@ -164,3 +165,24 @@ maintainer's: migrate it, delete it as dev noise, or leave it and accept a stray
 the taxonomy. **Do not close this ticket on the "nothing was ingested" reading** — that reading is
 wrong even if its conclusion survives on other grounds. `studio-dark/spec.md:122` sequences the
 migration for the day after deploy A in any case, so the earliest it can run is **2026-08-16**.
+
+### 2026-08-15 — the maintainer accepted the one event. Ticket `resolved`.
+
+Asked to choose between migrating the single `entry_opened` and accepting it, the maintainer
+**accepted it**. No migration will be written, and the last acceptance bullet is closed as
+not-applicable rather than done.
+
+The reasoning, recorded so it is not re-opened as an oversight: the event is one row from one
+person on 2026-08-01, before deploy A served anyone, so it is almost certainly a development
+firing rather than a visitor. Writing a migration to move a single row costs more than the row is
+worth. The only residual cost is that `entry_opened` stays in the project's event taxonomy as a
+legacy name; it can be hidden from Data Management if the clutter matters later, and that is
+cosmetic, not a data problem.
+
+**What this does not license.** The name is still wrong per ADR-0008, and `entry_id` /
+`entry_opened` must never be emitted again — `lib/analytics.ts` is the single place that maps `id`
+to `recording_id` and it already does so correctly. This decision accepts one historical row; it
+does not reopen the naming question.
+
+**Now unblocked:** ticket **12** (deploy the Preview), and **13** behind it — the whole Preview
+half of this effort, which needs no Resend, no verifier and no DNS.
