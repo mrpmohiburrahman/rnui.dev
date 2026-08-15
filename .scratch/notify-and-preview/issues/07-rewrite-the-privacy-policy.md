@@ -182,3 +182,31 @@ Re-run after the review fixes, not before:
   the rewrite has 9. Its sibling assertion in the same test, **zero break tags**, caught a real
   defect in the first draft of this page: the identity block used `<br />`. That one was fixed in
   the page, not in the test. Only the count moved.
+
+### 2026-08-15 — v1.1, ZeroBounce added as a seventh processor
+
+Ticket 03 ran a deliverability check over five of the 29 legacy signup addresses, so real
+Subscriber addresses reached a provider this page did not name. The page said "these are the
+service providers that handle any of it, and there are no others", which stopped being true the
+moment that check ran. Added, and `POLICY_VERSION` raised `1.0` → `1.1` because this page's own
+**Changes** section promises that any change raises the version.
+
+`POLICY_EFFECTIVE` stays **15 August 2026** — it was already today's date, since v1.0 published
+this morning.
+
+Two things deliberately *not* claimed, both because the header comment's lesson is that a
+true-sounding sentence nobody checked is how this page lied four times in its first draft:
+
+- **No storage region for ZeroBounce.** The other six name one because ticket 07 verified them
+  against live APIs. This one was not verified, so it says nothing rather than guessing "United
+  States" from the company's headquarters.
+- **The "five addresses" count is exact today and will go stale** the moment another verification
+  runs. Ticket 03's new processor bullet is what should catch that.
+
+Typecheck clean, **294/294 vitest passing**. The e2e assertions on this route are `h1` count and
+`ul` non-empty; a new `<li>` moves neither.
+
+**Left for the maintainer:** the Changes section also promises that a change *materially* affecting
+Subscribers "will be said plainly in the next Digest rather than published quietly here". A new
+processor that received subscriber addresses is arguably material. That is a judgement, and if it
+is material then **ticket 09 must carry a line about it** in the first Digest.
