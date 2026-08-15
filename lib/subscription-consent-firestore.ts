@@ -9,6 +9,7 @@ import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
 import { addContact, ensureAudience } from "@/lib/resend"
+import { verifyToken } from "@/lib/subscribe-token"
 import {
   createConfirmSubscription,
   type ConsentStore,
@@ -31,13 +32,21 @@ const AUDIENCE_NAME = "General"
 
 const firestoreConsentStore: ConsentStore = {
   /**
-   * A `get` by document id, because the token IS the id — see the note in
-   * app/actions/subscribe-email.ts for why that is a security decision and not
-   * a shortcut. This is the whole reason the collection never needs to be
-   * listable.
+   * The signature is checked BEFORE Firestore is touched. That order is the
+   * defence against a planted record: `allow create` on this collection is open
+   * — it has to be, because the signup write uses the same public client SDK a
+   * browser does — so anyone can write a pending-looking document at an id they
+   * chose. They cannot sign one, so it never gets past this line and never
+   * reaches `addToAudience`. See lib/subscribe-token.ts.
+   *
+   * Then a `get` by document id, never a query: a query is a `list`, and no rule
+   * can grant `list` only to a client that filtered on the right token, so a
+   * listable collection would publish every Subscriber's address.
    */
   async findPending(token) {
-    const found = await getDoc(doc(db, EMAIL_COLLECTION_NAME, token))
+    const id = verifyToken(token)
+    if (!id) return null
+    const found = await getDoc(doc(db, EMAIL_COLLECTION_NAME, id))
     if (!found.exists()) return null
     const data = found.data() as { email?: string; confirmed?: boolean }
     // `confirmed` is the replay guard. The id cannot be deleted the way a token

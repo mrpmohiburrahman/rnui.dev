@@ -20,6 +20,8 @@
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "metrics:update": "tsx scripts/metrics-update.ts",
     "scrub:emails": "tsx scripts/scrub-email-list.ts",
+    "rules:verify": "tsx scripts/verify-firestore-rules.ts",
+    "rules:deploy": "pnpm rules:verify && firebase deploy --only firestore:rules",
     "broadcast:test": "tsx scripts/resend-broadcast.ts",
     "prepare": "husky",
     "test": "vitest run",

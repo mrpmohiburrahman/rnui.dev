@@ -30,7 +30,7 @@ way — see *Landmines* below.
 | 03 | scrub the list | `ready-for-human` | a verifier run (see below) |
 | 04 | postal + sender identity | `resolved` | — |
 | 05 | stand up Resend | `ready-for-human` | a DNS write, and Resend's DKIM poll — see its Comments |
-| 06 | double opt-in + disclosure | `ready-for-human` | a Firestore rules publish — see its Comments |
+| 06 | double opt-in + disclosure | `ready-for-human` | **nothing a human does** — only Resend's DKIM poll |
 | 07 | rewrite privacy policy | `ready-for-agent` | nothing |
 | 08–13 | | `ready-for-agent` | genuine dependencies, see each `Blocked by:` |
 
@@ -74,6 +74,21 @@ the acceptance bullets.
 
 **06 and 07 are fully agent-takeable now** and neither needs credentials. 07 is the smaller of the
 two. If 05 stalls waiting on the maintainer, take 06 or 07 rather than idling.
+
+## Firestore rules now live in the repo
+
+`firestore.rules` + `firebase.json`, deployed. Before ticket 06 the deployed ruleset denied **all**
+reads and updates on the signup collection, so nothing could ever have confirmed. Two things to know
+before touching them:
+
+- **This Firebase project is shared with an unrelated "car-seats" app.** Leave those match blocks
+  alone; `pnpm rules:verify` asserts they are unchanged.
+- **`allow get` on the signup collection is conditional on the record being pending, and that is
+  load-bearing.** 29 legacy document ids are published in `research/scrub-survivors.json` in this
+  public repo. An unconditional `allow get` hands anyone who reads the repo 29 real addresses.
+
+`pnpm rules:verify` runs 30 cases against Firebase's own engine **without deploying**; `pnpm
+rules:deploy` chains verify-then-deploy. Run verify before changing anything.
 
 ## Open items owned by the maintainer
 

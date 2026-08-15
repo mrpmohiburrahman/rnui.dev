@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Existing rules for rnui and rnui-dev collections
+    match /rnui/{itemId} {
+      allow read, update, create: if true;
+      allow delete: if false;
+    }
+
+    match /rnui-dev/{itemId} {
+      allow read, update, create: if true;
+      allow delete: if false;
+    }
+
+    match /car-seats/{itemId} {
+      allow read, update, create: if true;
+      allow delete: if false;
+    }
+
+    match /car-seats-dev/{itemId} {
+      allow read, update, create: if true;
+      allow delete: if false;
+    }
+
+    // Rules for the new userFeedback collection
+    match /userFeedback/{feedbackId} {
+      allow create: if validateFeedback();
+      allow read, update, delete: if false;
+    }
+
+    // The signup collections, opened exactly as far as double opt-in needs and
+    // no further (notify-and-preview ticket 06).
+    //
+    // The document id IS the confirmation token: 122 bits from a CSPRNG, mailed
+    // only to the address that asked. So `get` is the whole read surface and
+    // `list` stays denied forever — listing this collection would publish every
+    // Subscriber's address.
+    //
+    // `get` is additionally gated on the record still being PENDING, and that
+    // gate is load-bearing rather than tidiness:
+    //
+    //   * Records created before ticket 06 carry no `confirmed` field, and their
+    //     ids are 20-character Firestore auto-ids that are PUBLISHED — 29 of them
+    //     sit in .scratch/notify-and-preview/research/scrub-survivors.json in a
+    //     public repo, whose own note says "Rejoin docId against Firestore
+    //     emails/ for the address". An unconditional `allow get` would therefore
+    //     hand anyone who reads the repo the addresses of 29 real people.
+    //     `get('confirmed', true)` defaults those legacy records to true, so they
+    //     stay unreadable.
+    //   * A confirmed record is no longer pending, so a spent link stops being a
+    //     read capability too.
+    //
+    // `update` is the confirmation itself and nothing else: only a pending
+    // record, only the two fields, and only in the direction false -> true.
+    match /emails/{token} {
+      allow get: if isPendingSignup();
+      allow list: if false;
+      allow create: if isNewPendingSignup();
+      allow update: if isConfirmingSignup();
+      allow delete: if false;
+    }
+
+    match /emails-dev/{token} {
+      allow get: if isPendingSignup();
+      allow list: if false;
+      allow create: if isNewPendingSignup();
+      allow update: if isConfirmingSignup();
+      allow delete: if false;
+    }
+
+    // Optional: Rules for emails collection
+    match /car-seats-emails/{emailId} {
+      allow create: if true; // Adjust as needed
+      allow read: if false;
+      allow update, delete: if false;
+    }
+
+    match /car-seats-emails-dev/{emailId} {
+      allow create: if true; // Adjust as needed
+      allow read: if false;
+      allow update, delete: if false;
+    }
+  }
+
+  // Function to validate feedback data
+  function validateFeedback() {
+    return request.resource.data.keys().hasAll(['firstName', 'lastName', 'email', 'message', 'submittedAt']) &&
+           request.resource.data.firstName is string &&
+           request.resource.data.lastName is string &&
+           request.resource.data.email is string &&
+           request.resource.data.message is string &&
+           request.resource.data.submittedAt is timestamp;
+  }
+
+  // Pending means: written by ticket 06's form and not yet confirmed. The
+  // `get(key, default)` form is deliberate — a missing `confirmed` key defaults
+  // to true, so every pre-ticket-06 record reads as "not pending" and stays shut.
+  function isPendingSignup() {
+    return resource.data.get('confirmed', true) == false;
+  }
+
+  // A signup may only be created in the pending state.
+  //
+  // This does NOT stop a forged record — `create` is open by necessity, because
+  // the signup write goes through the same public client SDK a browser uses, so
+  // Firestore cannot tell this server's write from anyone else's, and an
+  // attacker can satisfy any shape rule here. What stops a forged record being
+  // *confirmed* is the HMAC in lib/subscribe-token.ts, which is checked before
+  // the confirm route touches Firestore.
+  //
+  // What this does buy: nobody can plant a document that already claims
+  // `confirmed: true`, which would otherwise sit in the collection that map
+  // decision 12 makes the source of truth for consent, looking like evidence
+  // that somebody opted in.
+  function isNewPendingSignup() {
+    return request.resource.data.confirmed == false;
+  }
+
+  // The confirmation write, and only it: a pending record, flipping `confirmed`
+  // to true, touching nothing but that flag and its timestamp.
+  function isConfirmingSignup() {
+    return resource.data.get('confirmed', true) == false &&
+           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['confirmed', 'confirmedAt']) &&
+           request.resource.data.confirmed == true &&
+           request.resource.data.confirmedAt is timestamp;
+  }
+}
