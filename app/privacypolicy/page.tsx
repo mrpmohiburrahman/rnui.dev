@@ -31,6 +31,13 @@
 // region is claimed for it because none was verified from a live API the way
 // the other six were. Do not add one by assumption.
 //
+// v1.2, 2026-08-16 — Emailable added as an eighth processor. Ticket 03 finally
+// ran the bulk check the fifth acceptance bullet asks for, over all 29 legacy
+// addresses rather than the five ZeroBounce saw, so a second verifier now holds
+// them. ZeroBounce's entry is left at five because that count is still exact —
+// the run did not go through it. Same caveat as above applies here: no storage
+// region is claimed, because none was verified from a live API.
+//
 // The identity comes from lib/sender-identity.ts rather than being pasted.
 // Ticket 04 requires this block byte-identical in the form, the policy and the
 // Digest footer, and three copies of a postal address is three places to drift.
@@ -58,8 +65,8 @@ export const metadata: Metadata = {
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
-const POLICY_VERSION = "1.1"
-const POLICY_EFFECTIVE = "15 August 2026"
+const POLICY_VERSION = "1.2"
+const POLICY_EFFECTIVE = "16 August 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
 // pages; the three below are local to this one, which has far more sections than
@@ -263,6 +270,13 @@ export default function PrivacyPage() {
               before any Digest was sent. Five addresses were sent to it on 15
               August 2026. This was a one-off check, not part of the ongoing
               send.
+            </li>
+            <li className={body}>
+              <strong className="text-t1">Emailable</strong> — checked the same
+              signup list for deliverability, more thoroughly than the check
+              above and again before any Digest was sent. Twenty-nine addresses
+              were sent to it on 16 August 2026. This was a one-off check, not
+              part of the ongoing send.
             </li>
             <li className={body}>
               <strong className="text-t1">Google Firebase</strong> — stores the

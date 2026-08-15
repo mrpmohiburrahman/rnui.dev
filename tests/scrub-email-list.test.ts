@@ -73,6 +73,11 @@ describe("looksGenerated", () => {
     expect(looksGenerated("samoloba@gmail.com")).toBe(false)
   })
 
+  // Invented, like every fixture here. The local part this case originally used
+  // was lifted from a real signup, and this file is tracked in a public repo —
+  // swapping the domain to example.com does not stop a local part being personal
+  // data. Keep fixtures synthetic; the real list lives in the gitignored
+  // research/*.local.json files.
   it("needs at least three syllables, so short locals do not match", () => {
     expect(looksGenerated("niko240@example.com")).toBe(false)
   })
