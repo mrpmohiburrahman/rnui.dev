@@ -23,6 +23,14 @@
 // this page. The ticket's Comments list every source, including the two Resend
 // tracking flags and the two storage regions, which came from the live APIs.
 //
+// v1.1, 2026-08-15 — ZeroBounce added as a seventh processor. Ticket 03 ran a
+// deliverability check over five of the 29 legacy signup addresses, which means
+// real Subscriber addresses reached a provider this page did not name. Two
+// things to keep honest about that entry: the "five addresses" count is exact
+// today and goes stale the moment another verification runs, and no storage
+// region is claimed for it because none was verified from a live API the way
+// the other six were. Do not add one by assumption.
+//
 // The identity comes from lib/sender-identity.ts rather than being pasted.
 // Ticket 04 requires this block byte-identical in the form, the policy and the
 // Digest footer, and three copies of a postal address is three places to drift.
@@ -50,7 +58,7 @@ export const metadata: Metadata = {
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
-const POLICY_VERSION = "1.0"
+const POLICY_VERSION = "1.1"
 const POLICY_EFFECTIVE = "15 August 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
@@ -248,6 +256,13 @@ export default function PrivacyPage() {
               <strong className="text-t1">Resend</strong> — sends the
               confirmation email and the Digest, and holds the list of confirmed
               addresses. Stored in the United States.
+            </li>
+            <li className={body}>
+              <strong className="text-t1">ZeroBounce</strong> — checked whether
+              addresses already on the signup list were still deliverable,
+              before any Digest was sent. Five addresses were sent to it on 15
+              August 2026. This was a one-off check, not part of the ongoing
+              send.
             </li>
             <li className={body}>
               <strong className="text-t1">Google Firebase</strong> — stores the
