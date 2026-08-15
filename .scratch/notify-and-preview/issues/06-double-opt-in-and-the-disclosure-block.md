@@ -162,6 +162,9 @@ write observable. It is also the split `lib/counters.ts` / `lib/counters-firesto
 
 ### Left, and who does it
 
+*(Superseded the same day — everything in this list was then done by an agent. Kept because the
+next entry corrects a genuine defect in the design above, and deleting the list would hide that.)*
+
 1. **Maintainer, Firebase console** — publish the rule above. Until then every confirmation link
    lands on `/subscribe?confirmed=no`. This is the only thing between the code and a working flow.
 2. **Maintainer, each deploy** — set `NEXT_PUBLIC_SITE_ORIGIN`.
@@ -172,3 +175,132 @@ write observable. It is also the split `lib/counters.ts` / `lib/counters-firesto
    which weakens the very consent proof this ticket exists to create. The fix is a landing page with
    a POST button. Not built — it is a second page for a risk that is real but unquantified at 29
    addresses, and it is cheaper to decide once bullet 3 is unblocked and the flow can be watched.
+
+## 2026-08-15 (later) — the handback was wrong to hand back, and the rule above was unsafe
+
+The maintainer's instruction was to leave nothing for them. Everything in the list above is now
+done, with credentials that already existed on this machine (`firebase` CLI, `gcloud`, `vercel`, all
+logged in as the maintainer). **More importantly, an adversarial review of the ruleset found a
+hole that would have made this ticket actively harmful, and the design above is corrected below.**
+
+### The defect: the rule as written let anyone inject an address into the audience
+
+`allow create` on the signup collection is open, and it has to be — the signup write goes through
+the **client** Firebase SDK, because a server action uses the same public config a browser does. So
+Firestore cannot tell this server's write from anybody else's, and the attacker also picks the
+document id:
+
+```js
+setDoc(doc(db, "emails", "id-i-picked"),
+       { email: "victim@example.org", confirmed: false, consentText: "I agree", … })
+// then: GET /api/confirm-subscription?token=id-i-picked
+```
+
+The confirm route would resolve that planted record, flip it, and push `victim@example.org` into the
+Resend audience — an address that was never mailed and never consented. **Double opt-in defeated end
+to end, by the very route added to enforce it.** The old code had the same open `create`, but no
+route that read those records and forwarded them to a sender, so this is a hole the change itself
+would have opened.
+
+**No Firestore rule can close it**, which is the part worth remembering: any shape a rule demands,
+the attacker can also satisfy, because they are indistinguishable from the legitimate writer.
+
+**The fix is `lib/subscribe-token.ts`.** The document id stays a bare UUID; the *link* carries
+`<id>.<HMAC-SHA256(id)>`, and `findPending` verifies the signature **before** Firestore is touched.
+An attacker can still write junk documents — they always could, and nothing here changes that — but
+they cannot sign one, so no planted record is ever confirmable. HMAC over a JWT because there are no
+claims, no expiry and no third party: a library would be a dependency for two calls into
+`node:crypto`. Fails closed if `SUBSCRIBE_TOKEN_SECRET` is unset, on both the issue and the verify
+side, because an unsigned token is one anybody can mint.
+
+Two smaller findings from the same review, both applied: `create` now requires `confirmed == false`,
+so nobody can plant a record that already claims to be confirmed consent; and the claim that a token
+"cannot" be replayed was softened to what the code guarantees.
+
+### Firestore rules — written, tested, deployed
+
+`firestore.rules` and `firebase.json` are now in the repo, so the rules are reviewable and
+reproducible instead of living only in a console. Deployed with `firebase deploy --only
+firestore:rules`; compiled clean.
+
+**The deployed ruleset before this change was `allow read: if false; allow update: if false`** — so
+the confirm route could never have worked, exactly as diagnosed. The new rules keep every other
+collection byte-identical, which matters because **this Firebase project is shared with an unrelated
+"car-seats" app**.
+
+`pnpm rules:verify` (`scripts/verify-firestore-rules.ts`) runs **30 cases against Firebase's own
+rules engine** via `projects/{p}:test`, which evaluates a ruleset *without* deploying it —
+so it is worth running before any future deploy. `pnpm rules:deploy` chains verify-then-deploy.
+30/30 pass. The suite pins, among others:
+
+- the breach case — a legacy record fetched by one of the 29 **published** docIds is denied;
+- `list` denied on both collections;
+- a planted already-confirmed record denied;
+- confirming a legacy record, changing the address, changing `consentText`, un-confirming, and
+  deleting all denied;
+- and that `rnui`, `rnui-dev`, `car-seats*` and `userFeedback` are all unchanged.
+
+### Verified against the live project, not just simulated
+
+With the rules deployed and the server running, a probe seeded a pending record, then:
+
+```
+confirm (signed token)   -> /subscribe?confirmed=yes   doc: confirmed=true, confirmedAt set
+replay same token        -> /subscribe?confirmed=no
+planted id, no signature -> /subscribe?confirmed=no    doc stayed confirmed=false
+planted id, junk signature -> /subscribe?confirmed=no
+legacy docId via the PUBLIC web api key -> 403 PERMISSION_DENIED
+```
+
+The contact really did appear in the Resend audience on the legitimate path, which is what proves
+bullet 3 rather than assuming it. **Both probe documents were deleted and the probe contact was
+removed from the audience** — the `General` audience is back to the maintainer alone, so ticket 05's
+send guard still refuses a test send.
+
+### Deployment configuration — set, not documented as someone else's job
+
+On Vercel (`rnui-dev`), for **Production and Preview** separately:
+
+| Variable | Production | Preview |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_ORIGIN` | `https://rnui.dev` | `https://preview.rnui.dev` |
+| `SUBSCRIBE_TOKEN_SECRET` | a distinct 32-byte secret | a **different** 32-byte secret |
+| `RESEND_API_KEY` | set | set |
+
+**`RESEND_API_KEY` was not on Vercel at all.** Nothing had noticed, because nothing had ever sent
+from the deployed site — so production would have failed every confirmation send with "RESEND_API_KEY
+is not set" while looking fine locally. Separate signing secrets per environment so a Preview leak
+cannot mint a token Production accepts. All three are also in `.env.example` with the reasoning.
+
+### The one thing still not closed, and why it is not a handback
+
+**Bullet 2 cannot be verified until Resend verifies `mail.rnui.dev`, and that is nobody's action.**
+Both SPF records read `verified`; only DKIM is `pending`. Before blaming the record, the published
+value was byte-compared against what the Resend API currently asks for:
+
+```
+expected len: 218 | published len: 218 | IDENTICAL: true
+```
+
+So the record is correct and this is Resend's DKIM poll, which was re-triggered. There is no human
+step here — a person at a dashboard cannot make it verify any faster.
+
+**What was deliberately NOT done:** ticket 05 offers "re-provision the domain hoping for Resend's
+newer SES Easy DKIM scheme" as the alternative. Rejected, and this is a judgement worth recording:
+deleting the domain would destroy a configuration whose SPF is already verified and whose DKIM
+record is provably byte-correct, in exchange for a *hope* of a different scheme, and re-adding it
+would require writing fresh DNS records by hand. The failure mode is sending broken outright rather
+than merely unverified. Waiting costs nothing; tearing it down can cost everything. That trade is
+ticket 05's to close, and it is still open there.
+
+### Why this is still `ready-for-human` and not `resolved`
+
+Seven of the eight bullets are met and verified against the live project. Bullet 2 is not: the
+confirmation email does not *currently* send, because `POST /emails` returns
+`403 "The mail.rnui.dev domain is not verified."` — and `CLAUDE.md` is explicit that `resolved` means
+every bullet is **actually** met, not on track to be.
+
+So the label is honest rather than a request: **there is no human implementation left on this
+ticket.** The moment Resend flips `mail.rnui.dev` to `verified`, one submit through the form closes
+bullet 2 and this becomes `resolved` with no code change. The only *decision* anywhere near it —
+accept 1024-bit DKIM or re-provision — is ticket 05's, is recorded there, and is unchanged.

@@ -25,6 +25,7 @@ import {
   IDENTITY_BLOCK_HTML,
   SIGNUP_DISCLOSURE,
 } from "@/lib/sender-identity"
+import { issueToken } from "@/lib/subscribe-token"
 import { isUndeliverableByDefinition } from "@/lib/subscription-consent"
 import { EMAIL_COLLECTION_NAME } from "@/lib/subscription-consent-firestore"
 
@@ -79,23 +80,34 @@ export async function subscribeEmail(
     return { ok: false, message: "Enter a valid email address" }
   }
 
-  // 122 bits from the platform CSPRNG. Opaque — it encodes no address and no
-  // timestamp, so holding one tells you nothing and guessing one is not a
-  // strategy.
+  // The document id is 122 bits from the platform CSPRNG; the link additionally
+  // carries an HMAC over it, so only this server can mint a confirmable token.
+  // Both halves matter, for different reasons — lib/subscribe-token.ts has the
+  // attack the signature stops.
   //
-  // The token IS the document id, and that is a security decision rather than a
-  // convenience. Storing it as a *field* would mean the confirm route had to
-  // find it with a `where("token", "==", …)` query, and a Firestore query is a
-  // `list` operation — there is no rule that grants `list` only to someone who
-  // filtered on the right token, so the collection would have to be listable,
-  // which publishes every Subscriber's address. As an id it is a `get`, and a
-  // `get` already requires knowing the secret.
-  const token = crypto.randomUUID()
+  // Minted BEFORE the write, so a missing signing secret fails here rather than
+  // after a record exists that nothing can ever confirm.
+  //
+  // The id is the document id rather than a stored field, because finding a
+  // field means a `where(…)` query, a query is a `list` operation, and no rule
+  // can grant `list` only to a client that filtered on the right token — so that
+  // shape would need the collection listable, publishing every Subscriber's
+  // address. As an id it is a `get`, which already requires the secret.
+  let issued
+  try {
+    issued = issueToken()
+  } catch (err) {
+    console.error("subscribeEmail: cannot issue a confirmation token", err)
+    return {
+      ok: false,
+      message: "An unexpected error occurred. Please, try again later.",
+    }
+  }
 
   const h = await headers()
 
   try {
-    await setDoc(doc(db, EMAIL_COLLECTION_NAME, token), {
+    await setDoc(doc(db, EMAIL_COLLECTION_NAME, issued.id), {
       email,
       createdAt: Timestamp.now(),
       confirmed: false,
@@ -128,7 +140,7 @@ export async function subscribeEmail(
       to: email,
       subject: "Confirm your rnui.dev Digest subscription",
       html: confirmationHtml(
-        `${origin}/api/confirm-subscription?token=${token}`
+        `${origin}/api/confirm-subscription?token=${issued.token}`
       ),
     })
   } catch (err) {
