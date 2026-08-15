@@ -4,6 +4,22 @@ Status: ready-for-agent
 Type: task
 Blocked by: 09
 
+## HOLD — no mail leaves this project, 2026-08-15
+
+**The maintainer has placed a standing hold on sending anything at all**, until they lift it *and*
+every open issue in this effort is fixed. This is broader than the "maintainer authorises the send"
+line below and it outranks it.
+
+It covers every outbound message, not just the Digest:
+
+- the staged Digest sends in this ticket, **including the first one to the maintainer**
+- `pnpm broadcast:test` in ticket 05 — it sends a real test Digest
+- ticket 06's live form submit — it triggers a real confirmation email
+
+An agent may prepare, stage, draft and dry-run any of these. **Nothing is transmitted.** Do not
+read a green DKIM check or a resolved blocker as the hold lifting; only the maintainer saying so
+lifts it.
+
 ## Question
 
 The irreversible one. Once this is sent it cannot be recalled, and the reputation consequences of
