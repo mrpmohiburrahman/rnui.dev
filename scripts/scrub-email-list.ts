@@ -83,7 +83,7 @@ const ROLE_LOCALS = new Set([
  */
 const PAIR_WINDOW_MS = 120_000
 
-type Doc = {
+export type Doc = {
   name: string
   createTime?: string
   fields: Record<string, { stringValue?: string; timestampValue?: string }>
@@ -138,7 +138,10 @@ export function isGeneratedString(s: string): boolean {
   return s.length >= 12 && !/\s/.test(s) && /[a-z]/.test(s) && /[A-Z]/.test(s)
 }
 
-const isJunkFeedback = (d: Doc) =>
+// Exported so scripts/group-email-list.ts pairs on the same definition of junk.
+// Duplicating this rule is how the grouping would silently stop matching the
+// counts the scrub reports.
+export const isJunkFeedback = (d: Doc) =>
   isGeneratedString(str(d, "message")) || isGeneratedString(str(d, "firstName"))
 
 /**
