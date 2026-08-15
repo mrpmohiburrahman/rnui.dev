@@ -14,18 +14,31 @@
 // column collapses to its already-built subscribed state on the NEXT load
 // (not the same render: newsletter-form.tsx reads the key once on mount and a
 // storage event does not fire in the tab that wrote the key).
+//
+// notify-and-preview ticket 06 made this page double opt-in's landing pad as
+// well as its second capture point: app/api/confirm-subscription/route.ts
+// redirects here with ?confirmed=yes|no once a token has been spent. The old
+// copy promised "one email when a new recording is added... nothing on a
+// schedule", which is a different promise from the weekly Digest the form now
+// makes and stores, so it says the promise that is actually being kept.
 
 "use client"
 
-import { useState, useTransition } from "react"
+import { Suspense, useState, useTransition } from "react"
+import { useSearchParams } from "next/navigation"
 
+import { SIGNUP_HEADING } from "@/lib/sender-identity"
+import { SignupDisclosure } from "@/components/signup-disclosure"
 import { subscribeEmail } from "@/app/actions/subscribe-email"
 
-export default function SubscribePage() {
+const notice = "mt-[10px] text-[12px] leading-[1.45]"
+
+function SubscribeForm() {
   const [email, setEmail] = useState("")
   const [isPending, startTransition] = useTransition()
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const confirmed = useSearchParams().get("confirmed")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,12 +61,36 @@ export default function SubscribePage() {
       <span className="block pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3">
         NOTIFY
       </span>
-      <h1 className="m-0 text-hero text-t1">Subscribe</h1>
+      <h1 className="m-0 text-hero text-t1">{SIGNUP_HEADING}</h1>
+
+      {/* The confirm route's two outcomes. Deliberately not distinguishing an
+          unknown token from a spent one: from out here they are the same event,
+          and telling them apart would tell a stranger which tokens exist. */}
+      {confirmed === "yes" && (
+        <p className={`${notice} text-t1`}>
+          Confirmed — you are on the list. The next Digest goes out at the end
+          of the week.
+        </p>
+      )}
+      {confirmed === "no" && (
+        <p className={`${notice} text-fail`}>
+          That confirmation link is not valid, or it has already been used. If
+          you have confirmed once you are on the list; if not, subscribe again
+          below.
+        </p>
+      )}
+
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
-        One email when a new recording is added to the catalogue — nothing more,
-        nothing on a schedule. Your address is stored in Firestore and used for
+        A weekly Digest of the Recordings added to the catalogue, sent only in a
+        week when there is at least one. Your address is stored in Firestore and
+        sent to Resend, the service that delivers the Digest, and is used for
         nothing else. There is no account, no sign-in and nothing synced between
         devices.
+      </p>
+      <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
+        Subscribing takes two steps: enter an address, then click the link in
+        the confirmation email. Nothing is sent to an address that is never
+        confirmed.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-[18px] max-w-[520px]">
@@ -80,21 +117,34 @@ export default function SubscribePage() {
             disabled={isPending || done}
             className="min-h-[44px] h-[34px] shrink-0 rounded-[9px] bg-acc px-[14px] text-[11.5px] font-medium text-on-acc transition-colors duration-120 disabled:opacity-60 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 md:min-h-0"
           >
-            {isPending ? "Subscribing…" : done ? "Subscribed ✓" : "Subscribe"}
+            {/* Not "Check your inbox" — that is the notice below, and two
+                elements with the same text make every locator for it ambiguous.
+                Not "Subscribed ✓" either: nobody is subscribed until they
+                confirm, which is the whole point of this ticket. */}
+            {isPending ? "Subscribing…" : done ? "Sent ✓" : "Subscribe"}
           </button>
         </div>
 
         {done && (
-          <p className="mt-[10px] text-[12px] leading-[1.45] text-t1">
-            You are on the list — watch your inbox for new recordings.
+          <p className={`${notice} text-t1`}>
+            Check your inbox — the Digest starts once you confirm.
           </p>
         )}
-        {error && !done && (
-          <p className="mt-[10px] text-[12px] leading-[1.45] text-fail">
-            {error}
-          </p>
-        )}
+        {error && !done && <p className={`${notice} text-fail`}>{error}</p>}
+
+        <SignupDisclosure className="mt-[12px] max-w-[520px] text-[11.5px] leading-[1.5] text-t3" />
       </form>
     </div>
+  )
+}
+
+// useSearchParams reads a value that only exists per request, so the shell
+// prerenders and the param resolves on the client. Without the boundary the
+// build refuses the page outright.
+export default function SubscribePage() {
+  return (
+    <Suspense>
+      <SubscribeForm />
+    </Suspense>
   )
 }

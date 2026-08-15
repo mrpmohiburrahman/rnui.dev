@@ -1,11 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 
-import {
-  addContact,
-  FROM,
-  refuseSendReason,
-  REPLY_TO,
-} from "../scripts/resend-broadcast"
+import { addContact } from "../lib/resend"
+import { FROM, REPLY_TO } from "../lib/sender-identity"
+import { refuseSendReason } from "../scripts/resend-broadcast"
 
 // The send guard from notify-and-preview ticket 05, lifted out of `main()` so it
 // can be tested without the Resend API.
