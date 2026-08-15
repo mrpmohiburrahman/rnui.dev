@@ -177,3 +177,43 @@ valid — the stuck state may simply clear.
 than wrong: the records went live minutes ago and Resend's DKIM poll lags. It should flip to
 `verified` unattended; if it has not within an hour, re-trigger before suspecting the records,
 because `dig` already proves they resolve.
+
+### 2026-08-15 (later) — everything above is done, and the diagnosis above was wrong
+
+**The dashboard is not broken. The *tab* was.** The section above blamed Cloudflare and said the
+fault was "evidently wider than that one screen." That is incorrect and is corrected here rather
+than edited away, because the wrong conclusion would have sent the next session to the API for no
+reason. Opening a **fresh tab** and repeating the identical steps worked first time, for both the
+DNS dialog that had stopped opening and — more tellingly — the Email Routing save that the
+2026-08-14 session watched spin forever across three attempts. Nothing about Cloudflare changed in
+between.
+
+So the standing advice is: when a Cloudflare modal stops opening or a Save hangs, **close the tab
+and open a new one before concluding anything about the product.** A page reload is *not*
+sufficient; that was tried and did not clear it.
+
+**All four DNS records are live**, each confirmed by `dig` against 1.1.1.1:
+
+```
+resend._domainkey.mail.rnui.dev  TXT  p=MIGf…ZatQIDAQAB
+send.mail.rnui.dev               MX   10 feedback-smtp.us-east-1.amazonses.com.
+send.mail.rnui.dev               TXT  v=spf1 include:amazonses.com ~all
+_dmarc.rnui.dev                  TXT  v=DMARC1; p=none; rua=mailto:hello@rnui.dev
+```
+
+DMARC is at the **apex** deliberately: `_dmarc.mail.rnui.dev` returns nothing and should stay that
+way, because subdomains inherit the apex policy. One record covers the sending subdomain and the
+site both.
+
+**`hello@rnui.dev` now routes to the verified Gmail** — rule Active, the list went 5 → 6, and no
+duplicates were created by any of last session's failed attempts (verified before adding). That
+closes the obligation `map.md` logged under **Not yet specified**: CASL s.6(2)/(3) and s.11 need
+that address reachable for 60 days after every send, and it now is. It also makes the `rua=` above
+deliverable, which was the reason it had to be an `@rnui.dev` address rather than a Gmail one.
+
+**Still open on this ticket**, and neither is blocked on a decision:
+
+- Resend `pending` → should flip to `verified` on its own now that all three records resolve.
+- The remaining acceptance bullets that need a *sent* message: `From:` alignment, the test
+  broadcast, the one-click unsubscribe POST verified to actually remove an address, and Google
+  Postmaster Tools. None can be done until the domain verifies.
