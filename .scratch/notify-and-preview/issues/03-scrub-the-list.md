@@ -149,16 +149,20 @@ wrong predictions about what a real signup gets you. Treat the remaining tier cl
 unverified.
 
 **Scope, stated honestly: 5 of 29, not a bulk run.** With 5 credits and no way to get more today,
-they were spent on the five *oldest* survivors, on the reasoning that recycled spamtraps are made
+they were spent on the five _oldest_ survivors, on the reasoning that recycled spamtraps are made
 from long-abandoned mailboxes, so age is the best available proxy for risk:
 
-| # | email | signed up | status | sub_status |
-|---|---|---|---|---|
-| 1 | `[redacted subscriber address]` | 2024-12-30 | `valid` | — |
-| 2 | `[redacted subscriber address]` | 2025-01-04 | `valid` | — |
-| 3 | `[redacted subscriber address]` | 2025-01-07 | `valid` | — |
-| 4 | `[redacted subscriber address]` | 2025-02-03 | `valid` | — |
-| 5 | `[redacted subscriber address]` | 2025-02-11 | `valid` | — |
+Addresses are **not** reproduced here. This file is tracked, `origin` is a public repo, and a
+subscriber address is personal data that publishing would disclose — see **A note on this file**
+below. The row numbers key into `scrub-result.local.json`, which is gitignored.
+
+| #   | domain    | signed up  | status  | sub_status |
+| --- | --------- | ---------- | ------- | ---------- |
+| 1   | gmail.com | 2024-12-30 | `valid` | —          |
+| 2   | gmail.com | 2025-01-04 | `valid` | —          |
+| 3   | gmail.com | 2025-01-07 | `valid` | —          |
+| 4   | gmail.com | 2025-02-03 | `valid` | —          |
+| 5   | gmail.com | 2025-02-11 | `valid` | —          |
 
 All five `valid`, no `spamtrap`, no `disposable`, no `did_you_mean`. No `risky` or `catch-all`
 verdicts came back, so the maintainer judgement this ticket reserves had nothing to decide and
@@ -167,7 +171,7 @@ not committed — they are keyed to real addresses.
 
 **What this does and does not license.** The highest-risk cohort in the list is clean, which is
 real evidence the other 24 — all newer, so less time to be abandoned — are cleaner still. It is
-**not** a bulk run over the survivors, so this ticket's fifth bullet is *partially* discharged.
+**not** a bulk run over the survivors, so this ticket's fifth bullet is _partially_ discharged.
 Whether that is enough is the maintainer's call. Note also that `valid` means the mailbox exists
 and accepts mail; ZeroBounce flags traps via `sub_status` and flagged none, but absence of a flag
 is weaker than a positive all-clear.
@@ -177,8 +181,97 @@ addresses, so **ZeroBounce must be named in the privacy policy's processor list*
 six and this makes seven. 07 is `ready-for-human`, not `resolved`, so it can still take the edit.
 Until it does, the policy under-describes where subscriber data has gone.
 
-**Also found while reading the list:** `[redacted subscriber address]` (#13) and
-`[redacted subscriber address]` (#25) are almost certainly one person. Bullet 6 collapsed duplicates
-*by address*, which cannot catch this. If they are one human they receive two Digests and the true
-count is 28. Left as-is pending a decision, since guessing identity from a local part is exactly
-the kind of inference this effort has been careful not to make.
+**Also found while reading the list:** #13 and #25 share an identical local part across two
+providers — one `gmail.com`, one `proton.me` — and are almost certainly one person. Bullet 6
+collapsed duplicates _by address_, which cannot catch this. If they are one human they receive two
+Digests and the true count is 28. Left as-is pending a decision, since guessing identity from a
+local part is exactly the kind of inference this effort has been careful not to make.
+
+### A note on this file — no subscriber address is written here, ever
+
+Added 2026-08-16 after this file was found to contain seven of them. `origin` is
+`github.com/mrpmohiburrahman/rnui.dev` and it is **public**; `.scratch/` is tracked, so anything
+written into a ticket is published the moment the branch is pushed. Seven real addresses — the five
+in the table above and the two in the paragraph above it — went in on 2026-08-15 in `9301fee`, at a
+point when `feat/studio-dark` had never been pushed, which is the only reason they were still
+private when this was caught.
+
+The rule, so it is not rediscovered: **verdicts, counts, domains and row numbers belong here;
+addresses belong in `scrub-result.local.json`**, which `.gitignore:74` covers via
+`.scratch/notify-and-preview/research/*.local.json`. Full verifier responses stay in the session
+scratchpad. This is the same reasoning as the research checklist's "any export or sharing of these
+addresses with a third party" — publishing to a public repo is that, with no recipient list.
+
+Redacting the working tree does **not** close it. `9301fee` still carries the addresses in its
+blob, `git log -p` reads it, and a push publishes history rather than just the tip. That commit is
+unpushed and two back from the branch head, so it can still be rewritten; until it is, this branch
+must not be pushed. Owner: the maintainer, since it rewrites history.
+
+### 2026-08-16 — the bulk run happened, over all 29
+
+**Vendor: Emailable**, on the maintainer's own key. The 250-credit figure this ticket recorded as
+unverified is the one that _did_ survive contact — `GET /v1/account` returned
+`available_credits: 250` — against Bouncer's 100 (unreachable, business email required) and
+ZeroBounce's 100/month (really 5, Freemium not self-serve). Thirty credits spent: one probe on the
+account owner's own address to prove auth and response shape before any subscriber address left the
+machine, then 29.
+
+All 29 were submitted, not the 24 ZeroBounce had not seen. Credits were not the constraint, and
+re-running the five bought an independent second opinion for free.
+
+| verdict         | n   | what it means here                                        |
+| --------------- | --- | --------------------------------------------------------- |
+| `deliverable`   | 26  | mailbox exists and accepts                                |
+| `risky`         | 2   | `low_deliverability` — the judgement this ticket reserves |
+| `undeliverable` | 1   | `rejected_email`, score 0                                 |
+| `unknown`       | 0   | nothing timed out or went unresolved                      |
+| `duplicate`     | 0   | bullet 6's dedup holds                                    |
+
+Across all 29: **0 disposable, 0 role, 0 accept-all, 0 `did_you_mean`.** 25 of 29 are free
+providers. The zero accept-all count settles the open question above about business domains — none
+of the four is accept-all, so no verdict here is weakened by a domain that says yes to everything.
+
+**The two vendors agree.** All five ZeroBounce called `valid` came back `deliverable`, scoring 93
+to 95. Two independent verifiers concurring on the highest-risk cohort is materially stronger than
+the partial run alone, and it is the reason the remaining 24 needed no hedging.
+
+**Three rows are not clean:**
+
+| #   | domain        | signed up  | verdict         | reason               | score |
+| --- | ------------- | ---------- | --------------- | -------------------- | ----- |
+| 8   | distrokid.com | 2025-04-09 | `undeliverable` | `rejected_email`     | 0     |
+| 11  | yahoo.com     | 2025-07-28 | `risky`         | `low_deliverability` | 76    |
+| 24  | yahoo.com     | 2026-05-13 | `risky`         | `low_deliverability` | 70    |
+
+**#8 is dropped, and that is not a judgement call** — a mailbox that rejects at SMTP is a
+guaranteed hard bounce, which is the precise outcome this bullet exists to prevent. It is also the
+one non-free address of the three, on a company domain, so the likeliest story is someone who left
+the company. **Survivors 29 → 28.**
+
+**#11 and #24 are the maintainer's call**, and this is the decision the ticket reserved a human
+for. `low_deliverability` is not "invalid" — Yahoo answers definitively, so both mailboxes exist;
+the score reflects a mailbox that looks dormant. Two ways to read it: drop them and lose two real
+subscribers, or keep them and accept 2 of 28 (7.1%) as an elevated bounce risk on the very first
+send from a domain with no reputation. A third option fits this list better than either — **keep
+them, and put them last in ticket 10's staged send**, which already ramps 1 → 5 → 10 → remainder.
+If they bounce, they bounce into a warmed domain and get dropped on the spot by the existing
+hard-bounce rule, costing nothing that dropping them now would have saved.
+
+**Emailable is now a processor, and bullet 6 is closed here rather than in 07** — which is what
+that bullet asks for. Real subscriber addresses reached it, so `app/privacypolicy/page.tsx` now
+names it as the **eighth** processor (07 named six, ZeroBounce made seven), and `POLICY_VERSION`
+is bumped to **1.2**, effective 16 August 2026. ZeroBounce's entry keeps its "five addresses"
+count — that number is still exact, since this run did not go through it. No storage region is
+claimed for Emailable, for the same reason the page gives for ZeroBounce: none was verified from a
+live API, and the page's standing rule is not to add one by assumption.
+
+The policy is only true in public once it deploys. Until then the live page says seven processors
+while eight hold data.
+
+**Verdicts, joined to docIds and `createdAt`, are in
+`research/verify-2026-08-16.local.json`** — gitignored by the same `*.local.json` rule. Written
+beside `scrub-result.local.json` rather than into it, because `pnpm scrub:emails` regenerates that
+file and would silently clobber the verdicts.
+
+No mail was sent. The sending hold is untouched — a verifier transmits addresses to an API, it does
+not deliver a message to anyone, which is the same footing the ZeroBounce run stood on.
