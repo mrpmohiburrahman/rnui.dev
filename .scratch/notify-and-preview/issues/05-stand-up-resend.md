@@ -373,4 +373,36 @@ DMARC gap. That gap is closed.
    one sitting. Ticket 08 depends on knowing exactly what that POST removes it from, so verify it
    rather than assuming.
 
-Not `resolved`: bullets 2, 5 and 6 are unmet, and bullet 1 is unmet as written.
+**Free-tier limits, which bullet 3 asks to be recorded here and which nothing had.** Resend's free
+tier is **3,000 emails/month and 100/day**, and **one custom domain** (the last of those was found
+the hard way — see the 403 above). The daily cap is the one that binds: a Digest to the 29 survivors
+is a single broadcast well inside it, but 100/day is a hard ceiling on any staged send ticket 10
+designs, and the monthly figure leaves no room for a second list. Bullet 3's other half — the API key
+in the environment, never committed — is met and was re-confirmed twice.
+
+**Bullet 1's literal text is not met, and the deviation is deliberate.** It asks for DMARC *on
+`mail.rnui.dev`*. DMARC is published at the **apex** instead, because `_dmarc` is inherited by
+subdomains: one record at `rnui.dev` covers the sending subdomain and the site, while publishing only
+on `mail.` would have left the apex — where the site and contact form live — bare. `_dmarc.mail.rnui.dev`
+returns nothing and should stay that way. Recorded as a deviation rather than silently counted as
+compliance.
+
+### Review corrections applied
+
+A two-axis review of this session's commits found one real defect and it is fixed in the same branch.
+`addContact` swallowed duplicate-address errors with `String(err).includes("409")`, matched against a
+message that interpolates the request path and the response body — so an audience id containing the
+hex digits `409` would have turned *every* failure (500, 429, a bad key) into a silent no-op, leaving
+the contact absent while the send proceeded believing it was there. `api()` now attaches `res.status`
+to the thrown error and `addContact` matches the number. Two tests cover it, including the
+`409e0a1c-…-000000000409` id that reproduces the old bug.
+
+Also from the review: the contacts-page shape is now a named `ContactPage` type instead of being
+spelled out twice; `pathToFileURL(process.argv[1] ?? "")` matches `scrub-email-list.ts`'s handling of
+an undefined `argv[1]`; and `console.error(err)` keeps the stack the old `String(err)` discarded. The
+guard's deliberate refusal to reuse `normalise()` from `scrub-email-list.ts` is now commented — that
+helper folds gmail dots, which makes *more* addresses compare equal and so would detect *fewer*
+strangers. A guard wants the stricter comparison.
+
+Not `resolved`: bullets 2, 5 and 6 are unmet, bullet 1 is unmet both as written (DMARC placement) and
+in substance (1024-bit DKIM), and bullet 3 is met only now that the limits above are written down.
