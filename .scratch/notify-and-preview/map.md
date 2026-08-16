@@ -132,6 +132,17 @@ reason to avoid that vendor, not a reason to send the email.
   project, because on the hobby plan there is no per-domain exception and the Preview would
   otherwise have shown a login wall to every visitor.
   [12](issues/12-deploy-the-preview.md)
+- The Preview asks decision 7's two questions, verbatim, and `rnui.dev` carries a prompt that sends
+  people to them. **The prompt could not have been code** — production runs `main`, and merging this
+  branch is deploy B — so it is a PostHog `link` survey (`01a00821`), which needs no deploy.
+  Launching it took **two** switches, not the one ticket 07 needed: the internal targeting flag is
+  created inactive, and until it is flipped `/decide/` hands every browser a survey it then declines
+  to draw, which from the survey API is indistinguishable from working. The survey itself *is* code,
+  because its trigger (scrolled **or** opened a Recording), a first question costing one click, and
+  `prefers-reduced-motion` are each out of a hosted popover's reach. Knowingly accepted: anyone shown
+  the prompt is not shown the exit survey for 30 days. With this, the third clause of the Destination
+  — the Preview live with its survey collecting — is true.
+  [13](issues/13-the-survey-and-the-prompt.md)
 
 ## Not yet specified
 
