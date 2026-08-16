@@ -1,6 +1,6 @@
 # Put Studio Dark on preview.rnui.dev
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 02
 
@@ -82,7 +82,7 @@ site as the first.
 
 301 rather than the 307 used for `/feedback`, and the difference is deliberate: a permanent
 redirect a browser has cached cannot be revoked, which is a reason to avoid one for a rule that
-might be reverted, and a reason to *use* one for a hostname being retired for good. There is no
+might be reverted, and a reason to _use_ one for a hostname being retired for good. There is no
 ranking to consolidate — the noindex saw to that — so the 301 exists to keep links people shared
 during the Preview from breaking, not for SEO.
 
@@ -112,9 +112,8 @@ An earlier draft of this comment asserted that Vercel's auto-noindex "stops appl
 domain is attached to the branch" — that was written from recollection, not evidence, and is gone.
 
 **A known exception, deliberately not chased.** A `redirects()` entry resolves before headers are
-written, so two kinds of response answer without the header: the one config redirect (`/feedback`,
-307) and Next's trailing-slash normalisation (`/products/`, 308). Both are empty redirects whose
-destination *does* carry the header, so there is no body for a crawler to index. The redirects in
+written, so two kinds of response answer without the header: the one config redirect (`/feedback`, 307) and Next's trailing-slash normalisation (`/products/`, 308). Both are empty redirects whose
+destination _does_ carry the header, so there is no body for a crawler to index. The redirects in
 `middleware.ts` are unaffected — they run after the header is written and were measured carrying
 it. Closing the remaining two would mean moving those redirects into middleware, which is a lot of
 moving parts for nothing that would have been indexed.
@@ -138,3 +137,44 @@ Acceptance bullet 5, the retirement plan, is met above under **Retiring it at de
 
 Nothing here touches `main`, and nothing here is deploy B. Assigning the domain to the branch is
 what keeps it the Preview; `studio-dark` checkpoint 5 still gates the merge.
+
+**2026-08-16 — the Preview is live. All five acceptance bullets met and measured.** Status
+`resolved`.
+
+The three "steps no connector here can reach" were reachable after all, once the branch was pushed:
+
+1. **PostHog project 559028 "rnui.dev Preview"** in org `01945af3-0d2e-0000-1292-5fc1a9fde6a8`.
+2. **`NEXT_PUBLIC_POSTHOG_KEY` split three ways** on Vercel — Production and Development keep
+   `phc_6cIc…` (117415), Preview gets `phc_oFZi…` (559028).
+3. **`preview` CNAME → `cname.vercel-dns.com`, DNS-only**, added at Cloudflare through the
+   dashboard. Neither Cloudflare token in this repo can write DNS — one is Workers-AI-scoped, the
+   other is an R2 credential that is not a CF API token at all — and wrangler ships no DNS command.
+   The record resolves to Vercel IPs, matching `www.rnui.dev` exactly rather than Cloudflare's,
+   which is how "DNS-only" is confirmed rather than asserted.
+
+**Measured, not assumed:**
+
+| bullet                       | evidence                                                                                                                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| serving Studio Dark          | HTTP 200; 375,614 bytes against production's 670,618 — different builds, and Vercel reports `target: preview` on deployment `rnui-nx56y5arf`                                                           |
+| separate PostHog project     | the _compiled bundles_ differ: `phc_oFZi…` in the Preview's chunks, `phc_6cIc…` in production's. Project 117415 shows only `www.rnui.dev` and one `localhost:3000` over 7 days — no `preview.rnui.dev` |
+| `X-Robots-Tag: noindex` live | present on `/`, `/products`, `/robots.txt` and a 404; **absent** on `rnui.dev`, `www.rnui.dev` and `www.rnui.dev/products`                                                                             |
+| `api_host` unchanged         | `https://us.i.posthog.com` compiled into both builds                                                                                                                                                   |
+| retirement plan              | written above under **Retiring it at deploy B**                                                                                                                                                        |
+
+**A setting was changed to make this work, and it is worth knowing about.** Vercel's
+`ssoProtection` was `prod_deployment_urls_and_all_previews`, which put `preview.rnui.dev` behind a
+Vercel login — HTTP answered, but 302'd to `vercel.com/sso-api`, so no visitor could have seen
+Studio Dark and no survey traffic could ever have been collected. This team is on the **hobby**
+plan, where per-domain protection exceptions are not available, so the only lever was disabling
+Vercel Authentication for the project. The maintainer decided to. What that exposes is the same
+public catalogue `rnui.dev` already serves — there is no admin surface behind it — and the noindex
+rule above keeps every one of those hostnames out of the index. **Re-enable it if a deployment
+ever serves something that is not already public.**
+
+**Two honest caveats.** The "no Preview event in the main project" check is true but weak today:
+the Preview has had essentially no traffic since going live, so it confirms nothing has leaked
+rather than proving nothing can. The token evidence is the strong half. Second, the merge of
+`origin/main` into this branch was required before the push — `3d479be` is the pnpm 9 override fix,
+and without it the Vercel build fails with `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`, which is exactly
+what the three `Error` deployments from 2026-08-14 were.

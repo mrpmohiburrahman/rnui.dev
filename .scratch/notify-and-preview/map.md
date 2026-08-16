@@ -28,7 +28,7 @@ the ordinary way this repo works.
 effort:
 
 - **Subscriber** — a person who has confirmed an email address for the Digest. Distinct from a
-  Contributor, who may never have given an address, and from a visitor. Only a *confirmed* address
+  Contributor, who may never have given an address, and from a visitor. Only a _confirmed_ address
   is a Subscriber; an unconfirmed one is a pending address.
   _Avoid_: user, member, lead, contact
 - **Digest** — the weekly email listing Recordings added since the last one. Sent only when there
@@ -54,20 +54,20 @@ relevant one before reopening any question it already answers.
 Twelve decisions, taken with the maintainer before any ticket existed. They bind every ticket
 here. Detail and evidence live in the two research files.
 
-| # | Decision |
-|---|---|
-| 1 | "Business email" means official mail from rnui.dev — **not** ad blasts, sponsor pitches or promoting other products |
-| 2 | **Site traffic judges the redesign, not the 48 addresses.** The email carries a survey ask as a secondary section, never as its purpose |
-| 3 | **Deploy A merges to `main` first**, then the Preview goes up. The Preview reports to its own PostHog project so deploy A's baseline stays clean. A prompt on `rnui.dev` sends visitors to the Preview; the survey fires there |
-| 4 | One effort, two phases — **the email channel is built before anything is sent about the redesign** |
-| 5 | The branch becomes `feat/studio-dark`, references updated with it |
-| 6 | **Studio Dark ships regardless of the survey.** At 94 visitors/week a referendum is not available; the survey is a defect detector |
-| 7 | The survey is two questions: *better / same / worse*, plus one open text |
-| 8 | The Preview is `preview.rnui.dev`; mail sends from `mail.rnui.dev`. Deliberately not one letter apart |
-| 9 | The Digest sends if ≥1 genuinely new Recording id appeared. Re-recordings do not count. Newest 6 shown, then "and N more →" |
-| 10 | **The 48 are kept, cured and scrubbed** — not deleted. Deleting costs ~19 months of collection at the real rate |
-| 11 | Deploy A collects for **6 weeks, reviewed at 4**, before deploy B |
-| 12 | **Resend**, with Firestore staying the source of truth for the consent record. Double opt-in is built here, ~60 lines on patterns the repo already has |
+| #   | Decision                                                                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | "Business email" means official mail from rnui.dev — **not** ad blasts, sponsor pitches or promoting other products                                                                                                            |
+| 2   | **Site traffic judges the redesign, not the 48 addresses.** The email carries a survey ask as a secondary section, never as its purpose                                                                                        |
+| 3   | **Deploy A merges to `main` first**, then the Preview goes up. The Preview reports to its own PostHog project so deploy A's baseline stays clean. A prompt on `rnui.dev` sends visitors to the Preview; the survey fires there |
+| 4   | One effort, two phases — **the email channel is built before anything is sent about the redesign**                                                                                                                             |
+| 5   | The branch becomes `feat/studio-dark`, references updated with it                                                                                                                                                              |
+| 6   | **Studio Dark ships regardless of the survey.** At 94 visitors/week a referendum is not available; the survey is a defect detector                                                                                             |
+| 7   | The survey is two questions: _better / same / worse_, plus one open text                                                                                                                                                       |
+| 8   | The Preview is `preview.rnui.dev`; mail sends from `mail.rnui.dev`. Deliberately not one letter apart                                                                                                                          |
+| 9   | The Digest sends if ≥1 genuinely new Recording id appeared. Re-recordings do not count. Newest 6 shown, then "and N more →"                                                                                                    |
+| 10  | **The 48 are kept, cured and scrubbed** — not deleted. Deleting costs ~19 months of collection at the real rate                                                                                                                |
+| 11  | Deploy A collects for **6 weeks, reviewed at 4**, before deploy B                                                                                                                                                              |
+| 12  | **Resend**, with Firestore staying the source of truth for the consent record. Double opt-in is built here, ~60 lines on patterns the repo already has                                                                         |
 
 ### The three sending verdicts
 
@@ -89,8 +89,10 @@ reason to avoid that vendor, not a reason to send the email.
 <!-- a ticket whose decision is final but whose acceptance still has a human step is marked
      (ready-for-human) — the decision binds now; the ticket is not closed -->
 
-- The branch is `feat/studio-dark`, and it lives only on this machine — it was never pushed, so
-  decision 5's "references updated with it" was six markdown files, not a remote rename.
+- The branch is `feat/studio-dark`. When 01 closed it lived only on this machine, so decision 5's
+  "references updated with it" was six markdown files rather than a remote rename. **It was pushed
+  on 2026-08-16** to serve the Preview, which is what ticket 12 needed; the rename never had to
+  reach the remote because there was nothing there to rename.
   [01](issues/01-rename-the-branch.md)
 - The 48 are 29 — the list was a third bot, caught by pairing signups against `userFeedback` junk
   rather than by pattern-matching addresses. (ready-for-human) [03](issues/03-scrub-the-list.md)
@@ -123,16 +125,20 @@ reason to avoid that vendor, not a reason to send the email.
   `rnui-dev-git-…vercel.app` alias, which serves the same 277 Recordings and whose supposed
   automatic noindex could not be measured from here. The condition is the whole safety of it:
   unconditional, the same rule deindexes rnui.dev. Retirement at deploy B is a Vercel domain
-  redirect, 301, with the rule deleted in the same change. (ready-for-human — the header is built and verified against a real
-  build; the subdomain, its Vercel branch assignment and its own PostHog project are three steps
-  no connector here can reach) [12](issues/12-deploy-the-preview.md)
+  redirect, 301, with the rule deleted in the same change. **The Preview is live as of 2026-08-16**
+  and every bullet is measured: the noindex header is present on the Preview and absent on
+  `rnui.dev`, and the two builds compile _different_ PostHog tokens, so deploy A's baseline stays
+  clean. Making it publicly reachable cost one setting — Vercel Authentication is now off for the
+  project, because on the hobby plan there is no per-domain exception and the Preview would
+  otherwise have shown a login wall to every visitor.
+  [12](issues/12-deploy-the-preview.md)
 
 ## Not yet specified
 
-- **Keeping `hello@rnui.dev` receiving.** The *setup* is done — a Cloudflare Email Routing rule
+- **Keeping `hello@rnui.dev` receiving.** The _setup_ is done — a Cloudflare Email Routing rule
   forwards it to the maintainer's verified Gmail as of 2026-08-15, discharging what this entry
   originally logged as unowned. What remains is the standing part: CASL s.6(2)/(3) and s.11 require
-  it reachable for 60 days after *every* send, so it is an obligation with no end date rather than a
+  it reachable for 60 days after _every_ send, so it is an obligation with no end date rather than a
   launch step. Nothing to build; it fails silently if the forward is ever removed.
 - **Whether 1024-bit DKIM is accepted.** Ticket 05 asks for 2048-bit; Resend generates the key and
   issued 1024-bit, with no API parameter to change it. Either accept it, or re-provision the domain
@@ -144,7 +150,7 @@ reason to avoid that vendor, not a reason to send the email.
   Digests or six months. Which of the 48 are dead cannot be known until Digests have been sent —
   and, ticket 07 found, **not even then as things stand**: Resend's `open_tracking` and
   `click_tracking` are both `false` on `mail.rnui.dev`, so no engagement signal is being collected
-  at all. So this needs a *decision* before it needs time. Turning either on is not a free
+  at all. So this needs a _decision_ before it needs time. Turning either on is not a free
   operational tweak: the published policy now states the Digest does not track opens or clicks, so
   it would bump the policy version and change what Subscribers were told. Not decided either way.
 - **`userFeedback` (23 documents) is an open write path with no captcha and visible bot junk in
