@@ -44,6 +44,9 @@ import { PRIVACY_PATH } from "@/lib/sender-identity"
 const FOCUS_RING =
   "focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
 
+/** One panel on the page, so one id is enough and it can be a constant. */
+const QUESTION_ID = "preview-survey-question"
+
 /**
  * Two facts read straight off the browser, through the hook built for reading
  * things React does not own — the same one hooks/use-prefers-reduced-motion.ts
@@ -178,7 +181,15 @@ export function PreviewSurvey() {
         </p>
       ) : (
         <>
-          <p className="pr-6 text-[12.5px] font-medium text-t1">
+          {/* The question is named once and pointed at, rather than repeated
+              into an aria-label on each control: the textarea takes it as its
+              label and the three buttons as their description, so "Better" is
+              announced with the sentence it is answering instead of on its
+              own, and the wording cannot drift between the two copies. */}
+          <p
+            id={QUESTION_ID}
+            className="pr-6 text-[12.5px] font-medium text-t1"
+          >
             {verdict ? CHANGE_QUESTION : COMPARISON_QUESTION}
           </p>
 
@@ -190,6 +201,7 @@ export function PreviewSurvey() {
                 maxLength={NOTE_MAX_LENGTH}
                 rows={3}
                 autoFocus
+                aria-labelledby={QUESTION_ID}
                 className={`mt-[10px] w-full resize-none rounded-[9px] border border-line bg-field px-[10px] py-[8px] text-[12.5px] text-t1 outline-none placeholder:text-t3 ${FOCUS_RING}`}
                 placeholder="Anything. The search, the colours, a thing you could not find."
               />
@@ -224,6 +236,7 @@ export function PreviewSurvey() {
                   key={value}
                   type="button"
                   onClick={() => chooseVerdict(value)}
+                  aria-describedby={QUESTION_ID}
                   className={`rounded-chip border border-line bg-field px-[10px] py-[6px] text-[12px] text-t2 hover:border-acc hover:text-t1 ${FOCUS_RING}`}
                 >
                   {label}
