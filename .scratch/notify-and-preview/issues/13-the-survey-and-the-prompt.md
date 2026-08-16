@@ -1,6 +1,6 @@
 # The survey, and the prompt that gets people to it
 
-Status: claimed
+Status: resolved
 Type: task
 Blocked by: 12
 
@@ -174,3 +174,50 @@ instead — the panel says the sentence goes to PostHog with the browser's pseud
 links to the policy, on the same reasoning as `components/signup-disclosure.tsx`. Adding the
 sentence to the policy itself is ticket 07's: it bumps the published policy version, which is not
 this ticket's call to make.
+
+**2026-08-16 — the branch is pushed, the Preview carries the survey, and every acceptance bullet is
+measured on a live host.** Status `resolved`.
+
+The maintainer approved the push (nothing here touches `main`; this is the Preview's branch build,
+not deploy B). Two things were then measured on `preview.rnui.dev` itself rather than inferred from
+a green build:
+
+- **The survey is in the served build.** `Compared to the old rnui.dev, this is…` is present in
+  `/_next/static/chunks/7748780b25ef603b.js`, reached by walking the 15 chunks the live
+  `/products` document loads. The panel only draws for a visitor who has scrolled or opened a
+  Recording, so the compiled string is the honest proof the build carries it.
+- **The responses land in 559028, not 117415.** The two live builds compile different tokens, read
+  out of their own chunks: `phc_oFZi…` on `preview.rnui.dev` and `phc_6cIc…` on `www.rnui.dev`.
+  That is the same evidence ticket 12 used, re-taken today rather than cited.
+
+One change went in after the first push and is in the build above: the question is given an id and
+pointed at, so the textarea takes it as its `aria-labelledby` and the three verdict buttons as
+their `aria-describedby`. Without it a screen reader announced a button called "Better" with no
+sight of the sentence it answers, and the textarea offered only its placeholder. The wording still
+exists once, in `lib/preview-survey.ts`, so the two cannot drift.
+
+### Acceptance, bullet by bullet
+
+| bullet | state |
+| --- | --- |
+| both questions live on the Preview, as decision 7 words them | met — in the served build, and pinned verbatim by `tests/preview-survey.test.ts` |
+| fires after a scroll or a Recording, not on arrival | met — measured on both paths; a fresh load at `scrollY 0` draws nothing |
+| shown once per person; a dismissal remembered | met — `"previewSurveyShown"`, written on show, read once per load |
+| optionally, the "what's worse?" follow-up | **deliberately not built**, with the reason above. The bullet says optional and warns against a third question |
+| a prompt on `rnui.dev`, dismissible, not a modal | met — survey `01a00821`, live and verified through `POST /decide/?v=3` |
+| responses land in the Preview's PostHog project | met — token measured in the live chunks of both hosts |
+| honours `prefers-reduced-motion` | met — the panel's 240ms entrance is zeroed by `app/globals.css:293`, read out of the live stylesheet |
+
+### What the next person should watch, and what would undo this
+
+`preview_survey_shown` minus `preview_survey_verdict` is the number that says whether this format
+works where the exit survey's did not. It is not readable for a while: the Preview's traffic is
+whatever the prompt sends it, and the prompt reaches roughly 94 visitors a week, once each.
+**Expect a first week of zero, and do not read it as a fault** — the same expectation ticket 07 set
+and was right about.
+
+Two things would quietly undo this. Re-enabling Vercel Authentication on the project puts the
+Preview back behind a login and no answer can ever arrive (ticket 12 records why it is off). And
+`NEXT_PUBLIC_POSTHOG_KEY` widened back to All Environments would send these events into 117415,
+where they would mix with deploy A's baseline — the failure ticket 12 called silent, and it is
+silent here too.
