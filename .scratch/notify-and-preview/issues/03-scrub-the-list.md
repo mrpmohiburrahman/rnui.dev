@@ -216,10 +216,18 @@ every commit, not just the tip, and `9301fee` still carried the addresses in its
 **`git push --tags` or `--follow-tags` would publish that tag and every address in it.** Delete
 both refs once the rewrite is known good, and until then never push tags from this repo.
 
-Not fixed, and judged not worth 23 more replayed commits: `75d3454` carries
-`niko240@example.com` in a test fixture. The local part was lifted from a real signup, the domain
-was not, so it reaches nobody and identifies nobody without the private list. The fixture itself is
-invented as of this ticket's commit; only the old commit still holds it.
+A second, smaller instance was scrubbed in the same pass. One fixture in
+`tests/scrub-email-list.test.ts` used a local part lifted from a real signup with the domain
+swapped to `example.com`, which does not stop a local part being personal data. The fixture is
+invented now, and the old value was replaced across history rather than left in place.
+
+It was nearly left in place, on the reasoning that a fake domain identifies nobody. That reasoning
+did not survive being written down: an earlier draft of this very paragraph **named the local
+part**, three screens below a table stating which row numbers are `yahoo.com` and which are
+`gmail.com`. Two facts in one public file reconstruct the address in about two guesses. The
+argument for leaving it was sound only while nobody explained it — which is not a property worth
+depending on, so the value went. Do not name a redacted value while describing why it was
+redacted.
 
 ### 2026-08-16 — the bulk run happened, over all 29
 
