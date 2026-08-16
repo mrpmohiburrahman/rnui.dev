@@ -190,11 +190,12 @@ a green build:
   out of their own chunks: `phc_oFZi…` on `preview.rnui.dev` and `phc_6cIc…` on `www.rnui.dev`.
   That is the same evidence ticket 12 used, re-taken today rather than cited.
 
-One change went in after the first push and is in the build above: the question is given an id and
-pointed at, so the textarea takes it as its `aria-labelledby` and the three verdict buttons as
-their `aria-describedby`. Without it a screen reader announced a button called "Better" with no
-sight of the sentence it answers, and the textarea offered only its placeholder. The wording still
-exists once, in `lib/preview-survey.ts`, so the two cannot drift.
+One change went in **after** those two measurements were taken, as a second push, and was verified
+separately in the build that replaced them: the question is given an id and pointed at, so the
+textarea takes it as its `aria-labelledby` and the three verdict buttons as their
+`aria-describedby`. Without it a screen reader announced a button called "Better" with no sight of
+the sentence it answers, and the textarea offered only its placeholder. The wording still exists
+once, in `lib/preview-survey.ts`, so the label and the rendered question cannot drift.
 
 ### Acceptance, bullet by bullet
 
