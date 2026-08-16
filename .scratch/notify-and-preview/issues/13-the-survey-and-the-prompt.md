@@ -1,6 +1,6 @@
 # The survey, and the prompt that gets people to it
 
-Status: ready-for-agent
+Status: claimed
 Type: task
 Blocked by: 12
 
