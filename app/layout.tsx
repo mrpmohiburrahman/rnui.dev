@@ -17,6 +17,7 @@ import { PostHogProvider } from "@/lib/posthog-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { NavSidebar } from "@/components/nav/nav-side-bar"
+import { PreviewSurvey } from "@/components/preview-survey"
 import { SiteFooter } from "@/components/site-footer"
 import { ShellChrome } from "@/components/site-shell"
 import { SiteHeader } from "@/components/site-header"
@@ -115,6 +116,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </ShellChrome>
             </TooltipProvider>
             <Toaster richColors />
+            {/* Ticket 13's two questions. Renders nothing anywhere but
+                preview.rnui.dev — the host check is inside it, so this stays a
+                plain mount and no route has to know about it. */}
+            <PreviewSurvey />
           </ThemeProvider>
           <SiteFooter />
           <Analytics />

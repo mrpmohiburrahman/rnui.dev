@@ -11,6 +11,9 @@ import {
   filterCleared,
   loadMoreClicked,
   newsletterSubmitted,
+  previewSurveyNote,
+  previewSurveyShown,
+  previewSurveyVerdict,
   recordingFacts,
   recordingOpened,
   repoClicked,
@@ -231,5 +234,54 @@ describe("newsletter_submitted (the fourteenth event, ticket 15.1)", () => {
     // The assertion the acceptance is actually about: whatever fired, it cannot
     // be used to reconstruct the typed email. Exactly one key, and it is `route`.
     expect(Object.keys(props).sort()).toEqual(["route"])
+  })
+})
+
+describe("the Preview survey's three events (ticket 13)", () => {
+  it("reports the panel reaching the screen, with no properties", () => {
+    previewSurveyShown()
+    // One argument, not two with an empty object: `shown` is a count, and a
+    // property bag it never fills would invite one.
+    expect(onlyCapture()).toEqual(["preview_survey_shown"])
+  })
+
+  it("reports question 1 on the click, carrying only the verdict", () => {
+    previewSurveyVerdict("worse")
+    expect(onlyCapture()).toEqual([
+      "preview_survey_verdict",
+      { verdict: "worse" },
+    ])
+  })
+
+  it("reports question 2 with the words, and repeats the verdict", () => {
+    // The one event on the site that carries visitor-entered text, and the
+    // deliberate exception to the rule the module header states. The verdict is
+    // repeated so the sentence is readable without joining it back through the
+    // person.
+    previewSurveyNote("better", "The search never found the sheet component.")
+    expect(onlyCapture()).toEqual([
+      "preview_survey_note",
+      {
+        verdict: "better",
+        note: "The search never found the sheet component.",
+      },
+    ])
+  })
+
+  it("carries no Recording facts and no route on any of the three", () => {
+    // A survey answer is about the redesign, not about a Recording. Anything
+    // more here would put the Preview's catalogue into a dataset that exists to
+    // hold fifteen sentences.
+    for (const fire of [
+      () => previewSurveyShown(),
+      () => previewSurveyVerdict("same"),
+      () => previewSurveyNote("same", "nothing"),
+    ]) {
+      capture.mockClear()
+      fire()
+      const [, props] = capture.mock.calls[0] as [string, undefined | object]
+      expect(Object.keys(props ?? {})).not.toContain("recording_id")
+      expect(Object.keys(props ?? {})).not.toContain("route")
+    }
   })
 })

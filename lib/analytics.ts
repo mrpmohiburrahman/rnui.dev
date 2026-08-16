@@ -16,11 +16,16 @@
 // a throw; init happens in the root provider's mount effect, well before any of
 // these can be triggered by a visitor.
 //
-// No property below carries visitor-entered text. `search_performed` is the one
-// event with a visitor's own words behind it and it reports their length.
+// One property below carries visitor-entered text, and exactly one:
+// `preview_survey_note`, whose whole purpose is the sentence the visitor typed
+// (ticket 13, decision 7). Everywhere else the rule still holds —
+// `search_performed` is the event with a visitor's own words behind it and it
+// reports their length. See that function for why the exception is the point.
 
 import type { Recording } from "@/data/recording"
 import posthog from "posthog-js"
+
+import type { Verdict } from "@/lib/preview-survey"
 
 /** Where the visitor was: the grid of cards, or one Recording's detail body. */
 export type Surface = "grid" | "detail"
@@ -211,4 +216,44 @@ export function loadMoreClicked(page: number, recordingsShown: number) {
  */
 export function newsletterSubmitted(route: string) {
   posthog.capture("newsletter_submitted", { route })
+}
+
+// The Preview's survey, three events (ticket 13). They fire only on
+// `preview.rnui.dev` (lib/preview-survey.ts) and so land only in the Preview's
+// own PostHog project, 559028 — the fourteen-event catalogue in project 117415
+// that ticket 15 closed is unchanged, and deploy A's baseline never sees these.
+//
+// `shown` and `verdict` are a pair on purpose: shown minus verdict is the rate
+// at which this survey is ignored or waved away, which is the number the
+// existing exit survey's 14-shown-0-completed makes worth watching from the
+// first day. There is no separate `dismissed` event — the difference between
+// closing the panel and scrolling past it does not change what anyone would do
+// about it. Add one if that stops being true.
+
+/** The panel reached the screen. Once per person; the key remembers. */
+export function previewSurveyShown() {
+  posthog.capture("preview_survey_shown")
+}
+
+/**
+ * Question 1 was answered. Captured on the click rather than held until the
+ * panel closes: it costs one click, and a visitor who gives the verdict and
+ * then closes the tab has still told you something that must not be lost.
+ */
+export function previewSurveyVerdict(verdict: Verdict) {
+  posthog.capture("preview_survey_verdict", { verdict })
+}
+
+/**
+ * Question 2 was answered — the one that carries the value, and the only event
+ * on the site that carries a visitor's own words. It has to: "what's the one
+ * thing you'd change?" answered as a length is not an answer. The panel says so
+ * at the point of capture rather than one link away, for the same reason
+ * components/signup-disclosure.tsx does.
+ *
+ * `verdict` is repeated here so the sentence is readable on its own, without
+ * joining it back to `preview_survey_verdict` through the person.
+ */
+export function previewSurveyNote(verdict: Verdict, note: string) {
+  posthog.capture("preview_survey_note", { verdict, note })
 }
