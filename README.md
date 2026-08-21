@@ -42,3 +42,7 @@ The fastest path: open an issue using the [Animation Submission template](./.git
 ## License
 
 MIT — see [LICENSE](./LICENSE).
+
+---
+
+Built by **MD. Mohibur Rahman** — [resume.rnui.dev](https://resume.rnui.dev)
