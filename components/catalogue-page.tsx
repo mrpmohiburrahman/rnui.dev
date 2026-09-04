@@ -221,7 +221,6 @@ export function CataloguePage({
           toggleBookmark={toggleBookmark}
           votedRecordingIds={votedRecordingIds ?? []}
           toggleVote={toggleVote}
-          currentSort={sort}
           topViewCount={topViewCount}
         >
           {children}

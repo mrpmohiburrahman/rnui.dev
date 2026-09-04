@@ -6,9 +6,9 @@ import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
-import { catalogueResultLine } from "@/lib/catalogue-heading"
 
-import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion"
+import { applySort, type SortType } from "@/hooks/use-sorted-data"
+import { cn } from "@/lib/utils"
 import { CatalogueEmpty, type EmptyState } from "./catalogue-empty"
 import { FilterChips } from "./filter-chips"
 import { RecordingCard } from "./recording-card"
@@ -61,10 +61,6 @@ export interface RecordingCardGridProps {
   toggleBookmark: (id: string) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
-  /** The current sort, for the result line's SORTED tail. The controls that
-   *  change it live in the header (desktop) and the filter dock's sheet
-   *  (phone), both of which write the same `?sort=` through the same hook. */
-  currentSort?: "recent" | "top-voted" | "top-viewed"
   /**
    * The catalogue hero, rendered above the heading row and outside the framed
    * panel. Absent on `/products` and `/bookmarks`, which show only the heading.
@@ -97,7 +93,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   toggleBookmark,
   votedRecordingIds,
   toggleVote,
-  currentSort,
   hero,
   heading,
   catalogueTotal,
@@ -130,36 +125,13 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     Boolean
   ).length
 
-  // A reduced-motion visitor sees the whole catalogue as stills, so the result
-  // line says so where the mock draws it (Catalogue.dc.html:216). This is the
-  // `48 OF 277 · STILLS ONLY` handover from ticket 08 — the grid reads its own
-  // preference rather than being told, because the saved view and the filter
-  // view already print their own tails and only the unfiltered resting view has
-  // a STILLS variant to give. The server snapshot `false` means the served HTML
-  // claims nothing it does not deliver for a visitor who will play Demos, and
-  // the line flips to STILLS ONLY only where the browser says reduce
-  // (hooks/use-prefers-reduced-motion.ts).
-  const reducedMotion = usePrefersReducedMotion(false)
+  const sort = searchParams.get("sort")
+  const activeSort: SortType =
+    sort === "top-voted" || sort === "top-viewed" ? sort : "recent"
 
-  const resultLine = catalogueResultLine({
-    shown,
-    // The saved view's form has no denominator, so `total` is the safe
-    // fallback when a route (bookmarks) supplies none.
-    catalogueTotal: catalogueTotal ?? total,
-    filterCount,
-    savedView: bookmarkedOnly,
-    sort: currentSort ?? "recent",
-    reducedMotion,
-  })
-
-  // The phone drops the sort tail: CatalogueMobile.dc.html's `resultLine` is
-  // `48 OF 277` where the desktop draws `48 OF 277 · SORTED RECENT`. Split
-  // rather than computed twice, so the served HTML carries the whole sentence
-  // and a media query decides how much of it shows — the same reason the
-  // counter line in the header is `lg:` rather than absent.
-  const tailAt = resultLine.indexOf(" · SORTED ")
-  const resultHead = tailAt === -1 ? resultLine : resultLine.slice(0, tailAt)
-  const resultTail = tailAt === -1 ? "" : resultLine.slice(tailAt)
+  const changeSort = (next: SortType) => {
+    applySort(next)
+  }
 
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
@@ -225,20 +197,9 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           <FilterChips />
         </div>
       )}
-      {/* The heading row, Catalogue.dc.html:85-88: the section head on the
-          left and the mono result line right-aligned on a reserved width. The
-          heading is an h2 when the hero is present and an h1 when it is not, so
-          every route carries exactly one h1 — /products has none without this.
-          The `min-width:180px` and tabular-nums are not decoration: the result
-          count occupies its exact reserved width as tabular monospace so
-          nothing reflows when the real number replaces an estimate. */}
-      {/* 15px/500 on a phone and 17px on the desktop (CatalogueMobile.dc.html:34
-          against Catalogue.dc.html:86); the mono line likewise drops to 9.5px on
-          a 96px reservation from 10px on 180. */}
-      {/* The row's own bottom padding is 11 on a phone and 14 from `md`, the
-          same way its type is — the two drawings disagree on this figure and
-          each is right for its own width. The desktop 14 was being spent at
-          every width, so the phone's first tile row sat 3px low. */}
+      {/* The heading row: section head on the left, sort tabs on the right.
+          The heading is an h2 when the hero is present and an h1 when it is not,
+          so every route carries exactly one h1. */}
       <div className="flex w-full items-baseline justify-between gap-4 pb-[11px] md:pb-[14px]">
         {hero ? (
           <h2 className="m-0 text-[15px] font-medium text-t1 md:text-section">
@@ -249,12 +210,29 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
             {heading}
           </h1>
         )}
-        <span className="min-w-[96px] text-right font-mono text-[9.5px] tracking-[0.1em] text-t3 tabular-nums md:min-w-[180px] md:text-[10px]">
-          {resultHead}
-          {resultTail && (
-            <span className="hidden md:inline">{resultTail}</span>
-          )}
-        </span>
+        {/* Sort segmented control */}
+        <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
+          {(
+            [
+              ["recent", "RECENT"],
+              ["top-viewed", "MOST VIEWED"],
+              ["top-voted", "MOST VOTED"],
+            ] as const
+          ).map(([value, label], index) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => changeSort(value)}
+              className={cn(
+                "px-[9px] py-[5px] font-mono text-[9.5px] tracking-[0.08em]",
+                (index < 2 || activeSort === value) && "rounded-badge",
+                activeSort === value ? "bg-acc-soft text-t1" : "text-t3"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
       <div className="w-full">
         {/* No Suspense boundary. Nothing below here is async — every card
