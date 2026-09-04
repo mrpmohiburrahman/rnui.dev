@@ -16,7 +16,6 @@ import { usePathname, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
 import { applySort, type SortType } from "@/hooks/use-sorted-data"
-import { formatUpdatedCompact, lastCommitDate } from "@/components/last-updated"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
@@ -26,8 +25,6 @@ import { facetHref, reportFacetClick } from "./nav/catalogue-nav"
 export type SiteHeaderProps = {
   /** allRecordings.length, computed in the root layout — never imported here. */
   recordingCount: number
-  /** contributors.length — likewise a prop, not a data import. */
-  contributorCount: number
 }
 
 type SortValue = SortType
@@ -49,7 +46,6 @@ function ActiveSiteHeader(props: SiteHeaderProps) {
 
 function SiteHeaderBar({
   recordingCount,
-  contributorCount,
   // Absent means "the URL has not been read yet"; every `.get` below returns
   // null, which is the unhighlighted control set the fallback wants.
   searchParams = new URLSearchParams(),
@@ -102,45 +98,37 @@ function SiteHeaderBar({
     applySort(next)
   }
 
-  const compact = formatUpdatedCompact(lastCommitDate())
-
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-header backdrop-blur-[10px]">
       {/* Desktop: one 62px row. Below md the phone header below takes over. The
           counter line is `lg` and up only: between md and lg the six control
           groups do not fit side by side, and the counter is the one non-essential
           piece (its text is still in the served HTML either way). */}
-      <div className="hidden h-[62px] items-center gap-[18px] px-[26px] md:flex">
-        {/* The wordmark (Catalogue.dc.html:14-16). */}
-        <Link href="/" className="flex items-baseline gap-[9px]">
-          <span className="text-[16px] font-bold tracking-[-0.02em] text-t1">
-            rnui<span className="text-acc">.dev</span>
-          </span>
-          <span className="hidden font-mono text-[9.5px] tracking-[0.12em] text-t3 xl:inline">
-            RN UI RECORDINGS
-          </span>
-        </Link>
-
-        {/* The counter line (Catalogue.dc.html:18). min-width is a reservation,
-            not a measurement: it stops the row reflowing when the relative time
-            crosses a timeago bucket. */}
-        <div
-          suppressHydrationWarning
-          className="hidden min-w-[236px] whitespace-nowrap font-mono text-[10px] leading-[1.1] text-t3 tabular-nums lg:block"
-        >
-          {recordingCount} recordings · {contributorCount} contributors ·
-          updated {compact}
+      <div className="hidden h-[62px] items-center px-[26px] md:flex md:gap-[18px]">
+        {/* Left column: wordmark. flex-1 makes this column share the free space
+            equally with the right column, so the center column (search) sits
+            at the viewport's midpoint regardless of each side's content width. */}
+        <div className="flex flex-1">
+          <Link href="/" className="flex items-baseline gap-[9px]">
+            <span className="text-[16px] font-bold tracking-[-0.02em] text-t1">
+              rnui<span className="text-acc">.dev</span>
+            </span>
+          </Link>
         </div>
 
-        <CatalogueSearch
-          recordingCount={recordingCount}
-          searchParams={searchParams}
-        />
+        {/* Center column: search bar at fixed width. The two equal flex-1
+            columns on either side center it at the viewport's midpoint. */}
+        <div className="w-[424px] flex-shrink-0">
+          <CatalogueSearch
+            recordingCount={recordingCount}
+            searchParams={searchParams}
+          />
+        </div>
 
-        {/* The sort segmented control, from the desktop mock (Catalogue.dc.html's
-            sort block, early in that file). No state is lifted: the sort already
-            lives in the URL, and this writes the same `?sort=` values
-            use-sorted-data reads. */}
+        {/* Right column: sort + Saved + mode toggle. flex-1 matches the left
+            column and justify-end pushes its content to the gutter. */}
+        <div className="flex flex-1 items-center justify-end gap-[10px]">
+          {/* Sort segmented control (Catalogue.dc.html's sort block). */}
         <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
           {(
             [
@@ -171,12 +159,6 @@ function SiteHeaderBar({
           ))}
         </div>
 
-        {/* The Saved chip and the mode toggle are one `margin-left:auto` group
-            at `gap:10px` in the drawing (Catalogue.dc.html:29-32), not two
-            children of the 18px row. Without the wrapper the pair rode on the
-            sort control's heels and the header's right end stopped 13px short
-            of the gutter. */}
-        <div className="ml-auto flex items-center gap-[10px]">
           {/* The Saved chip (Catalogue.dc.html:30). Accent on /bookmarks,
               plain elsewhere. */}
           <Link
@@ -223,15 +205,6 @@ function SiteHeaderBar({
           >
             rnui<span className="text-acc">.dev</span>
           </Link>
-
-          {/* The compact counter, same two props as the desktop line — the
-              uppercase is CSS, not a second string. */}
-          <div
-            suppressHydrationWarning
-            className="min-w-[104px] whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.1em] text-t3"
-          >
-            {recordingCount} · {contributorCount} · {compact}
-          </div>
 
           <Link
             href="/bookmarks"
