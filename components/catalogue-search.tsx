@@ -88,7 +88,7 @@ export function CatalogueSearch({
     // 400 + `padding:0 11px` + a 1px border on each side = 424 across. This box
     // is border-box, so 400 here drew a field 24px narrower than the drawing.
     // Same content-box-vs-border-box reading as the rail (nav-side-bar.tsx).
-    <div className="relative w-full min-w-0 flex-1 max-w-[424px]">
+    <div className="relative min-w-0 max-w-[424px]">
       {/* The rotating Category hint this component used to feed the input is
           gone, and with it the module-scope getUniqueCategories() call — the
           last value import of @/data/* from any client component, so

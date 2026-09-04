@@ -102,7 +102,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 header={
                   <SiteHeader
                     recordingCount={allRecordings.length}
-                    contributorCount={contributors.length}
                   />
                 }
                 rail={
