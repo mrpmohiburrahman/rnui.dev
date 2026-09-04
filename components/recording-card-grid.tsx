@@ -62,17 +62,10 @@ export interface RecordingCardGridProps {
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
   /**
-   * The catalogue hero, rendered above the heading row and outside the framed
-   * panel. Absent on `/products` and `/bookmarks`, which show only the heading.
-   * When present, the heading below is an `h2` so the page keeps exactly one
-   * `h1` (the hero's).
+   * The catalogue hero, rendered above the sort row and outside the framed
+   * panel. Absent on `/products` and `/bookmarks`, which show only the tabs.
    */
   hero?: React.ReactNode
-  /**
-   * The section head text. This grid owns the heading element but not the
-   * string — a route computes it from the filter state.
-   */
-  heading: string
   /** The whole catalogue size, always 277 — never the filtered set. Used as the
    * denominator of the result line. Absent on `/bookmarks`, whose saved view has
    * no denominator. */
@@ -94,7 +87,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   votedRecordingIds,
   toggleVote,
   hero,
-  heading,
   catalogueTotal,
   bookmarkedOnly,
   topViewCount,
@@ -197,19 +189,8 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           <FilterChips />
         </div>
       )}
-      {/* The heading row: section head on the left, sort tabs on the right.
-          The heading is an h2 when the hero is present and an h1 when it is not,
-          so every route carries exactly one h1. */}
-      <div className="flex w-full items-baseline justify-between gap-4 pb-[11px] md:pb-[14px]">
-        {hero ? (
-          <h2 className="m-0 text-[15px] font-medium text-t1 md:text-section">
-            {heading}
-          </h2>
-        ) : (
-          <h1 className="m-0 text-[15px] font-medium text-t1 md:text-section">
-            {heading}
-          </h1>
-        )}
+      {/* The heading row: sort tabs aligned left. */}
+      <div className="flex w-full items-baseline gap-4 pb-[11px] md:pb-[14px]">
         {/* Sort segmented control */}
         <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
           {(
