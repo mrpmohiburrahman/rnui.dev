@@ -15,7 +15,6 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
-import { applySort, type SortType } from "@/hooks/use-sorted-data"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
@@ -26,8 +25,6 @@ export type SiteHeaderProps = {
   /** allRecordings.length, computed in the root layout — never imported here. */
   recordingCount: number
 }
-
-type SortValue = SortType
 
 export function SiteHeader(props: SiteHeaderProps) {
   return (
@@ -59,9 +56,6 @@ function SiteHeaderBar({
   // passes no searchParams to getRecordings and filters by the Remembered set
   // instead, and the other eight routes hold no Recordings at all.
   const facetsApply = pathname === "/" || pathname === "/products"
-  const sort = searchParams.get("sort")
-  const activeSort: SortValue =
-    sort === "top-voted" || sort === "top-viewed" ? sort : "recent"
 
   // The / key, the shortcut the chip in the search field advertises. One
   // listener for the whole document, and the only hand-written key handler in
@@ -90,14 +84,6 @@ function SiteHeaderBar({
     return () => document.removeEventListener("keydown", onKeyDown)
   }, [])
 
-  const changeSort = (next: SortValue) => {
-    // Reported and applied by the one shared function, hooks/use-sorted-data.ts's
-    // applySort — the same URL and the same event the grid's own controls used.
-    // replaceState, not a navigation: the sort is applied client-side, and
-    // everything else — category, contributor, search, page — survives.
-    applySort(next)
-  }
-
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-header backdrop-blur-[10px]">
       {/* Desktop: one 62px row. Below md the phone header below takes over. The
@@ -125,40 +111,9 @@ function SiteHeaderBar({
           />
         </div>
 
-        {/* Right column: sort + Saved + mode toggle. flex-1 matches the left
+        {/* Right column: Saved + mode toggle. flex-1 matches the left
             column and justify-end pushes its content to the gutter. */}
         <div className="flex flex-1 items-center justify-end gap-[10px]">
-          {/* Sort segmented control (Catalogue.dc.html's sort block). */}
-        <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
-          {(
-            [
-              ["recent", "RECENT"],
-              ["top-viewed", "MOST VIEWED"],
-              ["top-voted", "MOST VOTED"],
-            ] as const
-          ).map(([value, label], index) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => changeSort(value)}
-              className={cn(
-                "px-[9px] py-[5px] font-mono text-[9.5px] tracking-[0.08em]",
-                // As drawn: the mock gives the first two segments a
-                // `border-radius:6px` unconditionally and the third none at all
-                // (Catalogue.dc.html:25-27) — its variants never light MOST
-                // VOTED, so it drew that one as bare text. Here the third is a
-                // live control, so it takes the radius when it carries a fill;
-                // on a transparent background the property is invisible either
-                // way, which is why the drawing could leave it off.
-                (index < 2 || activeSort === value) && "rounded-badge",
-                activeSort === value ? "bg-acc-soft text-t1" : "text-t3"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
           {/* The Saved chip (Catalogue.dc.html:30). Accent on /bookmarks,
               plain elsewhere. */}
           <Link
