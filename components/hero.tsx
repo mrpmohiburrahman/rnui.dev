@@ -20,16 +20,8 @@ export function Hero({
     <div className="flex items-end justify-between gap-6 pb-5">
       <div className="max-w-[640px]">
         <h1 className="text-hero m-0 text-t1 [text-wrap:pretty]">
-          A dark room full of React&nbsp;Native interfaces, playing quietly.
+          A community-made catalogue of React&nbsp;Native interfaces.
         </h1>
-        {/* The mock predates the vocabulary rename and says "entry" here, the
-            same as the footer's blurb (site-footer.tsx:25-27). Decision 3
-            renames in copy as well as code, and "every recording is a screen
-            recording" is a tautology, so the subject is "each one". */}
-        <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.5] text-t2">
-          Each one is a silent screen recording of a real phone, and a link to
-          the repo that made it.
-        </p>
       </div>
       <div className="flex gap-[22px] font-mono text-[10px] text-t3 text-right">
         <div>
