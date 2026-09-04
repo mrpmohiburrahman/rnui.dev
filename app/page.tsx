@@ -62,7 +62,6 @@ async function Page({
         contributors={contributors}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
-        heading={catalogueHeading({ total: data.length })}
         // The mock's own showHero rule (Catalogue.dc.html:245) leaves the
         // filtered variant — which has only a search term beyond the facets —
         // off the list, so a search hides the hero.

@@ -102,11 +102,6 @@ const RecordingsPage = async ({
         showHero={false}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
-        heading={catalogueHeading({
-          category,
-          contributor,
-          total: data.length,
-        })}
       />
     </div>
   )

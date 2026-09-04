@@ -1,7 +1,7 @@
 // app/bookmarks/page.tsx
 "use client"
 
-import React, { Suspense, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import type { Recording } from "@/data/recording"
 
 import { BOOKMARKS_KEY, parseRememberedIds } from "@/hooks/use-remembered-set"
@@ -48,38 +48,14 @@ const BookmarksPage = () => {
     })()
   }, [])
 
-  // The heading row, mirroring CataloguePage's own (RecordingCardGrid renders it
-  // once the page settles). No stats here: this route is a client component and
-  // computing the three counts would pull the whole catalogue into the client
-  // chunk. The saved view's result line has no denominator to cite.
-  const heading = (
-    <h1 className="text-section m-0 text-t1">Saved on this device</h1>
-  )
-
-  // The grid reads `page` from the URL, and useSearchParams() opts every
-  // ancestor out of prerendering — this is the one catalogue route with no
-  // server component above it to absorb that, so the boundary lives here.
-  // The fallback is the heading on its own, following components/nav/
-  // catalogue-nav.tsx: the served HTML keeps what it can rather than going
-  // blank. Which Recordings this route shows is decided by localStorage, so the
-  // grid itself was never going to be in that HTML.
   return (
     // No top padding — see app/page.tsx. `main` already spends the mock's 22px.
     <div className="max-w-full">
-      <Suspense
-        fallback={
-          <div className="flex items-baseline justify-between gap-4 pb-[14px] w-full">
-            {heading}
-          </div>
-        }
-      >
-        <CataloguePage
-          recordings={recordings}
-          bookmarkedOnly
-          heading="Saved on this device"
-          topViewCount={topViewCount}
-        />
-      </Suspense>
+      <CataloguePage
+        recordings={recordings}
+        bookmarkedOnly
+        topViewCount={topViewCount}
+      />
     </div>
   )
 }

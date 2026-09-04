@@ -59,11 +59,6 @@ interface CataloguePageProps {
   /** The whole catalogue's top view count, the denominator of every tile's
    * views bar. Threaded from the routes, like the Recordings themselves. */
   topViewCount: number
-  /** The section head under the hero, computed by the route from the filter
-   * state (lib/catalogue-heading.ts). This component does not derive it:
-   * CataloguePage is a client component and the counts it would need are not
-   * in the client graph. */
-  heading: string
   /** Why the filtered catalogue is empty, computed by the route's server
    * component and passed straight through — this module is "use client" and
    * the diagnosis needs the whole catalogue to answer "what would I see if I
@@ -87,7 +82,6 @@ export function CataloguePage({
   showHero = false,
   stats,
   perContributor,
-  heading,
   diagnosis,
   children,
   topViewCount,
@@ -208,7 +202,6 @@ export function CataloguePage({
           sortedData={sortedData}
           emptyState={emptyState}
           hero={showHero && stats ? <Hero {...stats} /> : undefined}
-          heading={heading}
           catalogueTotal={stats?.recordings}
           bookmarkedOnly={bookmarkedOnly}
           // Both stored sets are still null until an effect has read localStorage.
