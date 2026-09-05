@@ -46,7 +46,7 @@ export function NavSidebar({ contributors, categories }: NavSidebarProps) {
     // to a facet, so one boundary means one surface at any width — the 640-767px
     // band has neither a rail over which a fixed dock paints nor a header with
     // no sort control at all (site-header.tsx removes it below `md`).
-    <aside className="hidden w-[265px] flex-none flex-col border-r border-line bg-rail px-4 pb-[30px] pt-5 md:flex">
+    <aside className="sticky top-[62px] hidden h-[calc(100vh-62px)] w-[265px] flex-none flex-col self-start border-r border-line bg-rail px-4 pb-[30px] pt-5 md:flex">
       <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         <CatalogueNav categories={categories} contributors={contributors} />
       </nav>

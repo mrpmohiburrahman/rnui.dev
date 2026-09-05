@@ -52,7 +52,7 @@ export function ShellChrome({
   return (
     <>
       {header}
-      <div className="flex flex-1 items-stretch">
+      <div className="flex flex-1 items-start">
         {rail}
         {/* The mock's main gutter: 22px top, 34px bottom, 26px left — and 13px
             right, which is the gutter the drawing actually renders
