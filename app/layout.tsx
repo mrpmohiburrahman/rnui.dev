@@ -80,7 +80,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
       </head>
       <PostHogProvider>
-        <body className="flex flex-col min-h-screen">
+        <body className="flex min-h-screen flex-col">
           <ThemeProvider
             attribute="class"
             // The device setting, on a first visit. next-themes only calls
