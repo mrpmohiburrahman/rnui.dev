@@ -1,7 +1,7 @@
 // app/bookmarks/page.tsx
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import type { Recording } from "@/data/recording"
 
 import { BOOKMARKS_KEY, parseRememberedIds } from "@/hooks/use-remembered-set"
@@ -50,12 +50,22 @@ const BookmarksPage = () => {
 
   return (
     // No top padding — see app/page.tsx. `main` already spends the mock's 22px.
+    //
+    // The boundary is not optional: CataloguePage and the grid read `page` and
+    // the facets with useSearchParams(), which opts every ancestor out of
+    // prerendering, and this is the one catalogue route with no server
+    // component above it to absorb that. Without it the build fails on
+    // "useSearchParams() should be wrapped in a suspense boundary". The
+    // fallback is null: which Recordings show is decided by localStorage, so
+    // the grid itself was never going to be in the served HTML anyway.
     <div className="max-w-full">
-      <CataloguePage
-        recordings={recordings}
-        bookmarkedOnly
-        topViewCount={topViewCount}
-      />
+      <Suspense fallback={null}>
+        <CataloguePage
+          recordings={recordings}
+          bookmarkedOnly
+          topViewCount={topViewCount}
+        />
+      </Suspense>
     </div>
   )
 }
