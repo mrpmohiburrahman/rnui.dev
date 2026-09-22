@@ -27,6 +27,10 @@ const eslintConfig = [
       // `pnpm lint` reports thousands of issues in bundled vendor code and
       // exits non-zero for as long as one exists.
       ".claude/**",
+      // The enzomanuelmangano/demos checkout a recording-import session keeps
+      // inside the repo to build and screen-record from. Third-party source,
+      // never built by this repo — same reason as the worktrees above.
+      ".scratch/demos/**",
       "next-env.d.ts",
     ],
   },
