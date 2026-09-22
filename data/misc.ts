@@ -2572,4 +2572,58 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2025-11-25T19:55:44.000Z",
   },
+
+  {
+    id: "01M33JV1VWVTFFVR05FN4EKCA8",
+    caption: "Sphere Waves",
+    demoPath: "demo/misc/sphere_waves_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/sphere_waves_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10617,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sphere-waves",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
+  },
+
+  {
+    id: "01M33JV1VXFNRVXFWSH6K9X7XA",
+    caption: "Scrollable Shapes",
+    demoPath: "demo/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10802,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scrollable-shapes",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
+  },
+
+  {
+    id: "01M33JV1VXECCZ92P3AQZQA2WY",
+    caption: "Cherry Blossom QR",
+    demoPath: "demo/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10622,
+    aspect: 0.46,
+    hue: 331,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/cherry-blossom-qrcode",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
+  },
 ]

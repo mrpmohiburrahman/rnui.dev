@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 277", () => {
+  it("counts the whole catalogue, per Category, summing to 280", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -28,7 +28,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Headers: 3,
       List: 17,
       Loaders: 4,
-      Misc: 148,
+      Misc: 151,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(277)
+    expect(total).toBe(280)
   })
 })
 
@@ -49,7 +49,7 @@ describe("RECORDINGS_PER_CONTRIBUTOR", () => {
     expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(23)
     expect(
       RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]
-    ).toBe(124)
+    ).toBe(127)
     expect(RECORDINGS_PER_CONTRIBUTOR["Hewad Mubariz"]).toBe(31)
 
     // 23 and not the mock's 24, and this is the entry that makes the
@@ -71,7 +71,7 @@ describe("contributorsByCount", () => {
     const ranked = contributorsByCount()
 
     expect(ranked).toEqual([
-      { name: "Enzo Manuel Mangano (Reactiive)", count: 124 },
+      { name: "Enzo Manuel Mangano (Reactiive)", count: 127 },
       { name: "Hewad Mubariz", count: 31 },
       { name: "Daniel Friyia", count: 19 },
       { name: "Arunabh Verma", count: 16 },
@@ -98,6 +98,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(277)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(280)
   })
 })
