@@ -41,11 +41,13 @@ export function SiteFooter() {
           <span className="pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3">
             CONTRIBUTE
           </span>
+          {/* Internal now, so no ↗ and no new tab: the arrow means "leaves the
+              site", and this stopped leaving it. Was the GitHub issues list. */}
           <Link
-            href="https://github.com/mrpmohiburrahman/awesome-react-native-ui/issues"
+            href="/submit"
             className="text-[11.5px] text-acc underline underline-offset-3"
           >
-            Submit a recording <span aria-hidden="true">↗</span>
+            Submit a recording
           </Link>
           <Link
             href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
