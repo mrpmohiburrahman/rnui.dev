@@ -171,7 +171,7 @@ describe("POST /api/submit, the path that works", () => {
     const res = await POST(submit())
 
     expect(res.status).toBe(200)
-    await expect(res.json()).resolves.toEqual({ ok: true })
+    await expect(res.json()).resolves.toEqual({ ok: true, notified: true })
 
     const puts = net.puts()
     expect(puts).toHaveLength(1)
@@ -455,7 +455,12 @@ describe("POST /api/submit, the notification (ticket 09)", () => {
     const res = await POST(submit())
 
     expect(res.status).toBe(200)
-    expect(((await res.json()) as { ok: boolean }).ok).toBe(true)
+    const body = (await res.json()) as { ok: boolean; notified: boolean }
+    expect(body.ok).toBe(true)
+    // The Submission succeeded and the maintainer was not told, and the form has to
+    // be able to tell those two apart: submission-receipt ticket 06 makes this flag
+    // the only thing the success copy branches on.
+    expect(body.notified).toBe(false)
     expect(net.puts()).toHaveLength(1)
     // No compensating delete, unlike the consent-record failure: there is nothing
     // to compensate for.
@@ -465,5 +470,15 @@ describe("POST /api/submit, the notification (ticket 09)", () => {
     const text = logged.mock.calls.flat().map(String).join(" | ")
     expect(text).toMatch(/NOTIFICATION FAILED/)
     expect(text).toMatch(/pnpm submissions:open --list/)
+  })
+
+  it("reports whether the maintainer was told, which is what the copy branches on", async () => {
+    // submission-receipt ticket 06. The flag is `notified` rather than anything about
+    // the Contributor's own messages, because the promise the form makes is about the
+    // outcome, which the maintainer sends by hand. So it is the maintainer's knowledge
+    // that decides whether the promise can be kept at all.
+    stubNetwork()
+    const res = await POST(submit())
+    await expect(res.json()).resolves.toEqual({ ok: true, notified: true })
   })
 })

@@ -25,8 +25,8 @@
 //      Ticket 06 inserts compression between these two steps; the widget still
 //      belongs after it.
 //
-// public-submissions ticket 05. Discovery, a link from the footer and the
-// Contributors page, is ticket 11 and is deliberately absent.
+// public-submissions ticket 05. Discovery is ticket 11: the footer link landed with
+// it, the Contributors page entry and the sitemap question have not.
 import {
   useRef,
   useState,
@@ -462,14 +462,23 @@ export default function SubmitPage() {
             </p>
           </div>
         )}
+        {/* "Your Demo was received" is a claim about the file, and it is true whether
+            or not the notification reached the maintainer: the object is in the
+            bucket and the consent record is written before this branch can render.
+            The sentence this replaces promised the visitor would hear back "through
+            one of the handles you gave", which stopped being true the moment this
+            form started asking for an email address.
+            submission-receipt ticket 06 decided what belongs here instead: the
+            either-way line, behind the `notified` flag the response now carries, and
+            that branch lands with ticket 07's receipt. Until then this says only the
+            part that needs no branch. */}
         {status === "done" && (
           <div className="mt-[14px]">
             <span className="block pb-[2px] font-mono text-[9px] tracking-[0.14em] text-acc">
               SENT
             </span>
             <p className="m-0 text-[12px] leading-[1.45] text-t1">
-              Thank you, it has reached the maintainer. You will hear back
-              through one of the handles you gave.
+              Thank you, your Demo was received.
             </p>
           </div>
         )}

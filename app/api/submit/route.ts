@@ -30,8 +30,10 @@
 // a visitor. Adding one later without this paragraph is how a deliberate decision
 // becomes an accident.
 //
-// public-submissions ticket 07. The notification email is ticket 09's, so a
-// stored Submission currently reaches nobody's attention on its own.
+// public-submissions ticket 07. The two messages that leave this handler are that
+// effort's ticket 09 (the notification, to the maintainer) and submission-receipt
+// ticket 07 (the receipt, to the Contributor), and the comments at the sends below
+// are where both efforts' failure decisions are written down.
 
 import { NextResponse } from "next/server"
 
@@ -65,9 +67,16 @@ import { TURNSTILE_FIELD } from "@/lib/turnstile-shared"
  * app/actions/subscribe-email.ts: `ok` is the branch, and the failure arm always
  * carries a sentence, because the client shows NOT SENT with it, a message-less
  * failure would read to a visitor as a broken form.
+ *
+ * `notified` is the second fact the form needs, and it is not the same question as
+ * `ok`. The Demo is stored and the consent recorded either way, so the Submission
+ * succeeded either way; `notified` says whether the maintainer was actually told.
+ * submission-receipt ticket 06 decided that this, and not anything about the
+ * Contributor's own messages, is what the on screen copy branches on. The reason is
+ * in the comment at the send below.
  */
 export type SubmitResult =
-  | { ok: true; message?: never }
+  | { ok: true; notified: boolean; message?: never }
   | { ok: false; message: string }
 
 /**
@@ -226,7 +235,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     return fail("We could not record your submission. Please try again.", 500)
   }
 
-  // The notification (ticket 09), and the last thing this handler does.
+  // The notification (public-submissions ticket 09). The receipt follows it, and
+  // submission-receipt ticket 07 is where that send lands.
   //
   // **A send failure does not discard the Submission, and that is the decision
   // this comment exists to record.** By the time this line runs the object is in
@@ -241,10 +251,31 @@ export async function POST(request: Request): Promise<NextResponse> {
   // therefore shows up there as an object the maintainer has no memory of, which is
   // exactly the signal. It has 30 days before the lifecycle rule takes it.
   //
-  // The honest cost, since this returns `ok: true` either way: the form tells the
-  // visitor their Submission reached the maintainer, and in this one failure it has
-  // reached the bucket instead. Failing the request would be the bigger lie, the
-  // work is safely stored, and a second send cannot improve that.
+  // **What the visitor is told, which is submission-receipt ticket 06's answer.**
+  // The form's success copy may promise only what somebody can keep, and its one
+  // promise, that a Contributor hears the outcome either way, is about the outcome
+  // message, which the maintainer sends by hand. So the fact that decides the promise is
+  // whether the maintainer knows the Submission exists, and that is exactly `notified`.
+  // Failing the request instead would be the bigger lie: the work is safely stored, and
+  // a second send cannot improve that.
+  //
+  // **When the receipt lands (ticket 07) it goes only when the notification did, and
+  // that is the compounding case answered rather than inferred.** The two are separate
+  // failures with separate victims, the maintainer and the Contributor, and the map
+  // calls the pair its worst case. Two silent failures are survivable and coherent: the
+  // object sits in the bucket, the record stands, nobody was told, and nobody was
+  // promised anything, so `--list` inside 30 days is the whole of the recovery. What is
+  // not survivable is the other order, a receipt with no notification, because the
+  // receipt's own wording carries the either-way promise (submission-receipt ticket 02)
+  // and would put it in a stranger's inbox on behalf of a maintainer who has no way to
+  // know they exist. So the receipt is skipped in that state rather than sent or
+  // retried, and the alternative that was rejected is recorded here instead of being
+  // left for the next reader to rediscover.
+  //
+  // **The receipt is last because it is the only step whose failure changes nothing
+  // about the other three**, and because there is nothing true for it to say until the
+  // object and the consent record exist.
+  let notified = true
   try {
     await sendEmail({
       to: CONTACT_EMAIL,
@@ -263,13 +294,14 @@ export async function POST(request: Request): Promise<NextResponse> {
       }),
     })
   } catch (err) {
+    notified = false
     console.error(
       `submit: NOTIFICATION FAILED, ${key} is stored, consent is recorded, and ` +
         "nobody has been told. Recover it with `pnpm submissions:open --list` " +
-        "(30 days).",
+        "(30 days). The receipt is skipped on this path, see the comment above.",
       err
     )
   }
 
-  return NextResponse.json({ ok: true } satisfies SubmitResult)
+  return NextResponse.json({ ok: true, notified } satisfies SubmitResult)
 }
