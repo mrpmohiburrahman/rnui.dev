@@ -12,7 +12,7 @@ deployed form and Resend's own record of what was sent.
 
 1. **One real Submission, through the deployed route.** Not a stubbed challenge and not a
    unit test: the same path a stranger takes, because every failure this map worries about
-   — a filtered message, a wrong address, a receipt that never fires — is invisible
+  , a filtered message, a wrong address, a receipt that never fires, is invisible
    otherwise.
 
 2. **Read it back from Resend rather than from the inbox alone.** `GET /emails` lists what
