@@ -19,8 +19,12 @@ Deliver:
 
 - **A pure builder**, exporting something shaped like `publicationNotice(recording) -> { subject,
   html }`. Pure, so ticket 10's sentences are pinned by tests, and importable without Firestore.
-- **One `sendEmail` call** at the trigger ticket 09 named, with the guard against a second send for
-  the same Recording.
+- **One `sendEmail` call** at the trigger ticket 09 named: a standalone `pnpm submissions:notify`
+  invoked by a new final step in `add-recording`, taking the address and the submission key as
+  arguments because nothing is looked up. The guard against a second send is ticket 09's sent-log at
+  `.scratch/submission-receipt/notices/<submission-key>.json`, which carries no address because the
+  key is a ULID, and refuses a repeat unless `--again` is passed. Its second layer is that the script
+  prints the address and the Recording before sending.
 - **The plain-text decision applied here too**, consistent with what ticket 07 chose for the receipt,
   so the two messages do not disagree about whether they have a text part.
 - **HTML escaping and a single-line subject**, exactly as the receipt does and for the same reasons.

@@ -15,9 +15,11 @@ The second message's subject and body. The same shape of question as
 
 2. **It is the one message that can be wrong after the fact.** A Recording can be unpublished,
    renamed, recategorised, or have its Demo replaced. This message goes out once and cannot be
-   corrected. Say what that implies about what it may claim, and settle the link question ticket 09
-   raises: the Recording page, which is what they care about, or the Contributor page, which is the
-   more stable URL.
+   corrected. So say what that implies about what it may claim. **The link question is settled:**
+   ticket [09](09-where-does-the-publication-address-come-from.md) decided **both links**, the
+   Recording's page and the Contributor's filtered catalogue, each derived from the row that was
+   just written so neither can point at an empty page. What is left here is wording that survives
+   the Recording being renamed later.
 
 3. **It arrives days or weeks after the receipt,** when the Contributor has forgotten the whole
    thing. Whether it has to say what it is about is therefore a real decision rather than a style
