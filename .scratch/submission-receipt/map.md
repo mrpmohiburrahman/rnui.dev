@@ -4,14 +4,15 @@ Wayfinder map. Charted 2026-09-25 with the maintainer, in one `/wayfinder` sessi
 
 ## Destination
 
-**Two messages about a Submission.** The person who sent a Demo gets one message when it arrives,
-and one more when it is published, the second carrying the link to its page. That reverses **decision
-8** of [Public Submissions](../public-submissions/map.md), which is why it is its own effort rather
-than a ticket in that one.
+**Three messages about a Submission, two of them templated.** The person who sent a Demo is told:
+(1) it arrived, (2) it is published, with the link, or (3) something went wrong, in the maintainer's own
+words. That reverses **decision 8** of [Public Submissions](../public-submissions/map.md), which is why
+it is its own effort rather than a ticket in that one.
 
-Redrawn 2026-09-25 after the first grilling. It was "a receipt" when this map was charted, and the
-maintainer's answer made it two messages fired by two different events. See
-[What survives of "no receipt"?](issues/01-what-survives-of-no-receipt.md).
+Redrawn twice on 2026-09-25, both times by the maintainer's own answer. It was "a receipt" when this map
+was charted; the first answer made it two messages, and the next added the third and made it hand
+written. [What survives of "no receipt"?](issues/01-what-survives-of-no-receipt.md) is the record of
+both.
 
 ## Notes
 
@@ -38,6 +39,12 @@ maintainer's answer made it two messages fired by two different events. See
   local act through `add-recording` with no server involved. So they share wording discipline and
   nothing else, and ticket [Where does the publication notice's address come from?](issues/09-where-does-the-publication-address-come-from.md)
   is the structural question that has to be answered before either is built.
+- **The third message is not templated at all.** It is the maintainer typing the reason, which makes it
+  a tooling question rather than a copy question:
+  [How does a hand-typed outcome message get sent?](issues/13-how-does-a-hand-typed-outcome-message-get-sent.md)
+  exists because a message whose text does not exist until somebody writes it cannot be built the way
+  the other two are. The option most likely to be right is that it is a reply to the notification,
+  which needs no tool at all.
 - **Deliberate deviation, recorded:** charting skipped the `/grilling` framing session.
   The destination is the maintainer's own sentence, "send the user's email a
   confirmation message that I have received the animation demo", and the constraint
@@ -49,17 +56,17 @@ maintainer's answer made it two messages fired by two different events. See
 
 <!-- the index, one line per closed ticket: enough to judge relevance, then zoom the link for the detail the ticket holds -->
 
-- [What survives of "no receipt"?](issues/01-what-survives-of-no-receipt.md), The maintainer's answer makes it **two messages, not one**: "we have your Demo" on arrival, and "it is live" with the link on publication. So decision 8's absolute dies, and two things survive it: **no promise of publication** (the arrival message may say "if it is published you will hear", never "we will publish it"), and **no rejection notice**, which stays in the fog. The structural consequence is a new ticket, because the second message fires from publication, a local act with no server in the path, and needs its own answer to where the address comes from.
+- [What survives of "no receipt"?](issues/01-what-survives-of-no-receipt.md): redrawn twice by the maintainer's own answers, so the effort is **three messages**, not one and not two. "We have your Demo" on arrival, "it is live" with the link on publication, and a hand-typed message when something went wrong. Decision 8's absolute dies, and what survives it is **no promise of publication** (the arrival message may say "if it is published you will hear", never "we will publish it"), **three messages maximum**, and one structural consequence per extra message: the second fires from publication, a local act with no server in the path, and the third is not templated at all, because its text does not exist until somebody writes it.
 - [Will a first-contact receipt actually arrive?](issues/03-first-contact-deliverability.md), Nothing in the DNS needs fixing; the finding is that `_dmarc.rnui.dev` is **`p=none`**, which Resend documents as "allow all email" rather than protection. No provider publishes a link-count or body-length threshold, **Gmail's 102 KB clip** is the one hard number a long body could hit, and a link from `mail.rnui.dev` to the apex is on the passing side of every documented rule. Two useful negatives: `Reply-To` is **not** documented to affect placement, so ticket 04 can decide it on what a reply should do; and **the notification's `delivered` is not a precedent**, because it was rnui.dev talking to rnui.dev. Placement in a stranger's inbox is not determinable without a real send, and the file lists the seven things the first real one must watch.
 
 ## Not yet specified
 
-- **Whether a rejection notice ever follows.** Now the sharpest question this map leaves open. The
-  Contributor is told when their Demo arrives and when it is published, so the one outcome they will
-  *not* hear about is the one where nothing happens. Decision 8's argument about not promising is
-  spent for the other two messages, which makes silence here more conspicuous than it was when it was
-  the only silence. Deliberately not in this destination, and it wants its own decision rather than a
-  clause bolted onto [What does the publication notice say?](issues/10-what-does-the-publication-notice-say.md).
+- **What happens to a file the error message says cannot be used.** The disclosure promises deletion
+  within 30 days if a Submission is not published, and the lifecycle rule enforces that regardless. But
+  an error message is not always a rejection: it might ask for a resend, or explain that a codec was
+  wrong. So whether a Submission that has been told *no* should have its file deleted early, left to
+  the rule, or kept in case they send a replacement, is undecided. It is small and it touches somebody's
+  work, which is exactly the combination that should be decided rather than assumed.
 - **What the receipt establishes about the address.** It is currently stored as part of
   the consent record and used for nothing else. Whether a receipt turns it into a
   contact the site may use again is undecided, and the answer constrains the wording.

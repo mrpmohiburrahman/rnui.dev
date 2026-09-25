@@ -70,11 +70,27 @@ receipt" to both of them:
   allowed, "we will publish it" is not. Ticket
   [What does the receipt say?](02-what-does-the-receipt-say.md) decides the sentence; this ticket
   records which of the two it is allowed to be.
-- **Survives, unchanged: no rejection notice.** The maintainer described publication only. A message
-  that says *no* is still undecided, and it stays in this map's fog rather than in its destination.
-- **Survives as a constraint on volume:** two messages per Submission, and the second exists only
-  because something human happened. Nothing here is a stream, a status tracker or a queue, and
-  decision 2 (no self-serve publish) is untouched.
+- **Reversed again on 2026-09-25, in the maintainer's next message.** There *is* a message for the bad
+  outcome. Their words:
+
+  > The email, second email would be like this. If the animation is published, then I will send the
+  > contributor the message that the email is published. And if there is an error, then I will also
+  > send him the error message. And the error message won't be automatic because I have to type in
+  > what the error was.
+
+  So there are **three messages**, and the third is a different kind of thing from the first two: the
+  published message is a fixed template, and the error message is the maintainer typing the actual
+  reason every time. That is a tooling question rather than a wording one, and it is
+  [How does a hand-typed outcome message get sent?](13-how-does-a-hand-typed-outcome-message-get-sent.md).
+
+  **It also sharpens the arrival message, in a way that cuts both ways.** Both outcomes now produce a
+  message, so "we will let you know either way" is a promise this pipeline can keep, which is what
+  makes it sayable at all. What can break it is a human forgetting to type the error message. Ticket
+  [What does the receipt say?](02-what-does-the-receipt-say.md) decides whether to make the promise,
+  knowing what it rests on, and that decision is now a real one rather than a formality.
+- **Still standing, as a constraint on volume:** three messages per Submission at most, and two of the
+  three exist because a person did something. Nothing here is a stream, a status tracker or a queue,
+  and decision 2 (no self-serve publish) is untouched.
 
 **The success condition, in the maintainer's terms.** After the second message, the Contributor knows
 two things they could not know before: that their Demo arrived, and that it is live with a link to
