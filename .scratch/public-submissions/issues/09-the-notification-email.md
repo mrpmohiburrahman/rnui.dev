@@ -1,6 +1,6 @@
 # The notification email
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 04, 07
 
@@ -169,3 +169,17 @@ direction; what has not happened is the formal lift.
 
 **Gates:** `check-types` clean, `lint` clean, `test` 23 files / 386 passing, `rules:verify` 41/41,
 `pnpm build` OK with `ƒ /api/submit`.
+
+### Resolved 2026-09-25, when the hold was lifted
+
+This ticket's own text above is kept as written, including the paragraph that holds it back. What
+changed is the hold: `CLAUDE.md` now records it as **"set by the maintainer 2026-08-15 and LIFTED by
+the maintainer 2026-09-25"**, which was the one thing this ticket was waiting for, and the same entry
+named the other condition (*"every open issue in the effort"*) as part of the hold's terms rather than
+as a standing requirement.
+
+Every acceptance bullet was already demonstrated against a real message: the notification was sent
+through the deployed route when the maintainer submitted from a browser, and `GET /emails` from Resend
+returns it as **`delivered`**, one recipient, from `digest@mail.rnui.dev`, carrying the object key and
+the `pnpm submissions:open <key>` command. The one item this ticket could not audit from here is the
+consent record, because decision 10 denies every read, including to our own credentials.

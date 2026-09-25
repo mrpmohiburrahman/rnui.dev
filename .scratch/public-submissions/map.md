@@ -74,7 +74,7 @@ each says what overturning it would cost.
 | 7 | **Abuse is controlled by Turnstile — validated server-side — plus the 4.5 MB wall. Deliberately no rate limiter.** **Amended by ticket 03.** Turnstile Free is $0 with no published cap, and it does stop blind POSTs and replay (single-use, `timeout-or-duplicate`) — but **not a solver**, since a solved token is unbound to the payload and carries no per-IP cadence. Vercel Hobby *does* include one WAF rate-limit rule per project (not Pro-only since 2025-05-23); it is unused because it is machinery that does not close the gap Turnstile leaves. `userFeedback` remains an open write path with visible bot junk, and that defect class stays recorded in `notify-and-preview`'s *Not yet specified*. |
 | 8 | **The submitter gets an on-page confirmation only.** No receipt email; it would double the email dependency and its DKIM problem for a benefit nobody asked for. **Superseded 2026-09-25 by [`submission-receipt`](../submission-receipt/map.md),** which makes it **two** messages: one on arrival and one on publication, the second carrying the link. The maintainer asked for both directly, so the "benefit nobody asked for" half of this reasoning is spent. Recorded at [What survives of "no receipt"?](../submission-receipt/issues/01-what-survives-of-no-receipt.md). |
 | 9 | **A Submission carries a consent record**, mirroring `lib/sender-identity.ts` and `app/actions/subscribe-email.ts`: the disclosure as rendered, a form version, IP and timestamp. The privacy policy gets an edit. Being inconsistent about "what somebody agreed to" is the anomaly in this repo. |
-| 10 | **`/submit` is linked from the footer and the Contributors page, not the header rail.** The rail is the catalogue's facet navigation; adding an action to it changes what it means. |
+| 10 | **`/submit` is linked from the footer and the Contributors page, not the header rail.** The rail is the catalogue's facet navigation; adding an action to it changes what it means. **Realised by ticket 11**, which also left `/submit` in the sitemap **deliberately** rather than by the accident it had arrived through — a third entrance, and one that reaches no crawler until the work is on `main`, since the Preview hosts are noindexed by `next.config.ts`. |
 | 11 | **"Temporary" means 30 days, enforced by an R2 lifecycle rule**, with deletion on publish or reject as the intent. A lifecycle rule is the only thing that works unattended. |
 | 12 | **The notification carries the object key and a copy-pasteable `pnpm submissions:open <key>` command** — not a bare URL, and not an attachment. **Amended by ticket 04:** a presigned GET dies at **7 days** while the object lives 30, so a bare link would be dead by the time the maintainer acts on it. The command reuses the `CLOUDFLARE_R2_TOKEN` already held; presigning instead would need a new read-only token. |
 | 13 | **The 5 MB cap is a UX guardrail, not a storage saving.** Recorded so nobody later "optimises" it downward citing bytes, when its real job is bounding the visitor's wait. |
@@ -91,6 +91,26 @@ each says what overturning it would cost.
 - [The `/submit` page](issues/05-the-submit-page.md) — The form ships. Rules live in `lib/submission-form.ts` as a pure function so each message is pinned by a test (17 cases), not buried in JSX. **Two orderings are load-bearing:** the 5 MB check runs the moment a file is picked — before the Turnstile widget is even rendered — because ticket 02 measured compression in *minutes*, and the widget renders only once a file is accepted because a token dies at 300s. Verified on a production build: `/submit` 200, 19 Category options derived from `data/categories.ts`, **zero `turnstile` mentions in the served HTML**, `/` links to it nowhere (ticket 11). A submission today ends in `NOT SENT` — the endpoint is ticket 07's, and the bytes are ticket 06's.
 - [The submit endpoint](issues/07-the-submit-endpoint.md) — `app/api/submit/route.ts` ships and needs **no new credential and no S3 client**: Cloudflare's *Upload objects* page never mentions a token-authenticated upload, but a Bearer `PUT .../r2/buckets/{bucket}/objects/{key}` returns 200, measured against the live bucket. Server-side validation is the *same* `validateSubmission` the browser ran, over field names single-sourced in `SUBMISSION_FIELD`. **Three claims elsewhere were false and are now fixed:** the `submissions` rules had **never been deployed** (live ruleset dated 2026-08-15, so `/submit` would have failed at its last step in production — and `rules:verify` could not catch it, because `:test` evaluates a file you hand it rather than the live one; deployed now, 45 lines added and none removed); `validateSubmissionConsent` used `hasAll` while its comment claimed a closed field list, proven at the rules engine that `hasAll` ALLOWS an extra `confirmed: true` and `hasOnly` DENIES it (now `hasOnly`; verifier 39 → 41); and Cloudflare's dummy Turnstile pair **cannot exercise this endpoint at all**, returning `hostname: example.com` and no `action`. A real token solved in a browser has still never traversed the route.
 - [The consent record and the privacy policy](issues/10-the-consent-record.md) — The disclosure (`lib/submission-consent.ts`) says the three things a submitter would otherwise assume wrong: **publication is not guaranteed**, an unpublished Demo is **deleted within 30 days**, and send only your own work. The record is locked down — `submissions` denies every read, verified **39/39** against Firebase's own rules engine. Privacy policy 1.2 → 1.3. The Terms of Service carries **no submitter warranty** — recorded rather than edited. **Amended 2026-09-25:** the 39/39 measured the rules *file*, not the deployed set, which still lacked the block entirely — see ticket 07. Its `hasAll` also did not deliver the closed field list this ticket's comment claimed; now `hasOnly`, 41/41.
+- [The browser compression step](issues/06-the-compression-step.md) — Built, and it **would have shipped
+  broken**. `@ffmpeg/util`'s `toBlobURL(url, mime, progress, cb)` routes through `downloadWithProgress`,
+  which throws `ERROR_INCOMPLETED_DOWNLOAD` when `Content-Length` disagrees with the bytes read —
+  jsDelivr serves the core with a 10.18 MB `Content-Length` and a ~32 MB decoded body, so the two can
+  never agree, and the catch then calls `arrayBuffer()` on a body the reader already consumed. The form
+  hung on "LOADING THE COMPRESSOR" with no error a visitor could act on. **The progress callback is what
+  broke it**, and using it is what the library's own example says to do. Fixed with a plain `fetch` plus
+  an `ok` check. The preset is retuned to `crf 28 / veryfast` and measured: a 4.46 MB 1080p clip →
+  **1.43 MB (-68%) in 21.3s**, a real published Demo 235.0 KB → **102.1 KB (-57%)**; the published-Demo
+  values `crf 20 / slow` **grew both**. Laziness proven by observing requests rather than grepping chunk
+  names: **0 compressor requests** on a catalogue page and on `/submit` until a file is chosen.
+  `ready-for-human`, and only for one reason: iOS Safari is untested and this machine cannot test it.
+- [Discovery: how a visitor finds `/submit`](issues/11-discovery-links.md) — Three entrances: the footer,
+  a line at the **foot of `/contributors`** where a scan for one's own name ends, and the sitemap
+  **deliberately**, since it had arrived there by accident. `next-sitemap.config.js` has no `exclude`
+  and now says why; `tests/sitemap.test.ts` pins `/submit` in the committed artifact so a future
+  `exclude` fails a test rather than silently de-listing the form. Preview hosts are already noindexed
+  by `next.config.ts`, so none of this reaches a crawler before `main`. The phone sheet and the rail
+  share the *facet model* rather than a list of links, recorded as a latent trap, not a live conflict.
+
 
 ## Not yet specified
 
@@ -107,11 +127,14 @@ each says what overturning it would cost.
   confirmed it does **not** bound notifications, naming unbounded Resend sends as an explicit gap.
   Whether notifications additionally need a per-hour cap, batching, or a separate alerting
   threshold is a decision this map has not taken, and ticket 09 should not invent one.
-- **Whether a minutes-long browser compression is acceptable to a real submitter.** Ticket 02
-  measured the single-threaded core in **minutes, not seconds**, and the faster multi-threaded
-  build is out of scope for a reason that will not change. A submitter who waits three minutes on
-  a phone may simply leave. Whether that needs a link-paste escape hatch, a warning before they
-  start, or a different default preset is undecided — and ticket 06 must not invent it.
+- **Whether a slow browser compression is acceptable to a real submitter. Amended by ticket 06, which
+  measured what ticket 02 could only extrapolate.** Ticket 02 predicted "minutes, not seconds" from the
+  single-threaded core; in headless Chrome on this machine a 4.46 MB 1080p clip compressed in **21.3
+  seconds** and a 475 KB clip in **4.5 seconds**, both excluding the core's first 10.18 MB download. So
+  the wait is tens of seconds on a laptop rather than minutes, and the phone case — still the one that
+  matters, since submitters are React Native developers — remains unmeasured. The warning before the
+  wait exists and the map's earlier "ticket 06 must not invent it" still holds: what is undecided is
+  whether a submitter who waits needs an escape hatch, not whether they should be told.
 - **What the submitter is told when a Submission is rejected or ignored.** Decision 8 says no
   receipt; silence is not the same as a decision, and this gets decided once there is a
   rejection to write.

@@ -21,6 +21,7 @@
 // reads module-scope arrays only, so it prerenders and lands in the sitemap for
 // free.
 import type { Metadata } from "next"
+import Link from "next/link"
 import { allRecordings } from "@/data/catalogue"
 import { contributorsByCount } from "@/data/recording"
 
@@ -69,6 +70,23 @@ export default function ContributorsPage() {
       </p>
 
       <ContributorRows contributors={contributors} />
+
+      {/* Ticket 11: where a Contributor who is not in this list looks next.
+          At the FOOT rather than above the rows, because the search that ends here
+          is a scan for one's own name: a visitor who has just read all of the
+          names and did not find themselves has finished that scan, and this is
+          where it stops. Above the rows it would be read by people who are already
+          listed and skipped by the one person who needs it.
+          Decision 10 keeps this out of the header rail, whose every item carries a
+          whole-catalogue count and this has none. Footer plus this page are the
+          two entrances. */}
+      <p className="mt-[22px] max-w-[520px] text-[13px] leading-[1.5] text-t2">
+        Not listed here yet?{" "}
+        <Link href="/submit" className="text-acc underline underline-offset-3">
+          Send us a Demo
+        </Link>{" "}
+        and the maintainer will take a look.
+      </p>
     </div>
   )
 }
