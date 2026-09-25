@@ -12,11 +12,27 @@ Vocabulary (CONTEXT.md): Recording (never animation/entry), Contributor (never a
 
 ## Step 1 - Demo location
 
-Ask: "Where is the Demo file?" Accept a local absolute path or a direct download URL.
+Ask: "Where is the Demo file, and did it arrive through /submit?" Accept a local absolute path, a
+direct download URL, or a Submission's object key. (public-submissions ticket 12.)
 
 - Done when: a readable local file exists. If given a URL, download to `/tmp/` first and confirm bytes exist.
 - Verify with: `ls -lh <path>` and `ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height,duration -of default=noprint_wrappers=1 <path>`.
 - If ffprobe fails, stop and tell the user the file is unreadable. Do not continue.
+
+### From a Submission (the Demo is in R2, not on disk)
+
+The notification email from `/api/submit` carries the object key and the exact command, so nothing
+has to be guessed. `pnpm submissions:open --list` shows what is in the bucket if the email is not to
+hand.
+
+1. Ask for the object key, then run `pnpm submissions:open <key>` **from the repo root**. It writes
+   `<key>.mp4` into the current directory and prints the size plus how to play it.
+2. Done when: the file exists and `ffprobe` reports `h264` for it. Anything else and this is not a
+   Submission that can be published: stop, and tell the Contributor with `pnpm submissions:outcome`.
+3. Remember the key. Step 10 needs it, and the object stays in the bucket for 30 days either way.
+
+A path written this way lands in the repo root, which is gitignored for `/*.mp4` so a fetched
+Submission cannot be staged by accident. Do not move it into `public/` until Step 5 has run.
 
 ## Step 2 - Contributor: existing or new?
 
@@ -43,6 +59,12 @@ Ask one at a time, in this order:
 
 ## Step 3 - Recording metadata (one question each)
 
+**If this came from a Submission, the notification email already carries every answer here** - the
+Contributor's name, their handles, the caption, the Category and the source URL, because the form
+requires them. Read them from the inbox and ask the user to confirm the set rather than asking each
+question again. That is what the form's field list was built for. Never invent a value that the email
+does not contain; ask for it instead.
+
 1. Caption - short human title, e.g. "Radial FAB" (required).
 2. Category - exactly one of the 18 keys in `data/categories.ts` (Accordions, Arc Sliders, Bottom Sheets, Buttons, Carousels, Charts, Circular Progress Bars, Drop Down, Full Apps, Headers, List, Loaders, Misc, Onboarding, Parallaxes, Pickers, Sliders, Tab bars). Offer as options; never accept a new Category here.
 3. Source URL - `https://` link to the Contributor's code (required, must match `^https?://`).
@@ -65,6 +87,30 @@ Run `./scripts/compress-demo.sh <input-from-step-1> public/<demoPath>`.
 
 - Deterministic transcode: H.264 CRF 20 slow preset, `yuv420p`, even-dimension scale, `+faststart`. No flag judgement calls.
 - Done when: script exits 0 and prints the staged size. Never copy the raw upload into `public/` - only the script output qualifies.
+
+### It runs for a Submission too, and this is why (ticket 12)
+
+A Demo that arrived through `/submit` was already transcoded in the visitor's browser, so the obvious
+move is to skip this step. **Do not skip it.**
+
+- **The browser is not deterministic; this script is.** The published Asset must satisfy the
+  catalogue's invariants, and ADR-0003 means the bytes are immutable once published. A guarantee has
+  to come from the thing that can guarantee it.
+- **Nothing has verified the browser's output is H.264.** `/submit` refuses a transcode that did not
+  shrink the file, and it refuses to send the original, but it has no `ffprobe` equivalent. This
+  script ends with exactly that check and refuses bad bytes itself.
+- **Its invariants are the ones the site depends on:** `yuv420p` because Chrome refuses `yuv444`, even
+  dimensions because x264 aborts on the odd heights screen crops produce, and `+faststart` so the CDN
+  can stream the first frame.
+
+**What this costs, so it is not a surprise:** the browser's file is CRF 28 and this is CRF 20, so the
+published Asset becomes *cleaner in container but no better in detail* than what arrived - the intake
+step's loss is already spent and cannot be recovered here. That is inherent to the pipeline rather
+than a fault of this step.
+
+Whether `compress-demo.sh` retires altogether is **not decided here** and is not this step's call:
+it is in the map's *Not yet specified*, and it will not be settled on the theory that a browser
+replaced it.
 
 ## Step 6 - Poster
 
@@ -132,8 +178,10 @@ Never invent an address, and never read it from Firestore. `firestore.rules` den
 ## Failure modes
 
 - Advancing past an unanswered question with a placeholder. Ask again instead.
-- Fuzzy-matching a Contributor name instead of copying it byte-identically. Copy-paste from grep output.
+- Fuzzy-matching a Contributor name instead of copying it byte-identically. Copy-paste from grep output. **This matters most for a Submission**, where the name came from a text box a stranger typed in, so a near-match is the expected shape of the mistake rather than an unlucky one.
 - Reusing an Asset path for new bytes. New bytes always mean a new path.
+- **Treating a Submission as already legitimate.** It is unreviewed by definition, whatever the form said back to the person who sent it. Its bytes have been transcoded by their browser and verified by nothing, its Category is one they chose, and its Source URL is one they typed. Every step still runs, and Step 5's script is still the step that makes the bytes publishable.
+- Skipping Step 5 for a Submission because a browser already compressed it. The reasons are in that step.
 - Committing anything under `public/demo/` or `public/thumbnails/`.
 - Asking for R2 credentials or attempting upload. Never do either.
 - Skipping Step 10 for a Submission, or inventing an address for it. Either the notice goes, or the user is told it did not.
