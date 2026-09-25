@@ -65,8 +65,8 @@ export const metadata: Metadata = {
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
-const POLICY_VERSION = "1.2"
-const POLICY_EFFECTIVE = "16 August 2026"
+const POLICY_VERSION = "1.3"
+const POLICY_EFFECTIVE = "25 September 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
 // pages; the three below are local to this one, which has far more sections than
@@ -203,6 +203,53 @@ export default function PrivacyPage() {
           </p>
         </section>
 
+        {/* Submissions */}
+        <section className={section}>
+          <h2 className={heading}>When you send us a Demo</h2>
+          <p className={body}>
+            The{" "}
+            <Link href="/submit" className={inBodyLink}>
+              submission form
+            </Link>{" "}
+            is how you send rnui.dev a Demo of your own, to be considered for
+            the catalogue. It records the name you want credited, any GitHub,
+            LinkedIn or X profile you give, the caption and Category you choose,
+            the link to your source, and the Demo file itself.
+          </p>
+          <p className={body}>
+            <strong className="text-t1">
+              Sending a Demo does not publish it.
+            </strong>{" "}
+            Most Submissions are not published, and the maintainer decides which
+            are. Nothing you send appears on the site until it has been looked
+            at and published by hand.
+          </p>
+          <p className={body}>
+            If it is not published, the file is deleted within 30 days of
+            arriving. If it is published, the name and profile links you gave
+            become part of the catalogue, alongside the same public Contributor
+            records as every other Recording.
+          </p>
+          <p className={body}>When you send one, the following is recorded:</p>
+          <ul className={list}>
+            <li className={body}>
+              the exact wording of the disclosure shown to you at the time, and
+              its version number, so what you agreed to is provable from the
+              record itself;
+            </li>
+            <li className={body}>the date and time you sent it;</li>
+            <li className={body}>the IP address the submission came from.</li>
+          </ul>
+          <p className={body}>
+            <strong className="text-t1">
+              The lawful basis is your consent
+            </strong>{" "}
+            (GDPR Article 6(1)(a)). You can withdraw it at any time by writing
+            to <ContactLink />, and the Demo and its record are deleted. Only
+            send work that is yours to send.
+          </p>
+        </section>
+
         {/* Analytics, cookies, local storage */}
         <section className={section}>
           <h2 className={heading}>
@@ -295,9 +342,12 @@ export default function PrivacyPage() {
               <strong className="text-t1">Cloudflare</strong> — serves every
               Demo and Poster from <code>cdn.rnui.dev</code>, so your IP address
               reaches Cloudflare whenever a Recording loads, and forwards mail
-              sent to {CONTACT_EMAIL} on to the maintainer&apos;s inbox.
-              Cloudflare serves from whichever of its locations is nearest you,
-              so this one is not United States only.
+              sent to {CONTACT_EMAIL} on to the maintainer&apos;s inbox. It also
+              holds the Demos you send through the submission form, in a bucket
+              the public site cannot read, and it runs the Turnstile bot check
+              on that form, which sees your IP address. Cloudflare serves from
+              whichever of its locations is nearest you, so this one is not
+              United States only.
             </li>
             <li className={body}>
               <strong className="text-t1">Google Gmail</strong> — receives that

@@ -220,10 +220,15 @@ export function RecordingOverlay({
                   already whitelists this subtree for wheel and touch while the
                   page behind it is locked.
 
+                  The max-h reserves 96px, not the 64px the top alone spends:
+                  64 above plus a 32px margin below, so the panel never touches
+                  the viewport's bottom edge and its lower corners stay fully
+                  visible instead of clipping against it.
+
                   The bar (context, legend, close) is first in the DOM so Radix
                   focuses the close button on open. */}
               <motion.div
-                className="fixed left-1/2 top-16 z-50 w-[1080px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-64px)] rounded-[18px] border border-line2 bg-panel shadow-e2 overflow-hidden flex flex-col"
+                className="fixed left-1/2 top-16 z-50 w-[1080px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-96px)] rounded-[18px] border border-line2 bg-panel shadow-e2 overflow-hidden flex flex-col"
                 initial={{ opacity: 0, x: "-50%", y: rise }}
                 animate={{
                   opacity: 1,
