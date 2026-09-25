@@ -15,7 +15,7 @@ import { SUBMIT_ACTION, TURNSTILE_FIELD } from "../lib/turnstile-shared"
 // is invisible from a browser: a form that quietly skips a check, or writes a
 // consent record for bytes that were never stored, looks exactly like a form that
 // works. So what is pinned here is the ORDER and the failures rather than the
-// happy path alone — nothing is stored when the challenge fails, a record never
+// happy path alone, nothing is stored when the challenge fails, a record never
 // exists without its object, and a record that cannot be written costs the object
 // instead of being logged and forgotten.
 
@@ -84,7 +84,7 @@ type FetchCall = {
 }
 
 /**
- * Siteverify and R2, dispatched on the URL rather than on call order — the order
+ * Siteverify and R2, dispatched on the URL rather than on call order, the order
  * is one of the things under test here, and a stub that answered by sequence
  * would hide a reordering.
  */
@@ -165,7 +165,7 @@ function submit(
   })
 }
 
-describe("POST /api/submit — the path that works", () => {
+describe("POST /api/submit, the path that works", () => {
   it("stores the Demo, records the consent, and answers ok", async () => {
     const net = stubNetwork()
     const res = await POST(submit())
@@ -209,14 +209,14 @@ describe("POST /api/submit — the path that works", () => {
 
   it("is 'unknown' rather than empty when there is no forwarding header", async () => {
     // firestore.rules requires an `ip` string, so "" would be refused by the
-    // database rather than at the edge — a failure with no useful log line.
+    // database rather than at the edge, a failure with no useful log line.
     stubNetwork()
     await POST(submit({}, { ip: null }))
     expect(writeConsent.mock.calls[0][1].ip).toBe("unknown")
   })
 })
 
-describe("POST /api/submit — nothing is stored unless everything passed", () => {
+describe("POST /api/submit, nothing is stored unless everything passed", () => {
   it("refuses a failed challenge, and stores nothing", async () => {
     const net = stubNetwork({
       turnstile: { success: false, "error-codes": ["timeout-or-duplicate"] },
@@ -235,7 +235,7 @@ describe("POST /api/submit — nothing is stored unless everything passed", () =
   })
 
   it("names the reason in the log and not to the visitor", async () => {
-    // A visitor can act on exactly one thing — try again. Naming
+    // A visitor can act on exactly one thing, try again. Naming
     // `hostname-mismatch` would tell a prober how the check is configured and
     // tell the visitor nothing.
     const logged = vi.spyOn(console, "error").mockImplementation(() => {})
@@ -331,7 +331,7 @@ describe("POST /api/submit — nothing is stored unless everything passed", () =
   it("refuses a text part named `demo`", async () => {
     // asFile narrows rather than casts, so a `demo` that arrived as a plain
     // string cannot reach arrayBuffer() and be stored as nothing. `file: null`
-    // so the helper does not overwrite the string with its default File — the
+    // so the helper does not overwrite the string with its default File, the
     // first version of this test did exactly that, and passed 200 for a request
     // that had nothing to do with the case it named.
     const net = stubNetwork()
@@ -356,7 +356,7 @@ describe("POST /api/submit — nothing is stored unless everything passed", () =
   })
 })
 
-describe("POST /api/submit — what a failure leaves behind", () => {
+describe("POST /api/submit, what a failure leaves behind", () => {
   it("promises nothing when the object could not be stored", async () => {
     stubNetwork({ putStatus: 500 })
     const res = await POST(submit())
@@ -396,7 +396,7 @@ describe("POST /api/submit — what a failure leaves behind", () => {
   })
 })
 
-describe("POST /api/submit — the notification (ticket 09)", () => {
+describe("POST /api/submit, the notification (ticket 09)", () => {
   it("sends exactly one email, to the address that forwards to the maintainer", async () => {
     stubNetwork()
     await POST(submit())

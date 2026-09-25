@@ -14,7 +14,7 @@
 // The bucket is private, and it is deliberately NOT an Asset: it is not on
 // cdn.rnui.dev and it is not on an r2.dev hostname. Both public routes are off,
 // which is the whole reason a second bucket exists rather than a `submissions/`
-// prefix — public access in R2 is a bucket-level setting with no per-prefix
+// prefix, public access in R2 is a bucket-level setting with no per-prefix
 // exclusion, so a prefix inside rnui-assets would have been world-readable and
 // cached immutable for a year. Verified 2026-09-25 against the live bucket:
 // anonymous GET via the r2.dev hostname -> 401, via the S3 endpoint -> 400,
@@ -22,7 +22,7 @@
 //
 // Credentials come from the environment and are never committed:
 //   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_R2_TOKEN (Workers R2 Storage: Edit)
-//   R2_SUBMISSIONS_BUCKET, optional — see the default below.
+//   R2_SUBMISSIONS_BUCKET, optional, see the default below.
 
 import { existsSync } from "node:fs"
 import { writeFile } from "node:fs/promises"
@@ -49,7 +49,7 @@ const outDir = outIndex === -1 ? "." : (args[outIndex + 1] ?? ".")
 //
 // The guard on `outIndex` is load-bearing, and it was missing until 2026-09-25:
 // with no `--out` in argv, `outIndex` is -1 and `outIndex + 1` is **0**, so the
-// filter dropped the FIRST argument — the key itself. `pnpm submissions:open
+// filter dropped the FIRST argument, the key itself. `pnpm submissions:open
 // <key>` therefore fell through to the usage message while `--list` and
 // `--out <dir>` both worked, which meant the one form the notification email
 // tells the maintainer to paste was the one form that could not run. Found by
@@ -135,7 +135,7 @@ function shellQuote(value: string): string {
  * How to watch what was just written.
  *
  * Printed rather than left to the reader because opening the Submission is the
- * whole point of fetching it, and the answer differs per machine — which player is
+ * whole point of fetching it, and the answer differs per machine, which player is
  * installed, and whether the default one will play an mp4 at all. `open` with no
  * `-a` always appears, because it needs no detection and works whatever is there.
  */
@@ -156,7 +156,7 @@ async function openSubmission(k: string): Promise<void> {
     // was deleted 30 days after it arrived, and the email is older than that.
     const hint =
       res.status === 404
-        ? ` — no such Submission in ${bucket}. The 30-day rule (map decision 11) ` +
+        ? `, no such Submission in ${bucket}. The 30-day rule (map decision 11) ` +
           "deletes these; if the notification is older than that, it is gone."
         : ""
     throw new Error(`GET ${k}: HTTP ${res.status}${hint}`)

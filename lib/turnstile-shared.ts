@@ -10,7 +10,7 @@
 // invisible in any log that does not name the action. So they are written once.
 //
 // They cannot live in lib/turnstile.ts, because that module calls Siteverify and
-// must never reach a browser bundle — Cloudflare's own rule for this integration
+// must never reach a browser bundle, Cloudflare's own rule for this integration
 // is "Do not call siteverify from the browser. Always: browser → user's backend →
 // siteverify." Importing the constants from there would pull the verifier in with
 // them. Same split, same reason, as lib/counters.ts against
@@ -20,7 +20,7 @@
 
 /**
  * The field the widget posts its token under. Cloudflare's name for it, not ours
- * — it is the key the endpoint reads out of the multipart body.
+ *, it is the key the endpoint reads out of the multipart body.
  */
 export const TURNSTILE_FIELD = "cf-turnstile-response"
 

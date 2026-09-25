@@ -39,7 +39,7 @@ export const SUBMISSION_CONTENT_TYPE = "video/mp4"
  * Ticket 08's scheme. Deliberately not an Asset path, and the difference is the
  * whole reason: an Asset path identifies immutable *published* bytes and is never
  * reused (ADR-0003), whereas a Submission is unreviewed, deletable, and was never
- * published — so it gets freshness rather than identity, which is what the ULID
+ * published, so it gets freshness rather than identity, which is what the ULID
  * is for. Minted here and never by hand, the same rule `add-recording` step 7
  * gives a Recording's id.
  *
@@ -76,14 +76,14 @@ type R2Target = { url: string; token: string }
  * The same REST surface scripts/open-submission.ts reads through, and the reason
  * this file needs no S3 client and no new credential. Cloudflare's *Upload
  * objects* page lists the dashboard, the Workers binding, the S3 API and the CLI
- * — nothing token-authenticated — which reads as though a Vercel route handler
+ *, nothing token-authenticated, which reads as though a Vercel route handler
  * would have to sign SigV4 requests with an R2 key pair. It does not. Measured
  * against the live bucket on 2026-09-25: an authenticated PUT returned 200 with
  * the object's key, size and etag, a GET returned the bytes, and a DELETE left
  * the listing empty.
  *
  * Credentials are read per call rather than at import, like RESEND_API_KEY in
- * lib/resend.ts — so a test can import this module without them, and a missing
+ * lib/resend.ts, so a test can import this module without them, and a missing
  * value fails at the request that needed it rather than at module load.
  */
 function target(key: string): R2Target {
@@ -91,7 +91,7 @@ function target(key: string): R2Target {
   const token = process.env.CLOUDFLARE_R2_TOKEN
   if (!account || !token) {
     throw new Error(
-      "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_R2_TOKEN are not set — see .env.example"
+      "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_R2_TOKEN are not set, see .env.example"
     )
   }
   const url =

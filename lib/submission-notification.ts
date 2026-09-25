@@ -1,6 +1,6 @@
 // lib/submission-notification.ts
 //
-// The email that tells the maintainer a Submission arrived — the whole reason the
+// The email that tells the maintainer a Submission arrived, the whole reason the
 // feature exists (public-submissions ticket 09).
 //
 // The message is BUILT here and SENT by the route handler through the existing
@@ -10,7 +10,7 @@
 //
 // What it must carry, and why each part is there. An `add-recording` session needs
 // the Contributor's name, every handle they supplied, the caption, the Category,
-// the source URL and the file size — and it needs the OBJECT KEY and a
+// the source URL and the file size, and it needs the OBJECT KEY and a
 // copy-pasteable command, because a presigned URL dies in 7 days while the object
 // lives 30 (map decision 12, amended by ticket 04). So the key and the command are
 // the durable part, and **no URL is included at all**: a link that works for a week
@@ -26,8 +26,8 @@ export const OPEN_COMMAND = "pnpm submissions:open"
 /**
  * Escape everything a stranger wrote.
  *
- * Every interpolated value below is a visitor's text — caption, name, handles,
- * source — and this is HTML rendered in somebody's mail client. Without escaping, a
+ * Every interpolated value below is a visitor's text, caption, name, handles,
+ * source, and this is HTML rendered in somebody's mail client. Without escaping, a
  * caption of `<a href="https://evil.example">Open the Dashboard</a>` arrives as a
  * link wearing rnui.dev's sender reputation. Mail clients block script; they do not
  * block a forged link, so this is the half that matters.
@@ -42,7 +42,7 @@ function esc(value: string): string {
 }
 
 /**
- * Flatten to one line — for the Subject only.
+ * Flatten to one line, for the Subject only.
  *
  * A newline in a header is broken formatting at best and header injection at worst.
  * The validator trims a field's ends but does not forbid a newline in the middle,
@@ -74,7 +74,7 @@ export type SubmissionNotice = {
   category: string
   source: string
   fileBytes: number
-  /** The object key in the private bucket — and the consent record's document id. */
+  /** The object key in the private bucket, and the consent record's document id. */
   key: string
   /** For the summary line: the disclosure version, and when it was agreed to. */
   consent: SubmissionConsent
@@ -100,7 +100,7 @@ export function submissionNotification(notice: SubmissionNotice): {
   ).filter(([, value]) => value.trim())
 
   return {
-    subject: `New Submission: ${oneLine(notice.caption)} — ${oneLine(
+    subject: `New Submission: ${oneLine(notice.caption)}, ${oneLine(
       notice.contributor
     )}`,
     html: `<p>A Submission arrived.</p>

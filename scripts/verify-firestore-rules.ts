@@ -8,7 +8,7 @@
  * rather than a careful read.
  *
  * The case that matters most is the first one. Legacy signup records carry no
- * `confirmed` field, and 29 of their document ids are PUBLISHED — they sit in
+ * `confirmed` field, and 29 of their document ids are PUBLISHED, they sit in
  * .scratch/notify-and-preview/research/scrub-survivors.json, in a public repo,
  * under a note that reads "Rejoin docId against Firestore emails/ for the
  * address". So an unconditional `allow get` on this collection is a data breach,
@@ -309,7 +309,7 @@ const CASES: Case[] = [
   //
   // The write has to stay open: it goes through the same public client SDK a
   // browser does, so Firestore cannot tell this server's write from anyone
-  // else's. The READ is the case that matters, and it is asserted in both forms —
+  // else's. The READ is the case that matters, and it is asserted in both forms -
   // `get` on a known id, and `list` on the collection, because `read` covering
   // only the first would leave the set walkable.
   {
@@ -356,7 +356,7 @@ const CASES: Case[] = [
   // `validateSubmissionConsent` used `hasAll`, which checks only that a key is
   // PRESENT, while the comment beside it claimed an unexpected field was "refused
   // rather than stored". `hasAll` ALLOWS the extra `confirmed: true` in the second
-  // case — confirmed by running both variants of that function through this same
+  // case, confirmed by running both variants of that function through this same
   // `:test` call, one after the other. The rule and its comment disagreed for as long
   // as nothing covered an extra key. These two do.
   {

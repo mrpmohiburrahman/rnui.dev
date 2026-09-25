@@ -8,7 +8,7 @@
 //
 // **Explicit rendering returns a widget id, and the widget id is what `reset()`
 // needs.** Tokens are single-use and live 300 seconds, so a visitor whose first
-// submission fails must be handed a *fresh* token before retrying — and a widget
+// submission fails must be handed a *fresh* token before retrying, and a widget
 // built by the implicit markup path has no id to reset, which would leave the
 // retry sending a token that was already spent.
 //
@@ -16,7 +16,7 @@
 // measured browser compression in *minutes*, and the form compresses before
 // submitting (map decision 4). A widget that rendered on page load would mint a
 // token that expires long before the visitor can press submit. So the parent
-// renders this component only once the file is ready — the same ordering ticket
+// renders this component only once the file is ready, the same ordering ticket
 // 07's provisioning note records.
 //
 // It renders nothing until the script is ready, so an empty container is the
@@ -80,7 +80,7 @@ export function TurnstileWidget({
 
     // Already rendered. A second render would stack a second widget inside the
     // same div with the first one's id left unreachable, so its token could
-    // never be reset — and the retry after a failure would silently reuse it.
+    // never be reset, and the retry after a failure would silently reuse it.
     if (!el || !api || widgetId.current !== null) return
 
     const sitekey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
@@ -89,7 +89,7 @@ export function TurnstileWidget({
       // console and quiet on the page. The submit control stays disabled, which
       // is the honest state: nothing has been verified.
       console.error(
-        "turnstile: NEXT_PUBLIC_TURNSTILE_SITE_KEY is not set — the widget cannot render"
+        "turnstile: NEXT_PUBLIC_TURNSTILE_SITE_KEY is not set, the widget cannot render"
       )
       return
     }
@@ -117,7 +117,7 @@ export function TurnstileWidget({
   useEffect(() => {
     // Covers what next/script's `onReady` does not: mounting *after* the script
     // has already loaded. That is the ordinary path here, because the parent
-    // renders this component only once compression has finished — and the
+    // renders this component only once compression has finished, and the
     // script may well have loaded on a previous attempt.
     if (window.turnstile) render()
   }, [render])

@@ -11,7 +11,7 @@ import {
 // public-submissions ticket 07. Three things are worth holding still here:
 //
 //   1. **The key scheme.** Ticket 08 wrote `<ulid>.mp4` down and nothing enforces
-//      it. A key that drifts is not a crash — it is a bucket whose contents stop
+//      it. A key that drifts is not a crash, it is a bucket whose contents stop
 //      sorting by arrival, discovered much later and only by a person.
 //   2. **That unconfigured storage refuses.** Same reason tests/turnstile.test.ts
 //      covers its unconfigured paths: the symptom of this being wrong is "it

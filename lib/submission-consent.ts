@@ -8,7 +8,7 @@
 //
 // Deliberately NOT SIGNUP_DISCLOSURE, and not a second sentence on it. The two
 // are different requests. A Subscriber hands over an address and is asking to be
-// mailed, so their disclosure is a consent *request* under CASL's ECPR s.4 —
+// mailed, so their disclosure is a consent *request* under CASL's ECPR s.4 -
 // name, mailing address, contact method, and the right to withdraw, all four
 // required. A Contributor hands over a Demo and their name and is asking for
 // nothing; the consent here is to **store and publish the work**, and no mail is
@@ -31,7 +31,7 @@ export { PRIVACY_PATH }
  * The disclosure as rendered on /submit, in the two pieces a form needs: the
  * last sentence has to be a real link, and splitting here beats a regex at the
  * render site. SUBMISSION_DISCLOSURE below joins them back, and that joined
- * string is both what the form shows and what every record stores — so what
+ * string is both what the form shows and what every record stores, so what
  * somebody agreed to is provable from the record alone, rather than
  * reconstructed from a guess about which deploy they saw.
  *
@@ -51,8 +51,8 @@ export { PRIVACY_PATH }
  * A fourth was here until 2026-09-25 and was **wrong**: "most Submissions are not
  * published". The maintainer expects to publish most of what arrives, and a
  * disclosure that talks its own catalogue down also reads as a reason not to
- * bother sending anything. What remains is the accurate half — publication is not
- * guaranteed — with no claim about how often it happens.
+ * bother sending anything. What remains is the accurate half, publication is not
+ * guaranteed, with no claim about how often it happens.
  */
 export const SUBMISSION_DISCLOSURE_BODY =
   `You are sending rnui.dev a Demo, the name to credit it to, an email ` +
@@ -86,7 +86,7 @@ export const SUBMISSION_FORM_VERSION = "2026-09-25.2"
  * adapter converts when it writes.
  */
 export type SubmissionConsent = {
-  /** SUBMISSION_DISCLOSURE as rendered — the words, not a reference to them. */
+  /** SUBMISSION_DISCLOSURE as rendered, the words, not a reference to them. */
   disclosure: string
   /** SUBMISSION_FORM_VERSION at the moment of submission. */
   formVersion: string

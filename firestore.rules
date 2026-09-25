@@ -38,7 +38,7 @@ service cloud.firestore {
     //
     // What is NOT open is reading, and that is the whole point of this rule.
     // Every read is denied, so this collection can never publish who submitted
-    // what — and `read` covers both `get` and `list`, so there is no query that
+    // what, and `read` covers both `get` and `list`, so there is no query that
     // walks the set either. Compare `.scratch/notify-and-preview/research/
     // scrub-survivors.json`, which is what happens when a collection is readable.
     //
@@ -46,7 +46,7 @@ service cloud.firestore {
     // can plant a record that *looks* like evidence of consent. The signup
     // collection has the same property and defends it with an HMAC in
     // lib/subscribe-token.ts; there is no equivalent here, because a Submission
-    // has no token to sign — it is identified by the object key in the private
+    // has no token to sign, it is identified by the object key in the private
     // bucket, and that key never reaches a browser.
     match /submissions/{submissionId} {
       allow create: if validateSubmissionConsent();
@@ -63,14 +63,14 @@ service cloud.firestore {
     //
     // The document id IS the confirmation token: 122 bits from a CSPRNG, mailed
     // only to the address that asked. So `get` is the whole read surface and
-    // `list` stays denied forever — listing this collection would publish every
+    // `list` stays denied forever, listing this collection would publish every
     // Subscriber's address.
     //
     // `get` is additionally gated on the record still being PENDING, and that
     // gate is load-bearing rather than tidiness:
     //
     //   * Records created before ticket 06 carry no `confirmed` field, and their
-    //     ids are 20-character Firestore auto-ids that are PUBLISHED — 29 of them
+    //     ids are 20-character Firestore auto-ids that are PUBLISHED, 29 of them
     //     sit in .scratch/notify-and-preview/research/scrub-survivors.json in a
     //     public repo, whose own note says "Rejoin docId against Firestore
     //     emails/ for the address". An unconditional `allow get` would therefore
@@ -126,13 +126,13 @@ service cloud.firestore {
   // the disclosure as rendered, the form version, the Contributor's email, the IP,
   // and the timestamp.
   //
-  // The field list is closed, and `hasOnly` is what closes it — not `hasAll`, which
+  // The field list is closed, and `hasOnly` is what closes it, not `hasAll`, which
   // this used until 2026-09-25 and which checks only that each key is PRESENT.
   //
   // Proven at the rules engine rather than argued: the same extra-`confirmed: true`
   // record is ALLOWED by `hasAll` and DENIED by `hasOnly`, run through the same
   // `projects/{p}:test` call on 2026-09-25. So the comment that used to sit here
-  // claimed something the rule did not do — it said such a record was "refused
+  // claimed something the rule did not do, it said such a record was "refused
   // rather than stored", and it was not.
   //
   // The case is pinned in scripts/verify-firestore-rules.ts, because the way this
@@ -151,7 +151,7 @@ service cloud.firestore {
   }
 
   // Pending means: written by ticket 06's form and not yet confirmed. The
-  // `get(key, default)` form is deliberate — a missing `confirmed` key defaults
+  // `get(key, default)` form is deliberate, a missing `confirmed` key defaults
   // to true, so every pre-ticket-06 record reads as "not pending" and stays shut.
   function isPendingSignup() {
     return resource.data.get('confirmed', true) == false;
@@ -159,7 +159,7 @@ service cloud.firestore {
 
   // A signup may only be created in the pending state.
   //
-  // This does NOT stop a forged record — `create` is open by necessity, because
+  // This does NOT stop a forged record, `create` is open by necessity, because
   // the signup write goes through the same public client SDK a browser uses, so
   // Firestore cannot tell this server's write from anyone else's, and an
   // attacker can satisfy any shape rule here. What stops a forged record being

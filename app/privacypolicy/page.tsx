@@ -1,7 +1,7 @@
 // app/privacypolicy/page.tsx
 //
 // One of the two legal pages (studio-dark ticket 12 step 5). Weighted to what it
-// is: 1 pageview in 30 days, so no panels, no decoration — the effort is spent
+// is: 1 pageview in 30 days, so no panels, no decoration, the effort is spent
 // on type, tokens and markup.
 //
 // notify-and-preview ticket 07 replaced the text. What was here was a template:
@@ -16,14 +16,14 @@
 // bookmark and vote as it happens), that nothing records who voted for what
 // (posthog-provider.tsx sets person_profiles: "always"), and that four
 // processors covered it (cdn.rnui.dev is a fifth, and hello@ forwards to a
-// sixth). None of those were sloppy prose — each was a true-sounding sentence
+// sixth). None of those were sloppy prose, each was a true-sounding sentence
 // nobody had checked against the file that decides it.
 //
 // So: if you touch analytics, storage, a processor, or the send path, re-read
 // this page. The ticket's Comments list every source, including the two Resend
 // tracking flags and the two storage regions, which came from the live APIs.
 //
-// v1.1, 2026-08-15 — ZeroBounce added as a seventh processor. Ticket 03 ran a
+// v1.1, 2026-08-15, ZeroBounce added as a seventh processor. Ticket 03 ran a
 // deliverability check over five of the 29 legacy signup addresses, which means
 // real Subscriber addresses reached a provider this page did not name. Two
 // things to keep honest about that entry: the "five addresses" count is exact
@@ -31,10 +31,10 @@
 // region is claimed for it because none was verified from a live API the way
 // the other six were. Do not add one by assumption.
 //
-// v1.2, 2026-08-16 — Emailable added as an eighth processor. Ticket 03 finally
+// v1.2, 2026-08-16, Emailable added as an eighth processor. Ticket 03 finally
 // ran the bulk check the fifth acceptance bullet asks for, over all 29 legacy
 // addresses rather than the five ZeroBounce saw, so a second verifier now holds
-// them. ZeroBounce's entry is left at five because that count is still exact —
+// them. ZeroBounce's entry is left at five because that count is still exact -
 // the run did not go through it. Same caveat as above applies here: no storage
 // region is claimed, because none was verified from a live API.
 //
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 /**
  * Bump both together, and never edit the text without bumping them. The pair
  * exists so the policy in force at any given signup is provable rather than
- * reconstructed from a deploy date — the same argument as CONSENT_FORM_VERSION
+ * reconstructed from a deploy date, the same argument as CONSENT_FORM_VERSION
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
@@ -79,7 +79,7 @@ const POLICY_EFFECTIVE = "25 September 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
 // pages; the three below are local to this one, which has far more sections than
-// /termsofservice. Not lifted into a shared module for two pages — if a third
+// /termsofservice. Not lifted into a shared module for two pages, if a third
 // legal page ever appears, that is the moment.
 const body = "max-w-[520px] text-[13px] leading-[1.55] text-t2"
 const inBodyLink =
@@ -90,7 +90,7 @@ const heading = "m-0 text-section text-t1"
 
 /**
  * The contact address, as a link. Five sections of this policy end by pointing
- * at it, which is the point — every right it describes has to be exercisable,
+ * at it, which is the point, every right it describes has to be exercisable,
  * and there is exactly one address to exercise them through.
  */
 function ContactLink() {
@@ -149,7 +149,7 @@ export default function PrivacyPage() {
           <p className={body}>
             The Digest is one email naming the Recordings added to rnui.dev
             since the last one. It goes out weekly, and only in a week where at
-            least one new Recording was actually added — a quiet week means no
+            least one new Recording was actually added, a quiet week means no
             email. It is sent from {FROM}. It carries no sponsor mail, no
             third-party marketing, and no promotion of other products.
           </p>
@@ -207,7 +207,7 @@ export default function PrivacyPage() {
             </Link>{" "}
             records the first and last name, email address and message you type
             into it, and the time you sent it. It is used to answer you. It is
-            not added to the Digest list — the two are separate, and filling in
+            not added to the Digest list, the two are separate, and filling in
             the contact form never subscribes you to anything.
           </p>
         </section>
@@ -279,9 +279,9 @@ export default function PrivacyPage() {
             </strong>
             . PostHog sets cookies and gives each browser a persistent random
             identifier, so those events accumulate against the same profile over
-            time. That profile is pseudonymous — it is not linked to your name
-            or email address, and signing up for the Digest does not attach your
-            address to it — but it is a per-browser record, not an anonymous
+            time. That profile is pseudonymous, it is not linked to your name or
+            email address, and signing up for the Digest does not attach your
+            address to it, but it is a per-browser record, not an anonymous
             tally, and it is fair to assume that over enough visits it describes
             your browsing of this site.
           </p>
@@ -304,7 +304,7 @@ export default function PrivacyPage() {
             are kept in your own browser&apos;s local storage. The list of
             Recordings you have already seen is kept in session storage and is
             discarded when you close the tab. Clearing your browser data deletes
-            all three, and the lists themselves are never sent to us — but note
+            all three, and the lists themselves are never sent to us, but note
             the paragraph above: the individual act of bookmarking or voting is
             reported to PostHog as it happens, even though the list is not. You
             can block or clear cookies in your browser settings; the catalogue
@@ -322,40 +322,40 @@ export default function PrivacyPage() {
           </p>
           <ul className={list}>
             <li className={body}>
-              <strong className="text-t1">Resend</strong> — sends the
+              <strong className="text-t1">Resend</strong>, sends the
               confirmation email and the Digest, and holds the list of confirmed
               addresses. Stored in the United States.
             </li>
             <li className={body}>
-              <strong className="text-t1">ZeroBounce</strong> — checked whether
+              <strong className="text-t1">ZeroBounce</strong>, checked whether
               addresses already on the signup list were still deliverable,
               before any Digest was sent. Five addresses were sent to it on 15
               August 2026. This was a one-off check, not part of the ongoing
               send.
             </li>
             <li className={body}>
-              <strong className="text-t1">Emailable</strong> — checked the same
+              <strong className="text-t1">Emailable</strong>, checked the same
               signup list for deliverability, more thoroughly than the check
               above and again before any Digest was sent. Twenty-nine addresses
               were sent to it on 16 August 2026. This was a one-off check, not
               part of the ongoing send.
             </li>
             <li className={body}>
-              <strong className="text-t1">Google Firebase</strong> — stores the
+              <strong className="text-t1">Google Firebase</strong>, stores the
               signup records, contact form messages, and the per-Recording
               counts. Stored in the United States.
             </li>
             <li className={body}>
-              <strong className="text-t1">PostHog</strong> — the analytics and
+              <strong className="text-t1">PostHog</strong>, the analytics and
               session replay described above. Stored in the United States.
             </li>
             <li className={body}>
-              <strong className="text-t1">Vercel</strong> — hosts the site and
+              <strong className="text-t1">Vercel</strong>, hosts the site and
               provides the cookieless page view count.
             </li>
             <li className={body}>
-              <strong className="text-t1">Cloudflare</strong> — serves every
-              Demo and Poster from <code>cdn.rnui.dev</code>, so your IP address
+              <strong className="text-t1">Cloudflare</strong>, serves every Demo
+              and Poster from <code>cdn.rnui.dev</code>, so your IP address
               reaches Cloudflare whenever a Recording loads, and forwards mail
               sent to {CONTACT_EMAIL} on to the maintainer&apos;s inbox. It also
               holds the Demos you send through the submission form, in a bucket
@@ -365,7 +365,7 @@ export default function PrivacyPage() {
               United States only.
             </li>
             <li className={body}>
-              <strong className="text-t1">Google Gmail</strong> — receives that
+              <strong className="text-t1">Google Gmail</strong>, receives that
               forwarded mail, so anything you send to {CONTACT_EMAIL} lands in a
               Gmail inbox.
             </li>
@@ -410,7 +410,7 @@ export default function PrivacyPage() {
             no measurement to base one on. This section will be updated with a
             concrete rule, and the version above bumped, before any such removal
             happens. Nothing is being held on the strength of a rule that does
-            not exist — you can leave at any time regardless.
+            not exist, you can leave at any time regardless.
           </p>
         </section>
 
@@ -423,27 +423,27 @@ export default function PrivacyPage() {
           </p>
           <ul className={list}>
             <li className={body}>
-              <strong className="text-t1">Access</strong> — get a copy of what
-              is held about you.
+              <strong className="text-t1">Access</strong>, get a copy of what is
+              held about you.
             </li>
             <li className={body}>
-              <strong className="text-t1">Rectification</strong> — have
-              something inaccurate corrected.
+              <strong className="text-t1">Rectification</strong>, have something
+              inaccurate corrected.
             </li>
             <li className={body}>
-              <strong className="text-t1">Erasure</strong> — have it deleted.
+              <strong className="text-t1">Erasure</strong>, have it deleted.
             </li>
             <li className={body}>
-              <strong className="text-t1">Objection and restriction</strong> —
+              <strong className="text-t1">Objection and restriction</strong> -
               object to processing, or have it paused.
             </li>
             <li className={body}>
-              <strong className="text-t1">Portability</strong> — receive it in a
+              <strong className="text-t1">Portability</strong>, receive it in a
               machine-readable form.
             </li>
             <li className={body}>
-              <strong className="text-t1">Withdrawal of consent</strong> — at
-              any time, as described above.
+              <strong className="text-t1">Withdrawal of consent</strong>, at any
+              time, as described above.
             </li>
           </ul>
           <p className={body}>
