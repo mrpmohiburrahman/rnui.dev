@@ -60,6 +60,7 @@ export async function writeSubmissionConsent(
   await setDoc(doc(db, SUBMISSION_COLLECTION_NAME, submissionId), {
     disclosure: consent.disclosure,
     formVersion: consent.formVersion,
+    email: consent.email,
     ip: consent.ip,
     at: Timestamp.fromDate(consent.at),
   })

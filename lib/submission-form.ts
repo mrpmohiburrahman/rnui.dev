@@ -47,6 +47,14 @@ export const SUBMIT_ENDPOINT = "/api/submit"
 
 export type SubmissionFields = {
   contributor: string
+  /**
+   * A required address, so the maintainer can reply about this Submission.
+   *
+   * Required rather than optional, unlike the handles: without one there is no
+   * way to tell the person what happened to their work, and asking later means
+   * asking the one channel a stranger has already stopped watching.
+   */
+  email: string
   github: string
   linkedin: string
   twitter: string
@@ -104,6 +112,7 @@ export type TextWireField = {
  */
 export const SUBMISSION_FIELD: Record<WireField, string> = {
   contributor: "contributor",
+  email: "email",
   github: "github",
   linkedin: "linkedin",
   twitter: "twitter",
@@ -132,13 +141,23 @@ export type SubmissionErrors = Partial<Record<keyof SubmissionFields, string>>
  */
 const BARE_SLUG = /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$/
 
+/**
+ * The same shape app/actions/subscribe-email.ts accepts, deliberately: two
+ * spellings of "is this an address" would eventually disagree, and the one that
+ * had drifted would be whichever was edited last.
+ *
+ * Not an attempt at RFC 5322. The only real test is whether mail sent to it
+ * arrives; this exists to catch a typo before it becomes a support conversation.
+ */
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 const MB = 1024 * 1024
 
 function handleError(value: string, label: string): string | undefined {
   const v = value.trim()
   if (!v) return undefined // all three handles are optional
   if (!BARE_SLUG.test(v))
-    return `Enter the ${label} handle only — no @, no URL.`
+    return `Enter the ${label} handle only, with no @ and no URL.`
   return undefined
 }
 
@@ -155,6 +174,9 @@ export function validateSubmission(f: SubmissionFields): SubmissionErrors {
 
   if (!f.contributor.trim()) {
     errors.contributor = "Enter the name to credit this Demo to."
+  }
+  if (!EMAIL.test(f.email.trim())) {
+    errors.email = "Enter an email address so we can reach you."
   }
   if (!f.caption.trim()) {
     errors.caption = "Give the Demo a short caption."
@@ -180,7 +202,7 @@ export function validateSubmission(f: SubmissionFields): SubmissionErrors {
   } else if (f.fileBytes > MAX_DEMO_BYTES) {
     errors.fileBytes = `A Demo can be at most 5 MB. That file is ${(
       f.fileBytes / MB
-    ).toFixed(1)} MB — trim it and try again.`
+    ).toFixed(1)} MB. Trim it and try again.`
   }
 
   if (!f.consent) {
@@ -228,6 +250,7 @@ export function parseSubmissionForm(
 
   return {
     contributor: read(SUBMISSION_FIELD.contributor),
+    email: read(SUBMISSION_FIELD.email).toLowerCase(),
     github: read(SUBMISSION_FIELD.github),
     linkedin: read(SUBMISSION_FIELD.linkedin),
     twitter: read(SUBMISSION_FIELD.twitter),

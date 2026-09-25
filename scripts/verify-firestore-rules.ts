@@ -42,7 +42,8 @@ const CONFIRMED = { ...PENDING, confirmed: true, confirmedAt: T }
 /** A Submission's consent record, shaped as lib/submission-consent.ts types it. */
 const CONSENT = {
   disclosure: "d",
-  formVersion: "2026-09-25.1",
+  formVersion: "2026-09-25.2",
+  email: "someone@example.com",
   ip: "1.2.3.4",
   at: T,
 }
@@ -330,7 +331,19 @@ const CASES: Case[] = [
     expectation: "DENY",
     method: "create",
     path: D("/submissions/sub-1"),
-    incoming: { disclosure: "d", ip: "1.2.3.4", at: T },
+    incoming: { disclosure: "d", email: "a@b.co", ip: "1.2.3.4", at: T },
+  },
+  {
+    name: "a consent record missing the Contributor email is refused",
+    expectation: "DENY",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: {
+      disclosure: "d",
+      formVersion: "2026-09-25.2",
+      ip: "1.2.3.4",
+      at: T,
+    },
   },
   {
     name: "a consent record with a string timestamp is refused",

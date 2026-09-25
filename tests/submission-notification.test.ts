@@ -25,6 +25,7 @@ function notice(
 ) {
   return {
     contributor: "Hewad Mubariz",
+    email: "hewad@example.com",
     github: "hewad-mubariz",
     linkedin: "hewadm",
     twitter: "hewadM1",
@@ -36,6 +37,7 @@ function notice(
     consent: {
       disclosure: "d",
       formVersion: SUBMISSION_FORM_VERSION,
+      email: "hewad@example.com",
       ip: "203.0.113.9",
       at: new Date("2026-09-25T03:00:00.000Z"),
     },
@@ -68,6 +70,7 @@ describe("the body", () => {
     const { html } = submissionNotification(notice())
     for (const value of [
       "Hewad Mubariz",
+      "hewad@example.com",
       "hewad-mubariz",
       "hewadm",
       "hewadM1",
@@ -78,6 +81,12 @@ describe("the body", () => {
     ]) {
       expect(html, `expected the body to carry ${value}`).toContain(value)
     }
+  })
+
+  it("prints the address to reply to, because that is why the form asks for one", () => {
+    const { html } = submissionNotification(notice())
+    expect(html).toContain("Reply to")
+    expect(html).toContain("hewad@example.com")
   })
 
   it("carries the object key and a copy-pasteable command", () => {

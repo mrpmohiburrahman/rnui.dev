@@ -84,6 +84,7 @@ function FieldError({ message }: { message?: string }) {
 export default function SubmitPage() {
   const [values, setValues] = useState<Omit<SubmissionFields, "fileBytes">>({
     contributor: "",
+    email: "",
     github: "",
     linkedin: "",
     twitter: "",
@@ -196,7 +197,8 @@ export default function SubmitPage() {
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.5] text-t2">
         Built something worth showing? Send the screen recording and the details
         below. The maintainer looks at every one, and publishes the ones that
-        fit the catalogue.
+        fit the catalogue. Include an email address so you can be reached about
+        it.
       </p>
 
       {/* The same one-panel form as /contactus: 14px pad, 12px radius,
@@ -223,6 +225,22 @@ export default function SubmitPage() {
           </div>
 
           <div className="flex flex-col gap-[4px]">
+            <label htmlFor="email" className={labelClass}>
+              EMAIL
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={values.email}
+              onChange={text("email")}
+              className={fieldClass}
+              autoComplete="email"
+              inputMode="email"
+            />
+            <FieldError message={errors.email} />
+          </div>
+
+          <div className="flex flex-col gap-[4px]">
             <label htmlFor="caption" className={labelClass}>
               CAPTION
             </label>
@@ -231,7 +249,6 @@ export default function SubmitPage() {
               type="text"
               value={values.caption}
               onChange={text("caption")}
-              placeholder="Radial FAB"
               className={fieldClass}
             />
             <FieldError message={errors.caption} />
@@ -241,11 +258,14 @@ export default function SubmitPage() {
             <label htmlFor="category" className={labelClass}>
               CATEGORY
             </label>
+            {/* Greyed while it still reads "Choose one…". A select cannot use
+                `::placeholder`, so without this the prompt renders at full
+                contrast and reads as a Category that has already been chosen. */}
             <select
               id="category"
               value={values.category}
               onChange={text("category")}
-              className={fieldClass}
+              className={`${fieldClass} ${values.category ? "" : "text-t3"}`}
             >
               <option value="">Choose one…</option>
               {CATEGORY_OPTIONS.map((name) => (
@@ -266,7 +286,7 @@ export default function SubmitPage() {
               type="url"
               value={values.source}
               onChange={text("source")}
-              placeholder="https://github.com/you/the-component"
+              placeholder="https://"
               className={fieldClass}
               autoComplete="url"
             />
@@ -274,9 +294,11 @@ export default function SubmitPage() {
           </div>
         </div>
 
-        {/* Handles are optional and always bare slugs — no `@`, no URL. The
-            placeholders show the shape, because a visitor who types what the
-            field asks for never sees a refusal at all. */}
+        {/* Handles are optional and are always bare slugs, with no `@` and no URL.
+            Deliberately no placeholder on any of the three: a plausible-looking
+            handle reads as a suggestion, and grey text naming somebody is the kind
+            of thing a visitor copies. The rule is carried by the refusal message
+            instead, which names the field and says what it accepts. */}
         <div className="mt-[12px] grid grid-cols-1 gap-[12px] sm:grid-cols-3">
           <div className="flex flex-col gap-[4px]">
             <label htmlFor="github" className={labelClass}>
@@ -287,7 +309,6 @@ export default function SubmitPage() {
               type="text"
               value={values.github}
               onChange={text("github")}
-              placeholder="hewad-mubariz"
               className={fieldClass}
             />
             <FieldError message={errors.github} />
@@ -301,7 +322,6 @@ export default function SubmitPage() {
               type="text"
               value={values.linkedin}
               onChange={text("linkedin")}
-              placeholder="hewadm"
               className={fieldClass}
             />
             <FieldError message={errors.linkedin} />
@@ -315,7 +335,6 @@ export default function SubmitPage() {
               type="text"
               value={values.twitter}
               onChange={text("twitter")}
-              placeholder="hewadM1"
               className={fieldClass}
             />
             <FieldError message={errors.twitter} />
@@ -324,7 +343,7 @@ export default function SubmitPage() {
 
         <div className="mt-[12px] flex flex-col gap-[4px]">
           <label htmlFor="demo" className={labelClass}>
-            DEMO — UP TO 5 MB
+            DEMO (UP TO 5 MB)
           </label>
           <input
             id="demo"

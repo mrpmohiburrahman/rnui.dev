@@ -20,6 +20,7 @@ import {
 function fields(overrides: Partial<SubmissionFields> = {}): SubmissionFields {
   return {
     contributor: "Hewad Mubariz",
+    email: "hewad@example.com",
     github: "",
     linkedin: "",
     twitter: "",
@@ -41,6 +42,38 @@ describe("validateSubmission", () => {
     expect(validateSubmission(fields({ contributor: "   " }))).toEqual({
       contributor: "Enter the name to credit this Demo to.",
     })
+  })
+
+  it("requires an address to reach them at", () => {
+    expect(validateSubmission(fields({ email: "" })).email).toBe(
+      "Enter an email address so we can reach you."
+    )
+  })
+
+  it("refuses something that is not an address", () => {
+    // Shape, not deliverability. This only has to catch a typo before it becomes a
+    // support conversation, so it is deliberately not an RFC 5322 attempt.
+    for (const bad of [
+      "hewad",
+      "hewad@",
+      "@example.com",
+      "a b@example.com",
+      "a@b",
+    ]) {
+      expect(
+        validateSubmission(fields({ email: bad })).email,
+        `expected "${bad}" to be refused`
+      ).toBe("Enter an email address so we can reach you.")
+    }
+  })
+
+  it("accepts ordinary addresses, including a tagged one", () => {
+    for (const ok of ["a@b.co", "first.last+tag@sub.example.co.uk"]) {
+      expect(
+        validateSubmission(fields({ email: ok })).email,
+        `expected "${ok}" to be accepted`
+      ).toBeUndefined()
+    }
   })
 
   it("requires a caption", () => {
@@ -97,14 +130,14 @@ describe("validateSubmission", () => {
 
   it("refuses a handle written as @name", () => {
     expect(validateSubmission(fields({ github: "@hewad" })).github).toBe(
-      "Enter the GitHub handle only — no @, no URL."
+      "Enter the GitHub handle only, with no @ and no URL."
     )
   })
 
   it("refuses a handle written as a URL", () => {
     expect(
       validateSubmission(fields({ twitter: "https://x.com/hewad" })).twitter
-    ).toBe("Enter the X handle only — no @, no URL.")
+    ).toBe("Enter the X handle only, with no @ and no URL.")
   })
 
   it("refuses a path, a space, a dot, or a hyphen at either end", () => {
@@ -112,7 +145,7 @@ describe("validateSubmission", () => {
       expect(
         validateSubmission(fields({ linkedin: bad })).linkedin,
         `expected "${bad}" to be refused`
-      ).toBe("Enter the LinkedIn handle only — no @, no URL.")
+      ).toBe("Enter the LinkedIn handle only, with no @ and no URL.")
     }
   })
 
@@ -126,7 +159,7 @@ describe("validateSubmission", () => {
     expect(
       validateSubmission(fields({ fileBytes: 7.5 * 1024 * 1024 })).fileBytes
     ).toBe(
-      "A Demo can be at most 5 MB. That file is 7.5 MB — trim it and try again."
+      "A Demo can be at most 5 MB. That file is 7.5 MB. Trim it and try again."
     )
   })
 
