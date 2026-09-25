@@ -64,6 +64,8 @@ both.
 
 - [Does the disclosure or the privacy policy have to change?](issues/05-does-the-policy-change.md): the **disclosure does not**, because "used only to reach you about this Submission" already covers arrival, publication and the error message, and it forbids more than an enumerated clause would. The **policy does**, twice: it now says what the address is for and that it never reaches the Digest list, and the Resend processor entry now names every message the site sends. That second edit closed a gap that predates this effort, because the Submission notification had been going through Resend unlisted. Policy 1.4 to 1.5; `SUBMISSION_FORM_VERSION` unchanged.
 
+- [What does a failed receipt do to the Submission?](issues/06-what-does-a-failed-receipt-do.md): the handler still answers `ok: true`, because the object and the record exist either way and a failed request invites a duplicate. What is new is **`notified`**, and the branch it drives runs on the **maintainer's** knowledge rather than the Contributor's, because the copy's one promise is about the outcome message, which the maintainer sends by hand. Two answers follow. A **failed receipt changes nothing on screen**, since the outcome message still arrives and the promise is therefore kept. And the **receipt is skipped when the notification failed**, which is the compounding case answered as a rule rather than a tie-break: two silent failures are coherent, nobody was told and nobody was promised anything, whereas a receipt with no notification is a promise nobody knows to keep. Also fixed here, and independently of the decision: the success sentence claiming the visitor would hear back "through one of the handles you gave", false since the form began asking for an email address.
+
 ## Not yet specified
 
 - **What happens to a file the error message says cannot be used.** The disclosure promises deletion
@@ -82,6 +84,11 @@ both.
   withdrawing consent deletes the Demo and its record. The address now has to survive long enough for
   a second message sent days or weeks later, from a copy that may live only in the maintainer's inbox.
   Whether anything needs saying is unclear rather than absent.
+- **Nothing tells the maintainer that a receipt failed.** Ticket 06 made a failed receipt harmless
+  to the promise, but not visible: the notification went out, so the maintainer has no reason to look
+  for a receipt they do not know should exist, while a Contributor who heard nothing may resubmit,
+  which stores a second object and writes a second consent record for the same Demo. Whether that is
+  worth a signal, and where such a signal would live, is undecided rather than absent.
 
 ## Out of scope
 

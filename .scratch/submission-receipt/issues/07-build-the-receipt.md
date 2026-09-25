@@ -16,7 +16,11 @@ Deliver:
 - **A pure builder**, `lib/submission-receipt.ts` or similar, exporting something shaped
   like `submissionReceipt(notice) -> { subject, html }`. Pure, so the wording ticket's
   sentences are pinned by tests rather than by reading a template.
-- **One `sendEmail` call** in `app/api/submit/route.ts`, after the notification.
+- **One `sendEmail` call** in `app/api/submit/route.ts`, after the notification and **behind
+  `if (notified)`**. Ticket 06 decided the skip and the reason is at the call site: a receipt
+  sent without a notification promises an outcome nobody knows to send. What that leaves to
+  test is that the skipped path sends nothing, which `tests/submit-route.test.ts` can pin by
+  failing the notification and counting the calls.
 - **HTML escaping**, exactly as the notification does it. Every interpolated value is a
   stranger's text, and a caption is not less dangerous in a receipt than in a
   notification.
@@ -24,7 +28,13 @@ Deliver:
 - **No new constant and no change to `lib/resend.ts`**, unless ticket 04 decided
   otherwise and said so.
 - **A comment at the call site** recording what a failed receipt does, from ticket 06, so
-  it is not re-litigated by the next reader.
+  it is not re-litigated by the next reader. Ticket 06 has already written the first half of
+  this at the send; extend it rather than replacing it.
+- **The either-way arm of the form's success copy**, in `app/submit/page.tsx`, behind the
+  `notified` flag the response already carries. Ticket 06 left the flag wired and the copy
+  deliberately unbranched, because the promise cannot be made before a receipt exists to keep
+  it: "Thank you, your Demo was received. We will email you either way." when `notified`, and
+  the present sentence when it is not.
 - **A decision about the plain-text part, graduated out of the fog by ticket 03.** Resend
   auto-generated one for the HTML-only notification and the research measured it as lossy,
   labels running into their values, while Resend's own Deliverability Insights flags
@@ -48,6 +58,10 @@ subscription nobody consented to.
 - Nothing in the send path touches the Resend audience.
 - A receipt failure does not roll back the object, the record or the notification, per
   ticket 06's answer.
+- The receipt is not sent at all when the notification failed, per ticket 06's
+  compounding-case answer, and is sent when it did.
+- The form's success copy offers the either-way promise when `notified` and does not when it
+  is false.
 - Every interpolated value is escaped, with a test that would fail if it were not.
 - `pnpm check-types`, `pnpm lint` and `pnpm test` all exit 0.
 - No em dashes anywhere in the added code, strings or comments.
