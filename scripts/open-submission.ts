@@ -24,6 +24,7 @@
 //   CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_R2_TOKEN (Workers R2 Storage: Edit)
 //   R2_SUBMISSIONS_BUCKET, optional — see the default below.
 
+import { existsSync } from "node:fs"
 import { writeFile } from "node:fs/promises"
 import { basename, join } from "node:path"
 
@@ -113,6 +114,40 @@ async function listSubmissions(): Promise<ObjectInfo[]> {
   return objects
 }
 
+/**
+ * The players worth offering, in the order a maintainer most likely wants them.
+ *
+ * Detected rather than printed unconditionally: naming a player somebody does not
+ * have hands them a command that fails, and this script exists precisely so the
+ * step after it is not a guess.
+ */
+const PLAYERS = [
+  { app: "IINA", path: "/Applications/IINA.app" },
+  { app: "VLC", path: "/Applications/VLC.app" },
+]
+
+/** Single-quoted for a shell, so a path containing a space stays copy-pasteable. */
+function shellQuote(value: string): string {
+  return `'${value.replace(/'/g, `'\\''`)}'`
+}
+
+/**
+ * How to watch what was just written.
+ *
+ * Printed rather than left to the reader because opening the Submission is the
+ * whole point of fetching it, and the answer differs per machine — which player is
+ * installed, and whether the default one will play an mp4 at all. `open` with no
+ * `-a` always appears, because it needs no detection and works whatever is there.
+ */
+function playerCommands(dest: string): string[] {
+  const quoted = shellQuote(dest)
+  const lines = [`open ${quoted}`]
+  for (const p of PLAYERS) {
+    if (existsSync(p.path)) lines.push(`open -a ${p.app} ${quoted}`)
+  }
+  return lines
+}
+
 async function openSubmission(k: string): Promise<void> {
   const res = await fetch(`${api}/objects/${encodeKey(k)}`, { headers: auth })
   if (!res.ok) {
@@ -130,6 +165,8 @@ async function openSubmission(k: string): Promise<void> {
   const dest = join(outDir, basename(k))
   await writeFile(dest, bytes)
   console.log(`wrote ${dest} (${(bytes.length / 1024).toFixed(1)} KB)`)
+  console.log("\nplay it with:")
+  for (const line of playerCommands(dest)) console.log(`  ${line}`)
 }
 
 async function main(): Promise<void> {
