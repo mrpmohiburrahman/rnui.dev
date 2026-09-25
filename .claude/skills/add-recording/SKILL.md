@@ -96,6 +96,39 @@ The skill never uploads. R2 writes are maintainer-only (`CLOUDFLARE_ACCOUNT_ID`,
 
 - Done when: user confirms they understand publish is a separate maintainer step.
 
+## Step 10 - Tell the Contributor (only when this came from a Submission)
+
+Skip this step entirely if the Recording did not arrive through `/submit`: there is nobody to tell.
+
+If it did, the Contributor was promised they would hear either way, so a notice that is not sent is a promise broken rather than a step missed. The address is in the notification email's `Reply to` row, and the object key is in the same message.
+
+Ask the user for the address, then run:
+
+```
+pnpm submissions:notify --key <submission-key> --recording <id> --email <address>
+```
+
+- It prints the recipient, the Recording and the subject, and asks before sending. Add `--dry-run` to see the whole body without sending, and `--yes` to skip the question in a scripted run.
+- If the address cannot be found, run it with `--no-address` instead. That says loudly that no notice went, and names the key so the address can be found again.
+- It refuses a second notice for the same Submission unless `--again` is passed, because this message cannot be unsent.
+- Done when: the command reports `sent, and logged at ...`, or the user has been told the notice was skipped and why.
+
+Never invent an address, and never read it from Firestore. `firestore.rules` denies every read of the consent collection on purpose, so the address is in the inbox or in the console and nowhere a script can reach.
+
+## If a Submission cannot be published
+
+Some Submissions will not make it, and the Contributor was promised they would hear either way, so this is not an optional step either.
+
+```
+pnpm submissions:outcome
+```
+
+It asks for the address (the notification's `Reply to` row), the caption, and the reason, prints the whole message, and asks before sending. `pnpm submissions:outcome --help` lists the flags, and `--dry-run` shows the message without sending.
+
+Use it rather than replying to the notification. **A reply does not reach the Contributor**: that message is sent with `to: hello@rnui.dev` and `reply_to: hello@rnui.dev`, so a reply comes straight back here. Quoting it would also put the object key and the `pnpm submissions:open` command in a stranger's inbox.
+
+Never invent an address, and never read it from Firestore. `firestore.rules` denies every read of the consent collection on purpose, so the address is in the inbox or in the console and nowhere a script can reach.
+
 ## Failure modes
 
 - Advancing past an unanswered question with a placeholder. Ask again instead.
@@ -103,3 +136,4 @@ The skill never uploads. R2 writes are maintainer-only (`CLOUDFLARE_ACCOUNT_ID`,
 - Reusing an Asset path for new bytes. New bytes always mean a new path.
 - Committing anything under `public/demo/` or `public/thumbnails/`.
 - Asking for R2 credentials or attempting upload. Never do either.
+- Skipping Step 10 for a Submission, or inventing an address for it. Either the notice goes, or the user is told it did not.

@@ -13,6 +13,8 @@
     "assets:publish": "tsx scripts/publish-assets.ts",
     "assets:measure": "tsx scripts/measure-demos.ts",
     "submissions:open": "tsx scripts/open-submission.ts",
+    "submissions:notify": "tsx scripts/notify-submission.ts",
+    "submissions:outcome": "tsx scripts/send-outcome.ts",
     "posters:generate": "tsx scripts/generate-posters.ts",
     "check-types": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
