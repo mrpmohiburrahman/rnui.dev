@@ -1,6 +1,6 @@
 # Build the receipt
 
-Status: ready-for-agent
+Status: resolved
 Type: task
 Blocked by: 02, 03, 04, 05, 06, 09
 
@@ -70,3 +70,106 @@ subscription nobody consented to.
 
 Sending it. The **SENDING HOLD** covers this, so the build stops at a dry run, and
 [Verify it end to end](08-verify-it-end-to-end.md) is where a real transmission lives.
+
+## Comments
+
+**Resolved**, because this ticket's own acceptance never needed a transmission. Its last
+section puts sending in ticket 08, and every bullet above is met without one. What is
+unresolved is whether the message *arrives*, which is ticket 08's question rather than a build
+property.
+
+### What was built
+
+- **`lib/submission-receipt.ts`**, a pure builder, importing only `lib/email-html.ts` and
+  `lib/sender-identity.ts`, neither of which imports anything. So no network, no secret, no
+  Firestore, which is the acceptance's first bullet.
+- **One `sendEmail` call** in `app/api/submit/route.ts`, behind `if (notified)`, after the
+  notification, and now the last thing the handler does.
+- **`lib/email-html.ts`**, new, holding `escapeHtml` and `oneLine`.
+- **The either-way arm** of the form's success copy in `app/submit/page.tsx`, behind the
+  `notified` flag ticket 06 left wired.
+- **Tests**: `tests/submission-receipt.test.ts` with 19 cases, and five additions to
+  `tests/submit-route.test.ts`.
+
+### The refactor this took, disclosed
+
+Escaping and the one-line flatten lived inside `lib/submission-notification.ts` as private `esc`
+and `oneLine`. This ticket said "exactly as the notification does it", and the honest reading of
+that is one implementation rather than two: **escaping that exists twice is escaping that can be
+fixed once, and the copy that was not fixed is the one that ships.** So both moved to
+`lib/email-html.ts` with their reasoning, and the notification imports them. Its four `esc()`
+call sites were renamed, its behaviour is unchanged, and its existing tests confirm that rather
+than assume it.
+
+### The plain-text decision, made rather than defaulted
+
+**Auto-flatten, so no hand-written text part.** Ticket 03 measured Resend's generated flatten as
+lossy for the notification, and the dry run below shows exactly why: its table runs labels into
+values (`ContributorHewad Mubariz`, `Reply tohewad@example.com`). This body is paragraphs of
+whole sentences, so its flatten reads as prose and needs nothing.
+
+The alternative is recorded in the module rather than left to be rediscovered: one `text` field
+on `sendEmail` plus the string written out by hand. This ticket's deliverables closed that door on
+purpose ("no change to `lib/resend.ts`"), so taking it would mean reopening a decision rather than
+extending one. Resend's Deliverability Insights does flag a missing text part, so it is the first
+thing to revisit if ticket 08 finds placement trouble.
+
+### The dry run, and what it cannot prove
+
+Run against the real builders with a representative Submission, then deleted rather than
+committed as a second command a later ticket might design differently:
+
+```
+=== RECEIPT, to the Contributor ===
+from:       rnui.dev <digest@mail.rnui.dev>
+reply_to:   hello@rnui.dev
+to:         hewad@example.com
+subject:    We have your Demo
+--- body ---
+Hello Hewad Mubariz,
+
+Your Demo arrived. Thank you for sending it to rnui.dev.
+
+Radial FAB (Buttons)
+
+Every Submission is looked at by hand, and you will hear from us either way: if it is published, and if it is not.
+
+If it is published, you are credited as "Hewad Mubariz" with the profile links you gave. If it is not, the file is deleted within 30 days of arriving.
+
+Nothing is needed from you.
+
+rnui.dev, MD. MOHIBUR RAHMAN
+
+Halima Nagar, Cumilla 3502, Bangladesh
+
+hello@rnui.dev
+```
+
+`FROM` and `REPLY_TO` are the existing constants, unchanged. **Nothing was transmitted**, and the
+script imported `sendEmail` nowhere, so it could not have.
+
+What this proves is the wording, the addressing and the escaping. What it cannot prove is
+placement, which ticket 03 already recorded as indeterminable without a real send.
+
+### Two existing tests had to change, and that is a finding rather than tidying
+
+The notification's suite asserted `sendMail` was called once. A second message made that false,
+and changing the number to `2` would have been the worse repair: either message could then vanish
+while the total stayed right. So **each message is now selected by its recipient**, through
+`toMaintainer()` and `toContributor()`, and the order is asserted separately as
+`[CONTACT_EMAIL, hewad@example.com]`. A receipt going out before the notification would mean the
+ordering had been rewritten, and that is now a test rather than a comment.
+
+### Gates
+
+`pnpm check-types` 0, `pnpm lint` 0 errors (6 pre-existing warnings elsewhere), `pnpm test`
+**417 passing across 24 files**, `pnpm build` clean, with both messages present in the built route
+chunk. No em dashes in anything added.
+
+### What ticket 08 inherits
+
+A real transmission, which cannot happen until the SENDING HOLD is lifted, plus ticket 03's list
+of what to watch on the first one: the `delivered` event against a stranger's mailbox rather than
+rnui.dev talking to rnui.dev, whether the missing text part draws a spam score, and whether
+`_dmarc.rnui.dev` at `p=none` is worth moving now that this pipeline sends to people who never
+asked to hear from it.

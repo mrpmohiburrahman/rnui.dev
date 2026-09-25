@@ -144,6 +144,12 @@ export default function SubmitPage() {
   const [file, setFile] = useState<File | null>(null)
   const [errors, setErrors] = useState<SubmissionErrors>({})
   const [status, setStatus] = useState<Status>("idle")
+  /**
+   * Whether the maintainer was told, which is the only thing the success copy
+   * branches on (submission-receipt ticket 06). Defaults to `false`, so a response
+   * that somehow lacks the field promises nothing rather than promising by accident.
+   */
+  const [notified, setNotified] = useState(false)
   const [serverMessage, setServerMessage] = useState("")
   const [token, setToken] = useState("")
   const turnstile = useRef<TurnstileHandle>(null)
@@ -212,12 +218,14 @@ export default function SubmitPage() {
       const res = await fetch(SUBMIT_ENDPOINT, { method: "POST", body })
       const data = (await res.json().catch(() => ({}))) as {
         ok?: boolean
+        notified?: boolean
         message?: string
       }
       if (!res.ok || data.ok !== true) {
         throw new Error(data.message || "The submission could not be sent.")
       }
       setStatus("done")
+      setNotified(data.notified === true)
     } catch (err) {
       setStatus("failed")
       setServerMessage(
@@ -465,20 +473,22 @@ export default function SubmitPage() {
         {/* "Your Demo was received" is a claim about the file, and it is true whether
             or not the notification reached the maintainer: the object is in the
             bucket and the consent record is written before this branch can render.
-            The sentence this replaces promised the visitor would hear back "through
+            The sentence this replaced promised the visitor would hear back "through
             one of the handles you gave", which stopped being true the moment this
             form started asking for an email address.
-            submission-receipt ticket 06 decided what belongs here instead: the
-            either-way line, behind the `notified` flag the response now carries, and
-            that branch lands with ticket 07's receipt. Until then this says only the
-            part that needs no branch. */}
+            The either-way line is submission-receipt ticket 06's decision, and it is
+            offered only when `notified`. What keeps that promise is the outcome
+            message, which the maintainer sends by hand, so if the maintainer was
+            never told then nobody can keep it and nothing is promised. */}
         {status === "done" && (
           <div className="mt-[14px]">
             <span className="block pb-[2px] font-mono text-[9px] tracking-[0.14em] text-acc">
               SENT
             </span>
             <p className="m-0 text-[12px] leading-[1.45] text-t1">
-              Thank you, your Demo was received.
+              {notified
+                ? "Thank you, your Demo was received. We will email you either way."
+                : "Thank you, your Demo was received."}
             </p>
           </div>
         )}

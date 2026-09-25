@@ -17,40 +17,12 @@
 // and then silently 403s is worse than one that was never offered, and a stale link
 // in an inbox is a trap rather than a convenience.
 
+import { escapeHtml, oneLine } from "@/lib/email-html"
 import { IDENTITY_BLOCK_HTML } from "@/lib/sender-identity"
 import type { SubmissionConsent } from "@/lib/submission-consent"
 
 /** The command ticket 04 established, as scripts/open-submission.ts parses it. */
 export const OPEN_COMMAND = "pnpm submissions:open"
-
-/**
- * Escape everything a stranger wrote.
- *
- * Every interpolated value below is a visitor's text, caption, name, handles,
- * source, and this is HTML rendered in somebody's mail client. Without escaping, a
- * caption of `<a href="https://evil.example">Open the Dashboard</a>` arrives as a
- * link wearing rnui.dev's sender reputation. Mail clients block script; they do not
- * block a forged link, so this is the half that matters.
- */
-function esc(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;")
-}
-
-/**
- * Flatten to one line, for the Subject only.
- *
- * A newline in a header is broken formatting at best and header injection at worst.
- * The validator trims a field's ends but does not forbid a newline in the middle,
- * so the subject is flattened here rather than trusted.
- */
-function oneLine(value: string): string {
-  return value.replace(/\s+/g, " ").trim()
-}
 
 /** A size a human reads without doing arithmetic. */
 export function humanSize(bytes: number): string {
@@ -85,9 +57,9 @@ export function submissionNotification(notice: SubmissionNotice): {
   html: string
 } {
   const row = (label: string, value: string) =>
-    `<tr><td style="padding:2px 12px 2px 0;color:#666;white-space:nowrap;vertical-align:top">${esc(
+    `<tr><td style="padding:2px 12px 2px 0;color:#666;white-space:nowrap;vertical-align:top">${escapeHtml(
       label
-    )}</td><td style="padding:2px 0">${esc(value)}</td></tr>`
+    )}</td><td style="padding:2px 0">${escapeHtml(value)}</td></tr>`
 
   // Only the handles that were given. A blank GitHub row would read as "has a
   // GitHub, we just could not read it", which sends the maintainer looking.
@@ -115,11 +87,11 @@ ${row("Demo size", humanSize(notice.fileBytes))}
 ${row("Consent", `${notice.consent.formVersion}, ${notice.consent.at.toISOString()}`)}
 </table>
 <p style="font-size:14px">Open it with:</p>
-<pre style="background:#f4f4f4;padding:10px;font-size:13px;overflow-x:auto">${esc(
+<pre style="background:#f4f4f4;padding:10px;font-size:13px;overflow-x:auto">${escapeHtml(
       `${OPEN_COMMAND} ${notice.key}`
     )}</pre>
 <p style="font-size:13px;color:#666">
-<code>${esc(notice.key)}</code> is the object key in the private bucket, and the file
+<code>${escapeHtml(notice.key)}</code> is the object key in the private bucket, and the file
 is deleted 30 days after it arrived. No link is included on purpose: a presigned URL
 stops working after 7 days, the object lives 30, and a command that still works beats
 a link that quietly does not.
