@@ -166,3 +166,16 @@ had them all along. Worth remembering before any ticket here is declared human-o
 
 **`publish-assets.ts` still works**: `pnpm assets:paths` runs, and `rnui-assets` carries only its own
 default lifecycle rule. Nothing in this ticket touched the `cdn.rnui.dev` surface.
+
+**Correction, 2026-09-25: the bare `pnpm submissions:open <key>` form did not work.** The ticket
+claims the four forms were tested — `--list`, `open <key> --out <dir>`, the 404 path and the usage
+path — and they were. What was never run is the one form that has no `--out` at all, which is the
+form ticket 04's email tells the maintainer to paste. `outIndex` is `-1` when argv has no `--out`, so
+the filter's `i !== outIndex + 1` compared against **0** and dropped the first argument — the key —
+and the command fell through to its own usage message with exit 1.
+
+Nobody would have noticed from the ticket's evidence, because every case it lists supplies `--out`
+or `--list`. It was found by pasting the command out of a real delivered notification, which is the
+only test that could have caught it. Fixed in `856b842`, with the guard written into the comment:
+`outIndex === -1 || i !== outIndex + 1`. All five forms now run, and the four that were tested
+before still behave as recorded.
