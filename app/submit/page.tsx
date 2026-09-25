@@ -67,8 +67,18 @@ const MB = 1024 * 1024
  * `min-h-[40px]` is the phone metric and md restores the desktop 34px, so the
  * touch target clears the 44px floor only on the submit.
  */
-const fieldClass =
-  "min-h-[40px] w-full rounded-[10px] border border-line bg-field px-[11px] text-[12.5px] text-t1 placeholder:text-t3 focus:border-acc focus:shadow-[0_0_0_3px_var(--acc-soft)] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2 md:h-[34px] md:min-h-0"
+/**
+ * The control geometry, deliberately without a text colour.
+ *
+ * Split from `fieldClass` because the Category select needs a different colour
+ * while it still reads "Choose one...". Two colour utilities on one element do not
+ * resolve by their order in the attribute: they have equal specificity, so the
+ * stylesheet decides, which is not something this file can see. So exactly one of
+ * `text-t1` and `text-t3` is applied, never both.
+ */
+const fieldBase =
+  "min-h-[40px] w-full rounded-[10px] border border-line bg-field px-[11px] text-[12.5px] placeholder:text-t3 focus:border-acc focus:shadow-[0_0_0_3px_var(--acc-soft)] focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2 md:h-[34px] md:min-h-0"
+const fieldClass = `${fieldBase} text-t1`
 const labelClass = "pb-[2px] font-mono text-[9px] tracking-[0.14em] text-t3"
 
 /** One field's refusal, rendered under the field it belongs to. */
@@ -265,7 +275,7 @@ export default function SubmitPage() {
               id="category"
               value={values.category}
               onChange={text("category")}
-              className={`${fieldClass} ${values.category ? "" : "text-t3"}`}
+              className={`${fieldBase} ${values.category ? "text-t1" : "text-t3"}`}
             >
               <option value="">Choose one…</option>
               {CATEGORY_OPTIONS.map((name) => (
