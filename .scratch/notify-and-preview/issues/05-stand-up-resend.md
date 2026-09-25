@@ -406,3 +406,52 @@ strangers. A guard wants the stricter comparison.
 
 Not `resolved`: bullets 2, 5 and 6 are unmet, bullet 1 is unmet both as written (DMARC placement) and
 in substance (1024-bit DKIM), and bullet 3 is met only now that the limits above are written down.
+
+### 2026-09-25 — Resend flipped to `verified` on its own, and the diagnosis above was right
+
+Measured now rather than inferred, because this ticket has been blocked on a vendor status for six
+weeks and the status changed:
+
+```
+GET /domains                          mail.rnui.dev   status=verified   capabilities.sending=enabled
+TXT resend._domainkey.mail.rnui.dev   present, and it is a TXT record, not a CNAME
+TXT send.mail.rnui.dev                "v=spf1 include:amazonses.com ~all"
+MX  send.mail.rnui.dev                10 feedback-smtp.us-east-1.amazonses.com.
+MX  mail.rnui.dev                     (none)
+TXT _dmarc.mail.rnui.dev              (none)
+TXT _dmarc.rnui.dev                   "v=DMARC1; p=none; rua=mailto:hello@rnui.dev"
+TXT rnui.dev                          "v=spf1 include:amazonses.com include:_spf.mx.cloudflare.net ~all"
+```
+
+**So the three claims that this ticket spent three entries arguing about are settled.** "Pending is
+Resend's DKIM poll lag, not a bad record — do not go re-editing DNS" was correct: the records were
+never touched, and it flipped. The 72-hour propagation note was conservative by six weeks, but the
+advice held, which is what matters. Anything in this file that says "Resend still reads `pending`"
+describes 2026-08-14 and is kept as the record it is.
+
+**`CLAUDE.md` was the stale copy and is corrected.** It said Resend had read `pending` since
+2026-08-14 and that the next step was Resend support, and it named this ticket as the one waiting.
+The next step is no longer Resend support, because there is nothing left for them to do.
+
+**Two things are unchanged, and one of them is still open on the maintainer.**
+
+- **The DKIM key is 1024-bit.** The record is a TXT, and the base64 begins
+  `MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ` — a 1024-bit SPKI. A 2048-bit one begins
+  `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A`, as three of the four records here would have been under the SES
+  scheme. So **bullet 1 is still unmet as written**, and the decision recorded earlier stands untouched:
+  accept 1024, or delete and re-add `mail.rnui.dev` hoping for the 3×CNAME scheme, which spends the one
+  free-tier domain slot on a gamble. Nothing in the effort blocks on the answer.
+- **`_dmarc.mail.rnui.dev` is empty and should stay empty** — the deliberate deviation recorded above
+  still holds, since `_dmarc` is inherited from the apex. The apex now carries
+  `p=none; rua=mailto:hello@rnui.dev`, so the earlier "there is no DMARC record at all" note in this
+  file is also historical.
+
+**What this unblocks, and it is exactly what step 3 of "What is left" predicted.** That step read
+*"when Resend flips to `verified`, `pnpm broadcast:test` sends the test Digest, and the last three
+bullets can all be closed in one sitting."* The condition is met, so bullet 2 (`From:` aligned to SPF
+or DKIM), bullet 4 (a broadcast created via the API) and bullet 5 (a test broadcast, and the one-click
+unsubscribe POST **verified** to actually remove) are agent work now, and they are what
+[Stand up the sending channel, verified](14-verify-the-sending-channel.md) carries. This ticket keeps
+the two bullets that need the maintainer: bullet 1's key-length decision and bullet 6's Postmaster
+TXT.
+
