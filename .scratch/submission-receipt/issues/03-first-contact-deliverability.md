@@ -13,7 +13,7 @@ primary sources, whether that message will land.
 1. **What the signals say today.** `mail.rnui.dev` is verified and sending, SPF is on
    `send.mail.rnui.dev`, DKIM is published, and `_dmarc.rnui.dev` exists. Read the live
    values rather than trusting a previous ticket, and state what policy `_dmarc`
-   actually asserts — a `p=none` is not the protection a `p=reject` is.
+   actually asserts, a `p=none` is not the protection a `p=reject` is.
 
 2. **First contact.** What makes a transactional message to a recipient with no history
    arrive rather than filter: content shape, link count, image-to-text ratio, whether
@@ -22,7 +22,7 @@ primary sources, whether that message will land.
 
 3. **What the alternatives cost.** A `text` part alongside the HTML versus HTML alone.
    What Resend's own guidance says. And whether the existing notification is evidence of
-   anything at all, given its recipient is the domain that sends — which may be why it
+   anything at all, given its recipient is the domain that sends, which may be why it
    arrives, and would make it useless as a precedent.
 
 4. **The honest limit.** Whether this is settleable without sending a real message, given

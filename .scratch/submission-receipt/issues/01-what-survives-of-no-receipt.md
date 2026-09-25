@@ -1,6 +1,6 @@
 # What survives of "no receipt"?
 
-Status: ready-for-agent
+Status: resolved
 Type: grilling
 
 ## Question
@@ -15,7 +15,7 @@ Settle at least these:
 1. **What was decision 8 protecting against?** Its recorded reason was that a receipt is
    a promise: "we have your work" reads as "we are considering it", and considering is
    where somebody's expectations start costing somebody else's attention. Is that
-   argument dead, or does it survive in a weaker form — no promise of *publication*, no
+   argument dead, or does it survive in a weaker form, no promise of *publication*, no
    promise of *a reply*, no promise of *a timescale*?
 
 2. **Does "no receipt" become "exactly one receipt"?** A single acknowledgement at the
@@ -44,3 +44,50 @@ Answer in the maintainer's own words rather than a paraphrase, and record the ex
 - The amendment to decision 8 is named, including the file it is recorded in.
 - The one-sentence success condition exists, and the wording ticket can be judged
   against it.
+
+## Answer
+
+Resolved 2026-09-25, in conversation with the maintainer. The exchange, in their words:
+
+> So there should be two emails. One is when I got the email, I will send the email that yeah, we
+> have got the demo. Then after the publishing that demo on the site, there will be another email
+> saying that we publish it with the link of his page on the site.
+
+So **decision 8 becomes two messages, not one**, and this map's destination is redrawn from "a
+receipt" to both of them:
+
+1. **On arrival**, one message: we have your Demo.
+2. **On publication**, one message: it is live, with the link.
+
+**What dies, and what survives:**
+
+- **Dies:** the absolute. Silence is no longer the design at either end of the pipeline.
+- **Survives, and it binds the wording ticket:** no promise of publication. The disclosure the
+  Contributor already agreed to says "publication is not guaranteed", so the arrival message cannot
+  contradict it. It may not say "we will publish it" and may not promise a date. Whether it may
+  promise **a second message when it is published** is the one point where the two answers touch,
+  and the distinction is conditional versus unconditional: "if it is published you will hear" is
+  allowed, "we will publish it" is not. Ticket
+  [What does the receipt say?](02-what-does-the-receipt-say.md) decides the sentence; this ticket
+  records which of the two it is allowed to be.
+- **Survives, unchanged: no rejection notice.** The maintainer described publication only. A message
+  that says *no* is still undecided, and it stays in this map's fog rather than in its destination.
+- **Survives as a constraint on volume:** two messages per Submission, and the second exists only
+  because something human happened. Nothing here is a stream, a status tracker or a queue, and
+  decision 2 (no self-serve publish) is untouched.
+
+**The success condition, in the maintainer's terms.** After the second message, the Contributor knows
+two things they could not know before: that their Demo arrived, and that it is live with a link to
+it. Nothing about it is a promise, and nothing about it asks them to do anything.
+
+**The structural consequence, which is a new ticket.** The second message fires from a *different
+event*: publication, which happens on the maintainer's machine through `add-recording`, not in the
+submit route. So it does not share the receipt's trigger, cannot share its builder, and it has a
+question the receipt never had, namely where the address comes from given that the consent record
+denies every read by design. That is
+[Where does the publication notice's address come from?](09-where-does-the-publication-address-come-from.md).
+
+**The amendment.** Decision 8 lives in a resolved map and is not edited there. The reversal is
+recorded here, pointed at from this map's Decisions-so-far, noted against decision 8 itself in
+`../public-submissions/map.md`, and named in `CLAUDE.md`, which is where a future session looks for
+what is in flight.
