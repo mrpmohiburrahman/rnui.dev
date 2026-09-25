@@ -126,6 +126,9 @@ function stubNetwork(
 /** A valid submission, so each case can spoil exactly one thing. */
 const VALID: Record<string, string> = {
   [SUBMISSION_FIELD.contributor]: "Hewad Mubariz",
+  // Deliberately mixed case: the address is lowercased on the way in, and the
+  // tests below assert that the lowercased form is what gets stored and mailed.
+  [SUBMISSION_FIELD.email]: "Hewad@Example.COM",
   [SUBMISSION_FIELD.github]: "hewad-mubariz",
   [SUBMISSION_FIELD.linkedin]: "",
   [SUBMISSION_FIELD.twitter]: "",
@@ -185,6 +188,9 @@ describe("POST /api/submit — the path that works", () => {
     expect(puts[0].url.endsWith(`/objects/${id}`)).toBe(true)
     expect(consent.disclosure).toBe(SUBMISSION_DISCLOSURE)
     expect(consent.formVersion).toBe(SUBMISSION_FORM_VERSION)
+    // Lowercased on the way in, so one person cannot end up as two records that
+    // differ only in capitalisation.
+    expect(consent.email).toBe("hewad@example.com")
     // First entry of the list, not the whole header: the client is first and the
     // proxies behind it are not the visitor.
     expect(consent.ip).toBe("203.0.113.9")
@@ -263,7 +269,7 @@ describe("POST /api/submit — nothing is stored unless everything passed", () =
     expect(res.status).toBe(400)
     const { message } = (await res.json()) as { message: string }
     expect(message).toMatch(/link starting with https/)
-    expect(message).toMatch(/no @, no URL/)
+    expect(message).toMatch(/no @ and no URL/)
     expect(net.r2()).toHaveLength(0)
   })
 
@@ -276,6 +282,20 @@ describe("POST /api/submit — nothing is stored unless everything passed", () =
     expect(((await res.json()) as { message: string }).message).toMatch(
       /Choose the Category/
     )
+  })
+
+  it("refuses a missing or malformed email, storing nothing", async () => {
+    // The field is required because it is the only way back to the Contributor.
+    const net = stubNetwork()
+    for (const bad of ["", "hewad", "hewad@"]) {
+      const res = await POST(submit({ [SUBMISSION_FIELD.email]: bad }))
+      expect(res.status, `expected "${bad}" to be refused`).toBe(400)
+      expect(((await res.json()) as { message: string }).message).toMatch(
+        /email address so we can reach you/
+      )
+    }
+    expect(net.r2()).toHaveLength(0)
+    expect(sendMail).not.toHaveBeenCalled()
   })
 
   it("refuses a missing file, naming the rule", async () => {
@@ -385,6 +405,13 @@ describe("POST /api/submit — the notification (ticket 09)", () => {
     const sent = sendMail.mock.calls[0][0]
     expect(sent.to).toBe(CONTACT_EMAIL)
     expect(sent.subject).toMatch(/^New Submission: Radial FAB/)
+  })
+
+  it("carries the address the Contributor gave, lowercased", async () => {
+    stubNetwork()
+    await POST(submit())
+    expect(sendMail.mock.calls[0][0].html).toContain("hewad@example.com")
+    expect(sendMail.mock.calls[0][0].html).not.toContain("Hewad@Example.COM")
   })
 
   it("carries the key and the command, so publishing needs no second lookup", async () => {

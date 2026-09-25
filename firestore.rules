@@ -123,7 +123,8 @@ service cloud.firestore {
   }
 
   // A Submission's consent record, exactly as lib/submission-consent.ts types it:
-  // the disclosure as rendered, the form version, the IP, and the timestamp.
+  // the disclosure as rendered, the form version, the Contributor's email, the IP,
+  // and the timestamp.
   //
   // The field list is closed, and `hasOnly` is what closes it — not `hasAll`, which
   // this used until 2026-09-25 and which checks only that each key is PRESENT.
@@ -141,9 +142,10 @@ service cloud.firestore {
   // What it still cannot do: anyone who can reach Firebase can plant a record that
   // *looks* like evidence of consent. See the note on the match block above.
   function validateSubmissionConsent() {
-    return request.resource.data.keys().hasOnly(['disclosure', 'formVersion', 'ip', 'at']) &&
+    return request.resource.data.keys().hasOnly(['disclosure', 'formVersion', 'email', 'ip', 'at']) &&
            request.resource.data.disclosure is string &&
            request.resource.data.formVersion is string &&
+           request.resource.data.email is string &&
            request.resource.data.ip is string &&
            request.resource.data.at is timestamp;
   }

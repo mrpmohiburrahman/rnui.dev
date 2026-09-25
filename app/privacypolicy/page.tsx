@@ -38,6 +38,15 @@
 // the run did not go through it. Same caveat as above applies here: no storage
 // region is claimed, because none was verified from a live API.
 //
+// v1.4, 2026-09-25: the submission form now requires an email address, and this
+// page names it in two places, because collecting an address is a material
+// change and the record it lands in is described further down. The same edit
+// stops the page claiming "most Submissions are not published": that was never
+// the maintainer's expectation, and a policy that talks the catalogue down reads
+// as a reason not to send anything. What remains is the accurate half, that
+// publication is not guaranteed. `firestore.rules` gained the fifth field in the
+// same pass, and `SUBMISSION_FORM_VERSION` moved with it.
+//
 // The identity comes from lib/sender-identity.ts rather than being pasted.
 // Ticket 04 requires this block byte-identical in the form, the policy and the
 // Digest footer, and three copies of a postal address is three places to drift.
@@ -65,7 +74,7 @@ export const metadata: Metadata = {
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
-const POLICY_VERSION = "1.3"
+const POLICY_VERSION = "1.4"
 const POLICY_EFFECTIVE = "25 September 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
@@ -212,17 +221,19 @@ export default function PrivacyPage() {
               submission form
             </Link>{" "}
             is how you send rnui.dev a Demo of your own, to be considered for
-            the catalogue. It records the name you want credited, any GitHub,
-            LinkedIn or X profile you give, the caption and Category you choose,
-            the link to your source, and the Demo file itself.
+            the catalogue. It records the name you want credited, an email
+            address to reply to, any GitHub, LinkedIn or X profile you give, the
+            caption and Category you choose, the link to your source, and the
+            Demo file itself.
           </p>
           <p className={body}>
             <strong className="text-t1">
               Sending a Demo does not publish it.
             </strong>{" "}
-            Most Submissions are not published, and the maintainer decides which
-            are. Nothing you send appears on the site until it has been looked
-            at and published by hand.
+            Every Submission is looked at by hand, and nothing you send appears
+            on the site until it has been published deliberately. Publication is
+            not guaranteed, because the maintainer decides what fits the
+            catalogue.
           </p>
           <p className={body}>
             If it is not published, the file is deleted within 30 days of
@@ -236,6 +247,10 @@ export default function PrivacyPage() {
               the exact wording of the disclosure shown to you at the time, and
               its version number, so what you agreed to is provable from the
               record itself;
+            </li>
+            <li className={body}>
+              the email address you gave, so a record that outlives the
+              notification email can still identify who sent it;
             </li>
             <li className={body}>the date and time you sent it;</li>
             <li className={body}>the IP address the submission came from.</li>

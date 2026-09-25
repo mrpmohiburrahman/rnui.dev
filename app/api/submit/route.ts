@@ -198,6 +198,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   const consent: SubmissionConsent = {
     disclosure: SUBMISSION_DISCLOSURE,
     formVersion: SUBMISSION_FORM_VERSION,
+    email: fields.email,
     ip,
     at: new Date(),
   }
@@ -249,6 +250,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       to: CONTACT_EMAIL,
       ...submissionNotification({
         contributor: fields.contributor,
+        email: fields.email,
         github: fields.github,
         linkedin: fields.linkedin,
         twitter: fields.twitter,

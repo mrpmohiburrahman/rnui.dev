@@ -62,6 +62,11 @@ export function humanSize(bytes: number): string {
 /** Everything the message needs, all of it already in hand at the call site. */
 export type SubmissionNotice = {
   contributor: string
+  /**
+   * Where the maintainer replies. Printed near the top rather than buried, because
+   * the whole reason the form asks for it is so this message can be answered.
+   */
+  email: string
   github: string
   linkedin: string
   twitter: string
@@ -101,6 +106,7 @@ export function submissionNotification(notice: SubmissionNotice): {
     html: `<p>A Submission arrived.</p>
 <table style="border-collapse:collapse;font-size:14px">
 ${row("Contributor", notice.contributor)}
+${row("Reply to", notice.email)}
 ${handles.map(([label, value]) => row(label, value)).join("\n")}
 ${row("Caption", notice.caption)}
 ${row("Category", notice.category)}

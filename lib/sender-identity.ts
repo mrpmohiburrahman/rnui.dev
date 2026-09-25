@@ -92,7 +92,7 @@ export const CONSENT_FORM_VERSION = "2026-08-15.1"
  * unsubscribe link, and does a different legal job. This is only the identity.
  */
 export const IDENTITY_BLOCK_HTML = `<p style="font-size:13px;color:#666">
-rnui.dev — ${SENDER_NAME}<br>
+rnui.dev, ${SENDER_NAME}<br>
 ${POSTAL_ADDRESS}<br>
 ${CONTACT_EMAIL}
 </p>`
