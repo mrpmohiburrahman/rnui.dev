@@ -32,6 +32,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "0.12.15",
+    "@ffmpeg/util": "0.12.2",
     "@hookform/resolvers": "^3.9.1",
     "@posthog/nextjs-config": "^1.9.68",
     "@radix-ui/react-avatar": "^1.1.2",

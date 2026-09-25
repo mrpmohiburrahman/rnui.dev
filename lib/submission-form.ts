@@ -6,9 +6,10 @@
 //
 // Two rules here are load-bearing rather than tidy:
 //
-//   * **The size check is the first thing that happens.** Ticket 02 measured
-//     browser compression in *minutes*. Starting that and only then refusing the
-//     file spends a visitor's time on real work that was never going to be sent.
+//   * **The size check is the first thing that happens.** Browser compression is
+//     tens of seconds (21.3s for a 4.46 MB 1080p clip, measured). Starting that
+//     and only then refusing the file spends a visitor's time on real work that
+//     was never going to be sent.
 //   * **A handle is a bare slug or nothing.** `add-recording` step 2b is explicit
 //     that a Contributor's handles are bare slugs, never `@`, never a URL, and
 //     the reason is downstream: a handle arriving as `@someone` or as a full URL

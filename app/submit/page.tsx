@@ -15,19 +15,23 @@
 //
 // Two orderings are deliberate, and they are why this file is not simpler:
 //
-//   1. **The size rule runs the moment a file is picked**, before the Turnstile
-//      widget is even rendered. Ticket 02 measured browser compression in
-//      minutes; discovering the file was too large afterwards spends a visitor's
-//      time on real work that was never going to be sent.
-//   2. **The widget renders only once a file is accepted**, the same reasoning
-//      from the other end. A token lives 300 seconds, so one minted on page load
-//      is dead before a visitor who took a minute to choose a file can submit.
-//      Ticket 06 inserts compression between these two steps; the widget still
-//      belongs after it.
+//   1. **The size rule runs the moment a file is picked**, before compression
+//      starts and before the Turnstile widget is even rendered. The transcode is
+//      tens of seconds (21.3s for a 4.46 MB 1080p clip, measured); discovering
+//      the file was too large afterwards spends a visitor's time on real work
+//      that was never going to be sent.
+//   2. **Compression runs next** (ticket 06), and **the widget renders last**,
+//      once a compressed file exists. A token lives 300 seconds, so one minted
+//      before a transcode that takes minutes is dead before Submit can be
+//      pressed. This is why the widget is not rendered on page load, and moving
+//      it earlier would break it.
 //
-// public-submissions ticket 05. Discovery is ticket 11: the footer link landed with
-// it, the Contributors page entry and the sitemap question have not.
+// public-submissions ticket 05, with ticket 06's compression step and ticket 11's
+// discovery. Both have landed: the transcode sits between the size check and the
+// widget, and the three entrances to this page are the footer, the Contributors
+// page, and the sitemap (on purpose, see next-sitemap.config.js).
 import {
+  useEffect,
   useRef,
   useState,
   type ChangeEvent,
@@ -37,6 +41,15 @@ import {
 import Link from "next/link"
 import { CATEGORIES } from "@/data/categories"
 
+import {
+  COMPRESSED_DEMO_NAME,
+  COMPRESSION_NOTICE,
+  formatSize,
+} from "@/lib/demo-compression"
+import {
+  compressDemo,
+  type CompressionPhase,
+} from "@/lib/demo-compression-runner"
 import {
   PRIVACY_PATH,
   SUBMISSION_DISCLOSURE_BODY,
@@ -142,6 +155,31 @@ export default function SubmitPage() {
     consent: false,
   })
   const [file, setFile] = useState<File | null>(null)
+  /**
+   * The compressed Demo, which is the only thing that may be sent.
+   *
+   * Null until compression succeeds, and `canSubmit` requires it, so there is no
+   * path from "a file is chosen" to "a request is made" that skips the transcode.
+   * Ticket 06's acceptance forbids a silent pass-through of the raw file, and this
+   * is where that is enforced rather than promised.
+   */
+  const [compressed, setCompressed] = useState<{
+    blob: Blob
+    bytes: number
+  } | null>(null)
+  const [compressPhase, setCompressPhase] = useState<CompressionPhase | null>(
+    null
+  )
+  /** 0..1 while compressing, only ever shown when the browser reports it. */
+  const [compressRatio, setCompressRatio] = useState<number | null>(null)
+  const [compressing, setCompressing] = useState(false)
+  /** Cancel is `abort()` rather than a flag: the runner terminates the worker. */
+  const compression = useRef<AbortController | null>(null)
+
+  // Leaving the page mid-transcode would otherwise leave a WASM worker busy in a
+  // tab the visitor has already left, and a `setState` on a component that is
+  // gone. React runs this on unmount only.
+  useEffect(() => () => compression.current?.abort(), [])
   const [errors, setErrors] = useState<SubmissionErrors>({})
   const [status, setStatus] = useState<Status>("idle")
   /**
@@ -164,7 +202,9 @@ export default function SubmitPage() {
 
   function handleFile(e: ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null
+    cancelCompression()
     setFile(picked)
+    setCompressed(null)
     // A token belongs to the attempt that minted it, so a new file invalidates
     // it. The widget remounts below and mints a fresh one.
     setToken("")
@@ -177,10 +217,64 @@ export default function SubmitPage() {
       fileBytes: picked?.size ?? null,
     })
     setErrors((prev) => ({ ...prev, fileBytes: next.fileBytes }))
+    // Compression starts only once the size rule has passed, which is the
+    // ordering this file's header records. Refusing first is the difference
+    // between a visitor losing a second and losing tens of seconds.
+    if (picked && !next.fileBytes) void startCompression(picked)
+  }
+
+  /** Stop a transcode in flight. Safe to call when none is running. */
+  function cancelCompression() {
+    if (!compression.current) return
+    compression.current.abort()
+    compression.current = null
+    setCompressing(false)
+    setCompressPhase(null)
+    setCompressRatio(null)
+  }
+
+  /**
+   * Compress the chosen file, and report every outcome as a sentence.
+   *
+   * `compressDemo` resolves to a refusal rather than throwing for all three
+   * failure kinds, so there is one branch here and no way for an error path to
+   * end in "send the original" by being forgotten.
+   */
+  async function startCompression(picked: File) {
+    const controller = new AbortController()
+    compression.current = controller
+    setCompressing(true)
+    setCompressPhase("downloading")
+    setCompressRatio(null)
+
+    const result = await compressDemo(picked, {
+      signal: controller.signal,
+      onPhase: setCompressPhase,
+      onProgress: setCompressRatio,
+    })
+
+    // A newer file, or a cancel, replaced this attempt while it ran. Its result
+    // belongs to a file that is no longer the one chosen, so it is dropped: the
+    // alternative is showing sizes for a file the visitor already replaced.
+    if (compression.current !== controller) return
+    compression.current = null
+    setCompressing(false)
+    setCompressPhase(null)
+    setCompressRatio(null)
+
+    if (result.ok) {
+      setCompressed({ blob: result.blob, bytes: result.bytes })
+      setErrors((prev) => ({ ...prev, fileBytes: undefined }))
+      return
+    }
+    setCompressed(null)
+    setErrors((prev) => ({ ...prev, fileBytes: result.message }))
   }
 
   function clearFile() {
+    cancelCompression()
     setFile(null)
+    setCompressed(null)
     setToken("")
     setStatus("idle")
     setServerMessage("")
@@ -191,7 +285,10 @@ export default function SubmitPage() {
     e.preventDefault()
     const found = validateSubmission(fields)
     setErrors(found)
-    if (hasErrors(found) || !file) return
+    // `compressed` is required, not merely expected: this is the guard that makes
+    // "the compressed bytes are what the endpoint receives" true rather than
+    // intended. Without it a visitor whose transcode failed could still submit.
+    if (hasErrors(found) || !file || !compressed) return
 
     setStatus("submitting")
     setServerMessage("")
@@ -212,8 +309,11 @@ export default function SubmitPage() {
       // side: lib/submission-form.ts records why the tick travels at all.
       body.set(SUBMISSION_FIELD.consent, String(values.consent))
       body.set(TURNSTILE_FIELD, token)
-      // These bytes become ticket 06's compressed output once that lands.
-      body.set(DEMO_FIELD, file, file.name)
+      // The compressed bytes, never the chosen file. Ticket 06's entire point is
+      // that only the smaller file leaves the device, so this line is where that
+      // is either true or not. The blob carries `video/mp4`, which the route
+      // requires of the part's declared type.
+      body.set(DEMO_FIELD, compressed.blob, COMPRESSED_DEMO_NAME)
 
       const res = await fetch(SUBMIT_ENDPOINT, { method: "POST", body })
       const data = (await res.json().catch(() => ({}))) as {
@@ -240,9 +340,11 @@ export default function SubmitPage() {
   }
 
   const busy = status === "submitting"
-  // The button waits on a verified token, so a visitor is never shown a Submit
-  // control with nothing to send.
-  const canSubmit = Boolean(file) && Boolean(token) && !busy
+  // The button waits on two things, and both are honest: a verified token, so a
+  // visitor is never shown a Submit control with nothing to send, and a finished
+  // transcode, so pressing it can only ever send the compressed Demo.
+  const canSubmit =
+    Boolean(compressed) && Boolean(token) && !busy && !compressing
 
   return (
     <div className="max-w-[720px]">
@@ -413,9 +515,66 @@ export default function SubmitPage() {
           <FieldError message={errors.fileBytes} />
         </div>
 
-        {/* Rendered only once a file is accepted, so the token is minted when it
-            can still be spent. See the note at the top of this file. */}
-        {file && !errors.fileBytes && (
+        {/* Ticket 06's step, between the size check above and the widget below.
+            Two things are said before the wait rather than during it: that the
+            work happens in this browser, and that a phone can take a minute or
+            two. Measured on a laptop it is tens of seconds, so a visitor who ends
+            up watching this deserves to be told it is running.
+            No progress bar unless the browser reports a ratio: a bar nobody
+            measured would be a claim about work rather than a report of it. */}
+        {compressing && (
+          <div className="mt-[12px] flex flex-col gap-[6px]">
+            <span className="font-mono text-[9px] tracking-[0.14em] text-t3">
+              {compressPhase === "downloading"
+                ? "LOADING THE COMPRESSOR"
+                : "COMPRESSING"}
+            </span>
+            <p className="m-0 max-w-[420px] text-[11px] leading-[1.45] text-t2">
+              {COMPRESSION_NOTICE}
+            </p>
+            {compressRatio !== null && (
+              <div
+                role="progressbar"
+                aria-label="Compression progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(compressRatio * 100)}
+                className="h-[4px] w-full max-w-[320px] overflow-hidden rounded-full border border-line bg-field"
+              >
+                <span
+                  className="block h-full bg-acc"
+                  style={{ width: `${Math.round(compressRatio * 100)}%` }}
+                />
+              </div>
+            )}
+            {/* Cancelling drops the file as well as stopping the transcode, which
+                is why it calls `clearFile`: a chosen file with no compressed
+                result is a dead end, since Submit requires one. The picker ends
+                up empty and ready instead, and the runner's cancellation message
+                is dropped rather than shown, because nothing is wrong. */}
+            <button
+              type="button"
+              onClick={clearFile}
+              className="self-start font-mono text-[9px] tracking-[0.14em] text-t3 underline underline-offset-2 hover:text-t1"
+            >
+              CANCEL
+            </button>
+          </div>
+        )}
+
+        {/* The before-and-after, both on screen before Submit is reachable. The
+            "before" is the size already printed beside the chosen file above. */}
+        {compressed && file && (
+          <p className="m-0 pt-[3px] text-[11px] tabular-nums text-t2">
+            Ready to send {formatSize(compressed.bytes)}, down from{" "}
+            {formatSize(file.size)}.
+          </p>
+        )}
+
+        {/* Rendered only once the transcode has produced the file that will be
+            sent, so the token is minted when it can still be spent. See the note
+            at the top of this file. */}
+        {compressed && !errors.fileBytes && (
           <div className="mt-[12px]">
             <TurnstileWidget ref={turnstile} onToken={setToken} />
           </div>
@@ -455,7 +614,13 @@ export default function SubmitPage() {
           disabled={!canSubmit}
           className="mt-[18px] min-h-[44px] w-full rounded-[9px] bg-acc px-[13px] py-[9px] text-[12.5px] font-medium text-on-acc transition-colors duration-120 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3 disabled:opacity-70 md:min-h-0"
         >
-          {busy ? "Sending…" : status === "done" ? "Sent" : "Send it"}
+          {compressing
+            ? "Compressing…"
+            : busy
+              ? "Sending…"
+              : status === "done"
+                ? "Sent"
+                : "Send it"}
         </button>
 
         {/* The mock's one failure idiom (Tile.dc.html:21-22): a mono eyebrow
