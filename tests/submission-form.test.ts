@@ -9,7 +9,7 @@ import {
 
 // public-submissions ticket 05. The acceptance asks for a SPECIFIC message per
 // rule, so each case below asserts the message rather than merely that a key is
-// present — a validator that refuses everything correctly and explains nothing is
+// present, a validator that refuses everything correctly and explains nothing is
 // the failure this file exists to catch.
 //
 // The size rule is the one that matters most: it has to run before compression

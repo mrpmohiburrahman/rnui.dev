@@ -60,7 +60,7 @@ describe("interpretSiteverify", () => {
   it("refuses a success carrying no hostname rather than trusting it", () => {
     // Siteverify always sends `hostname`. A missing one means the response is
     // not the shape this code believes it is, and `undefined` must not read as
-    // "allowed" — which is what a bare `hostnames.has(result.hostname!)` would
+    // "allowed", which is what a bare `hostnames.has(result.hostname!)` would
     // do if the truthiness guard were ever tidied away.
     expect(
       interpretSiteverify({ ...passing(), hostname: undefined }, HOSTNAMES)

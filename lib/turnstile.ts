@@ -1,13 +1,13 @@
 // lib/turnstile.ts
 //
-// Server-side Turnstile validation — the canonical Siteverify call, in the shape
+// Server-side Turnstile validation, the canonical Siteverify call, in the shape
 // this repo uses: the decision as ordinary functions a test can import, with the
 // network call kept to one place. Same split lib/subscription-consent.ts makes
 // against its Firestore store.
 //
 // Why validation is mandatory rather than a second layer of caution: the widget
 // runs in the visitor's browser, and a browser belongs to the visitor. Anyone can
-// POST the endpoint without ever completing a challenge. Cloudflare's own words —
+// POST the endpoint without ever completing a challenge. Cloudflare's own words -
 // "You must call the Siteverify API to complete your Turnstile implementation.
 // The client-side widget alone does not protect your forms."
 //
@@ -49,7 +49,7 @@ export type SiteverifyResponse = {
  * whatever the response contains would make this check decorative.
  *
  * Comma-separated rather than a single value so the Preview deploy and
- * `localhost` can sit beside production without a code change — and `localhost`
+ * `localhost` can sit beside production without a code change, and `localhost`
  * is not a convenience: without it the form cannot be exercised locally at all,
  * because the hostname the widget reports is the one the page was served from.
  *
@@ -68,7 +68,7 @@ function expectedHostnames(): Set<string> {
 /**
  * The decision, as a pure function.
  *
- * Separated from the fetch so the interesting part — what counts as a pass — is
+ * Separated from the fetch so the interesting part, what counts as a pass, is
  * testable without a network, a token or a secret. Every failure returns a named
  * reason rather than a bare false, because "the submission was refused" is not
  * something a maintainer can act on and `hostname-mismatch` is.
@@ -102,7 +102,7 @@ export function interpretSiteverify(
  *
  * The two `not-configured` refusals are logged rather than silent. An endpoint
  * whose Turnstile is unconfigured refuses every submission, which a visitor reads
- * as "the form is broken" — the operator needs to be told which of the two it is,
+ * as "the form is broken", the operator needs to be told which of the two it is,
  * and the visitor must not be.
  */
 export async function verifyTurnstile(
@@ -114,13 +114,13 @@ export async function verifyTurnstile(
 
   if (!secret) {
     console.error(
-      "turnstile: TURNSTILE_SECRET_KEY is not set — refusing the submission"
+      "turnstile: TURNSTILE_SECRET_KEY is not set, refusing the submission"
     )
     return { ok: false, reason: "not-configured" }
   }
   if (hostnames.size === 0) {
     console.error(
-      "turnstile: TURNSTILE_HOSTNAMES is empty — refusing the submission, " +
+      "turnstile: TURNSTILE_HOSTNAMES is empty, refusing the submission, " +
         "because a token whose hostname is never checked is not a verified token"
     )
     return { ok: false, reason: "not-configured" }

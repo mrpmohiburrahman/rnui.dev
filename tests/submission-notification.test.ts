@@ -8,8 +8,8 @@ import {
   submissionNotification,
 } from "../lib/submission-notification"
 
-// public-submissions ticket 09. The message is the whole feature — a Submission
-// nobody is told about is a Submission nobody opens — and two of its properties
+// public-submissions ticket 09. The message is the whole feature, a Submission
+// nobody is told about is a Submission nobody opens, and two of its properties
 // are not cosmetic:
 //
 //   1. **Every field an `add-recording` session needs is present**, the object key
@@ -48,7 +48,7 @@ function notice(
 describe("the subject", () => {
   it("names the caption and the Contributor, so a list of them is scannable", () => {
     const { subject } = submissionNotification(notice())
-    expect(subject).toBe("New Submission: Radial FAB — Hewad Mubariz")
+    expect(subject).toBe("New Submission: Radial FAB, Hewad Mubariz")
   })
 
   it("is one line even when a visitor puts a newline in the caption", () => {
@@ -60,7 +60,7 @@ describe("the subject", () => {
     )
     expect(subject).not.toMatch(/[\r\n]/)
     expect(subject).toBe(
-      "New Submission: Radial FAB second line — Hewad Mubariz"
+      "New Submission: Radial FAB second line, Hewad Mubariz"
     )
   })
 })

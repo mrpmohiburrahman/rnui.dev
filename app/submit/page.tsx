@@ -19,14 +19,14 @@
 //      widget is even rendered. Ticket 02 measured browser compression in
 //      minutes; discovering the file was too large afterwards spends a visitor's
 //      time on real work that was never going to be sent.
-//   2. **The widget renders only once a file is accepted** — the same reasoning
+//   2. **The widget renders only once a file is accepted**, the same reasoning
 //      from the other end. A token lives 300 seconds, so one minted on page load
 //      is dead before a visitor who took a minute to choose a file can submit.
 //      Ticket 06 inserts compression between these two steps; the widget still
 //      belongs after it.
 //
-// public-submissions ticket 05. Discovery — a link from the footer and the
-// Contributors page — is ticket 11 and is deliberately absent.
+// public-submissions ticket 05. Discovery, a link from the footer and the
+// Contributors page, is ticket 11 and is deliberately absent.
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react"
 import Link from "next/link"
 import { CATEGORIES } from "@/data/categories"
@@ -178,7 +178,7 @@ export default function SubmitPage() {
     } finally {
       // Tokens are single-use, so this is what makes a retry work at all:
       // without it the second attempt sends a token already spent and is refused
-      // with `timeout-or-duplicate` — which reads to a visitor as a broken form.
+      // with `timeout-or-duplicate`, which reads to a visitor as a broken form.
       turnstile.current?.reset()
     }
   }
@@ -432,7 +432,7 @@ export default function SubmitPage() {
               SENT
             </span>
             <p className="m-0 text-[12px] leading-[1.45] text-t1">
-              Thank you — it has reached the maintainer. You will hear back
+              Thank you, it has reached the maintainer. You will hear back
               through one of the handles you gave.
             </p>
           </div>

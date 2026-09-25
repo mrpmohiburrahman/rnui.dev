@@ -2,7 +2,7 @@
 //
 // The Firestore half of a Submission's consent record. Everything Firebase-shaped
 // lives here so lib/submission-consent.ts stays an ordinary module a test can
-// import — the same split lib/subscription-consent-firestore.ts makes against
+// import, the same split lib/subscription-consent-firestore.ts makes against
 // lib/subscription-consent.ts, and lib/counters-firestore.ts against
 // lib/counters.ts.
 //
@@ -27,7 +27,7 @@ import type { SubmissionConsent } from "@/lib/submission-consent"
  * so does `.env.example`.
  *
  * Corrected while wiring ticket 07's write, which is the first thing to act on it.
- * It used to claim the opposite — "the default is NOT the production name" — while
+ * It used to claim the opposite, "the default is NOT the production name", while
  * naming `submissions` as both the default and what production reads, which cannot
  * both be true.
  */
@@ -41,7 +41,7 @@ export const SUBMISSION_COLLECTION_NAME =
  * load-bearing rather than tidy: it is what ties the record to the bytes without
  * a fifth field, and the rule over `submissions` in firestore.rules names four
  * fields and closes the list, so a `key` field could not be stored even if one
- * were wanted. Same trick app/actions/subscribe-email.ts uses — an id needs no
+ * were wanted. Same trick app/actions/subscribe-email.ts uses, an id needs no
  * schema, and this key never reaches a browser anyway (only the notification
  * email carries it).
  *

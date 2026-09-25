@@ -1,7 +1,7 @@
 // lib/submission-form.ts
 //
 // What the submission form will and will not accept, as an ordinary function a
-// test can import. The page owns the pixels; this owns the rules — so the
+// test can import. The page owns the pixels; this owns the rules, so the
 // messages a visitor sees are pinned by tests rather than by reading JSX.
 //
 // Two rules here are load-bearing rather than tidy:
@@ -10,7 +10,7 @@
 //     browser compression in *minutes*. Starting that and only then refusing the
 //     file spends a visitor's time on real work that was never going to be sent.
 //   * **A handle is a bare slug or nothing.** `add-recording` step 2b is explicit
-//     that a Contributor's handles are bare slugs — never `@`, never a URL — and
+//     that a Contributor's handles are bare slugs, never `@`, never a URL, and
 //     the reason is downstream: a handle arriving as `@someone` or as a full URL
 //     has to be repaired by hand at publish time, and the maintainer cannot know
 //     which of the two spellings the person meant.
@@ -27,7 +27,7 @@ import { CATEGORIES } from "@/data/categories"
  * Demo ever published. Its real job is bounding what a visitor may hand us, and
  * how much work the browser's compression step is asked to do.
  *
- * Vercel's 4.5 MB request-body ceiling is the *enforcement* behind it — stricter
+ * Vercel's 4.5 MB request-body ceiling is the *enforcement* behind it, stricter
  * than this, and not raisable from this repo. See the map's Notes.
  */
 export const MAX_DEMO_BYTES = 5 * 1024 * 1024
@@ -38,8 +38,8 @@ export const DEMO_ACCEPT = "video/*"
 /**
  * Where the form posts.
  *
- * Declared once because it appears at both ends — this page, and the route
- * handler at `app/api/submit/route.ts` — and the route's *file path* is the
+ * Declared once because it appears at both ends, this page, and the route
+ * handler at `app/api/submit/route.ts`, and the route's *file path* is the
  * endpoint, so a rename is a two-place edit that nothing type-checks. Same
  * argument as TURNSTILE_FIELD in lib/turnstile-shared.ts.
  */
@@ -69,7 +69,7 @@ export type SubmissionFields = {
 /**
  * The fields that travel as plain text on the wire.
  *
- * `fileBytes` is excluded because it is not a claim the client makes — it is a
+ * `fileBytes` is excluded because it is not a claim the client makes, it is a
  * property of the uploaded file, which the route handler measures itself. Letting
  * it arrive as a field would mean trusting a number the visitor controls, and
  * that number is the only thing standing between the bucket and a 40 MB phone
@@ -84,8 +84,8 @@ export type WireField = Exclude<keyof SubmissionFields, "fileBytes">
  * Derived from `SubmissionFields` rather than listed, and the derivation is the
  * point: `consent` is a boolean, so it drops out automatically, and a computed
  * key of `WireField` inside a change handler is otherwise perfectly happy to
- * assign a string to it. Nothing catches that — TypeScript accepts
- * `{ ...state, [unionKey]: string }` — so the guard has to come from the type
+ * assign a string to it. Nothing catches that, TypeScript accepts
+ * `{ ...state, [unionKey]: string }`, so the guard has to come from the type
  * handed to the handler rather than from the assignment.
  */
 export type TextWireField = {
@@ -103,7 +103,7 @@ export type TextWireField = {
  * and the visitor is told their caption is missing while it sits in the request.
  *
  * Typed `Record<WireField, string>` rather than a bare object so the compiler
- * enforces completeness both ways — adding a field to `SubmissionFields` fails
+ * enforces completeness both ways, adding a field to `SubmissionFields` fails
  * here until it is given a wire name or explicitly excluded above.
  *
  * The values are the keys today. Keeping them as named values is the point: a
@@ -124,7 +124,7 @@ export const SUBMISSION_FIELD: Record<WireField, string> = {
 
 /**
  * The Demo itself. A file part rather than a text field, so it is named
- * separately — and it is the one part whose *size* the handler trusts, because
+ * separately, and it is the one part whose *size* the handler trusts, because
  * the runtime measured the body rather than the visitor describing it.
  */
 export const DEMO_FIELD = "demo"
@@ -233,7 +233,7 @@ export function hasErrors(errors: SubmissionErrors): boolean {
  * field becomes `""` and then fails its rule with the same sentence a visitor saw
  * in the browser, rather than throwing a TypeError that reads as a server fault.
  *
- * `consent` arrives as the string `"true"`, not as a checkbox's `"on"` — the
+ * `consent` arrives as the string `"true"`, not as a checkbox's `"on"`, the
  * client controls what it sends, so an explicit literal beats depending on how a
  * runtime serialises a ticked box. It is required rather than assumed because the
  * record's disclosure claim should correspond to a request that asserted the box,
