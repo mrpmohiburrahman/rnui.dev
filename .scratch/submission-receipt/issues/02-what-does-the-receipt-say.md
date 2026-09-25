@@ -17,6 +17,12 @@ Constraints already fixed, by
   disclosure the Contributor already agreed to, and a receipt that contradicts it would
   be worse than the silence it replaces.
 - **It may not promise a reply or a timescale**, unless ticket 01 says otherwise.
+- **It has a real choice about the "either way" promise, and that choice is the interesting one.**
+  Ticket 01 established that both outcomes now produce a message, so "we will let you know either way"
+  is a promise this pipeline can keep. The only thing that can break it is a human forgetting to type
+  the error message, which is a real risk rather than a theoretical one. So the sentence is allowed,
+  and it should be decided deliberately rather than added by omission or dropped by default. Saying
+  nothing is also allowed and is the safer half of the trade.
 - **It must say what happens next honestly.** Every Submission is looked at by hand, and
   if it is not published the file is deleted within 30 days.
 - **No em dashes.** The maintainer's stated preference, now applied across the feature.
