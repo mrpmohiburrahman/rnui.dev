@@ -27,7 +27,13 @@
 //
 // public-submissions ticket 05. Discovery, a link from the footer and the
 // Contributors page, is ticket 11 and is deliberately absent.
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react"
+import {
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type ReactNode,
+} from "react"
 import Link from "next/link"
 import { CATEGORIES } from "@/data/categories"
 
@@ -88,6 +94,38 @@ function FieldError({ message }: { message?: string }) {
     <p className="m-0 pt-[3px] text-[11px] leading-[1.4] text-fail">
       {message}
     </p>
+  )
+}
+
+/**
+ * A label, with its obligation stated on the label itself.
+ *
+ * Six of these fields cannot be left blank and three can, and until now nothing
+ * on the page said which was which. An accent asterisk for required, and the word
+ * OPTIONAL for the other three, rather than one bare asterisk explained by a
+ * legend elsewhere: a legend is one more thing to find, and the optional fields
+ * are exactly the ones a visitor would otherwise fill in with something.
+ */
+function FieldLabel({
+  htmlFor,
+  children,
+  optional = false,
+}: {
+  htmlFor: string
+  children: ReactNode
+  optional?: boolean
+}) {
+  return (
+    <label htmlFor={htmlFor} className={labelClass}>
+      {children}
+      {optional ? (
+        <span className="text-t3"> (OPTIONAL)</span>
+      ) : (
+        <span aria-hidden="true" className="text-acc">
+          {" *"}
+        </span>
+      )}
+    </label>
   )
 }
 
@@ -220,9 +258,7 @@ export default function SubmitPage() {
       >
         <div className="flex flex-col gap-[12px]">
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="contributor" className={labelClass}>
-              NAME TO CREDIT
-            </label>
+            <FieldLabel htmlFor="contributor">NAME TO CREDIT</FieldLabel>
             <input
               id="contributor"
               type="text"
@@ -235,9 +271,7 @@ export default function SubmitPage() {
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="email" className={labelClass}>
-              EMAIL
-            </label>
+            <FieldLabel htmlFor="email">EMAIL</FieldLabel>
             <input
               id="email"
               type="email"
@@ -251,9 +285,7 @@ export default function SubmitPage() {
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="caption" className={labelClass}>
-              CAPTION
-            </label>
+            <FieldLabel htmlFor="caption">CAPTION</FieldLabel>
             <input
               id="caption"
               type="text"
@@ -265,9 +297,7 @@ export default function SubmitPage() {
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="category" className={labelClass}>
-              CATEGORY
-            </label>
+            <FieldLabel htmlFor="category">CATEGORY</FieldLabel>
             {/* Greyed while it still reads "Choose one…". A select cannot use
                 `::placeholder`, so without this the prompt renders at full
                 contrast and reads as a Category that has already been chosen. */}
@@ -288,9 +318,7 @@ export default function SubmitPage() {
           </div>
 
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="source" className={labelClass}>
-              SOURCE
-            </label>
+            <FieldLabel htmlFor="source">SOURCE</FieldLabel>
             <input
               id="source"
               type="url"
@@ -311,9 +339,9 @@ export default function SubmitPage() {
             instead, which names the field and says what it accepts. */}
         <div className="mt-[12px] grid grid-cols-1 gap-[12px] sm:grid-cols-3">
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="github" className={labelClass}>
+            <FieldLabel htmlFor="github" optional>
               GITHUB
-            </label>
+            </FieldLabel>
             <input
               id="github"
               type="text"
@@ -324,9 +352,9 @@ export default function SubmitPage() {
             <FieldError message={errors.github} />
           </div>
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="linkedin" className={labelClass}>
+            <FieldLabel htmlFor="linkedin" optional>
               LINKEDIN
-            </label>
+            </FieldLabel>
             <input
               id="linkedin"
               type="text"
@@ -337,9 +365,9 @@ export default function SubmitPage() {
             <FieldError message={errors.linkedin} />
           </div>
           <div className="flex flex-col gap-[4px]">
-            <label htmlFor="twitter" className={labelClass}>
+            <FieldLabel htmlFor="twitter" optional>
               X
-            </label>
+            </FieldLabel>
             <input
               id="twitter"
               type="text"
@@ -352,9 +380,7 @@ export default function SubmitPage() {
         </div>
 
         <div className="mt-[12px] flex flex-col gap-[4px]">
-          <label htmlFor="demo" className={labelClass}>
-            DEMO (UP TO 5 MB)
-          </label>
+          <FieldLabel htmlFor="demo">DEMO (UP TO 5 MB)</FieldLabel>
           <input
             id="demo"
             type="file"
