@@ -131,13 +131,37 @@ otherwise arrive wearing rnui.dev's sender reputation — mail clients block scr
 block a forged link. Five cases cover it, including that `&` is escaped first so an entity is not
 double-escaped.
 
+### Verified end to end, against a real transmission
+
+The maintainer pushed `feat/studio-dark` (commit `f143745`), Vercel built the Preview to READY, and
+one real Submission went through `preview.rnui.dev/submit` on 2026-09-25. Everything below is
+measured against that, not inferred from the dry run.
+
+| Step | Evidence |
+| --- | --- |
+| The form serves | `GET /submit` → **200**, rendering "Send us a Demo", "NAME TO CREDIT", "DEMO — UP TO 5 MB", and **zero** `turnstile` mentions on load |
+| A bad token is refused | `POST /api/submit` with a bogus token → **403** + the visitor message, and the bucket stayed at **0 objects** |
+| The object is stored | `pnpm submissions:open --list` → `01M3C0Q0FBSHR76RQ8BRHQAD0S.mp4`, **486859 bytes**, `2026-09-25T10:10:28.752Z` |
+| The command in the email works | fetched back with it; **SHA-256 identical** to what was uploaded (`c3a11d1d…930d`), still valid H.264 480×800 yuv420p |
+| Exactly one email | Resend `GET /emails` → **1** message, to `hello@rnui.dev`, from `rnui.dev <digest@mail.rnui.dev>`, `last_event: delivered`, created `10:10:29.713Z` |
+| The body carries everything | read back from Resend's record of the sent message: Contributor, **all three handles**, Caption, Category, Source, `475.4 KB`, `2026-09-25.1, 2026-09-25T10:10:28.915Z`, the object key, and `pnpm submissions:open 01M3C0Q0FBSHR76RQ8BRHQAD0S.mp4` |
+| The order held | object `…28.752Z` → consent `…28.915Z` → email `…29.713Z`, in that order |
+
+**The consent record exists, and that is an inference rather than a read.** `firestore.rules` denies
+every read — confirmed, even the app's own credentials get `Missing or insufficient permissions` — so
+nothing can look at it outside the Firebase console. But the code can only have reached the send if
+`writeSubmissionConsent` resolved: a failure there deletes the object and returns 500, and the object
+survived *and* the email went out. So the record is there, and the one unaudited step is the thirty
+seconds it takes to see it in the console.
+
 ### What is left, and who does it
 
-**The maintainer, and only the maintainer: authorise the first real transmission.** That means lifting
-the hold and letting one Submission through end to end — which also needs the deployed route, so it
-follows a push and the Vercel environment variables ticket 07 named. Until then this ticket cannot be
-`resolved`: its deliverable is a message that has not been sent, and the hold says that is not an
-agent's call.
+**One judgement, and it is the maintainer's: whether the hold is now lifted.** `CLAUDE.md` is explicit
+that only they lift it — *"A green DKIM check or a cleared blocker does not lift the hold"* — and the
+hold's own terms additionally require *"every open issue in the effort"* fixed, which is not yet true
+(06, 11 and 12 are open). So this ticket stays `ready-for-human` even though every acceptance bullet
+is now demonstrated against a delivered message. A real transmission did happen, at the maintainer's
+direction; what has not happened is the formal lift.
 
 **Still true of the pipeline around it:** a real Turnstile token has never traversed the route (ticket
 07), and `/submit` is not live on `rnui.dev` — production is `main` while this work sits on
