@@ -45,10 +45,19 @@ const wantList = args.includes("--list")
 const outIndex = args.indexOf("--out")
 const outDir = outIndex === -1 ? "." : (args[outIndex + 1] ?? ".")
 // Everything that is neither a flag nor the value belonging to `--out`.
-// A --out past the end of argv leaves outDir as "." and no key, which the usage
-// check below catches.
+//
+// The guard on `outIndex` is load-bearing, and it was missing until 2026-09-25:
+// with no `--out` in argv, `outIndex` is -1 and `outIndex + 1` is **0**, so the
+// filter dropped the FIRST argument — the key itself. `pnpm submissions:open
+// <key>` therefore fell through to the usage message while `--list` and
+// `--out <dir>` both worked, which meant the one form the notification email
+// tells the maintainer to paste was the one form that could not run. Found by
+// pasting that command out of a real delivered email.
+//
+// A `--out` past the end of argv still leaves no key, which the usage check
+// below catches.
 const positional = args.filter(
-  (arg, i) => !arg.startsWith("--") && i !== outIndex + 1
+  (arg, i) => !arg.startsWith("--") && (outIndex === -1 || i !== outIndex + 1)
 )
 const key = positional[0]
 
