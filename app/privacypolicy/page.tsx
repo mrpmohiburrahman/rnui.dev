@@ -47,6 +47,13 @@
 // publication is not guaranteed. `firestore.rules` gained the fifth field in the
 // same pass, and `SUBMISSION_FORM_VERSION` moved with it.
 //
+// v1.5, 2026-09-25: two edits, both because this effort sends mail to the Contributor rather than only
+// to the maintainer. The submission section now says what the address is used for, because "an email
+// address to reply to" did not say who replies, and it now says outright that the address never
+// reaches the Digest list. The Resend entry now names every message the site sends, which it did not:
+// the internal notice that a Demo arrived was already going through Resend while unlisted, so that gap
+// predates the receipt and is only now being closed. No new processor, and no storage region changes.
+//
 // The identity comes from lib/sender-identity.ts rather than being pasted.
 // Ticket 04 requires this block byte-identical in the form, the policy and the
 // Digest footer, and three copies of a postal address is three places to drift.
@@ -74,7 +81,7 @@ export const metadata: Metadata = {
  * in lib/sender-identity.ts, which versions the disclosure a Subscriber agreed
  * to. They are separate numbers because the two documents change apart.
  */
-const POLICY_VERSION = "1.4"
+const POLICY_VERSION = "1.5"
 const POLICY_EFFECTIVE = "25 September 2026"
 
 // `body` and `inBodyLink` are the two studio-dark ticket 12 gave both legal
@@ -222,9 +229,12 @@ export default function PrivacyPage() {
             </Link>{" "}
             is how you send rnui.dev a Demo of your own, to be considered for
             the catalogue. It records the name you want credited, an email
-            address to reply to, any GitHub, LinkedIn or X profile you give, the
-            caption and Category you choose, the link to your source, and the
-            Demo file itself.
+            address we use to contact you about it, any GitHub, LinkedIn or X
+            profile you give, the caption and Category you choose, the link to
+            your source, and the Demo file itself. That address is used to tell
+            you the Demo arrived, and then to tell you what happened to it. It
+            is not used for anything else, and it is never added to the Digest
+            list.
           </p>
           <p className={body}>
             <strong className="text-t1">
@@ -322,9 +332,11 @@ export default function PrivacyPage() {
           </p>
           <ul className={list}>
             <li className={body}>
-              <strong className="text-t1">Resend</strong>, sends the
-              confirmation email and the Digest, and holds the list of confirmed
-              addresses. Stored in the United States.
+              <strong className="text-t1">Resend</strong>, sends every email
+              this site produces: the confirmation email, the Digest, the
+              internal notice when a Demo arrives, and the messages to the
+              person who sent it. It also holds the list of confirmed addresses.
+              Stored in the United States.
             </li>
             <li className={body}>
               <strong className="text-t1">ZeroBounce</strong>, checked whether

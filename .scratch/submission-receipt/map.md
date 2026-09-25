@@ -62,6 +62,8 @@ both.
 
 - [Where does a reply go, and does the receipt invite one?](issues/04-where-does-a-reply-go.md): **"nowhere"**, meaning the receipt is one-way in tone and must not look answerable, which the wording already satisfies with "Nothing is needed from you". Literal nowhere is **not implemented**, for three reasons recorded there: `sendEmail` hardcodes `reply_to`, `IDENTITY_BLOCK_HTML` prints `hello@rnui.dev` regardless, and a bounced reply is worse than one that arrives. So no change to `lib/resend.ts`, none to the identity block, none to the wording, and a reply that happens anyway reaches the maintainer.
 
+- [Does the disclosure or the privacy policy have to change?](issues/05-does-the-policy-change.md): the **disclosure does not**, because "used only to reach you about this Submission" already covers arrival, publication and the error message, and it forbids more than an enumerated clause would. The **policy does**, twice: it now says what the address is for and that it never reaches the Digest list, and the Resend processor entry now names every message the site sends. That second edit closed a gap that predates this effort, because the Submission notification had been going through Resend unlisted. Policy 1.4 to 1.5; `SUBMISSION_FORM_VERSION` unchanged.
+
 ## Not yet specified
 
 - **What happens to a file the error message says cannot be used.** The disclosure promises deletion
