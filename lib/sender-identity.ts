@@ -6,7 +6,7 @@
 // places for it to drift, and an identity block that differs between them is
 // worse than either spelling of Cumilla.
 //
-// The signup block below is a CONSENT REQUEST, which CASL's ECPR s.4 binds —
+// The signup block below is a CONSENT REQUEST, which CASL's ECPR s.4 binds -
 // name, mailing address, contact method, and that consent can be withdrawn, all
 // four present. The Digest footer (ticket 09) is a different block doing a
 // different job: it carries CAN-SPAM's postal address and opt-out, and it is not
@@ -17,7 +17,7 @@ export const SENDER_NAME = "MD. MOHIBUR RAHMAN"
 /**
  * Byte-identical in the form, the policy and the Digest footer. `Cumilla` is the
  * official romanisation since 2018; `Comilla` is the older spelling and is still
- * widely used. Either delivers — the postcode and office name carry the routing —
+ * widely used. Either delivers, the postcode and office name carry the routing -
  * but ticket 04 picked one, so nobody "corrects" it later.
  */
 export const POSTAL_ADDRESS = "Halima Nagar, Cumilla 3502, Bangladesh"
@@ -32,7 +32,7 @@ export const CONTACT_EMAIL = "hello@rnui.dev"
 /**
  * Permanent. Changing either after the first send resets the sender reputation
  * that a 29-address list spends months building. `mail.rnui.dev`, never the
- * apex — map decision 8.
+ * apex, map decision 8.
  */
 export const FROM = "rnui.dev <digest@mail.rnui.dev>"
 export const REPLY_TO = CONTACT_EMAIL
@@ -41,7 +41,7 @@ export const REPLY_TO = CONTACT_EMAIL
 export const PRIVACY_PATH = "/privacypolicy"
 
 /**
- * The policy as an absolute URL, which is the only form an email can use — a
+ * The policy as an absolute URL, which is the only form an email can use, a
  * relative href in an inbox resolves against the mail client, not the site.
  *
  * Ticket 07 requires the policy linked from the signup form and from the Digest
@@ -60,14 +60,14 @@ export const SIGNUP_HEADING = "Get the weekly Digest"
  * Ticket 04's signup disclosure, verbatim, in the two pieces a form needs: the
  * last sentence has to be a real link, and splitting it here beats a regex at
  * the render site. SIGNUP_DISCLOSURE below joins them back, and that joined
- * string is both what the form shows and what every record stores — so what
+ * string is both what the form shows and what every record stores, so what
  * somebody agreed to is provable from the record alone rather than from a guess
  * about which deploy they saw.
  */
 export const SIGNUP_DISCLOSURE_BODY =
   `New Recordings added to rnui.dev, once a week. Sent by ${SENDER_NAME}, ` +
   `${POSTAL_ADDRESS}, ${CONTACT_EMAIL}. No sponsor mail, no third-party ` +
-  `marketing, and your address is never shared. Unsubscribe any time — link ` +
+  `marketing, and your address is never shared. Unsubscribe any time, link ` +
   `in every email.`
 
 export const SIGNUP_DISCLOSURE_POLICY_SENTENCE = "See our Privacy Policy."
@@ -79,11 +79,11 @@ export const SIGNUP_DISCLOSURE = `${SIGNUP_DISCLOSURE_BODY} ${SIGNUP_DISCLOSURE_
  * itself, which looks redundant and is not: the string proves the words, the
  * version makes two cohorts comparable without diffing prose.
  */
-export const CONSENT_FORM_VERSION = "2026-08-15.1"
+export const CONSENT_FORM_VERSION = "2026-09-25.1"
 
 /**
- * The identity block as HTML, assembled once. Both senders paste it — the
- * confirmation email (ticket 06) and the broadcast script (ticket 05) — and
+ * The identity block as HTML, assembled once. Both senders paste it, the
+ * confirmation email (ticket 06) and the broadcast script (ticket 05), and
  * ticket 09's Digest footer will be the third. Assembling it here is the same
  * argument as the constants above, one level up: three copies of the assembled
  * block drift exactly as readily as three copies of the address.

@@ -1,7 +1,7 @@
 // components/signup-disclosure.tsx
 //
-// Ticket 04's signup disclosure, rendered. Both capture points show it — the
-// footer's NOTIFY form and /subscribe — and CASL's ECPR s.4 binds the consent
+// Ticket 04's signup disclosure, rendered. Both capture points show it, the
+// footer's NOTIFY form and /subscribe, and CASL's ECPR s.4 binds the consent
 // request itself, so it belongs at each point of capture rather than one link
 // away. Name, mailing address, contact method and the right to withdraw are all
 // in the string; satisfying s.4 here carries GDPR's informed limb with it.
