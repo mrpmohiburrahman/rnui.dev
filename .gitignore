@@ -76,3 +76,11 @@ __data__
 # as markdown, and a rule that only covered .json would have published it. The
 # `.local.` infix is the marker — name anything carrying a real address that way.
 .scratch/notify-and-preview/research/*.local.*
+
+# A Submission fetched with the bare `pnpm submissions:open <key>` lands in the
+# working directory — which for the maintainer is the repo root, and this repo is
+# PUBLIC. The bucket is private precisely so unreviewed work is not; an accidental
+# `git add -A` after a fetch would undo that, so root-level mp4s never stage.
+# Nothing legitimate lives here: Demos are served from cdn.rnui.dev, and the repo
+# tracks no root-level mp4 (checked 2026-09-25).
+/*.mp4
