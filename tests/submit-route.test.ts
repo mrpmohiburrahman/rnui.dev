@@ -36,6 +36,17 @@ vi.mock("../lib/resend", () => ({ sendEmail: vi.fn() }))
 
 const sendMail = vi.mocked(sendEmail)
 
+/**
+ * The handler now sends two messages to two different people, so counting all the
+ * calls would conflate them and either test could pass while the other regressed.
+ * Each is selected by its recipient instead: the notification goes to CONTACT_EMAIL
+ * and the receipt to the address the Contributor typed, lowercased.
+ */
+const toMaintainer = () =>
+  sendMail.mock.calls.filter(([m]) => m.to === CONTACT_EMAIL)
+const toContributor = () =>
+  sendMail.mock.calls.filter(([m]) => m.to === "hewad@example.com")
+
 const SITEVERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 const TURNSTILE_SECRET = "a-secret"
 
@@ -397,14 +408,12 @@ describe("POST /api/submit, what a failure leaves behind", () => {
 })
 
 describe("POST /api/submit, the notification (ticket 09)", () => {
-  it("sends exactly one email, to the address that forwards to the maintainer", async () => {
+  it("sends exactly one notification, to the address that forwards to the maintainer", async () => {
     stubNetwork()
     await POST(submit())
 
-    expect(sendMail).toHaveBeenCalledTimes(1)
-    const sent = sendMail.mock.calls[0][0]
-    expect(sent.to).toBe(CONTACT_EMAIL)
-    expect(sent.subject).toMatch(/^New Submission: Radial FAB/)
+    expect(toMaintainer()).toHaveLength(1)
+    expect(toMaintainer()[0][0].subject).toMatch(/^New Submission: Radial FAB/)
   })
 
   it("carries the address the Contributor gave, lowercased", async () => {
@@ -430,7 +439,10 @@ describe("POST /api/submit, the notification (ticket 09)", () => {
     await POST(submit())
     expect(net.puts()).toHaveLength(1)
     expect(writeConsent).toHaveBeenCalledTimes(1)
-    expect(sendMail).toHaveBeenCalledTimes(1)
+    expect(toMaintainer()).toHaveLength(1)
+    // And still first of the two: the receipt is the last thing the handler does, so a
+    // receipt ordering above a notification would mean the order had been rewritten.
+    expect(sendMail.mock.calls[0][0].to).toBe(CONTACT_EMAIL)
   })
 
   it("sends nothing at all when the request was refused", async () => {
@@ -480,5 +492,81 @@ describe("POST /api/submit, the notification (ticket 09)", () => {
     stubNetwork()
     const res = await POST(submit())
     await expect(res.json()).resolves.toEqual({ ok: true, notified: true })
+  })
+})
+
+describe("POST /api/submit, the receipt (submission-receipt ticket 07)", () => {
+  it("sends exactly one receipt, to the address the Contributor typed", async () => {
+    stubNetwork()
+    await POST(submit())
+
+    expect(toContributor()).toHaveLength(1)
+    expect(toContributor()[0][0].subject).toBe("We have your Demo")
+    // Addressed to the Contributor, not to the maintainer: this is the first message
+    // this pipeline sends to somebody outside rnui.dev.
+    expect(toContributor()[0][0].to).toBe("hewad@example.com")
+  })
+
+  it("goes after the notification, so the maintainer is told first", async () => {
+    stubNetwork()
+    await POST(submit())
+    expect(sendMail.mock.calls.map(([m]) => m.to)).toEqual([
+      CONTACT_EMAIL,
+      "hewad@example.com",
+    ])
+  })
+
+  it("is skipped entirely when the notification failed, which is ticket 06's rule", async () => {
+    // The compounding case. The receipt's own wording carries the either-way promise,
+    // so sending it when the maintainer was never told would put a promise in a
+    // stranger's inbox on behalf of somebody with no reason to ever look.
+    stubNetwork()
+    sendMail.mockRejectedValueOnce(new Error("resend 500"))
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const res = await POST(submit())
+    const body = (await res.json()) as { ok: boolean; notified: boolean }
+
+    expect(sendMail).toHaveBeenCalledTimes(1)
+    expect(toContributor()).toHaveLength(0)
+    expect(body).toEqual({ ok: true, notified: false })
+    expect(logged).toHaveBeenCalled()
+  })
+
+  it("keeps the Submission when only the receipt fails, and promises no less", async () => {
+    // The counterpart to the case above, and the one that is easy to get wrong: a
+    // failed receipt changes nothing, because the outcome message still arrives and the
+    // promise the copy made is therefore kept.
+    const net = stubNetwork()
+    sendMail.mockResolvedValueOnce(undefined)
+    sendMail.mockRejectedValueOnce(new Error("resend 500"))
+    const logged = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    const res = await POST(submit())
+    const body = (await res.json()) as { ok: boolean; notified: boolean }
+
+    expect(res.status).toBe(200)
+    expect(body).toEqual({ ok: true, notified: true })
+    expect(net.puts()).toHaveLength(1)
+    expect(writeConsent).toHaveBeenCalledTimes(1)
+    // No compensating delete, and no retry: there is nothing to compensate for and a
+    // second copy of a message that cannot be unsent is the only worse outcome.
+    expect(net.r2().map((c) => c.init.method)).toEqual(["PUT"])
+    expect(sendMail).toHaveBeenCalledTimes(2)
+
+    const text = logged.mock.calls.flat().map(String).join(" | ")
+    expect(text).toMatch(/RECEIPT FAILED/)
+    expect(text).toMatch(/nothing is retried/)
+  })
+
+  it("sends no receipt at all when the request was refused", async () => {
+    // Same reasoning as the notification: one message per Submission, not one per
+    // attempt. A bot POSTing without a challenge must not be able to make rnui.dev mail
+    // a stranger.
+    stubNetwork({
+      turnstile: { success: false, "error-codes": ["invalid-input-response"] },
+    })
+    await POST(submit())
+    expect(sendMail).not.toHaveBeenCalled()
   })
 })

@@ -53,6 +53,7 @@ import {
   validateSubmission,
 } from "@/lib/submission-form"
 import { submissionNotification } from "@/lib/submission-notification"
+import { submissionReceipt } from "@/lib/submission-receipt"
 import {
   deleteSubmission,
   putSubmission,
@@ -259,8 +260,8 @@ export async function POST(request: Request): Promise<NextResponse> {
   // Failing the request instead would be the bigger lie: the work is safely stored, and
   // a second send cannot improve that.
   //
-  // **When the receipt lands (ticket 07) it goes only when the notification did, and
-  // that is the compounding case answered rather than inferred.** The two are separate
+  // **The receipt below goes only when the notification did, and that is the
+  // compounding case answered rather than inferred.** The two are separate
   // failures with separate victims, the maintainer and the Contributor, and the map
   // calls the pair its worst case. Two silent failures are survivable and coherent: the
   // object sits in the bucket, the record stands, nobody was told, and nobody was
@@ -301,6 +302,36 @@ export async function POST(request: Request): Promise<NextResponse> {
         "(30 days). The receipt is skipped on this path, see the comment above.",
       err
     )
+  }
+
+  // The receipt (submission-receipt ticket 07), and now the last thing this handler
+  // does. It is the only step that sends to somebody outside rnui.dev, and the address
+  // is the one the Contributor typed.
+  //
+  // **A receipt failure is logged and nothing else happens**, which is ticket 06's
+  // second answer: no rollback, no retry, and no change to the screen. With `notified`
+  // true the outcome message still arrives, so the promise the copy made is kept
+  // whether or not this message reached them. A retry would be the one thing that could
+  // break that by delivering a second copy of a message that cannot be unsent.
+  if (notified) {
+    try {
+      await sendEmail({
+        to: fields.email,
+        ...submissionReceipt({
+          contributor: fields.contributor,
+          caption: fields.caption,
+          category: fields.category,
+        }),
+      })
+    } catch (err) {
+      console.error(
+        `submit: RECEIPT FAILED for ${key}. The Submission is stored and the ` +
+          "maintainer was told, so nothing is lost and nothing is retried: the " +
+          "Contributor hears the outcome message instead, which is the promise " +
+          "they were given. Re-send by hand from the notification.",
+        err
+      )
+    }
   }
 
   return NextResponse.json({ ok: true, notified } satisfies SubmitResult)
