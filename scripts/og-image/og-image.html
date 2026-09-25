@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>rnui.dev — Open Graph image</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      /* --canvas #0A0B0D (dark), --t1 #F1F2F4, --acc #6FE3CC, --t2 #B2B8C2 */
+      .frame {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        background: #0a0b0d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        isolation: isolate;
+      }
+
+      /* Soft teal aura, hue 175 as the site's --tile-hue. */
+      .aura {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          closest-side,
+          rgba(111, 227, 204, 0.16) 0%,
+          rgba(111, 227, 204, 0.05) 46%,
+          transparent 70%
+        );
+        transform: translateY(-8px);
+        z-index: -1;
+      }
+
+      .wordmark {
+        color: #f1f2f4;
+        font-size: 132px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1;
+      }
+
+      .wordmark .dev {
+        color: #6fe3cc;
+      }
+
+      .tagline {
+        margin-top: 42px;
+        text-align: center;
+        color: #b2b8c2;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="aura"></div>
+      <div>
+        <!-- Exact wordmark: "rnui" in --t1, ".dev" in --acc, Space Grotesk 700,
+             tracking -0.02em (components/site-header.tsx:99-100). -->
+        <div class="wordmark">
+          rnui<span class="dev">.dev</span>
+        </div>
+        <div class="tagline">Curated React Native UI &amp; Animation Catalog</div>
+      </div>
+    </div>
+  </body>
+</html>

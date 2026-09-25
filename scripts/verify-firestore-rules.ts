@@ -39,6 +39,13 @@ const PENDING = {
   ip: "1.2.3.4",
 }
 const CONFIRMED = { ...PENDING, confirmed: true, confirmedAt: T }
+/** A Submission's consent record, shaped as lib/submission-consent.ts types it. */
+const CONSENT = {
+  disclosure: "d",
+  formVersion: "2026-09-25.1",
+  ip: "1.2.3.4",
+  at: T,
+}
 
 type Method = "get" | "list" | "create" | "update" | "delete"
 type Case = {
@@ -295,6 +302,99 @@ const CASES: Case[] = [
     method: "get",
     path: D("/userFeedback/abc"),
     existing: { firstName: "a" },
+  },
+
+  // --- the Submission consent record (public-submissions ticket 10) ---
+  //
+  // The write has to stay open: it goes through the same public client SDK a
+  // browser does, so Firestore cannot tell this server's write from anyone
+  // else's. The READ is the case that matters, and it is asserted in both forms —
+  // `get` on a known id, and `list` on the collection, because `read` covering
+  // only the first would leave the set walkable.
+  {
+    name: "creating a well-formed consent record is allowed",
+    expectation: "ALLOW",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: CONSENT,
+  },
+  {
+    name: "creating a consent record on submissions-dev is allowed",
+    expectation: "ALLOW",
+    method: "create",
+    path: D("/submissions-dev/sub-1"),
+    incoming: CONSENT,
+  },
+  {
+    name: "a consent record missing the form version is refused",
+    expectation: "DENY",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: { disclosure: "d", ip: "1.2.3.4", at: T },
+  },
+  {
+    name: "a consent record with a string timestamp is refused",
+    expectation: "DENY",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: { ...CONSENT, at: "2026-09-25" },
+  },
+  // The two cases below were added on 2026-09-25, and the reason is worth keeping:
+  // `validateSubmissionConsent` used `hasAll`, which checks only that a key is
+  // PRESENT, while the comment beside it claimed an unexpected field was "refused
+  // rather than stored". `hasAll` ALLOWS the extra `confirmed: true` in the second
+  // case — confirmed by running both variants of that function through this same
+  // `:test` call, one after the other. The rule and its comment disagreed for as long
+  // as nothing covered an extra key. These two do.
+  {
+    name: "a consent record carrying an unexpected field is refused",
+    expectation: "DENY",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: { ...CONSENT, unexpected: "x" },
+  },
+  {
+    name: "a consent record claiming confirmed:true is refused",
+    expectation: "DENY",
+    method: "create",
+    path: D("/submissions/sub-1"),
+    incoming: { ...CONSENT, confirmed: true },
+  },
+  {
+    name: "reading a consent record by id is DENIED",
+    expectation: "DENY",
+    method: "get",
+    path: D("/submissions/sub-1"),
+    existing: CONSENT,
+  },
+  {
+    name: "listing the consent collection is DENIED",
+    expectation: "DENY",
+    method: "list",
+    path: D("/submissions"),
+    existing: CONSENT,
+  },
+  {
+    name: "reading a consent record on submissions-dev is DENIED",
+    expectation: "DENY",
+    method: "get",
+    path: D("/submissions-dev/sub-1"),
+    existing: CONSENT,
+  },
+  {
+    name: "updating a consent record is DENIED",
+    expectation: "DENY",
+    method: "update",
+    path: D("/submissions/sub-1"),
+    existing: CONSENT,
+    incoming: { ...CONSENT, ip: "5.6.7.8" },
+  },
+  {
+    name: "deleting a consent record is DENIED",
+    expectation: "DENY",
+    method: "delete",
+    path: D("/submissions/sub-1"),
+    existing: CONSENT,
   },
 ]
 

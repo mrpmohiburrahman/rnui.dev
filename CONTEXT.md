@@ -6,6 +6,15 @@ A catalogue of React Native UI components, each shown as a short screen recordin
 
 ### The catalogue
 
+**Submission**:
+A Demo somebody has sent that has not been reviewed or published. A Submission carries the fields
+a Recording carries — a Contributor, a caption, a Category, a source URL, profile links and a file
+— but it is not in `data/<category>.ts`, it is not on the site, and its file is deleted after 30
+days. Most Submissions never become Recordings, and the maintainer decides which do. A Submission
+becomes a Recording only by being published through the `add-recording` path; nothing on the site
+can promote one.
+_Avoid_: entry, item, proposal, contribution, pending recording, upload
+
 **Recording**:
 One catalogue record — a Contributor, a caption, source links, a Category, and the paths to its Demo and Poster. Recordings live in `data/<category>.ts`.
 _Avoid_: entry, item, card, component, animation
@@ -13,6 +22,12 @@ _Avoid_: entry, item, card, component, animation
 **Contributor**:
 The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 277 Recordings.
 _Avoid_: author, creator, owner, submitter, user
+
+A Contributor is a Contributor **from the moment they submit**, not from the moment they are
+published. A Submission's `contributor` value and profile links use exactly the same fields a
+Recording's do, so the term does not change at publication and the form does not need a second
+word for the person on the other end of it. This is why *submitter* stays avoided: it would name
+a state that does not exist.
 
 **Category**:
 The UI kind a Recording belongs to (Buttons, Sliders, Tabbars…). One `data/` file per Category. Its display name is the canonical form — the lowercase spellings that appear in URLs and Asset paths are derived from it, never the other way round.
