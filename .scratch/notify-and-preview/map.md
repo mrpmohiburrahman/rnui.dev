@@ -143,6 +143,13 @@ reason to avoid that vendor, not a reason to send the email.
   the prompt is not shown the exit survey for 30 days. With this, the third clause of the Destination
   — the Preview live with its survey collecting — is true.
   [13](issues/13-the-survey-and-the-prompt.md)
+- The sending channel is verified against the live service, not the dashboard: a test broadcast is
+  `delivered`, `From:` aligns strictly by DKIM (`d=mail.rnui.dev`) and only relaxed by SPF (envelope
+  `send.mail.rnui.dev`, same organizational domain), the broadcast is created through the API rather
+  than the editor, and the one-click `List-Unsubscribe-Post` was verified to flip the contact to
+  `unsubscribed` **inside Resend and nowhere else** — Firestore never hears about it, which is the gap
+  ticket 08 exists to close. Sending added nobody to the audience, and used 2 of the 100/day cap.
+  [14](issues/14-verify-the-sending-channel.md)
 
 ## Not yet specified
 

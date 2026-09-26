@@ -455,3 +455,13 @@ unsubscribe POST **verified** to actually remove) are agent work now, and they a
 the two bullets that need the maintainer: bullet 1's key-length decision and bullet 6's Postmaster
 TXT.
 
+**2026-09-26 — bullets 2, 4 and 5 are met, by ticket 14.** Ticket 14 ran the sends this ticket could
+not and closed them with measurements rather than assertions: the broadcast created through the API
+(`POST /broadcasts` + `POST /broadcasts/{id}/send`), the test message Resend records `delivered` to the
+maintainer, `From:` reading **strict DKIM / relaxed SPF** alignment off the delivered headers, and the
+one-click `List-Unsubscribe-Post` verified to flip the contact to `unsubscribed` in Resend and nowhere
+else. Bullet 3 was already met. So this ticket is down to **bullet 1** (accept the 1024-bit key, or
+delete and re-add `mail.rnui.dev` hoping for the SES 3×CNAME scheme) and **bullet 6** (the
+`google-site-verification` TXT on `mail.rnui.dev`, then Verify in Postmaster Tools). Both are the
+maintainer's, and nothing else in the effort blocks on either.
+
