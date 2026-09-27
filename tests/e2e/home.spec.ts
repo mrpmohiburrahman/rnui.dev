@@ -1,5 +1,9 @@
 import { expect, test, type Page } from "@playwright/test"
 
+// The catalogue's size, read from the data. See the note in headings.spec.ts:
+// these result lines were pinned to 277 and went red when the catalogue passed it.
+import { allRecordings } from "../../data/catalogue"
+
 const CDN = process.env.NEXT_PUBLIC_CDN_URL ?? "https://cdn.rnui.dev"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -225,9 +229,9 @@ test.describe("reduced motion", () => {
     const tile = page.getByTestId("demo").first()
     await tile.waitFor()
 
-    expect(
-      await tile.evaluate((el) => getComputedStyle(el).filter)
-    ).toBe("none")
+    expect(await tile.evaluate((el) => getComputedStyle(el).filter)).toBe(
+      "none"
+    )
 
     // The state chip's text is the CSS ::before (globals.css), so it is read
     // off the pseudo-element, not the element's textContent.
@@ -242,10 +246,12 @@ test.describe("reduced motion", () => {
   // tail to STILLS ONLY on hydration — the server rendered SORTED RECENT for
   // everyone, because a served document must not claim stills for a visitor who
   // will play Demos (components/recording-card-grid.tsx).
-  test("the result line reads 48 OF 277 · STILLS ONLY", async ({ page }) => {
+  test("the result line reads 48 OF the catalogue · STILLS ONLY", async ({
+    page,
+  }) => {
     await page.goto("/")
     await expect(
-      page.getByText("48 OF 277 · STILLS ONLY")
+      page.getByText(`48 OF ${allRecordings.length} · STILLS ONLY`)
     ).toBeVisible()
   })
 

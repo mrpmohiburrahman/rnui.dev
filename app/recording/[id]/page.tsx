@@ -1,6 +1,6 @@
 // app/recording/[id]/page.tsx
 //
-// One Recording, at its own address. 277 of these are prerendered at build time
+// One Recording, at its own address. Every one is prerendered at build time
 // from data/catalogue.ts — what is static is static. What the body draws is not:
 // this form reads the Recording from getRecordings() so the view bar,
 // the vote count and MORE FROM THIS CONTRIBUTOR's tiles have the counts steps 6

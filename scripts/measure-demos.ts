@@ -125,12 +125,12 @@ async function probeDemo(demoPath: string): Promise<ProbeResult> {
 }
 
 // 64px on the long edge is at most 4,096 pixels per Poster, ample for a
-// histogram and cheap across 277 decodes. A Poster that decodes fine but has
+// histogram and cheap across every decode. A Poster that decodes fine but has
 // no colour returns null, which is not a failure: the tile glows at its
 // fallback hue, and `hue` is simply omitted from the data.
 async function posterHue(posterPath: string): Promise<number | null> {
   // The same stall guard as ffprobe below: a read that never completes must
-  // not hang a 277-Recording run.
+  // not hang a whole-catalogue run.
   const response = await fetch(assetUrl(posterPath), {
     signal: AbortSignal.timeout(60_000),
   })

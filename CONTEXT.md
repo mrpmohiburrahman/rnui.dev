@@ -20,8 +20,13 @@ One catalogue record — a Contributor, a caption, source links, a Category, and
 _Avoid_: entry, item, card, component, animation
 
 **Contributor**:
-The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 277 Recordings.
+The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 280 Recordings. A Contributor has no identifier apart from that name — no id and no slug — so the name string *is* the identity, and everything else groups by it.
 _Avoid_: author, creator, owner, submitter, user
+
+Two spellings that differ only in letter case, in surrounding or repeated spaces, or in how an
+accented character is encoded name the **same** Contributor. Only one of them is ever published: the
+catalogue keeps the spelling it already holds and never rewrites it, which is why a duplicate is
+fixed where the name was entered rather than normalised away on the way out.
 
 A Contributor is a Contributor **from the moment they submit**, not from the moment they are
 published. A Submission's `contributor` value and profile links use exactly the same fields a

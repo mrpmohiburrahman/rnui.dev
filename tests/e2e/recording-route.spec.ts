@@ -187,12 +187,13 @@ test("Tab wraps from the panel's last control to its first, and back", async ({
   await expect(page.getByRole("dialog")).toBeVisible()
 
   const panel = page.locator('[role="dialog"]')
-  const focusableCount = await panel.evaluate((el) =>
-    Array.from(
-      el.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
-    ).length
+  const focusableCount = await panel.evaluate(
+    (el) =>
+      Array.from(
+        el.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).length
   )
   expect(focusableCount).toBeGreaterThan(2)
 
@@ -235,10 +236,10 @@ test("Tab wraps from the panel's last control to its first, and back", async ({
   // forward walk landed on, so both directions agree.
   await page.keyboard.press("Shift+Tab")
   expect(
-    (await page.evaluate(() => {
+    await page.evaluate(() => {
       const el = document.activeElement as HTMLElement | null
       return el?.innerText?.trim() || ""
-    }))
+    })
   ).toBe(lastText)
 })
 
@@ -278,7 +279,9 @@ test("a Contributor with many Recordings renders their whole-catalogue total and
   await page.goto(`/recording/${enzo.id}`)
 
   await expect(
-    page.getByText(`${total} of the 277 recordings here`, { exact: false })
+    page.getByText(`${total} of the ${allRecordings.length} recordings here`, {
+      exact: false,
+    })
   ).toBeVisible()
   await expect(
     page.getByRole("link", { name: `See all ${total} →` })
@@ -301,9 +304,10 @@ test("a Contributor with one Recording renders 1 ... is theirs and no See-all li
   await page.goto(`/recording/${solo.id}`)
 
   await expect(
-    page.getByText("1 of the 277 recordings here is theirs.", {
-      exact: false,
-    })
+    page.getByText(
+      `1 of the ${allRecordings.length} recordings here is theirs.`,
+      { exact: false }
+    )
   ).toBeVisible()
   await expect(page.getByRole("link", { name: /^See all/ })).toHaveCount(0)
 })
