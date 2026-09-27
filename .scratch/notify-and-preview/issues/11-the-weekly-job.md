@@ -1,8 +1,23 @@
 # The weekly job that usually does nothing
 
-Status: ready-for-agent
+Status: needs-triage
 Type: task
 Blocked by: 08
+
+## PARKED — not being built, 2026-09-27
+
+**The maintainer has set this aside: the weekly job is not being worked on now.** This is a pause,
+not a rejection, and nothing about the ticket changed — 08 cleared its blocker on 2026-09-26 and the
+spec below is still the spec.
+
+`Status: needs-triage` is the tracker's word for *the maintainer owns the next move*, which is why it
+is not `resolved`. `resolved` is terminal, and this ticket is not built: no diff over `data/*.ts`, no
+schedule, no suppression check, no heartbeat. Marking it done would take it out of the record and
+lose the one reminder that the Digest does not exist yet.
+
+**To resume:** set `Status: ready-for-agent` and delete this block. `CLAUDE.md`'s
+notify-and-preview paragraph says the frontier is empty until then, so `/implement` will not take it
+by accident.
 
 ## Question
 
