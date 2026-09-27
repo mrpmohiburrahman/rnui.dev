@@ -29,9 +29,10 @@ export type ConsentStore = {
    * link does nothing.
    *
    * Not atomic with `findPending`, and deliberately not made so. Two clicks
-   * racing can both pass the check, and the only consequence is `addContact`
-   * running twice — which Resend answers with a 409 that addContact treats as
-   * the no-op it is. A transaction would buy nothing for that.
+   * racing can both pass the check, and the only consequence is the audience
+   * write running twice. `subscribeContact` is idempotent because Resend's
+   * contact POST is an upsert, so the second call is the same write as the
+   * first. A transaction would buy nothing for that.
    */
   confirm(id: string): Promise<void>
   addToAudience(email: string): Promise<void>

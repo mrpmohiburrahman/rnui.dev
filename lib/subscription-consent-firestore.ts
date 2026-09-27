@@ -8,7 +8,7 @@
 import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
-import { addContact, ensureAudience } from "@/lib/resend"
+import { ensureAudience, subscribeContact } from "@/lib/resend"
 import { verifyToken } from "@/lib/subscribe-token"
 import {
   createConfirmSubscription,
@@ -25,8 +25,9 @@ export const EMAIL_COLLECTION_NAME =
 
 /**
  * Ticket 05 chose the pre-existing `General` audience over inventing a Digest
- * one, and the reason still holds: ticket 08 has not decided who owns
- * "unsubscribed" yet, and naming an audience now would prejudge it.
+ * one, deferring the name until ticket 08 had decided who owns "unsubscribed".
+ * Ticket 08 kept this one: the audience *is* the recipient list and the
+ * suppression ledger, because Firestore cannot be enumerated.
  */
 const AUDIENCE_NAME = "General"
 
@@ -63,8 +64,12 @@ const firestoreConsentStore: ConsentStore = {
     })
   },
 
+  // `subscribeContact`, not `ensureContact`: this runs only after somebody
+  // followed the signed, emailed confirmation link, so it is fresh express
+  // consent and is the one path permitted to clear an earlier unsubscribe.
+  // Ticket 08.
   async addToAudience(email) {
-    await addContact(await ensureAudience(AUDIENCE_NAME), email)
+    await subscribeContact(await ensureAudience(AUDIENCE_NAME), email)
   },
 }
 
