@@ -27,7 +27,7 @@ const BookmarksPage = () => {
       // only "has this visitor bookmarked anything at all", which cannot change
       // while they are on a route that shows nothing but bookmarks. Skipping the
       // fetch when the answer is no is what the pre-collapse route did, and
-      // fetching all 277 Recordings to then show none of them was a real cost.
+      // fetching every Recording to then show none of them was a real cost.
       const { ids } = parseRememberedIds(localStorage.getItem(BOOKMARKS_KEY))
       if (ids.length === 0) return
 

@@ -6,14 +6,14 @@ import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
-
-import { applySort, type SortType } from "@/hooks/use-sorted-data"
 import { cn } from "@/lib/utils"
+import { applySort, type SortType } from "@/hooks/use-sorted-data"
+
 import { CatalogueEmpty, type EmptyState } from "./catalogue-empty"
 import { FilterChips } from "./filter-chips"
 import { RecordingCard } from "./recording-card"
 
-/** How many Recordings one page of the grid renders. The catalogue is 277. */
+/** How many Recordings one page of the grid renders. */
 const PAGE_SIZE = 48
 
 /**
@@ -66,7 +66,7 @@ export interface RecordingCardGridProps {
    * panel. Absent on `/products` and `/bookmarks`, which show only the tabs.
    */
   hero?: React.ReactNode
-  /** The whole catalogue size, always 277 — never the filtered set. Used as the
+  /** The whole catalogue's size, never the filtered set. Used as the
    * denominator of the result line. Absent on `/bookmarks`, whose saved view has
    * no denominator. */
   catalogueTotal?: number
@@ -269,12 +269,12 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
         </div>
       </div>
       {/* Load more, Catalogue.dc.html:125-127. The label is derived rather than
-          the mock's flat `Load 48 more`: the last page is short — 277 less five
-          pages of 48 is 37 — and decision 2 is that nothing on screen lies.
+          the mock's flat `Load 48 more`: the last page is short, and decision 2
+          is that nothing on screen lies.
           `total` under it is the filtered count, not catalogueTotal: the heading
           row answers "how much of the catalogue is this", this line answers "how
-          much of this result set is on screen", and printing 277 under a
-          60-result search would be false. */}
+          much of this result set is on screen", and printing the catalogue's own
+          size under a 60-result search would be false. */}
       {hasMore && (
         <div className="flex w-full flex-col items-center gap-[11px] pb-[6px] pt-[42px]">
           <button

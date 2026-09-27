@@ -3,7 +3,7 @@
 // The Recording detail overlay. It replaces components/modal.tsx, which declared
 // `role="dialog" aria-modal="true"` while behaving as though it were not modal:
 // no portal, no focus trap, no Escape handler, no scroll lock, so focus stayed
-// reachable in the 277 cards behind it. Radix Dialog supplies all four.
+// reachable in the cards behind it. Radix Dialog supplies all four.
 //
 // The motion is settled by the Specimen (spec.md:58-67), which supersedes the
 // ui-ux-overhaul motion brief: enter 240ms ease-rise with an 8px rise, exit

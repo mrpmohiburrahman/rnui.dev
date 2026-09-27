@@ -36,7 +36,9 @@
 // are where both efforts' failure decisions are written down.
 
 import { NextResponse } from "next/server"
+import { getUniqueContributors } from "@/data/recording"
 
+import { canonicaliseContributor } from "@/lib/contributor-match"
 import { sendEmail } from "@/lib/resend"
 import { CONTACT_EMAIL } from "@/lib/sender-identity"
 import {
@@ -165,6 +167,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     // anything.
     return fail(Object.values(errors).join(" "), 400)
   }
+
+  // The catalogue's own spelling whenever the visitor's text means a Contributor
+  // the catalogue already credits, and the visitor's own words otherwise. The
+  // browser ran this before it posted (app/submit/submit-form.tsx) and it runs
+  // again here, because the name *is* a Contributor's identity — ADR-0009 — and a
+  // client does not get to decide one. It is idempotent, so running twice is free.
+  fields.contributor = canonicaliseContributor(
+    fields.contributor,
+    getUniqueContributors()
+  )
+
   if (!uploaded) {
     // Unreachable: a null file has already failed the `fileBytes` rule above.
     // This is the compiler being told what validateSubmission has guaranteed.

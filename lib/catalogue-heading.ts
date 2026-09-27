@@ -34,7 +34,7 @@ export function catalogueHeading(config: {
 
 /**
  * The mono result count under the heading. `shown` is the number of tiles
- * actually rendered and `catalogueTotal` is always the whole catalogue (277),
+ * actually rendered and `catalogueTotal` is always the whole catalogue's size,
  * not the filtered set — that one rule reproduces every value the mock draws.
  *
  * The forms win in this order and nothing else: placeholder space, the saved

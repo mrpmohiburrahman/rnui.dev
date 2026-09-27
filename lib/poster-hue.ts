@@ -1,7 +1,7 @@
 // lib/poster-hue.ts
 //
 // The one piece of non-obvious arithmetic behind `pnpm assets:measure`, split
-// out of the script so it can be unit-tested without fetching 277 Posters.
+// out of the script so it can be unit-tested without fetching any Poster.
 // lib/asset-path.ts is the precedent: a lib/ module whose consumers are mostly
 // scripts.
 //

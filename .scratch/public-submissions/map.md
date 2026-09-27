@@ -110,7 +110,19 @@ each says what overturning it would cost.
   `exclude` fails a test rather than silently de-listing the form. Preview hosts are already noindexed
   by `next.config.ts`, so none of this reaches a crawler before `main`. The phone sheet and the rail
   share the *facet model* rather than a list of links, recorded as a latent trap, not a live conflict.
-
+- [Suggest existing Contributor names on the submit form](issues/13-suggest-contributor-names.md) — The
+  name is a combobox over the **published** catalogue's 23 names, computed on the server and passed into
+  a now-client `submit-form.tsx`, so `@/data/*` still never enters a client chunk. Folding (case,
+  surrounding and repeated space, Unicode form) is for **matching only**: what submits is an existing
+  spelling, or the visitor's own words with whitespace tidied, and the endpoint canonicalises too, so
+  the maintainer's notification already carries the exact name. `CONTRIBUTOR NAME` replaces
+  `NAME TO CREDIT`, `autoComplete` is off, and picking an existing Contributor does **not** fill the
+  handles — they are per-Recording, so there is no Contributor-level set to fill from. `add-recording`
+  is untouched. The only thing making this a guarantee rather than a nudge is a data test: no two
+  catalogue names may fold to the same Contributor (ADR-0009). Found on the way: three `tests/e2e`
+  specs pinned the catalogue size at a literal 277 and were red. `recording-route.spec.ts` is fixed and
+  green; `headings.spec.ts` and `home.spec.ts` are still red against a design this branch no longer
+  renders, recorded as its own problem rather than papered over.
 
 ## Not yet specified
 

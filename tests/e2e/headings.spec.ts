@@ -1,5 +1,17 @@
 import { expect, test } from "@playwright/test"
 
+import { allRecordings } from "../../data/catalogue"
+
+/**
+ * The catalogue's size, read from the data rather than written down.
+ *
+ * It *was* written down, as 277, and this file went red the day the catalogue
+ * passed that figure — the app derives its number from this same array
+ * (`app/page.tsx` hands `stats.recordings = allRecordings.length` to the grid), so
+ * a literal here pins only how stale the test had become.
+ */
+const TOTAL = allRecordings.length
+
 // A CI run is not a site visit.
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
@@ -30,7 +42,7 @@ test.describe("heading rows", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: "Recent" })
     ).toBeVisible()
-    await expect(page.getByText("48 OF 277 · SORTED RECENT")).toBeVisible()
+    await expect(page.getByText(`48 OF ${TOTAL} · SORTED RECENT`)).toBeVisible()
     // Scoped to main: "RECORDINGS" also matches the header logo and
     // "CONTRIBUTORS" the rail's "CONTRIBUTORS · 24".
     const main = page.locator("main")
@@ -56,7 +68,7 @@ test.describe("heading rows", () => {
       page.getByRole("heading", { level: 1, name: "Buttons" })
     ).toBeVisible()
     // 20 is what data/buttons.ts actually holds, not the mock's 14.
-    await expect(page.getByText("20 OF 277 · 1 FILTER")).toBeVisible()
+    await expect(page.getByText(`20 OF ${TOTAL} · 1 FILTER`)).toBeVisible()
   })
 
   test("a category+contributor filter reads '<category>, by one contributor'", async ({
@@ -73,21 +85,21 @@ test.describe("heading rows", () => {
     ).toBeVisible()
   })
 
-  test("a search that matches nothing reads No matches at 0 OF 277", async ({
+  test("a search that matches nothing reads No matches at 0 OF the catalogue", async ({
     page,
   }) => {
     await page.goto("/products?search=zzzzzthisnotfound")
     await expect(
       page.getByRole("heading", { level: 1, name: "No matches" })
     ).toBeVisible()
-    await expect(page.getByText("0 OF 277 · 1 FILTER")).toBeVisible()
+    await expect(page.getByText(`0 OF ${TOTAL} · 1 FILTER`)).toBeVisible()
   })
 
   test("the result line keeps its reserved width and tabular figures", async ({
     page,
   }) => {
     await page.goto("/")
-    const line = page.getByText("48 OF 277 · SORTED RECENT")
+    const line = page.getByText(`48 OF ${TOTAL} · SORTED RECENT`)
     const box = await line.boundingBox()
     expect(box).not.toBeNull()
     expect(box!.width).toBeGreaterThanOrEqual(180)
@@ -98,6 +110,8 @@ test.describe("heading rows", () => {
     page,
   }) => {
     await page.goto("/products?sort=top-viewed")
-    await expect(page.getByText(/OF 277 · SORTED MOST VIEWED/)).toBeVisible()
+    await expect(
+      page.getByText(new RegExp(`OF ${TOTAL} · SORTED MOST VIEWED`))
+    ).toBeVisible()
   })
 })

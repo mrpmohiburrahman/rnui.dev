@@ -70,8 +70,8 @@ test("Load more states what it will load and how much is on screen", async ({
     )
   ).toBeVisible()
 
-  // 277 less five pages of 48 is 37, and decision 2 is that nothing on screen
-  // lies.
+  // The last page is short for any catalogue size that is not a multiple of 48,
+  // and decision 2 is that nothing on screen lies.
   await page.goto("/?page=5")
   const remaining = allRecordings.length - PAGE_SIZE * 5
   await expect(

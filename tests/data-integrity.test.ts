@@ -67,11 +67,43 @@ describe("catalog data integrity", () => {
   // because a fourth reader would need a fourth trim (ADR-0005).
   it("no contributor name carries leading or trailing whitespace", () => {
     const padded = allRecordings
-      .filter((recording) => recording.contributor !== recording.contributor.trim())
+      .filter(
+        (recording) => recording.contributor !== recording.contributor.trim()
+      )
       .map((recording) => `${recording.id}: "${recording.contributor}"`)
     expect(
       padded,
       `contributor names with surrounding whitespace:\n${padded.join("\n")}`
+    ).toHaveLength(0)
+  })
+
+  // The other half of the same property, and the half the submission form leans
+  // on: the form suggests an existing name as a visitor types and adopts the
+  // catalogue's spelling when the typed name means one of them. If two catalogue
+  // names fold to the same person, that suggestion is ambiguous and which of the
+  // two a visitor gets depends on array order. Nothing collides today; nothing
+  // prevented it before this either.
+  //
+  // The fold is restated here rather than imported from lib/contributor-match.ts,
+  // for ADR-0005's reason: a test that takes its expectation from the code under
+  // test can no longer catch that code being wrong. lib/contributor-match.ts is
+  // what the form runs; this is what the data must satisfy.
+  it("no two contributor names fold to the same Contributor", () => {
+    const fold = (name: string) =>
+      name.normalize("NFC").trim().replace(/\s+/g, " ").toLowerCase()
+
+    const byFolded = new Map<string, string[]>()
+    for (const name of new Set(allRecordings.map((r) => r.contributor))) {
+      const folded = fold(name)
+      byFolded.set(folded, [...(byFolded.get(folded) ?? []), name])
+    }
+
+    const collisions = [...byFolded.entries()]
+      .filter(([, names]) => names.length > 1)
+      .map(([folded, names]) => `"${folded}" <- ${names.join(" / ")}`)
+    expect(
+      collisions,
+      `Contributor names that are one person to the form:\n${collisions.join("\n")}`
     ).toHaveLength(0)
   })
 

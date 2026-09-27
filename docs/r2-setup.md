@@ -13,7 +13,7 @@ Background: [ADR-0001](adr/0001-assets-served-from-object-storage-not-the-repo.m
 | Zone | `rnui.dev` (`b8902b2df1b2f88edbc54ac0618387fe`) |
 | Bucket | `rnui-assets`, location hint WEUR, Standard storage |
 | Public URL | `https://cdn.rnui.dev` — an R2 **custom domain**, not `r2.dev` |
-| Objects | 554 — 277 Demos, 277 Posters, 74.1 MB against a 10 GB free tier |
+| Objects | 554 when this was written — 277 Demos, 277 Posters, 74.1 MB, against a 10 GB free tier. The catalogue has grown since, so re-measure before relying on this row |
 | Object metadata | `Cache-Control: public, max-age=31536000, immutable`, plus `video/mp4` or `image/avif` |
 
 The `r2.dev` development subdomain is deliberately unused: Cloudflare rate-limits
