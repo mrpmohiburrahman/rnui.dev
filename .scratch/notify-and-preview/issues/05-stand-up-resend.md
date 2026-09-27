@@ -397,6 +397,12 @@ the contact absent while the send proceeded believing it was there. `api()` now 
 to the thrown error and `addContact` matches the number. Two tests cover it, including the
 `409e0a1c-…-000000000409` id that reproduces the old bug.
 
+*(Superseded 2026-09-26: ticket 08 measured that `POST /audiences/{id}/contacts` is an **upsert** —
+it answers 201 for an address that already exists and there is no 409 at all. The status-matching fix
+above was therefore correct about a failure that never occurs, and both tests are replaced. The
+`addContact` it names is now `subscribeContact`, and the import path is `ensureContact`. See
+[Who owns "unsubscribed"](08-who-owns-unsubscribed.md).)*
+
 Also from the review: the contacts-page shape is now a named `ContactPage` type instead of being
 spelled out twice; `pathToFileURL(process.argv[1] ?? "")` matches `scrub-email-list.ts`'s handling of
 an undefined `argv[1]`; and `console.error(err)` keeps the stack the old `String(err)` discarded. The

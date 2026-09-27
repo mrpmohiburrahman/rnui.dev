@@ -150,6 +150,15 @@ reason to avoid that vendor, not a reason to send the email.
   `unsubscribed` **inside Resend and nowhere else** — Firestore never hears about it, which is the gap
   ticket 08 exists to close. Sending added nobody to the audience, and used 2 of the 100/day cap.
   [14](issues/14-verify-the-sending-channel.md)
+- "Unsubscribed" is owned by **Resend, on the contact itself**; Firestore keeps only the consent
+  record, because it can neither be listed nor read back once confirmed. The write path split in two —
+  `ensureContact` never clears the flag (imports, ticket 11, `broadcast:test`), `subscribeContact` may
+  and only the confirmation route calls it — because `POST /audiences/{id}/contacts` was **measured**
+  to be an upsert that answers 201 and resets `unsubscribed` to false, so the old `addContact`
+  quietly re-subscribed anyone who had opted out and the 409 it caught never arrived. Resend also
+  skips unsubscribed contacts when a broadcast fans out, so ticket 11's whole suppression check is
+  `ensureContact` before `createBroadcast`.
+  [08](issues/08-who-owns-unsubscribed.md)
 
 ## Not yet specified
 

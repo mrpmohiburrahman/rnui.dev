@@ -17,16 +17,16 @@
  *
  * No SDK — `resend` would be a dependency for four fetch calls.
  *
- * `resendRequest`, `ensureAudience` and `addContact` moved to lib/resend.ts when
- * ticket 06 needed them from the app as well; the sender identity moved to
+ * `resendRequest`, `ensureAudience` and the contact helpers moved to lib/resend.ts
+ * when ticket 06 needed them from the app as well; the sender identity moved to
  * lib/sender-identity.ts, which is where ticket 04 asked for it. What is left
  * here is what only a script ever does: broadcasts, and the guard below.
  */
 import { pathToFileURL } from "node:url"
 
 import {
-  addContact,
   ensureAudience,
+  ensureContact,
   resendRequest,
   type ContactPage,
 } from "../lib/resend"
@@ -87,6 +87,13 @@ export function refuseSendReason(page: ContactPage, to: string): string | null {
   const others = page.data.filter((c) => key(c.email) !== key(to))
   if (others.length) return `audience holds ${others.length} other contact(s)`
   if (page.has_more) return "audience holds more contacts than one page shows"
+  // Resend skips an unsubscribed contact when a broadcast fans out, so a test
+  // send to one delivers nothing while still reporting `sent broadcast …`. That
+  // is the wrong kind of silence, so it is refused instead (ticket 08).
+  const self = page.data.find((c) => key(c.email) === key(to))
+  if (self?.unsubscribed) {
+    return `${to} has unsubscribed, so the send would reach nobody`
+  }
   return null
 }
 
@@ -111,8 +118,13 @@ marketing, and your address is never shared.
 async function main() {
   const to = process.argv[2] ?? "mrpmohiburrahman@gmail.com"
   const audienceId = await ensureAudience("General")
-  await addContact(audienceId, to)
-  const page = await resendRequest<ContactPage>(`/audiences/${audienceId}/contacts`)
+  // `ensureContact`, not `subscribeContact`: a test send must never re-subscribe
+  // somebody who opted out. If the maintainer has unsubscribed, the guard below
+  // now refuses rather than reporting a send that reached nobody.
+  await ensureContact(audienceId, to)
+  const page = await resendRequest<ContactPage>(
+    `/audiences/${audienceId}/contacts`
+  )
   const reason = refuseSendReason(page, to)
   if (reason) {
     throw new Error(

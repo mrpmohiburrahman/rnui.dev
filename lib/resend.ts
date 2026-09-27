@@ -4,9 +4,14 @@
 // dependency for a handful of fetch calls.
 //
 // Lifted out of scripts/resend-broadcast.ts by notify-and-preview ticket 06,
-// which needs `sendEmail` for the double-opt-in confirmation and `addContact`
-// for the moment a pending address becomes a Subscriber. The script kept what is
-// only ever a script's: broadcasts, and the guard that refuses a test send.
+// which needs `sendEmail` for the double-opt-in confirmation and a way to put a
+// confirmed address in the audience. The script kept what is only ever a
+// script's: broadcasts, and the guard that refuses a test send.
+//
+// Ticket 08 split the contact write in two, and the split is the decision:
+// `ensureContact` creates only when absent and can never clear `unsubscribed`,
+// so an import cannot resurrect someone who opted out; `subscribeContact` may
+// clear it, and only the confirmation route calls it.
 //
 // RESEND_API_KEY is read per call rather than at import. It carries no
 // NEXT_PUBLIC_ prefix, so it is never inlined into a client bundle, and reading
@@ -46,8 +51,14 @@ export async function resendRequest<T>(
 
 type Audience = { id: string; name: string }
 
+/**
+ * A contact as Resend reports it. `unsubscribed` is the whole of the
+ * suppression state — there is no second ledger (notify-and-preview ticket 08).
+ */
+export type Contact = { email: string; unsubscribed: boolean }
+
 /** One page of `GET /audiences/{id}/contacts`. */
-export type ContactPage = { data: { email: string }[]; has_more?: boolean }
+export type ContactPage = { data: Contact[]; has_more?: boolean }
 
 export async function ensureAudience(name: string): Promise<string> {
   const { data } = await resendRequest<{ data: Audience[] }>("/audiences")
@@ -60,19 +71,63 @@ export async function ensureAudience(name: string): Promise<string> {
   return created.id
 }
 
-/** Resend 409s on a duplicate address, which is a no-op here, not a failure. */
-export async function addContact(
+/** One contact by address, or null. A `get`, never a `list`. */
+export async function getContact(
+  audienceId: string,
+  email: string
+): Promise<Contact | null> {
+  try {
+    return await resendRequest<Contact>(
+      `/audiences/${audienceId}/contacts/${email}`
+    )
+  } catch (err) {
+    // 404 is "no such contact", which is a normal answer here, not a failure.
+    // Matched on the number, not on the message: the message interpolates the
+    // request path, so an audience id holding the digits would match text alone.
+    if ((err as { status?: number }).status === 404) return null
+    throw err
+  }
+}
+
+/**
+ * Creates the contact if it is absent and does nothing at all if it is present.
+ *
+ * **This is the import path, and "does nothing at all" is the whole of ticket
+ * 08.** `POST /audiences/{id}/contacts` is an *upsert*: measured 2026-09-26, it
+ * answers 201 for an address that already exists and writes `unsubscribed:
+ * false` when the field is absent from the body, so posting an address that has
+ * opted out silently re-subscribes them and the next broadcast mails them. The
+ * old `addContact` did exactly that, and its 409 catch — the thing that was
+ * supposed to make a duplicate a no-op — never ran, because there is no 409.
+ *
+ * So a bulk import, a re-run, or ticket 11's audience step must come through
+ * here: reading first is what makes "never resurrect" structural rather than a
+ * rule everyone has to remember. `subscribeContact` below is the one path
+ * allowed to clear the flag, and it needs the address owner to click.
+ */
+export async function ensureContact(
   audienceId: string,
   email: string
 ): Promise<void> {
-  try {
-    await resendRequest(`/audiences/${audienceId}/contacts`, {
-      method: "POST",
-      body: JSON.stringify({ email, unsubscribed: false }),
-    })
-  } catch (err) {
-    if ((err as { status?: number }).status !== 409) throw err
-  }
+  if (await getContact(audienceId, email)) return
+  await subscribeContact(audienceId, email)
+}
+
+/**
+ * Creates the contact, or re-subscribes one that is already there. Only the
+ * confirmation route calls this: it runs after somebody followed a link that was
+ * mailed to the address and signed by this server, which is fresh express
+ * consent and is the one thing that legitimately overrides an earlier
+ * unsubscribe. Nothing unattended may call it.
+ */
+export async function subscribeContact(
+  audienceId: string,
+  email: string
+): Promise<void> {
+  await resendRequest(`/audiences/${audienceId}/contacts`, {
+    method: "POST",
+    body: JSON.stringify({ email, unsubscribed: false }),
+  })
 }
 
 /**
