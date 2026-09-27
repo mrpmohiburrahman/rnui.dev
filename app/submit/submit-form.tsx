@@ -459,7 +459,8 @@ export default function SubmitForm({
         className="mt-[18px] max-w-[520px] rounded-panel border border-line bg-well p-3.5"
       >
         <div className="flex flex-col gap-[12px]">
-          <div className="flex flex-col gap-[4px]">
+          {/* `relative`, so the suggestion panel below anchors to this field. */}
+          <div className="relative flex flex-col gap-[4px]">
             <FieldLabel htmlFor="contributor">CONTRIBUTOR NAME</FieldLabel>
             {/* A combobox, and the input owns it: focus never leaves the field,
                 the list is pointed at with `aria-activedescendant`, and Escape
@@ -486,42 +487,60 @@ export default function SubmitForm({
               }
             />
             <FieldError message={errors.contributor} />
-            {/* The typed name means somebody the catalogue already credits. Said
-                out loud rather than silently corrected, because the spelling
-                belongs to a real person and this is the last moment anybody can
-                see it change. */}
-            {existing && (
-              <p className="m-0 pt-[3px] text-[11px] leading-[1.4] text-t2">
-                Existing Contributor. This will be credited to{" "}
-                <span className="text-t1">{existing}</span>.
-              </p>
-            )}
-            {suggestions.length > 0 && (
-              <ul
-                id={SUGGESTION_LIST_ID}
-                role="listbox"
-                aria-label="Existing Contributors"
-                className="m-0 flex list-none flex-col overflow-hidden rounded-[10px] border border-line bg-well p-0"
-              >
-                {suggestions.map((name, i) => (
-                  <li
-                    key={name}
-                    id={`${SUGGESTION_LIST_ID}-${i}`}
-                    role="option"
-                    aria-selected={i === activeSuggestion}
-                    // `onMouseDown` as well as `onClick`: the default press
-                    // would blur the input before the click landed, closing the
-                    // list the click was aimed at.
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => chooseContributor(name)}
-                    className={`cursor-pointer px-[11px] py-[6px] text-[12.5px] text-t1 ${
-                      i === activeSuggestion ? "bg-field" : ""
-                    }`}
+            {/* The matches float OVER the fields below rather than sitting in the
+                column between them. They were a block in this flex column at
+                first, which pushed EMAIL, CAPTION and everything under them down
+                the moment a suggestion appeared — a form that jumps while you
+                type. `absolute` against this field's own `relative` wrapper moves
+                nothing.
+
+                The cost, recorded because it is deliberate: while the panel is
+                open it covers the next field's label. It closes on Escape, on a
+                pick, and as soon as the text stops matching. Three shapes were
+                built side by side and driven before this one was chosen — this
+                anchored panel, an inline grey completion inside the field, and a
+                card pinned to the viewport. Ticket 13's follow-up. */}
+            {(suggestions.length > 0 || existing) && (
+              <div className="absolute inset-x-0 top-full z-20 mt-[4px] overflow-hidden rounded-[10px] border border-line bg-well shadow-[0_12px_34px_rgba(0,0,0,0.5)]">
+                {/* The typed name already means somebody the catalogue credits.
+                    Said out loud rather than silently corrected, because the
+                    spelling belongs to a real person and this is the last moment
+                    anybody can watch it change. */}
+                {existing && (
+                  <p className="m-0 border-b border-line px-[11px] py-[6px] text-[11px] leading-[1.4] text-t2">
+                    Existing Contributor · credited as{" "}
+                    <span className="text-t1">{existing}</span>
+                  </p>
+                )}
+                {suggestions.length > 0 && (
+                  <ul
+                    id={SUGGESTION_LIST_ID}
+                    role="listbox"
+                    aria-label="Existing Contributors"
+                    className="m-0 flex list-none flex-col p-0"
                   >
-                    {name}
-                  </li>
-                ))}
-              </ul>
+                    {suggestions.map((name, i) => (
+                      <li
+                        key={name}
+                        id={`${SUGGESTION_LIST_ID}-${i}`}
+                        role="option"
+                        aria-selected={i === activeSuggestion}
+                        // `onMouseDown` as well as `onClick`: the default press
+                        // would blur the input before the click landed, closing
+                        // the list the click was aimed at.
+                        onMouseDown={(e) => e.preventDefault()}
+                        onMouseEnter={() => setActiveSuggestion(i)}
+                        onClick={() => chooseContributor(name)}
+                        className={`cursor-pointer px-[11px] py-[6px] text-[12.5px] leading-[1.3] text-t1 ${
+                          i === activeSuggestion ? "bg-field" : ""
+                        }`}
+                      >
+                        {name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
 
