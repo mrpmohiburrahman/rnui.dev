@@ -12,6 +12,8 @@ export default defineConfig({
     // `.claude/**` for the scratch worktrees a coding agent checks out inside
     // the repo: each is a second copy of tests/, so the same suite was
     // collected twice and the reported count doubled.
-    exclude: ["**/node_modules/**", "**/tests/e2e/**", ".claude/**"],
+    // `tests/tour/**` holds Playwright specs (ticket 14's before/after tour) that
+    // run under playwright.tour.config.ts, not the unit runner.
+    exclude: ["**/node_modules/**", "**/tests/e2e/**", "**/tests/tour/**", ".claude/**"],
   },
 })

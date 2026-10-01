@@ -11,6 +11,10 @@
     "check:videos:production": "bash scripts/check-video-codecs.sh --production",
     "assets:paths": "tsx scripts/asset-paths.ts",
     "assets:publish": "tsx scripts/publish-assets.ts",
+    "assets:measure": "tsx scripts/measure-demos.ts",
+    "submissions:open": "tsx scripts/open-submission.ts",
+    "submissions:notify": "tsx scripts/notify-submission.ts",
+    "submissions:outcome": "tsx scripts/send-outcome.ts",
     "posters:generate": "tsx scripts/generate-posters.ts",
     "check-types": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
@@ -18,11 +22,18 @@
     "postbuild": "next-sitemap",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
     "metrics:update": "tsx scripts/metrics-update.ts",
+    "scrub:emails": "tsx scripts/scrub-email-list.ts",
+    "scrub:group": "tsx scripts/group-email-list.ts",
+    "rules:verify": "tsx scripts/verify-firestore-rules.ts",
+    "rules:deploy": "pnpm rules:verify && firebase deploy --only firestore:rules",
+    "broadcast:test": "tsx scripts/resend-broadcast.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "0.12.15",
+    "@ffmpeg/util": "0.12.2",
     "@hookform/resolvers": "^3.9.1",
     "@posthog/nextjs-config": "^1.9.68",
     "@radix-ui/react-avatar": "^1.1.2",
@@ -98,5 +109,6 @@
     "overrides": {
       "zod-validation-error": "^4.0.0"
     }
-  }
+  },
+  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065"
 }

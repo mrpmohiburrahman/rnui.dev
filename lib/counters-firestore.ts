@@ -23,8 +23,15 @@ import { db } from "@/lib/firebase"
 /**
  * The one declaration of the collection name in the counter path. It used to be
  * written out separately in each of the four places that touched it.
+ *
+ * Exported (only the keyword changed — the value and the warning below are
+ * untouched) so app/api/counters-collection/route.ts can echo it back. That
+ * route is how tests/e2e/global-setup.ts finds out what THIS RUNNING SERVER
+ * was built with, since NEXT_PUBLIC_* is inlined at build time and a test
+ * process's own env says nothing about a server someone already started.
  */
-const COLLECTION_NAME = process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
+export const COLLECTION_NAME =
+  process.env.NEXT_PUBLIC_FIRESTORE_COLLECTION || "rnui"
 
 // The fallback is the *production* collection, so an unset variable means a local
 // run or a preview deploy quietly counting against real numbers. It used to fire

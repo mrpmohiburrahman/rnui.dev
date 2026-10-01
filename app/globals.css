@@ -2,6 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
+/* The design canvas is 1440 wide. Every figure in the drawing — the 265 rail,
+   the 208 tracks, the 14.5px tile title — is a measurement taken at that width,
+   so on a wider display the site laid all of them out at their literal pixel
+   size and left the rest of the window as a dead gutter: at 1680 the grid fit a
+   sixth column the drawing does not have and every glyph read a sixth smaller
+   than the drawing does. Scaling the canvas to the window fixes both at once —
+   five columns, no gutter, type at the size it was drawn.
+
+   `zoom` rather than `transform: scale()`: zoom scales the layout itself, so
+   the document keeps its real height, `position: fixed` still means the window,
+   and nothing needs a compensating width. Media queries are the reason this can
+   be pure CSS with no feedback loop — Chrome evaluates them against the
+   unzoomed viewport, measured: at a 1680 window with `zoom: 1.15` applied,
+   `innerWidth` still reads 1680 and `matchMedia('(min-width: 1441px)')` still
+   reports true, while `body.scrollWidth` reads 1461. A rule keyed on the width
+   it just changed would otherwise oscillate.
+
+   Steps rather than a continuous ratio because CSS cannot divide a viewport
+   length into a unitless number. Every step lands the layout between 1429 and
+   1467 — inside 2% of the canvas. Capped at 1.5: past that the proportions are
+   still the drawing's but the type is bigger than anyone asked for, and the
+   honest answer at 2560 is a wider layout, not a magnified one.
+
+   The name matters. tests/design-tokens.test.ts finds the palette by splitting
+   this file on `@layer base {` and keeping the first block whose text contains
+   the canvas token's name; a variable declared up here that merely starts with
+   that name satisfies the substring, so the preamble wins the search and all 28
+   palette assertions then read an empty block. This was called canvas-zoom
+   first and did exactly that. Anything new declared above the palette layer
+   needs a name that no palette token is a prefix of — and note that prose in
+   this comment counts as text too.
+
+   Below 1500 nothing applies — the phone and tablet forms are drawn at their
+   own widths (CatalogueMobile.dc.html) and must not be scaled, and 1440 itself
+   is already the canvas. */
+html {
+  --ui-zoom: 1;
+  zoom: var(--ui-zoom);
+}
+@media (min-width: 1500px) {
+  html {
+    --ui-zoom: 1.05;
+  }
+}
+@media (min-width: 1580px) {
+  html {
+    --ui-zoom: 1.1;
+  }
+}
+@media (min-width: 1660px) {
+  html {
+    --ui-zoom: 1.15;
+  }
+}
+@media (min-width: 1740px) {
+  html {
+    --ui-zoom: 1.2;
+  }
+}
+@media (min-width: 1820px) {
+  html {
+    --ui-zoom: 1.26;
+  }
+}
+@media (min-width: 1910px) {
+  html {
+    --ui-zoom: 1.32;
+  }
+}
+@media (min-width: 2000px) {
+  html {
+    --ui-zoom: 1.38;
+  }
+}
+@media (min-width: 2090px) {
+  html {
+    --ui-zoom: 1.45;
+  }
+}
+@media (min-width: 2180px) {
+  html {
+    --ui-zoom: 1.5;
+  }
+}
+
+/* Radix poppers, un-double-scaled. The zoom above broke every one of them, and
+   the mode toggle — the only dropdown this site renders — could not be opened
+   at all above 1500px: the menu was there and `data-state="open"`, just painted
+   past the right edge of the window.
+
+   Radix positions a popper by reading the trigger's getBoundingClientRect,
+   which is in visual pixels and therefore already carries the zoom, and then
+   writing that number as a `transform: translate()` on a wrapper that lives
+   *inside* the zoomed subtree — where it is scaled a second time. Measured at a
+   1680 window: trigger right edge 1650, wrapper translate 1522, menu painted at
+   x=1750 in a 1680-wide viewport.
+
+   Cancelling the zoom on the wrapper puts its transform back in visual
+   coordinates, and re-applying it to the content restores the size. After:
+   menu right edge 1650, exactly the trigger's. At or below 1440 `--ui-zoom` is
+   1, both calcs are 1, and this is inert.
+
+   It keys on the wrapper's own attribute rather than on a component, so the
+   tooltip primitive is covered by the same two rules without knowing about
+   them. Any future popper is too. */
+[data-radix-popper-content-wrapper] {
+  zoom: calc(1 / var(--ui-zoom));
+}
+[data-radix-popper-content-wrapper] > * {
+  zoom: var(--ui-zoom);
+}
+
 @layer base {
   :root {
     --background: 0 0% 98%;
@@ -66,20 +178,635 @@
   }
 }
 
+/* Studio Dark — the design system, assets/new-ui/Specimen.dc.html:101-167.
+   Tokens are the mocks' own keys, kebab-cased, so a reader can diff the
+   Specimen's PAL against this block by eye. The thirteen shadcn tokens above
+   keep dressing components/ui/ and are deliberately not repointed: that would
+   restyle every Radix primitive at once with no mock to check it against.
+
+   Text contrast on their own backgrounds, measured 2026-08-01 (spec.md):
+     dark  acc on canvas 12.69, t3 on panel 6.15
+     light t1 on canvas 16.44, t3 on canvas 4.86, acc on canvas 5.43
+   The Specimen prints its own slightly different figures for the same pairs —
+   16.8/9.5/5.7/11.9 dark and 15.4/7.5/5.1/4.9 light, both sets clearing 4.5:1.
+   The numbers above are the ones actually measured, and are the budget an edit
+   to any text token spends.
+
+   --fail is ticket 12's: #F5B3A4 drawn once on Tile.dc.html:21 (dark only) was
+   promoted to a token with a light counterpart. Measured 2026-08-04:
+     dark  fail #F5B3A4 on canvas #0A0B0D 11.13, on panel #101216 10.59
+     light fail #9E3A2C on canvas #F4F4F1 6.16, on panel #FFFFFF 6.78 */
+@layer base {
+  :root {
+    --canvas: #F4F4F1;
+    --panel: #FFFFFF;
+    --rail: #EFEFEB;
+    --header: rgba(244,244,241,0.94);
+    --line: rgba(16,18,22,0.13);
+    --line2: rgba(16,18,22,0.24);
+    --t1: #14161A;
+    --t2: #4F545C;
+    --t3: #666B74;
+    --acc: #0E7062;
+    --acc-soft: rgba(14,112,98,0.09);
+    --on-acc: #FFFFFF;
+    --field: #FFFFFF;
+    --filter-bar: #FFFFFF;
+    --empty: #FBFBF9;
+    --x-bg: rgba(16,18,22,0.10);
+    --scrim: rgba(24,26,30,0.52);
+    --skel: rgba(16,18,22,0.07);
+    --new-fg: #5C4204;
+    --raise: #FFFFFF;
+    --plinth: #080A0E;
+    --ctrl: #FFFFFF;
+    --well: #FBFBF9;
+    --bar-track: rgba(16,18,22,0.10);
+    --bar-fill: rgba(16,18,22,0.34);
+    --new-bg: rgba(255,238,190,0.94);
+    --dock: rgba(239,239,235,0.96);
+    --fail: #9E3A2C;
+
+    /* The tile's own fallback hue, Tile.dc.html:75. Not mode-dependent: an
+       unmeasured Recording glows the site's own green rather than an arbitrary
+       colour. Ticket 07 overwrites it per tile from the hue ticket 03 writes. */
+    --tile-hue: 175;
+
+    --e0: 0 0 0 1px rgba(16,18,22,0.10);
+    --e1: 0 0 0 1px rgba(16,18,22,0.10),
+      0 20px 44px -22px hsla(var(--tile-hue),55%,40%,0.55);
+    --e2: 0 40px 100px -30px rgba(16,18,22,0.45);
+
+    /* E1 at detail scale — the Recording detail's media box, which is not the
+       tile's --e1 (the numbers differ in every term, so it is declared apart
+       rather than reused). Keys on --tile-hue the way the tile does; the mock's
+       literal 290 is the Specimen's fixed illustration, and ticket 07 sets the
+       hue per Recording from the measurement ticket 03 writes. Ticket 09. */
+    --media-glow: 0 0 0 1px rgba(16,18,22,0.10),
+      0 34px 80px -32px hsla(var(--tile-hue),55%,40%,0.55);
+  }
+
+  .dark {
+    --canvas: #0A0B0D;
+    --panel: #101216;
+    --rail: #0C0D11;
+    --header: rgba(10,11,13,0.92);
+    --line: rgba(255,255,255,0.11);
+    --line2: rgba(255,255,255,0.22);
+    --t1: #F1F2F4;
+    --t2: #B2B8C2;
+    --t3: #8E949F;
+    --acc: #6FE3CC;
+    --acc-soft: rgba(111,227,204,0.13);
+    --on-acc: #06120F;
+    --field: rgba(255,255,255,0.045);
+    --filter-bar: rgba(255,255,255,0.03);
+    --empty: rgba(255,255,255,0.02);
+    --x-bg: rgba(255,255,255,0.13);
+    --scrim: rgba(4,5,8,0.74);
+    --skel: rgba(255,255,255,0.07);
+    --new-fg: #F3DEA6;
+    --raise: #15181D;
+    --plinth: #05060A;
+    --ctrl: rgba(255,255,255,0.04);
+    --well: rgba(255,255,255,0.03);
+    --bar-track: rgba(255,255,255,0.09);
+    --bar-fill: rgba(255,255,255,0.34);
+    --new-bg: rgba(235,208,138,0.22);
+    --dock: rgba(12,13,17,0.94);
+
+    --fail: #F5B3A4;
+
+    --e0: 0 0 0 1px rgba(255,255,255,0.07);
+    --e1: 0 0 0 1px hsla(var(--tile-hue),60%,60%,0.24),
+      0 22px 60px -20px hsla(var(--tile-hue),70%,55%,0.45);
+    --e2: 0 40px 120px -30px rgba(0,0,0,0.9);
+    --media-glow: 0 0 0 1px hsla(var(--tile-hue),60%,62%,0.26),
+      0 40px 120px -30px hsla(var(--tile-hue),70%,58%,0.5);
+  }
+}
+
+/* The Specimen's "all durations 0ms" (Specimen.dc.html:95) applied to CSS
+   transitions and animations. components/demo-tile.tsx already ships the
+   harder half of that rule — no <video> is mounted at all under reduced
+   motion — and is unmodified here. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+/* The tile's media box, Ticket 07 (Tile.dc.html:83-99). Two properties change
+   between resting and playing: the elevation (E0 hairline vs E1 emission, which
+   keys on --tile-hue) and the brightness (a resting tile dims so a playing one
+   reads brighter). The mode is the `.dark` class next-themes puts on <html>;
+   `playing` is the data-playing attribute the tile toggles on itself. A playing,
+   failed or loading tile carries no filter. Under prefers-reduced-motion the dim
+   does not exist at all — no <video> mounts, so nothing is ever playing to be
+   brighter than, and dimming would hand those visitors a permanently darkened
+   catalogue (Specimen.dc.html:95).
+
+   Source order is load-bearing: the [data-playing] rules come after the .dark
+   ones, and the motion blocks last, so each equal-specificity pair is decided
+   by what follows it. The 220ms transition (Specimen.dc.html:162) sits behind
+   `@media not (prefers-reduced-motion: reduce)` — the CSS equivalent of the
+   ticket's motion-reduce: reset — because under reduced motion no <video> ever
+   mounts, `playing` is never true, and a resting-by-default dim would hand
+   those visitors a permanently darkened catalogue.
+
+   The wash, the hatch and the notch are their own layers (`.tile-wash` and
+   friends below) rather than the box's background-image, but they sit *behind*
+   the Poster and the <video>. Tile.dc.html draws them over the plinth because
+   it has no recording to draw — there the wash stands in for one. Over a real
+   screen capture the same stacking tints every white app UI green and rules
+   diagonal stripes across it, so they are the plinth's treatment instead: what
+   shows before the Poster loads, and in the letterbox of anything not exactly
+   9:16.
+
+   The consequence is worth stating plainly, because it is the one place this
+   build knowingly reads differently from the drawing: the drawing's tiles are
+   dark, hue-tinted objects, and ours are the recordings at their own
+   brightness. The wash bottoms out at `rgba(0,0,0,0.62)` — over a near-black
+   plinth that does nothing, over a white recording it is the entire effect. */
+.tile-media {
+  box-shadow: var(--e0), 0 8px 20px -16px rgba(8, 10, 14, 0.5);
+  filter: brightness(0.9);
+}
+
+.dark .tile-media {
+  box-shadow: var(--e0);
+  filter: brightness(0.78) saturate(0.85);
+}
+
+.tile-media[data-playing] {
+  box-shadow: var(--e1);
+  filter: none;
+}
+
+/* The three layers the drawing paints over the media, tile and detail alike.
+   Both boxes draw the same three things at slightly different numbers, which is
+   why the detail overrides rather than reuses (Detail.dc.html:31-33 against
+   Tile.dc.html:12-14). Not in the transition list: the wash switches with the
+   playback state and the drawing does not animate it. */
+.tile-wash,
+.tile-hatch,
+.tile-notch,
+.detail-wash,
+.detail-hatch,
+.detail-notch {
+  position: absolute;
+  pointer-events: none;
+}
+
+.tile-wash,
+.tile-hatch,
+.detail-wash,
+.detail-hatch {
+  inset: 0;
+}
+
+.tile-wash {
+  background-image:
+    radial-gradient(
+      72% 48% at 50% 27%,
+      hsla(var(--tile-hue), 50%, 52%, 0.2),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 40%, 32%, 0.14),
+      rgba(0, 0, 0, 0.66)
+    );
+}
+
+.tile-media[data-playing] .tile-wash {
+  background-image:
+    radial-gradient(
+      72% 48% at 50% 27%,
+      hsla(var(--tile-hue), 72%, 64%, 0.46),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 55%, 42%, 0.24),
+      rgba(0, 0, 0, 0.62)
+    );
+}
+
+.tile-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.055) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.tile-notch {
+  left: 14px;
+  right: 14px;
+  top: 11px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+/* The detail's own figures (Detail.dc.html:31-33). Its wash is drawn only in
+   the playing state there, but the drawing has one state per file; the tile is
+   the one that draws both, so the resting wash is taken from it. */
+.detail-wash {
+  background-image:
+    radial-gradient(
+      70% 46% at 50% 26%,
+      hsla(var(--tile-hue), 50%, 52%, 0.2),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 40%, 32%, 0.14),
+      rgba(0, 0, 0, 0.66)
+    );
+}
+
+.detail-media[data-state="playing"] .detail-wash {
+  background-image:
+    radial-gradient(
+      70% 46% at 50% 26%,
+      hsla(var(--tile-hue), 72%, 64%, 0.46),
+      transparent 74%
+    ),
+    linear-gradient(
+      180deg,
+      hsla(var(--tile-hue), 55%, 42%, 0.24),
+      rgba(0, 0, 0, 0.62)
+    );
+}
+
+.detail-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.detail-notch {
+  left: 18px;
+  right: 18px;
+  top: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+@media not (prefers-reduced-motion: reduce) {
+  .tile-media,
+  .dark .tile-media,
+  .tile-media[data-playing] {
+    transition:
+      filter 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-media,
+  .dark .tile-media,
+  .tile-media[data-playing] {
+    filter: none;
+  }
+}
+
+/* The phone chips row's own scrollbar, hidden (CatalogueMobile.dc.html:25
+   draws overflow:hidden; a real 320px viewport needs horizontal scroll for the
+   second chip, and the scrollbar is the part the drawing leaves out). */
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* The filter sheet's one motion moment, Specimen.dc.html:166 — "Bottom sheet
+   (mobile) · 260ms spring, no overshoot" — as the decelerate curve the 220ms
+   and 240ms moments already use. A critically damped spring and a decelerate
+   cubic-bezier are the same shape; "no overshoot" is what makes them
+   interchangeable. Transform and opacity only, so both directions are
+   composited and cost the main thread nothing after the class flips.
+
+   Written here rather than as tailwindcss-animate utilities on the element,
+   after that cost two wrong builds. `animate-in` carries the plugin's own
+   150ms and is reached through a variant, so `[data-state=open].animate-in`
+   outranks a bare `duration-*`; and `duration-260` itself is owned by two
+   plugins at once — Tailwind core writes `transition-duration` under that name
+   and tailwindcss-animate writes `animation-duration` — so which property the
+   class ends up setting depends on emission order. Neither is something a
+   component should be depending on. The figures are still ticket 02's tokens,
+   read through theme().
+
+   Keyframes, not transitions, twice over: Radix portals the panel in already
+   carrying data-state="open", so a transition has no starting frame to leave
+   and the enter never plays; and Radix's Presence holds a closing node mounted
+   by watching animationend, which a transition never fires, so a transitioned
+   exit is unmounted before it paints. Both failures look identical from
+   outside — the sheet simply appears and vanishes.
+
+   The reduced-motion block below is not a local repeat of the `*` rule at
+   :168-176, which was the first guess and is wrong: that rule zeroes
+   `animation-duration`, and a 0s animation still applies its keyframes for one
+   frame. On the close that frame is `translateY(100%)` — the panel paints once
+   slid off the bottom before Radix unmounts it, which is exactly the
+   intermediate frame the Specimen's "all durations 0ms" is about. `animation:
+   none` is what actually stops it: no animation-name, so no keyframe is ever
+   applied, and Radix's Presence unmounts in the same tick. The two rules set
+   different properties, so the shorthand here wins without !important. */
+@layer utilities {
+  .sheet-scrim[data-state="open"] {
+    animation: sheet-scrim-in theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-scrim[data-state="closed"] {
+    animation: sheet-scrim-out theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-panel[data-state="open"] {
+    animation: sheet-panel-in theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+  .sheet-panel[data-state="closed"] {
+    animation: sheet-panel-out theme(transitionDuration.260)
+      theme(transitionTimingFunction.rise);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet-scrim[data-state],
+    .sheet-panel[data-state] {
+      animation: none;
+    }
+  }
+}
+
+@keyframes sheet-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes sheet-panel-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes sheet-panel-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* The state chip, Ticket 07 step 5 (Tile.dc.html:26-28, 102-105). Its text is
+   CSS `::before` rather than DOM text on purpose: the resting label reads
+   `❙❙ PAUSED` for one visitor and `❙❙ STILLS ONLY` for another, and a text
+   node that differs between the served HTML and hydration would fail the
+   hydration test. Generated content is invisible to React, so the same empty
+   element serves both. The live state derives from the media box's own
+   data-playing attribute; the reduced-motion override is last so it wins. */
+.state-chip {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  background: rgba(4, 6, 10, 0.62);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.state-chip::before {
+  content: "❙❙ PAUSED";
+}
+
+.tile-media[data-playing] .state-chip {
+  background: rgba(6, 20, 18, 0.72);
+  color: #8ff0dc;
+}
+
+.dark .tile-media[data-playing] .state-chip {
+  background: rgba(111, 227, 204, 0.2);
+  color: #8ff0dc;
+}
+
+.tile-media[data-playing] .state-chip::before {
+  content: "● LIVE";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-media .state-chip,
+  .tile-media[data-playing] .state-chip {
+    background: rgba(4, 6, 10, 0.62);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .tile-media .state-chip::before,
+  .tile-media[data-playing] .state-chip::before {
+    content: "❙❙ STILLS ONLY";
+  }
+}
+
+/* The Recording detail's media chrome, Ticket 09 step 3 (Detail.dc.html:35-38).
+   The centre label's static prefix (the measured aspect, e.g. `9:16`) is a React
+   text node; the state suffix and the pip are CSS `::before`/`::after` content,
+   keyed on the box's own `data-state` — playing / failed / still — which the
+   component derives from the <video> it holds. Same shape as the tile's state
+   chip: the reduced-motion variant would otherwise be a hydration mismatch
+   (generated content is invisible to React), and `data-state` is client-only,
+   set after a click or an error.
+
+   `still` is the default; the repeated `data-state="still"` selectors below exist
+   so the reduced-motion block can override them with a media query. */
+.detail-media-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Clear of the play control, which only exists in the `still` state — the
+   drawing has no such control (its media is always live), so it centres this
+   caption on the box and nothing contends for the middle. Here a 40px circle
+   sits dead centre and the caption ran straight under it: measured on the page
+   form, caption x139-276 / y442-455 against the circle's x187-227 / y429-469.
+
+   20 clears the circle's half-height, 10 is the gap, 6 is the caption's own
+   half-height. In `playing` and `failed` the control is gone and the caption
+   stays exactly where the drawing puts it. */
+.detail-media[data-state="still"] .detail-media-center {
+  transform: translate(-50%, calc(-50% + 36px));
+}
+
+.detail-media-center::after {
+  content: " · STILL FRAME";
+}
+
+.detail-media[data-state="playing"] .detail-media-center::after {
+  content: " · PLAYING · MUTED · LOOPING";
+}
+
+.detail-media[data-state="failed"] .detail-media-center::after {
+  content: " · UNAVAILABLE";
+}
+
+.detail-pip {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(4, 6, 10, 0.62);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.detail-pip::before {
+  content: "❙❙ PAUSED";
+}
+
+.detail-media[data-state="playing"] .detail-pip {
+  background: rgba(111, 227, 204, 0.2);
+  color: #8ff0dc;
+}
+
+.detail-media[data-state="playing"] .detail-pip::before {
+  content: "● LIVE";
+}
+
+.detail-media[data-state="failed"] .detail-pip {
+  display: none;
+}
+
+.detail-noaudio {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(4, 6, 10, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.detail-media-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  font-size: 9px;
+  letter-spacing: 0.11em;
+  color: var(--t3);
+}
+
+/* Under reduced motion the box shows stills only, whatever its data-state — a
+   press is allowed to play, but the chrome says the still it arrived on
+   (`Specimen.dc.html:95`: "all durations 0ms", and poster-only tiles). Placed
+   last so it wins over the playing rules above. */
+@media (prefers-reduced-motion: reduce) {
+  .detail-media .detail-media-center::after,
+  .detail-media[data-state="playing"] .detail-media-center::after {
+    content: " · STILLS ONLY";
+  }
+
+  .detail-media .detail-pip,
+  .detail-media[data-state="playing"] .detail-pip {
+    background: rgba(4, 6, 10, 0.62);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .detail-media .detail-pip::before,
+  .detail-media[data-state="playing"] .detail-pip::before {
+    content: "❙❙ STILLS ONLY";
+  }
+
+  .detail-media[data-state="failed"] .detail-pip {
+    display: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
+  /* The mock ships no CSS reset, so every element it draws without a
+     `line-height` renders at the browser's `normal` — 1.28 for Space Grotesk,
+     1.3 for JetBrains Mono. Tailwind's preflight sets `html { line-height: 1.5 }`
+     instead, which inherits everywhere and made every un-leaded box 2-3px taller
+     than the drawing: the rail's 18 Category rows ran 77px long by `Tab bars`,
+     and each tile stood 542px against the mock's 536.
+     Restoring `normal` here is the one-line root fix — the ~20 places the mock
+     *does* declare a leading (1.15 hero, 1.32 tile title and by-line, 1.5 footer
+     blurb, 1.55 zero-state) all carry it explicitly on the element and still win. */
+  html {
+    line-height: normal;
+
+    /* The scrollbar in the site's own palette rather than the platform's. A
+       default light scrollbar down the right edge of a near-black page is the
+       one piece of chrome Studio Dark never got to style, and it inherits, so
+       the rail, the overlay body and the filter sheet all pick it up too.
+
+       `--line2` is the drawing's own second hairline, which is what this is —
+       a rule against a surface — and it is mode-aware, so the bar follows the
+       theme with nothing further to declare.
+
+       The standard properties only, deliberately: adding `::-webkit-scrollbar`
+       would force classic scrollbars on every platform, including the ones
+       drawing overlay bars today, and permanently take ~10px of canvas from
+       them to style something they cannot currently see. `scrollbar-width` and
+       `scrollbar-color` colour whatever the platform already draws and take
+       nothing. */
+    scrollbar-width: thin;
+    scrollbar-color: var(--line2) transparent;
+  }
+
   body {
-    @apply bg-[#FAFAFA] dark:bg-background text-foreground;
+    @apply bg-canvas text-t1;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-tap-highlight-color: transparent;
 
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    /* No `-webkit-font-smoothing: antialiased` here, and that omission is the
+       point. It was set — the boilerplate default — and it is why every string
+       on this site read a weight lighter than the drawing while the metrics
+       said they were identical.
+
+       On macOS `antialiased` forces grayscale anti-aliasing in place of the
+       subpixel rendering the platform does by default. Subpixel AA lights three
+       times as many samples along a stem, so it lays down more ink; grayscale
+       throws that away, and on light-on-dark type — which is the whole of
+       Studio Dark — the loss reads directly as a thinner stroke. It changes no
+       metric at all, so nothing catches it: the hero's first line measures
+       573.91px either way, same family, same 500, same -0.58px tracking.
+
+       Measured on the hero at 1440, mean luminance over the first line and the
+       share of pixels carrying any glyph:
+
+         mock (sets nothing)      52.73   20.83%
+         here, antialiased        44.30   18.72%
+         here, removed            52.73   20.83%
+
+       Exactly the drawing, to two decimal places. `text-rendering` stays: the
+       figures above were taken with it applied and it moves neither. */
   }
 }
 

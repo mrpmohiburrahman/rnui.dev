@@ -6,6 +6,9 @@ export const misc: Recording[] = [
     caption: "Masonry Grid",
     demoPath: "demo/misc/masonry_grid_thomino.mp4",
     posterPath: "thumbnails/misc/masonry_grid_thomino.avif",
+    durationMs: 10560,
+    aspect: 0.4781,
+    hue: 335,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/masonry.tsx",
@@ -19,6 +22,9 @@ export const misc: Recording[] = [
     caption: "Journal Cards",
     demoPath: "demo/misc/journal_cards_thomino.mp4",
     posterPath: "thumbnails/misc/journal_cards_thomino.avif",
+    durationMs: 7707,
+    aspect: 0.4781,
+    hue: 35,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/journal-cards.tsx",
@@ -32,6 +38,8 @@ export const misc: Recording[] = [
     caption: "Counter Card",
     demoPath: "demo/misc/counter_card_thomino.mp4",
     posterPath: "thumbnails/misc/counter_card_thomino.avif",
+    durationMs: 5480,
+    aspect: 0.4781,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/card.tsx",
@@ -45,6 +53,8 @@ export const misc: Recording[] = [
     caption: "Weather",
     demoPath: "demo/misc/weather_thomino.mp4",
     posterPath: "thumbnails/misc/weather_thomino.avif",
+    durationMs: 10920,
+    aspect: 0.4734,
     contributor: "Thomino",
     source:
       "https://github.com/thomino/expo-playground/blob/main/app/screens/weather.tsx",
@@ -58,6 +68,9 @@ export const misc: Recording[] = [
     caption: "Star Rating",
     demoPath: "demo/misc/star_rating_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/star_rating_hewad_mubariz.avif",
+    durationMs: 8650,
+    aspect: 0.465,
+    hue: 254,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/ratings",
@@ -72,6 +85,9 @@ export const misc: Recording[] = [
     caption: "Transitions",
     demoPath: "demo/misc/transitions_william_candillon.mp4",
     posterPath: "thumbnails/misc/transitions_william_candillon.avif",
+    durationMs: 6883,
+    aspect: 0.4651,
+    hue: 216,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/Transitions",
@@ -86,6 +102,9 @@ export const misc: Recording[] = [
     caption: "Pizza Challenge",
     demoPath: "demo/misc/pizza_challenge_william_candillon.mp4",
     posterPath: "thumbnails/misc/pizza_challenge_william_candillon.avif",
+    durationMs: 8650,
+    aspect: 0.4767,
+    hue: 35,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/PizzaChallenge",
@@ -100,6 +119,8 @@ export const misc: Recording[] = [
     caption: "Stroke Animation",
     demoPath: "demo/misc/stroke_animation_william_candillon.mp4",
     posterPath: "thumbnails/misc/stroke_animation_william_candillon.avif",
+    durationMs: 5375,
+    aspect: 0.4688,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/StrokeAnimation",
@@ -114,6 +135,9 @@ export const misc: Recording[] = [
     caption: "Masked View",
     demoPath: "demo/misc/masked_view_william_candillon.mp4",
     posterPath: "thumbnails/misc/masked_view_william_candillon.avif",
+    durationMs: 7965,
+    aspect: 0.4791,
+    hue: 21,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/reanimated-2/src/MaskedView",
@@ -134,6 +158,9 @@ export const misc: Recording[] = [
     githubId: "tandonpushkar",
     demoPath: "demo/misc/expanding_search_bar_pushkar_tandon.mp4",
     posterPath: "thumbnails/misc/expanding_search_bar_pushkar_tandon.avif",
+    durationMs: 10400,
+    aspect: 0.4732,
+    hue: 339,
     source:
       "https://github.com/tandonpushkar/skeleton-animation-moti/commits/feature/expanding-search-bar/",
   },
@@ -147,6 +174,9 @@ export const misc: Recording[] = [
     githubId: "aswincheriyala",
     demoPath: "demo/misc/animated_letter_text_aswin_c.mp4",
     posterPath: "thumbnails/misc/animated_letter_text_aswin_c.avif",
+    durationMs: 5000,
+    aspect: 0.753,
+    hue: 207,
     source:
       "https://github.com/aswincheriyala/react-native-animated-letter-text",
   },
@@ -160,6 +190,9 @@ export const misc: Recording[] = [
     githubId: "aswincheriyala",
     demoPath: "demo/misc/app_walkthrough_aswin_c.mp4",
     posterPath: "thumbnails/misc/app_walkthrough_aswin_c.avif",
+    durationMs: 7666,
+    aspect: 0.4745,
+    hue: 269,
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/AppWalkThrough/index.js",
   },
@@ -173,6 +206,9 @@ export const misc: Recording[] = [
     githubId: "aswincheriyala",
     demoPath: "demo/misc/coons_patch_aswin_c.mp4",
     posterPath: "thumbnails/misc/coons_patch_aswin_c.avif",
+    durationMs: 23187,
+    aspect: 0.4767,
+    hue: 65,
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/Particles/index.js",
   },
@@ -186,6 +222,8 @@ export const misc: Recording[] = [
     githubId: "aswincheriyala",
     demoPath: "demo/misc/particles_aswin_c.mp4",
     posterPath: "thumbnails/misc/particles_aswin_c.avif",
+    durationMs: 5346,
+    aspect: 0.477,
     source:
       "https://github.com/aswincheriyala/react-native-animation-workouts/blob/master/skia-examples/Particles/index.js",
   },
@@ -194,6 +232,8 @@ export const misc: Recording[] = [
     caption: "Number Flow",
     demoPath: "demo/misc/number_flow_wahab_balogun.mp4",
     posterPath: "thumbnails/misc/number_flow_wahab_balogun.avif",
+    durationMs: 12787,
+    aspect: 0.4783,
     contributor: "Wahab Balogun",
     source: "https://github.com/03balogun/rn-number-flow",
     linkedInId: "03balogun",
@@ -207,7 +247,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/neural_network_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/neural_network_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 9960,
+    aspect: 0.4787,
+    hue: 315,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source: "https://github.com/enzomanuelmangano/mnist-expo",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
@@ -220,6 +263,8 @@ export const misc: Recording[] = [
     caption: "Task Calendar",
     demoPath: "demo/misc/task_calendar_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/task_calendar_konstantinos_efkarpidis.avif",
+    durationMs: 10280,
+    aspect: 0.4775,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/TaskCalendarScreen.tsx",
@@ -233,6 +278,9 @@ export const misc: Recording[] = [
     caption: "Spin Wheel",
     demoPath: "demo/misc/spin_wheel_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/spin_wheel_konstantinos_efkarpidis.avif",
+    durationMs: 12446,
+    aspect: 0.4626,
+    hue: 354,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/Lottery/LotteryScreen.tsx",
@@ -246,6 +294,9 @@ export const misc: Recording[] = [
     caption: "Action Menu",
     demoPath: "demo/misc/action_menu_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/action_menu_arunabh_verma.avif",
+    durationMs: 5067,
+    aspect: 1,
+    hue: 324,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-action-menu",
     twitterId: "iamarunabh",
@@ -261,6 +312,9 @@ export const misc: Recording[] = [
       "demo/misc/circular_animated_text_screen_konstantinos_efkarpidis.mp4",
     posterPath:
       "thumbnails/misc/circular_animated_text_screen_konstantinos_efkarpidis.avif",
+    durationMs: 4550,
+    aspect: 0.4665,
+    hue: 27,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b9b4ec750ad2ed172db4badcfa0164f95517fd82/src/screens/CircularAnimatedTextScreen.tsx",
@@ -274,6 +328,9 @@ export const misc: Recording[] = [
     caption: "iOS Search Bar",
     demoPath: "demo/misc/ios_search_bar_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/ios_search_bar_konstantinos_efkarpidis.avif",
+    durationMs: 12883,
+    aspect: 1.1486,
+    hue: 262,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/b91bcc460cdccf1b7290bcacac8abb7606622494/src/screens/TranslateSearchIOSScreen.tsx",
@@ -287,6 +344,9 @@ export const misc: Recording[] = [
     caption: "NFC Reader",
     demoPath: "demo/misc/nfc_reader_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/misc/nfc_reader_konstantinos_efkarpidis.avif",
+    durationMs: 4700,
+    aspect: 0.8318,
+    hue: 217,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/mrpmohiburrahman/react-native-animated-components-kostas64-konstantinos-efkarpidis/blob/master/src/screens/NFCReaderScreen.tsx",
@@ -301,6 +361,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/airbnb_search_component_konstantinos_efkarpidis.mp4",
     posterPath:
       "thumbnails/misc/airbnb_search_component_konstantinos_efkarpidis.avif",
+    durationMs: 12617,
+    aspect: 0.4746,
+    hue: 339,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/AirbnbScreen.tsx",
@@ -314,6 +377,9 @@ export const misc: Recording[] = [
     caption: "Flash Cards",
     demoPath: "demo/misc/flash_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/flash_cards_hewad_mubariz.avif",
+    durationMs: 7825,
+    aspect: 0.7692,
+    hue: 354,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flash-cards",
@@ -330,7 +396,10 @@ export const misc: Recording[] = [
       "demo/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated_stacked_cards_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4317,
+    aspect: 1,
+    hue: 185,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/22-stacked-cards",
     twitterId: "reactiive_",
@@ -344,6 +413,9 @@ export const misc: Recording[] = [
     caption: "Transitions",
     demoPath: "demo/misc/rn_transitions_lucas_lima.mp4",
     posterPath: "thumbnails/misc/rn_transitions_lucas_lima.avif",
+    durationMs: 20239,
+    aspect: 1.3111,
+    hue: 24,
     contributor: "Lucas Lima",
     source: "https://github.com/lklima/rn-transitions",
     twitterId: "lima_lucas3",
@@ -357,6 +429,9 @@ export const misc: Recording[] = [
     caption: "Spinning Circle",
     demoPath: "demo/misc/spinning_circle_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/spinning_circle_hewad_mubariz.avif",
+    durationMs: 21083,
+    aspect: 0.5854,
+    hue: 86,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/spinning-circle",
@@ -371,6 +446,9 @@ export const misc: Recording[] = [
     caption: "Flight Animation",
     demoPath: "demo/misc/flight_animation_lucas_lima.mp4",
     posterPath: "thumbnails/misc/flight_animation_lucas_lima.avif",
+    durationMs: 33150,
+    aspect: 1.3806,
+    hue: 7,
     contributor: "Lucas Lima",
     source: "https://github.com/lklima/rn-flight-animation",
     twitterId: "lima_lucas3",
@@ -384,6 +462,9 @@ export const misc: Recording[] = [
     caption: "Heart Beat Animation",
     demoPath: "demo/misc/heart_beat_animation_william_candillon.mp4",
     posterPath: "thumbnails/misc/heart_beat_animation_william_candillon.avif",
+    durationMs: 7083,
+    aspect: 0.4828,
+    hue: 352,
     contributor: "William Candillon",
     source:
       "https://github.com/wcandillon/can-it-be-done-in-react-native/tree/master/bonuses/skia-examples/src/Heartrate",
@@ -398,6 +479,9 @@ export const misc: Recording[] = [
     caption: "iOS UI",
     demoPath: "demo/misc/ios_ui_enes_ozturk.mp4",
     posterPath: "thumbnails/misc/ios_ui_enes_ozturk.avif",
+    durationMs: 8133,
+    aspect: 1.1034,
+    hue: 204,
     contributor: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-ios",
     twitterId: "enesozturkdev",
@@ -411,6 +495,9 @@ export const misc: Recording[] = [
     caption: "Instagram iOS Page Transitions",
     demoPath: "demo/misc/instagram_ios_page_transitions_enes.mp4",
     posterPath: "thumbnails/misc/instagram_ios_page_transitions_enes.avif",
+    durationMs: 4017,
+    aspect: 1.4389,
+    hue: 285,
     contributor: "Enes Öztürk",
     source: "https://github.com/enesozturk/react-native-instagram",
     twitterId: "enesozturkdev",
@@ -424,6 +511,9 @@ export const misc: Recording[] = [
     caption: "Cards Swap",
     demoPath: "demo/misc/cards_swap_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/cards_swap_aashu_dubey.avif",
+    durationMs: 26200,
+    aspect: 1,
+    hue: 265,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/cards_swap/src/cards_swap",
@@ -437,6 +527,9 @@ export const misc: Recording[] = [
     caption: "Custom Cursor/Caret",
     demoPath: "demo/misc/custom_cursor_caret_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/custom_cursor_caret_aashu_dubey.avif",
+    durationMs: 35750,
+    aspect: 1,
+    hue: 229,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_caret",
@@ -450,6 +543,9 @@ export const misc: Recording[] = [
     caption: "Rope Physics",
     demoPath: "demo/misc/rope_physics_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/rope_physics_aashu_dubey.avif",
+    durationMs: 44533,
+    aspect: 1,
+    hue: 35,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/rope_physics",
@@ -463,6 +559,9 @@ export const misc: Recording[] = [
     caption: "Spread Cards Effect ( Color Swatch )",
     demoPath: "demo/misc/color_swatch_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/color_swatch_aashu_dubey.avif",
+    durationMs: 16600,
+    aspect: 1,
+    hue: 273,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/color_swatch",
@@ -476,6 +575,9 @@ export const misc: Recording[] = [
     caption: "Animated Toolbar",
     demoPath: "demo/misc/animated_toolbar_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/animated_toolbar_aashu_dubey.avif",
+    durationMs: 30417,
+    aspect: 1,
+    hue: 265,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/custom_toolbar",
@@ -489,6 +591,8 @@ export const misc: Recording[] = [
     caption: "Sphere Animation",
     demoPath: "demo/misc/sphere_animation_andreev_danila.mp4",
     posterPath: "thumbnails/misc/sphere_animation_andreev_danila.avif",
+    durationMs: 14650,
+    aspect: 0.4624,
     contributor: "Andreev Danila",
     source: "https://github.com/andreev-danila/sphere-svg-animation",
     twitterId: "dan_w1d1",
@@ -502,7 +606,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/skia_gesture_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/skia_gesture_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6508,
+    aspect: 0.8738,
+    hue: 5,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/react-native-skia-gesture/tree/main/example",
     twitterId: "reactiive_",
@@ -516,7 +623,9 @@ export const misc: Recording[] = [
     caption: "Skeleton",
     demoPath: "demo/misc/skeleton_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/skeleton_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6941,
+    aspect: 0.4639,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/18-skeleton-animation",
     twitterId: "reactiive_",
@@ -531,7 +640,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/shake_animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shake_animation_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6467,
+    aspect: 0.688,
+    hue: 226,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/animate-with-reanimated/tree/main/src/animations/20-shake-animation",
     twitterId: "reactiive_",
@@ -545,6 +657,9 @@ export const misc: Recording[] = [
     caption: "Grid Magnification",
     demoPath: "demo/misc/grid_magnification_aashu_dubey.mp4",
     posterPath: "thumbnails/misc/grid_magnification_aashu_dubey.avif",
+    durationMs: 35917,
+    aspect: 1,
+    hue: 336,
     contributor: "Aashu Dubey",
     source:
       "https://github.com/Aashu-Dubey/react-native-animation-samples/tree/main/src/samples/grid_magnification#readme",
@@ -559,7 +674,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/grid_magnification_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/grid_magnification_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 13583,
+    aspect: 0.7913,
+    hue: 304,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/grid-magnification",
     twitterId: "reactiive_",
@@ -574,7 +692,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/metaball_animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/metaball_animation_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 9933,
+    aspect: 0.7913,
+    hue: 215,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/metaball",
     twitterId: "reactiive_",
@@ -589,7 +710,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/animated_gradient_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated_gradient_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 9350,
+    aspect: 0.4752,
+    hue: 95,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/exploring-skia/tree/main/animated-gradient",
     twitterId: "reactiive_",
@@ -604,6 +728,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/text_input_inspired_by_x_twitter_arunabh_verma.mp4",
     posterPath:
       "thumbnails/misc/text_input_inspired_by_x_twitter_arunabh_verma.avif",
+    durationMs: 2917,
+    aspect: 0.5179,
+    hue: 354,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-x-input",
     twitterId: "iamarunabh",
@@ -617,6 +744,9 @@ export const misc: Recording[] = [
     caption: "Mention Input",
     demoPath: "demo/misc/mention_input_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/mention_input_arunabh_verma.avif",
+    durationMs: 16367,
+    aspect: 0.9863,
+    hue: 45,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-mention",
     twitterId: "iamarunabh",
@@ -630,6 +760,9 @@ export const misc: Recording[] = [
     caption: "Custom Menu",
     demoPath: "demo/misc/custom_menu_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/custom_menu_arunabh_verma.avif",
+    durationMs: 23167,
+    aspect: 1.4389,
+    hue: 32,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-menu",
     twitterId: "iamarunabh",
@@ -644,6 +777,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/gallery_inspired_image_carousel_arunabh_verma.mp4",
     posterPath:
       "thumbnails/misc/gallery_inspired_image_carousel_arunabh_verma.avif",
+    durationMs: 13461,
+    aspect: 1.3444,
+    hue: 205,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-selection",
     twitterId: "iamarunabh",
@@ -657,6 +793,9 @@ export const misc: Recording[] = [
     caption: "Edge Panel",
     demoPath: "demo/misc/edge_panel_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/edge_panel_arunabh_verma.avif",
+    durationMs: 15750,
+    aspect: 1.0194,
+    hue: 213,
     contributor: "Arunabh Verma",
     source: "https://github.com/arunabhverma/expo-edge-panel",
     twitterId: "iamarunabh",
@@ -670,6 +809,9 @@ export const misc: Recording[] = [
     caption: "Masked Text",
     demoPath: "demo/misc/masked_text_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/masked_text_yassire_mtioui.avif",
+    durationMs: 4333,
+    aspect: 1.2229,
+    hue: 94,
     contributor: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/MaskedText",
@@ -684,6 +826,9 @@ export const misc: Recording[] = [
     caption: "Speech Visualization",
     demoPath: "demo/misc/speech_visualization_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/speech_visualization_yassire_mtioui.avif",
+    durationMs: 3917,
+    aspect: 1.2229,
+    hue: 43,
     contributor: "Yassire Mtioui",
     source:
       "https://github.com/Yassiremt/skia_animations/tree/main/src/animations/SpeechVisualization",
@@ -698,6 +843,9 @@ export const misc: Recording[] = [
     caption: "Rotary Phone",
     demoPath: "demo/misc/rotary_phone_rn_skia_yassire_mtioui.mp4",
     posterPath: "thumbnails/misc/rotary_phone_rn_skia_yassire_mtioui.avif",
+    durationMs: 15849,
+    aspect: 0.4507,
+    hue: 35,
     contributor: "Yassire Mtioui",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
@@ -714,7 +862,10 @@ export const misc: Recording[] = [
       "demo/misc/shared_elements_transition_evening_kid_arnaud_dellinger.mp4",
     posterPath:
       "thumbnails/misc/shared_elements_transition_evening_kid_arnaud_dellinger.avif",
-    contributor: "Arnaud Dellinger ( evening kid )",
+    durationMs: 5272,
+    aspect: 0.4609,
+    hue: 209,
+    contributor: "Arnaud Dellinger (evening kid)",
     source:
       "https://gist.github.com/eveningkid/bda4c848b90416e930a5621ac392dee6",
     linkedInId: "arnaud-dellinger",
@@ -730,7 +881,10 @@ export const misc: Recording[] = [
       "demo/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.mp4",
     posterPath:
       "thumbnails/misc/animated_twitter_profile_evening_kid_arnaud_dellinger.avif",
-    contributor: "Arnaud Dellinger ( evening kid )",
+    durationMs: 14450,
+    aspect: 1.2229,
+    hue: 224,
+    contributor: "Arnaud Dellinger (evening kid)",
     source:
       "https://gist.github.com/eveningkid/a894c86db4ee1091611e9dc6a2470348",
     linkedInId: "arnaud-dellinger",
@@ -744,6 +898,9 @@ export const misc: Recording[] = [
     caption: "react-native-snow-bg",
     demoPath: "demo/misc/react-native-snow-bg-epicode.mp4",
     posterPath: "thumbnails/misc/react-native-snow-bg-epicode.avif",
+    durationMs: 5983,
+    aspect: 0.5639,
+    hue: 216,
     contributor: "Epicode | 0xV",
     source: "https://github.com/msadura/react-native-snow-bg",
     twitterId: "epicode_",
@@ -756,6 +913,9 @@ export const misc: Recording[] = [
     caption: "Color Pixelated",
     demoPath: "demo/misc/color_pixelated_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/color_pixelated_daehyeon_mun.avif",
+    durationMs: 2017,
+    aspect: 0.4732,
+    hue: 207,
     contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/color-pixelated",
@@ -770,6 +930,9 @@ export const misc: Recording[] = [
     caption: "Typography Metaball",
     demoPath: "demo/misc/typography_metaball_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/typography_metaball_daehyeon_mun.avif",
+    durationMs: 4333,
+    aspect: 0.4732,
+    hue: 120,
     contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/typography-metaball",
@@ -784,6 +947,9 @@ export const misc: Recording[] = [
     caption: "Pixelated Image",
     demoPath: "demo/misc/pixelated_image_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/pixelated_image_daehyeon_mun.avif",
+    durationMs: 8433,
+    aspect: 0.4732,
+    hue: 207,
     contributor: "Daehyeon Mun (문대현)",
     source:
       "https://github.com/daehyeonmun2021/react-native-animation-lab/tree/main/src/screens/pixelated-image",
@@ -798,6 +964,9 @@ export const misc: Recording[] = [
     caption: "Ripple Effect With React Native Skia",
     demoPath: "demo/misc/ripple_effect_daehyeon_mun.mp4",
     posterPath: "thumbnails/misc/ripple_effect_daehyeon_mun.avif",
+    durationMs: 8275,
+    aspect: 0.605,
+    hue: 25,
     contributor: "Daehyeon Mun (문대현)",
     source:
       "https://gist.github.com/daehyeonmun2021/21aea72f655da6c0ca8922191daade5e",
@@ -812,6 +981,9 @@ export const misc: Recording[] = [
     caption: "Phyllotaxis Spiral",
     demoPath: "demo/misc/phyllotaxis_spiral_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/phyllotaxis_spiral_alireza_hadjar.avif",
+    durationMs: 17252,
+    aspect: 0.4638,
+    hue: 5,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Phyllotaxis",
@@ -826,6 +998,9 @@ export const misc: Recording[] = [
     caption: "Flappy Bird",
     demoPath: "demo/misc/flappy_bird_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/flappy_bird_alireza_hadjar.avif",
+    durationMs: 8512,
+    aspect: 0.4146,
+    hue: 191,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FlappyBird",
@@ -840,6 +1015,9 @@ export const misc: Recording[] = [
     caption: "Firework",
     demoPath: "demo/misc/firework_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/firework_alireza_hadjar.avif",
+    durationMs: 6762,
+    aspect: 0.4764,
+    hue: 352,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Firework",
@@ -854,6 +1032,9 @@ export const misc: Recording[] = [
     caption: "Fractal Tree",
     demoPath: "demo/misc/fractal_tree_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/fractal_tree_alireza_hadjar.avif",
+    durationMs: 7530,
+    aspect: 0.663,
+    hue: 87,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/FractalTree",
@@ -868,6 +1049,8 @@ export const misc: Recording[] = [
     caption: "Starfield Simulation",
     demoPath: "demo/misc/starfield_simulation_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/starfield_simulation_alireza_hadjar.avif",
+    durationMs: 22400,
+    aspect: 0.4566,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/Starfield",
@@ -882,6 +1065,8 @@ export const misc: Recording[] = [
     caption: "Double Pendulum",
     demoPath: "demo/misc/double_pendulum_alireza_hadjar.mp4",
     posterPath: "thumbnails/misc/double_pendulum_alireza_hadjar.avif",
+    durationMs: 9433,
+    aspect: 0.4867,
     contributor: "Alireza Hadjar",
     source:
       "https://github.com/AlirezaHadjar/react-native-creative-animations/tree/main/src/Examples/DoublePendulum",
@@ -898,6 +1083,9 @@ export const misc: Recording[] = [
       "demo/misc/shared_element_transitions_example_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/misc/shared_element_transitions_example_kacper_kapusciak.avif",
+    durationMs: 16683,
+    aspect: 1.3833,
+    hue: 203,
     contributor: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion/react-native-reanimated/blob/4fcda2939cf70c9bb83efe08b8814e48653b1fa3/app/src/examples/SharedElementTransitions/Profiles.tsx",
@@ -913,6 +1101,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/gradient_shared_transition_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/misc/gradient_shared_transition_kacper_kapusciak.avif",
+    durationMs: 10867,
+    aspect: 0.5634,
+    hue: 225,
     contributor: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/gradient-shared-transitions-example",
@@ -927,6 +1118,9 @@ export const misc: Recording[] = [
     caption: "Magic Curtain Effect",
     demoPath: "demo/misc/magic_curtain_effect_kacper_kapusciak.mp4",
     posterPath: "thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif",
+    durationMs: 8924,
+    aspect: 0.5634,
+    hue: 5,
     contributor: "Kacper Kapuściak",
     source: "https://github.com/kacperkapusciak/expo-magic-curtain",
     twitterId: "kacperkapusciak",
@@ -941,6 +1135,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/fake_shared_element_transition_alek_mikucki.mp4",
     posterPath:
       "thumbnails/misc/fake_shared_element_transition_alek_mikucki.avif",
+    durationMs: 5079,
+    aspect: 0.4624,
+    hue: 25,
     contributor: "Alek Mikucki",
     source:
       "https://github.com/aleqsio/sharedelement/blob/master/SharedElement.tsx",
@@ -955,6 +1152,9 @@ export const misc: Recording[] = [
     caption: "View Transition using Skia",
     demoPath: "demo/misc/view_transition_using_skia_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/view_transition_using_skia_alek_mikucki.avif",
+    durationMs: 15067,
+    aspect: 0.4776,
+    hue: 355,
     contributor: "Alek Mikucki",
     source: "https://gist.github.com/aleqsio/754b3a2b664b928f5c65d715b9452d77",
     twitterId: "aleqsio",
@@ -968,6 +1168,9 @@ export const misc: Recording[] = [
     caption: "Townscaper",
     demoPath: "demo/misc/townscaper_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/townscaper_alek_mikucki.avif",
+    durationMs: 25548,
+    aspect: 0.4615,
+    hue: 193,
     contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/expo-image-and-gesture-handler-demo",
     twitterId: "aleqsio",
@@ -981,6 +1184,9 @@ export const misc: Recording[] = [
     caption: "Gradient Picker",
     demoPath: "demo/misc/gradient_picker_alek_mikucki.mp4",
     posterPath: "thumbnails/misc/gradient_picker_alek_mikucki.avif",
+    durationMs: 4550,
+    aspect: 1.7778,
+    hue: 295,
     contributor: "Alek Mikucki",
     source: "https://github.com/aleqsio/gradient-picker-reanimated",
     twitterId: "aleqsio",
@@ -994,6 +1200,9 @@ export const misc: Recording[] = [
     caption: "Animated Cards",
     demoPath: "demo/misc/animated_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/animated_cards_hewad_mubariz.avif",
+    durationMs: 21783,
+    aspect: 0.9091,
+    hue: 15,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-cards",
@@ -1008,6 +1217,9 @@ export const misc: Recording[] = [
     caption: "Animated Shapes",
     demoPath: "demo/misc/animated_shapes_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/animated_shapes_hewad_mubariz.avif",
+    durationMs: 4233,
+    aspect: 0.9091,
+    hue: 34,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/animated-shapes",
@@ -1022,6 +1234,9 @@ export const misc: Recording[] = [
     caption: "Audio Input Visualizer",
     demoPath: "demo/misc/audio_input_visualizer_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/audio_input_visualizer_hewad_mubariz.avif",
+    durationMs: 26533,
+    aspect: 0.9091,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/audio-input-visualizer",
@@ -1036,6 +1251,9 @@ export const misc: Recording[] = [
     caption: "Flippy Card",
     demoPath: "demo/misc/flippy_card_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/flippy_card_hewad_mubariz.avif",
+    durationMs: 6417,
+    aspect: 0.9091,
+    hue: 223,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/flippy-card",
@@ -1050,6 +1268,9 @@ export const misc: Recording[] = [
     caption: "Playing Cards",
     demoPath: "demo/misc/playing_cards_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/playing_cards_hewad_mubariz.avif",
+    durationMs: 20733,
+    aspect: 0.973,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
@@ -1064,6 +1285,9 @@ export const misc: Recording[] = [
     caption: "Rating Wave",
     demoPath: "demo/misc/rating_wave_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/rating_wave_hewad_mubariz.avif",
+    durationMs: 10033,
+    aspect: 1.0389,
+    hue: 34,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/rating-wave",
@@ -1078,6 +1302,9 @@ export const misc: Recording[] = [
     caption: "Expandable FAB",
     demoPath: "demo/misc/expandable_fab_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/expandable_fab_hewad_mubariz.avif",
+    durationMs: 5633,
+    aspect: 0.8,
+    hue: 38,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/expandable-fab",
@@ -1092,6 +1319,9 @@ export const misc: Recording[] = [
     caption: "Micro Swipe Actions",
     demoPath: "demo/misc/micro_swipe_actions_hewad_mubariz.mp4",
     posterPath: "thumbnails/misc/micro_swipe_actions_hewad_mubariz.avif",
+    durationMs: 23483,
+    aspect: 0.603,
+    hue: 191,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/reactnative-50-days/tree/main/micro-swipe-actions",
@@ -1106,6 +1336,8 @@ export const misc: Recording[] = [
     caption: "Genetic AI",
     demoPath: "demo/misc/geneticai_david_friyia.mp4",
     posterPath: "thumbnails/misc/geneticai_david_friyia.avif",
+    durationMs: 8113,
+    aspect: 0.4494,
     contributor: "Daniel Friyia",
     source: "https://github.com/friyiajr/GeneticAI",
     twitterId: "wa2goose",
@@ -1119,6 +1351,9 @@ export const misc: Recording[] = [
     caption: "Bending Circle",
     demoPath: "demo/misc/bending_circle_david_friyia.mp4",
     posterPath: "thumbnails/misc/bending_circle_david_friyia.avif",
+    durationMs: 4983,
+    aspect: 0.6745,
+    hue: 298,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
@@ -1133,6 +1368,9 @@ export const misc: Recording[] = [
     caption: "Chasing Bubble",
     demoPath: "demo/misc/chasing_bubble_david_friyia.mp4",
     posterPath: "thumbnails/misc/chasing_bubble_david_friyia.avif",
+    durationMs: 3267,
+    aspect: 0.4879,
+    hue: 244,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/MorphingLoader",
@@ -1147,6 +1385,9 @@ export const misc: Recording[] = [
     caption: "Expo Pulse",
     demoPath: "demo/misc/expo_pulse_david_friyia.mp4",
     posterPath: "thumbnails/misc/expo_pulse_david_friyia.avif",
+    durationMs: 5550,
+    aspect: 0.9775,
+    hue: 353,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/ExpoPulse",
@@ -1161,6 +1402,9 @@ export const misc: Recording[] = [
     caption: "Morphing Circle",
     demoPath: "demo/misc/morphing_circle_david_friyia.mp4",
     posterPath: "thumbnails/misc/morphing_circle_david_friyia.avif",
+    durationMs: 4933,
+    aspect: 1.0778,
+    hue: 76,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/MorphingCircle",
@@ -1175,6 +1419,8 @@ export const misc: Recording[] = [
     caption: "Vital Sign Monitor",
     demoPath: "demo/misc/vital_sign_monitor_david_friyia.mp4",
     posterPath: "thumbnails/misc/vital_sign_monitor_david_friyia.avif",
+    durationMs: 5783,
+    aspect: 0.9775,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/VitalSignMonitor",
@@ -1189,6 +1435,9 @@ export const misc: Recording[] = [
     caption: "Confetti",
     demoPath: "demo/misc/confetti_david_friyia.mp4",
     posterPath: "thumbnails/misc/confetti_david_friyia.avif",
+    durationMs: 3517,
+    aspect: 0.5216,
+    hue: 298,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/Confetti",
@@ -1203,6 +1452,9 @@ export const misc: Recording[] = [
     caption: "Gran Turismo Countdown",
     demoPath: "demo/misc/gran_turismo_countdown_david_friyia.mp4",
     posterPath: "thumbnails/misc/gran_turismo_countdown_david_friyia.avif",
+    durationMs: 5000,
+    aspect: 0.556,
+    hue: 25,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/BSides/GranTurismo",
@@ -1217,6 +1469,9 @@ export const misc: Recording[] = [
     caption: "Metaball Shader",
     demoPath: "demo/misc/metaball_shader_david_friyia.mp4",
     posterPath: "thumbnails/misc/metaball_shader_david_friyia.avif",
+    durationMs: 6583,
+    aspect: 0.8889,
+    hue: 0,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/MetaballShader",
@@ -1231,6 +1486,8 @@ export const misc: Recording[] = [
     caption: "Random Circle Shader",
     demoPath: "demo/misc/random_circle_shader_david_friyia.mp4",
     posterPath: "thumbnails/misc/random_circle_shader_david_friyia.avif",
+    durationMs: 2317,
+    aspect: 0.5175,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/Shaders/RandomCircles",
@@ -1245,6 +1502,8 @@ export const misc: Recording[] = [
     caption: "Focus Animation",
     demoPath: "demo/misc/focus_animation_david_friyia.mp4",
     posterPath: "thumbnails/misc/focus_animation_david_friyia.avif",
+    durationMs: 4383,
+    aspect: 0.5168,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
@@ -1259,6 +1518,8 @@ export const misc: Recording[] = [
     caption: "Gradient Clock",
     demoPath: "demo/misc/gradient_clock_david_friyia.mp4",
     posterPath: "thumbnails/misc/gradient_clock_david_friyia.avif",
+    durationMs: 3650,
+    aspect: 0.509,
     contributor: "Daniel Friyia",
     source:
       "https://github.com/friyiajr/SkiaAnimationShowcase/tree/main/src/YouTube/FocusAnimation",
@@ -1274,7 +1535,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/action-tray_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/action-tray_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5650,
+    aspect: 0.4611,
+    hue: 218,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/action-tray",
     twitterId: "reactiive_",
@@ -1290,7 +1554,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/add-to-cart_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/add-to-cart_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6939,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/add-to-cart",
     twitterId: "reactiive_",
@@ -1307,7 +1573,9 @@ export const misc: Recording[] = [
       "demo/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/airbnb-flip-interaction_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3739,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/airbnb-flip-interaction",
     twitterId: "reactiive_",
@@ -1323,7 +1591,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/animated-clip-box_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated-clip-box_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2985,
+    aspect: 0.4611,
+    hue: 209,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-clip-box",
     twitterId: "reactiive_",
@@ -1339,7 +1610,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/animated-count-text_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/animated-count-text_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4638,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/animated-count-text",
     twitterId: "reactiive_",
@@ -1355,7 +1628,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/audio-player_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6258,
+    aspect: 0.4611,
+    hue: 252,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/audio-player",
     twitterId: "reactiive_",
@@ -1372,7 +1648,10 @@ export const misc: Recording[] = [
       "demo/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/bezier-curve-outline_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 9921,
+    aspect: 0.4611,
+    hue: 29,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/bezier-curve-outline",
     twitterId: "reactiive_",
@@ -1388,7 +1667,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/blur-circles_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/blur-circles_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4133,
+    aspect: 0.4611,
+    hue: 255,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-circles",
     twitterId: "reactiive_",
@@ -1405,7 +1687,9 @@ export const misc: Recording[] = [
       "demo/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/card-shader-reflections_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1680,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/card-shader-reflections",
     twitterId: "reactiive_",
@@ -1422,7 +1706,9 @@ export const misc: Recording[] = [
       "demo/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/checkbox-interactions_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2389,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/checkbox-interactions",
     twitterId: "reactiive_",
@@ -1438,7 +1724,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/clerk-toast_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/clerk-toast_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 10529,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/clerk-toast",
     twitterId: "reactiive_",
@@ -1454,7 +1742,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/composable-text_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/composable-text_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1550,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/composable-text",
     twitterId: "reactiive_",
@@ -1470,7 +1760,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/draggable-panel_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/draggable-panel_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5641,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/draggable-panel",
     twitterId: "reactiive_",
@@ -1485,7 +1777,10 @@ export const misc: Recording[] = [
     caption: "Email Demo",
     demoPath: "demo/misc/email-demo_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/email-demo_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5657,
+    aspect: 0.4611,
+    hue: 212,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/email-demo",
     twitterId: "reactiive_",
@@ -1501,7 +1796,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6789,
+    aspect: 0.4611,
+    hue: 45,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
     twitterId: "reactiive_",
@@ -1517,7 +1815,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/everybody-can-cook_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1317,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/everybody-can-cook",
     twitterId: "reactiive_",
@@ -1534,7 +1834,9 @@ export const misc: Recording[] = [
       "demo/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/expandable-mini-player_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4474,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/expandable-mini-player",
     twitterId: "reactiive_",
@@ -1550,7 +1852,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/family-number-input_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/family-number-input_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 7642,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/family-number-input",
     twitterId: "reactiive_",
@@ -1566,7 +1870,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fibonacci-shader_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5120,
+    aspect: 0.4611,
+    hue: 263,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader",
     twitterId: "reactiive_",
@@ -1583,7 +1890,10 @@ export const misc: Recording[] = [
       "demo/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fibonacci-shader-grid_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 11045,
+    aspect: 0.4611,
+    hue: 276,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fibonacci-shader-grid",
     twitterId: "reactiive_",
@@ -1599,7 +1909,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fourier-visualizer_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 13433,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fourier-visualizer",
     twitterId: "reactiive_",
@@ -1615,7 +1927,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/fractal-glass_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/fractal-glass_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4051,
+    aspect: 0.4611,
+    hue: 37,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/fractal-glass",
     twitterId: "reactiive_",
@@ -1632,7 +1947,10 @@ export const misc: Recording[] = [
       "demo/misc/github-contributions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/github-contributions_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2450,
+    aspect: 0.4583,
+    hue: 133,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-contributions",
     twitterId: "reactiive_",
@@ -1648,7 +1966,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/gl-transitions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/gl-transitions_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1840,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/gl-transitions",
     twitterId: "reactiive_",
@@ -1664,7 +1984,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/grid-visualizer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/grid-visualizer_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5891,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/grid-visualizer",
     twitterId: "reactiive_",
@@ -1680,7 +2002,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/image-cropper_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/image-cropper_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3550,
+    aspect: 0.4611,
+    hue: 25,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/image-cropper",
     twitterId: "reactiive_",
@@ -1697,7 +2022,10 @@ export const misc: Recording[] = [
       "demo/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/inner-shared-transition_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5377,
+    aspect: 0.4611,
+    hue: 356,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/inner-shared-transition",
     twitterId: "reactiive_",
@@ -1714,7 +2042,10 @@ export const misc: Recording[] = [
       "demo/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/instagram-shared-transition_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2127,
+    aspect: 0.4611,
+    hue: 176,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/instagram-shared-transition",
     twitterId: "reactiive_",
@@ -1731,7 +2062,10 @@ export const misc: Recording[] = [
       "demo/misc/interaction-appearance_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/interaction-appearance_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1949,
+    aspect: 0.4615,
+    hue: 36,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/interaction-appearance",
     twitterId: "reactiive_",
@@ -1747,7 +2081,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/ios-home-bouncy_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 14433,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-bouncy",
     twitterId: "reactiive_",
@@ -1763,7 +2099,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/ios-home-grid_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/ios-home-grid_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3861,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/ios-home-grid",
     twitterId: "reactiive_",
@@ -1779,7 +2117,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/mobile-input_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/mobile-input_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 8847,
+    aspect: 0.4611,
+    hue: 231,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/mobile-input",
     twitterId: "reactiive_",
@@ -1795,7 +2136,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/motion-blur_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/motion-blur_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5456,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/motion-blur",
     twitterId: "reactiive_",
@@ -1811,7 +2154,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/online-offline_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/online-offline_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3933,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/online-offline",
     twitterId: "reactiive_",
@@ -1827,7 +2172,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/paper-folding_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/paper-folding_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2733,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/paper-folding",
     twitterId: "reactiive_",
@@ -1843,7 +2190,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/pomodoro-timer_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 7335,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/pomodoro-timer",
     twitterId: "reactiive_",
@@ -1859,7 +2208,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/popup-handler_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/popup-handler_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3581,
+    aspect: 0.4611,
+    hue: 144,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/popup-handler",
     twitterId: "reactiive_",
@@ -1875,7 +2227,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 8228,
+    aspect: 0.4611,
+    hue: 285,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
     twitterId: "reactiive_",
@@ -1891,7 +2246,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/shake-to-delete_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shake-to-delete_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2242,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shake-to-delete",
     twitterId: "reactiive_",
@@ -1907,7 +2264,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/shared-transitions_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/shared-transitions_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3751,
+    aspect: 0.4611,
+    hue: 223,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/shared-transitions",
     twitterId: "reactiive_",
@@ -1923,7 +2283,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/slide-to-reveal_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 10794,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/slide-to-reveal",
     twitterId: "reactiive_",
@@ -1939,7 +2301,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/smooth-dropdown_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3050,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/smooth-dropdown",
     twitterId: "reactiive_",
@@ -1954,7 +2318,10 @@ export const misc: Recording[] = [
     caption: "Snake",
     demoPath: "demo/misc/snake_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/snake_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4567,
+    aspect: 0.4611,
+    hue: 107,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/snake",
     twitterId: "reactiive_",
@@ -1969,7 +2336,10 @@ export const misc: Recording[] = [
     caption: "Spiral",
     demoPath: "demo/misc/spiral_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/spiral_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 8971,
+    aspect: 0.4611,
+    hue: 275,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/spiral",
     twitterId: "reactiive_",
@@ -1986,7 +2356,9 @@ export const misc: Recording[] = [
       "demo/misc/staggered-card-number_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/staggered-card-number_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 1930,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/staggered-card-number",
     twitterId: "reactiive_",
@@ -2001,7 +2373,10 @@ export const misc: Recording[] = [
     caption: "Steps",
     demoPath: "demo/misc/steps_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/steps_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3609,
+    aspect: 0.4611,
+    hue: 215,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/steps",
     twitterId: "reactiive_",
@@ -2016,7 +2391,10 @@ export const misc: Recording[] = [
     caption: "Sudoku",
     demoPath: "demo/misc/sudoku_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/sudoku_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 16543,
+    aspect: 0.4583,
+    hue: 218,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sudoku",
     twitterId: "reactiive_",
@@ -2032,7 +2410,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/swipe-cards_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/swipe-cards_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 8815,
+    aspect: 0.4611,
+    hue: 195,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/swipe-cards",
     twitterId: "reactiive_",
@@ -2049,7 +2430,10 @@ export const misc: Recording[] = [
       "demo/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/telegram-theme-switch_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 5047,
+    aspect: 0.4611,
+    hue: 206,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/telegram-theme-switch",
     twitterId: "reactiive_",
@@ -2066,7 +2450,10 @@ export const misc: Recording[] = [
       "demo/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/theme-canvas-animation_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4844,
+    aspect: 0.4611,
+    hue: 174,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/theme-canvas-animation",
     twitterId: "reactiive_",
@@ -2082,7 +2469,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/threads-holo-ticket_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3957,
+    aspect: 0.4583,
+    hue: 260,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/threads-holo-ticket",
     twitterId: "reactiive_",
@@ -2098,7 +2488,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/time-machine_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/time-machine_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4982,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/time-machine",
     twitterId: "reactiive_",
@@ -2113,7 +2505,9 @@ export const misc: Recording[] = [
     caption: "Toast",
     demoPath: "demo/misc/toast_enzo_manuel_mangano_reactiive.mp4",
     posterPath: "thumbnails/misc/toast_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4419,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/toast",
     twitterId: "reactiive_",
@@ -2129,7 +2523,10 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/twodos-slide_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/twodos-slide_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4820,
+    aspect: 0.4611,
+    hue: 34,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/twodos-slide",
     twitterId: "reactiive_",
@@ -2145,7 +2542,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/verification-code_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/verification-code_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6740,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code",
     twitterId: "reactiive_",
@@ -2162,7 +2561,9 @@ export const misc: Recording[] = [
       "demo/misc/verification-code-face_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/verification-code-face_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6518,
+    aspect: 0.4583,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/verification-code-face",
     twitterId: "reactiive_",
@@ -2170,5 +2571,59 @@ export const misc: Recording[] = [
     githubId: "enzomanuelmangano",
     category: "Misc",
     created_at: "2025-11-25T19:55:44.000Z",
+  },
+
+  {
+    id: "01M33JV1VWVTFFVR05FN4EKCA8",
+    caption: "Sphere Waves",
+    demoPath: "demo/misc/sphere_waves_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/sphere_waves_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10617,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/sphere-waves",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
+  },
+
+  {
+    id: "01M33JV1VXFNRVXFWSH6K9X7XA",
+    caption: "Scrollable Shapes",
+    demoPath: "demo/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10802,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/scrollable-shapes",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
+  },
+
+  {
+    id: "01M33JV1VXECCZ92P3AQZQA2WY",
+    caption: "Cherry Blossom QR",
+    demoPath: "demo/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10622,
+    aspect: 0.46,
+    hue: 331,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/cherry-blossom-qrcode",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-09-22T03:34:04.925Z",
   },
 ]

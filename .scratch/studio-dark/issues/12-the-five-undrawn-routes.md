@@ -1,7 +1,23 @@
 # 12 — The five routes the mock does not draw
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 02, 04
+
+## Checkpoint 3 — agreed with the maintainer 2026-08-04
+
+All five treatments approved as presented. The four open questions were decided:
+
+1. **"Available for work" badge stays** and "Hire Me" becomes a real link to `/contactus` — the
+   maintainer confirmed both claims.
+2. **`#F5B3A4` is promoted to a token** (`--fail`), with a light-mode counterpart `#9E3A2C` and its
+   contrast measured (dark 11.13 on canvas / 10.59 on panel; light 6.16 on canvas / 6.78 on panel).
+   This broadens ticket 02's table by one token and is the maintainer's call.
+3. Message box keeps its existing 176px `min-h-44`.
+4. `/contactus` keeps writing Firestore from the browser.
+
+The `/subscribe` vs NOTIFY-column judgement is settled by the step-3 treatment: the column asks,
+the page explains (page = what arrives, how often, no-account), each on the same screen and
+clearly not a mistake.
 
 Spec decision 1 puts all ten routes in scope, and names these five as the ones with no mock:
 `/aboutus`, `/contactus`, `/subscribe`, `/privacypolicy`, `/termsofservice`. They inherit the
@@ -451,7 +467,46 @@ checkpoint 3.
    land in the shared chunk on all ten routes, whereas `/contactus`'s land only on `/contactus` — 18
    pageviews in 90 days
    (`.scratch/posthog-expansion/issues/09-redesign-baseline-dashboard.md:86`). Mirroring
-   `app/actions/subscribe-email.ts` is roughly ten lines and would leave one pattern rather than
-   two. It is not done here because it is a behaviour change on a route this ticket is meant to be
-   restyling, and because the performance argument that justified it for the newsletter does not
-   transfer. Cheap to add if the maintainer wants the consistency.
+    `app/actions/subscribe-email.ts` is roughly ten lines and would leave one pattern rather than
+    two. It is not done here because it is a behaviour change on a route this ticket is meant to be
+    restyling, and because the performance argument that justified it for the newsletter does not
+    transfer. Cheap to add if the maintainer wants the consistency.
+
+## Comments
+
+Built 2026-08-04. All five routes rewritten from the ticket-02 token table: `--fail` (#F5B3A4 dark /
+#9E3A2C light) added to `app/globals.css` and pinned in `tests/design-tokens.test.ts` (28 tokens),
+`fail` color added to `tailwind.config.ts`.
+
+- **`/aboutus`** — server component; `contributorInitials` moved to `lib/contributor-initials.ts`
+  (a client component cannot be imported from a server component); badge kept, "Hire me" now a real
+  link to `/contactus`, cone-slider href fixed, Webflow block deleted.
+- **`/contactus`** — client component, behaviour unchanged (Firestore write kept, per open question 4);
+  `duration-300` → `duration-120` (a ticket-02 key), failure state uses `text-fail`.
+- **`/subscribe`** — duplicate Firestore write deleted; calls `subscribeEmail` server action and
+  writes `newsletterSubscribed` on success; the footer column reads it on the next load.
+- **`/privacypolicy` / `/termsofservice`** — legal text byte-identical; eight and five `<h2>`s,
+  `<ul>`/`<li>`, no `<h6>`, all six hardcoded colours retokened.
+- Client pages can't export `metadata`; the two titles live in new `app/contactus/layout.tsx` and
+  `app/subscribe/layout.tsx`.
+- **Duplicate `id="email"` fixed** in `components/newsletter-form.tsx` (`id="newsletter-email"`):
+  the footer's NOTIFY input shared `id="email"` with `/contactus` and `/subscribe`, so the contact
+  page's `<label for="email">` was ambiguous wherever the footer rendered.
+- New `tests/e2e/undrawn-routes.spec.ts` (25 tests) pins the acceptance bullets: eyebrow/h1/prose
+  opening on all five, no dead hrefs, cone-slider, Hire me, contrast on `/contactus` in both modes
+  (computed vs effective field background, ≥4.5:1), validation path, `duration-120` and its 0s
+  reduced-motion override, subscribe localStorage + footer subscribed state, legal heading outlines
+  and no `<br>`.
+
+Checks: `pnpm check-types`, `pnpm lint` (3 pre-existing warnings), `pnpm test` (245/245),
+`pnpm build`, and the Playwright suite (212/212, including `served-html.spec.ts` and the new spec)
+all pass. All acceptance greps return no matches.
+
+Post-review (2026-08-04) — three fixes from a Standards+Spec review of the working diff:
+- `/aboutus`: "every **entry**" → "every **recording**" (ADR-0008 vocabulary, `aboutus:94` and the cone-slider comment).
+- `/subscribe` button: `transition-opacity duration-160 hover:opacity-80` → `transition-colors duration-120`,
+  matching the ticket-02 small-control rate and the `/contactus` submit. The footer's NOTIFY button
+  (`newsletter-form.tsx`) was aligned to the same treatment so the page keeps "the same button the
+  column has" (Work §4).
+- `/subscribe` 390px control floor: field `min-h-[40px]` (md: 34px), button `min-h-[44px]` (md: 34px),
+  per Work §3's phone metrics. Re-verified: 245/245 unit, 212/212 e2e, build/types/lint clean.

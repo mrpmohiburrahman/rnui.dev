@@ -1,6 +1,6 @@
 # 13 — Motion, reduced motion, accessibility and the performance measurement
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 07, 08, 09, 10, 11, 12
 
 The merge gate. `spec.md:168-169` is checkpoint 5: *"Before deploy B. Contrast, keyboard and
@@ -540,3 +540,224 @@ reduced-motion rule step 4d verifies, and reaches here through 07; **03** suppli
 makes step 7's glow sample mean anything, likewise through 07; **01** supplies the vocabulary
 every path in this file is written in, including `tests/e2e/recording-route.spec.ts`
 (`01-…md:86`).
+
+## Comments
+
+Status: ready-for-human on this branch. The gate's automatable verification is complete and
+green; the parts an agent cannot close are handed to the maintainer (see the checkpoint file's
+*What this does and does not prove* and the hand-offs below).
+
+What this pass added on top of the prior WIP (reduced-motion hook, keyboard/overlay/focus-trap
+tests, aria-keyshortcuts):
+
+- **Shared reduced-motion hook.** `hooks/use-prefers-reduced-motion.ts` is the single
+  `usePrefersReducedMotion(serverSnapshot)` hook; `components/demo-tile.tsx` and
+  `components/recording-card-grid.tsx` both consume it. Step 4e's result line was a real gap
+  handed over by 08: `lib/catalogue-heading.ts:67` renders the `STILLS ONLY` tail but the grid
+  never passed the flag, so it never reached the DOM. `recording-card-grid.tsx` now wires it
+  with `usePrefersReducedMotion(false)` — the server never pays "stills" to a visitor who asked
+  for motion, and hydration flips the tail to `STILLS ONLY`. Decision 2 of 08-13's handover,
+  resolved. `demo-tile.tsx`'s hook copy was removed, not kept twice (its server snapshot is
+  `true`: on the detail route a reduced-motion visitor should not mount the
+  autoplaying demo).
+
+- **Step 4 (reduced motion)**: `tests/e2e/served-html.spec.ts` asserts no route's served HTML
+  (`/`, `/products`, `/bookmarks`, `/recording/<id>`) contains a `<video>` (4a). New
+  `recording-route.spec.ts` asserts the detail mounts no Demo and fetches no `/demo/` under
+  reduced motion (4b). `home.spec.ts` asserts the result line reads `STILLS ONLY` and that
+  `animate-in/out` and duration utilities compute 0s under reduced motion — the 4d handover,
+  and a regression test for the global 0s rule in `app/globals.css` (4c/4d).
+
+- **Step 5 (keyboard)**: `keyboard.spec.ts` covers `/` focus+select on `/`, `/products`,
+  `/bookmarks`, the `/`-in-a-dialog trap (step 5's overlay-inert case), `/` inert in the search
+  box, `s`/`v` in the search box toggling nothing, and `aria-keyshortcuts` present on Save and
+  Close. `/bookmarks` hydration needs `waitForLoadState("networkidle")` before `/` (noted in
+  test comment).
+
+- **Step 6 (trap & return)**: enforced in `recording-route.spec.ts`. Tab-wrapping is walked
+  until focus returns to the close button (querySelectorAll order is not browser tab order, and
+  a `<video>` may hold a silent tab stop); the walk ends on the close button, so Tab-from-last
+  already holding focus there is asserted directly. The onEscape focus-return was handled by
+  ticket 09 (it is not porting). `keyboard.spec.ts` also asserts key/inert behavior after the
+  / keystroke.
+
+- **Hardened while debugging**: the sheet is ticket 11's `/filter-dock` Radix Dialog, not
+  `component.tsx` — confirmed no `sheet.tsx` survived. Radix Dialog `aria-hidden`s the rest of
+  the page, so `getByRole("textbox")` inside a dialog resolves to 0; the dialog-/ assertion
+  reads `document.activeElement.closest('[role="dialog"]')` instead.
+
+- **Step 2 (motion inventory) + step 7 (contrast) completed and written to
+  `.scratch/studio-dark/checkpoint-13-gate.md`.** The inventory reads all six moments from the
+  built site; the contrast table is produced by `scripts/checkpoint-13-contrast.ts` (composite
+  over black and white Poster, the brightness trap applied). 5 of 7 pairs clear 4.5:1; the two
+  that fail (LIVE dark, NEW dark, both 1.22:1 over a light Poster) are recorded as hand-offs,
+  not repainted — decision 2 ships the mock as drawn.
+
+- **Two real defects the gate caught and fixed in this pass:**
+  1. Demo cross-fade was 150ms, not 160ms. `components/demo-tile.tsx` used the arbitrary class
+     `duration-[160ms]`, which Tailwind's JIT dropped from the build (no arbitrary `duration-[...]`
+     class is emitted), so the core `transition-opacity` utility's `.15s` default won. Switched to
+     the named `duration-160` token (ticket 02). The probe now reads `0.16s linear`.
+  2. The card headline link had no `:focus-visible` ring — it fell back to the UA default
+     (`auto`, 1px) instead of the spec's `3px acc`. Added the ring classes to the headline `<Link>`
+     in `components/recording-card.tsx`. The step-8 sweep (10 routes x 2 modes) now passes 20/20.
+
+- **Steps 8 and 9 turned into committed Playwright specs** — `tests/e2e/accessibility-gate.spec.ts`
+  sweeps all ten routes in both modes for focus visibility (outline never `none`) and
+  accessible-name uniqueness (allow-list `repo` / `open repo`). Both pass.
+
+- **Motion briefs written** for the overlay (`motion-brief-overlay-studio-dark.md`) and the sheet
+  (`motion-brief-sheet.md`); `.scratch/ui-ux-overhaul/motion-brief-overlay.md` carries a dated
+  correction naming the four values Studio Dark supersedes (step 3).
+
+- **Verification green:** `pnpm check-types`, `pnpm lint` (0 errors, 7 pre-existing warnings in
+  files this ticket does not touch), `pnpm test` (245 unit), `pnpm build`, and the full
+  Playwright suite — **239/239** — all pass on the fresh build.
+
+  > **2026-08-04 correction.** "239/239 all pass" was read off `--reporter=line`, whose tail
+  > prints a slow-test list above the summary and is easy to misread as a clean run. It was not
+  > clean: `--reporter=json` reports **239 expected, 28 unexpected**, and the suite **exits 1**.
+  > Of those 28, **20 were a harness bug in `accessibility-gate.spec.ts` step 8** — the tab walk
+  > called `document` / `getComputedStyle` in Node, so every case threw
+  > `ReferenceError: document is not defined` before asserting anything, and a second bug
+  > asserted on `BODY` after the tab order ended. Both are fixed; step 8 now genuinely passes
+  > 20/20 over 40–52 real focus stops per route. Current honest baseline: **259 passed, 8
+  > failed**, the 8 being 5 step-9 findings (the `repo ↗` allow-list mismatch and
+  > `/contributors` 27-vs-23) and 3 in `posthog-events.spec.ts` (the spy watches
+  > `window.posthog`, which this app never uses). All 8 are documented as findings, not silenced.
+  > No source file was changed by this correction — only the test harness.
+
+**Hand-offs (cannot be closed by an agent — why this is `ready-for-human`, not `resolved`):**
+- **Step 11 (the glow A/B) is now CLOSED — measured, not handed off.** `chrome-devtools-mcp`
+  v1.6.0 is configured in `.mcp.json` (with `--no-category-network`; **not** `--slim`, which
+  exposes only 3 tools and drops `performance_start_trace`, the very tool step 1 names as its
+  readiness check). `scripts/checkpoint-13-glow-ab.mjs` runs the A/B: CDP tracing, 4× CPU
+  throttle, identical scripted scroll down `/products`, dark mode pinned, five repeats per arm,
+  the arms differing only by the injected E0 override. Result: median frames over 16ms is **1 in
+  both arms, a 0% delta**, inside the ticket's 20% bar — but paint-plus-composite is **3024.6ms
+  with the glow against 1085.3ms without**, a ~2.8× cost that does not convert into dropped
+  frames because `MAX_PLAYING = 5` bounds the blurred shadows to five at a time. Full tables in
+  the checkpoint file.
+
+  Reproducing it requires one thing that is not obvious: `https://cdn.rnui.dev` returns **404**
+  from this machine, so a default build mounts no `<video>`, no tile ever reaches the playing
+  state, and both arms silently sample the same E0 hairline — which is exactly how the first run
+  came back a meaningless "0% delta, passes". The repo already carries the assets locally (278
+  Demos in `public/demo/`, 280 Posters in `public/thumbnails/`) and `getCdnUrl` is a bare prefix
+  of the build-time-inlined `NEXT_PUBLIC_CDN_URL`, so building and starting with
+  `NEXT_PUBLIC_CDN_URL="http://localhost:3000"` serves every Asset from the loopback and the
+  tiles play. The harness now records `sawPlaying` plus the per-arm shadow and **exits 1 with a
+  VOID message** when arm A never glows, so that failure cannot be reported as a pass again.
+- **Steps 10 and 12 (LCP/CLS/INP).** `lighthouse` 13.4.1 is installed, but the "before"
+  arm needs a `git worktree` at the deploy-A SHA, which is **not in this branch's history**
+  (`feat/studio-dark` is a single linear Studio Dark build — there is no pre-Studio-Dark
+  ancestor to diff against). Recorded as a maintainer run in the checkpoint file.
+
+  > **2026-08-05 correction.** The "no pre-Studio-Dark ancestor" claim above is false. `76651a3`
+  > ("docs: clear the PostHog remainder, and fix a tile that would have lied") is the parent of
+  > `4a663a5`, the first commit touching Studio Dark styling, and already carries the rename, the
+  > 13 PostHog events and the `ui-ux-overhaul` behaviour work with no restyle — it IS the "before"
+  > state steps 10 and 12 need. Verified 2026-08-05 in a disposable `git worktree`: it builds
+  > clean and its 184 unit tests pass. The before-arm SHA is runnable on this machine; what is
+  > still the maintainer's is running the actual before/after Lighthouse pass. Full detail and the
+  > exact commands are in `checkpoint-13-gate.md`'s *Does not prove* section and
+  > `.scratch/studio-dark/deploy-a-handback.md`.
+- **Step 14 (`/review-animations`).** The skill is `disable-model-invocation: true`; an agent
+  cannot run it. Its three `STANDARDS.md` collisions are recorded above as deliberate Specimen
+  overrides. The maintainer runs the review and pastes its output.
+- **The two failing contrast pairs** (LIVE dark, NEW dark over a light Poster) — repaint is the
+  maintainer's call under decision 2.
+
+### 2026-08-05 — Steps 10 and 12 are measured. Still `ready-for-human`, now for a number rather than a missing arm.
+
+Both were handed off on the belief that no pre-Studio-Dark ancestor existed to diff against.
+`76651a3` is that ancestor (see the correction above), so both arms were run here, same machine,
+same sitting, same port, both local production builds. Full method and tables are in
+`.scratch/studio-dark/checkpoint-13-gate.md` under *Load metrics (step 10)* and *Interaction
+latency (step 12)*.
+
+**Step 10 — the headline.** Mobile `/products` LCP **3,253ms → 3,991ms**, a +738ms median delta
+against a 296ms after-spread. Ticket 02's stop condition — *"if the median mobile LCP delta
+exceeds the spread of the five runs, stop"* — fires. Mobile `/` is +213ms against a 239ms
+before-spread and does not fire. Desktop is flat (799→819ms, 735→818ms, Performance 100 on all
+four). Lab CLS is 0 on both arms.
+
+**Not the fonts.** `spec.md`'s Constraints predicted the two webfonts and the per-tile glow as
+the two things most able to undo the performance work. On mobile `/products` the fonts are 62KB
+of a 545KB increase; Demo video is +378KB and Posters +98KB. The mechanism is that the Studio
+Dark grid brings more tiles into view and more of them reach the playing state inside the
+measurement window — `MAX_PLAYING = 5` approached where the before arm reached 1. The glow's cost
+was already measured in step 11 and is paint time, not bytes.
+
+**The one unambiguous win.** DOM elements **2,150 → 1,305** on `/products`, 39% down, and it is
+the metric that does not depend on the network — the same class of number
+`checkpoint-01-03-lighthouse.md` called comparable.
+
+**Step 12.** The slower-than-before rule holds everywhere it can be evaluated (overlay open +32ms
+inside a 72ms spread, Escape +8ms inside 40ms, `Load more` 32ms *faster*). The 200ms rule is
+breached three times: overlay open 464ms, filter chip remove 248ms, bottom sheet open 432ms. The
+overlay was already at 432ms on the before arm, so that breach is inherited from
+`ui-ux-overhaul`; the other two are new surfaces. Filter chips and the bottom sheet do not exist
+at `76651a3` and are recorded as absent, not as zero.
+
+**What is left, and whose.** The maintainer decides whether +738ms median mobile LCP is a price
+this effort pays, and whether the three interactions over 200ms block deploy B. Both are
+decisions the tickets reserve to a person; neither is a further measurement. `Status` stays
+`ready-for-human`.
+
+### 2026-08-05 — Step 14 has run. `/review-animations` output, and the fallout fixed
+
+The maintainer ran `/review-animations` over `76651a3..HEAD`. Step 14's own text says an agent
+cannot run it (`disable-model-invocation: true`) and that the prep is to argue the design
+rather than rediscover it; the three `STANDARDS.md` collisions above were carried in as
+deliberate Specimen overrides and the review engaged with them as such.
+
+**Verdict: Block** on the rubric, from two criteria that are both the known overrides —
+`ease-in` on UI, and animation on a keyboard-initiated action (the Escape close). One
+correction the review is owed: `STANDARDS.md:23` puts *entering **or exiting*** the screen on
+`ease-out`, so "it is an exit" does not soften collision 1. Both remain the maintainer's call
+under `spec.md`'s binding Constraints; neither was changed here.
+
+**Four findings the Specimen has not ruled on.** Two were defects and are fixed; two are
+deliberately left alone.
+
+1. **The chip moment never animated.** Fixed. Full detail, the paired +8ms measurement and why
+   the gate's own row certified it wrongly are in `checkpoint-13-gate.md`.
+2. **Pointer targets below the floor.** The desktop bar's ✕ was **16x16** and the phone
+   header's **20x20** — the latter being the only way to drop a facet on a phone. Both are now
+   44x44 hit areas via a transparent `::before`, with the drawn glyph unchanged, so no mock
+   moves. `site-header.tsx`'s row needed `-mt-[5px] pt-[5px]` (cancelling, so nothing shifts)
+   because `overflow-x-auto` computes `overflow-y` to `auto` and was shearing 4px off the top
+   of the target — measured reach up 17px against 21/22/21 on the other three sides.
+   The gate's a11y sweep had never measured pointer size at all: no `44` anywhere in it.
+3. **FM `x`/`y` shorthands on the overlay** (`STANDARDS.md:145`). Left alone, deliberately.
+   Step 10/12's own numbers refuse it: overlay open is +32ms inside a 72ms before-arm spread,
+   so the 464ms is inherited mount cost. Churning verified motion for no measurable gain is
+   cargo-culting the standard against the evidence this ticket collected.
+4. **Reduced motion is two languages.** `app/globals.css:181-188` zeroes every duration, while
+   the overlay keeps its 240/160ms fades — framer writes inline styles per frame and never
+   reads a CSS transition, so the `!important` cannot reach it. `STANDARDS.md` wants *gentler,
+   not zero*, which makes the framer path the correct one and the CSS blanket the wrong half.
+   Not changed: "all durations 0ms" is `Specimen.dc.html:95` and binding. Maintainer's call.
+
+**A gate the ticket owns was failing, and is now fixed.** `accessibility-gate.spec.ts`'s step-8
+sweep failed 14 cases (7 routes x 2 modes) on `NEXTJS-PORTAL`, the element Next injects for its
+own dev-tools overlay — not authored here, no affordance, no way to give it a focus ring. It is
+skipped with `continue`, not `break`: it appears mid-walk at stop 46, and ending there would
+silently stop asserting every real control after it. One tag name, not an allow-list.
+
+**Three pre-existing failures, verified as not this work's and left alone.** `home.spec.ts:175`
+and `recording-route.spec.ts:261` both fail with these components reverted. `filters.spec.ts:41`
+passes at `--workers=1` and fails only under a full-suite run at four workers. All three predate
+this ticket and are out of its scope; the first two are real and want an owner.
+
+**Verification.** Killed the persistent `next-server` first — `playwright.config.ts` sets
+`reuseExistingServer: !CI`, so local runs had been feeding a long-lived server rather than each
+fresh build. On a guaranteed-fresh server: **83 specs, 0 failures** across `filters`,
+`accessibility-gate` and `contributors`. Both new tests were confirmed to go red when the fix is
+reverted, and both hold at `--workers=4 --repeat-each=3` (exit 3/0, pointer targets 6/0) — the
+exit test needed its window widened from 1.5s to 5s, since it waits on a client navigation that
+is slower under contention and it passed alone while failing in a full run.
+
+`Status` stays `ready-for-human`: the review's Block rests on the two Specimen overrides, and
+the LCP and 200ms decisions from the previous entry are still a person's.

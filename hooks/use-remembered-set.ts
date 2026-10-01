@@ -6,7 +6,7 @@
 // bug in them had two homes and every fix needed applying twice.
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useSyncExternalStore } from "react"
 
 // The two stored keys, at their exact current spellings. A key is a record in
 // somebody's browser, not an identifier — the same boundary the rename in ticket 02
@@ -63,17 +63,65 @@ export function serialiseRememberedIds(ids: string[]): string {
 }
 
 /**
+ * One state per stored key, shared by every instance of the hook.
+ *
+ * This used to be a plain `useState` per instance, and three components call the
+ * hook over `BOOKMARKS_KEY` from three different subtrees — components/site-header.tsx,
+ * components/catalogue-page.tsx and app/recording/[id]/recording-body.tsx. Each held
+ * its own copy of the same key, so saving a Recording from a tile or from the overlay
+ * left the header's `◆ Saved n` chip on whatever number it had read at mount, until a
+ * full reload. recording-detail.tsx:107-111 already records the same hazard one level
+ * down and dodges it by taking props; the header cannot, because it is not under the
+ * catalogue.
+ *
+ * A `storage` event listener is not the fix: that event fires in every tab *except*
+ * the one that wrote, which is the only tab that matters here. The state itself has
+ * to be shared, so it lives in the module and every instance subscribes.
+ */
+const snapshots = new Map<string, string[] | null>()
+const listeners = new Map<string, Set<() => void>>()
+
+function subscribe(storedKey: string, onChange: () => void) {
+  let forKey = listeners.get(storedKey)
+  if (!forKey) {
+    forKey = new Set()
+    listeners.set(storedKey, forKey)
+  }
+  forKey.add(onChange)
+  return () => {
+    forKey.delete(onChange)
+  }
+}
+
+/** Publish, then wake every instance holding this key. */
+function publish(storedKey: string, ids: string[] | null) {
+  snapshots.set(storedKey, ids)
+  listeners.get(storedKey)?.forEach((onChange) => onChange())
+}
+
+/**
  * `ids` is `null` until the browser has been read, which is what every caller's
  * hydration guard waits on. This hook makes no network call of any kind: recording
  * a view belongs to the card, and while the vote half of this did it too, one click
  * billed two views on the home page and three on the Category listing.
  */
 export function useRememberedSet(storedKey: string) {
-  const [ids, setIds] = useState<string[] | null>(null)
-  const isInitialMount = useRef(true)
+  const ids = useSyncExternalStore(
+    useCallback((onChange: () => void) => subscribe(storedKey, onChange), [storedKey]),
+    () => snapshots.get(storedKey) ?? null,
+    // The server has read no browser, so it renders the same `null` the client
+    // renders on its first pass. Reading localStorage in a lazy initialiser
+    // instead would render an empty set on the server and a full one on the
+    // client — a hydration mismatch.
+    () => null
+  )
 
   useEffect(() => {
     if (typeof window === "undefined") return
+    // Whichever instance mounts first does the read; the rest are handed it.
+    // After that, `toggle` is the only writer, and it updates both halves
+    // together, so re-reading here would only churn identities.
+    if (snapshots.get(storedKey) !== undefined) return
 
     const {
       ids: stored,
@@ -92,39 +140,32 @@ export function useRememberedSet(storedKey: string) {
       console.error(`❌ Error parsing "${storedKey}" from localStorage:`, cause)
     }
 
-    // Reading localStorage on mount is the only SSR-safe way to hydrate this. A
-    // lazy useState initialiser runs on the server too, where there is no
-    // localStorage, so the server would render an empty set and the client a full
-    // one — a hydration mismatch.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIds(stored)
+    publish(storedKey, stored)
   }, [storedKey])
-
-  useEffect(() => {
-    if (ids === null) return
-    // The write that hydration itself triggers is not a change worth persisting.
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-      return
-    }
-    try {
-      localStorage.setItem(storedKey, serialiseRememberedIds(ids))
-    } catch (error) {
-      console.error(`❌ Failed to write "${storedKey}" to localStorage:`, error)
-    }
-  }, [ids, storedKey])
 
   // Stable across renders: the card's memo comparator does not compare it, so an
   // identity that changed every render would defeat the comparator for every card
   // in the grid.
-  const toggle = useCallback((id: string) => {
-    setIds((previous) => {
-      if (!previous) return []
-      return previous.includes(id)
+  const toggle = useCallback(
+    (id: string) => {
+      const previous = snapshots.get(storedKey)
+      // Not hydrated yet — the set on disk is still unknown, and writing now
+      // would overwrite it with a guess.
+      if (!previous) return
+
+      const next = previous.includes(id)
         ? previous.filter((remembered) => remembered !== id)
         : [...previous, id]
-    })
-  }, [])
+
+      try {
+        localStorage.setItem(storedKey, serialiseRememberedIds(next))
+      } catch (error) {
+        console.error(`❌ Failed to write "${storedKey}" to localStorage:`, error)
+      }
+      publish(storedKey, next)
+    },
+    [storedKey]
+  )
 
   return { ids, toggle }
 }

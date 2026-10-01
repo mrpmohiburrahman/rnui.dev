@@ -1,0 +1,32 @@
+diff --git a/app/globals.css b/app/globals.css
+index b7918bb..d5b7baf 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -153,14 +153,14 @@
+     --x-bg: rgba(255,255,255,0.13);
+     --scrim: rgba(4,5,8,0.74);
+     --skel: rgba(255,255,255,0.07);
+-    --new-fg: #F3DEA6;
++    --new-fg: #5C4204;
+     --raise: #15181D;
+     --plinth: #05060A;
+     --ctrl: rgba(255,255,255,0.04);
+     --well: rgba(255,255,255,0.03);
+     --bar-track: rgba(255,255,255,0.09);
+     --bar-fill: rgba(255,255,255,0.34);
+-    --new-bg: rgba(235,208,138,0.22);
++    --new-bg: rgba(235,208,138,0.94);
+     --dock: rgba(12,13,17,0.94);
+ 
+     --fail: #F5B3A4;
+@@ -383,8 +383,8 @@
+ }
+ 
+ .dark .tile-media[data-playing] .state-chip {
+-  background: rgba(111, 227, 204, 0.2);
+-  color: #8ff0dc;
++  background: rgba(111, 227, 204, 0.94);
++  color: #06120f;
+ }
+ 
+ .tile-media[data-playing] .state-chip::before {

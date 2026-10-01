@@ -70,3 +70,13 @@ export const getRecordings = cache(
     }
   }
 )
+
+// The catalogue's top view count, the denominator of every tile's views bar
+// (ticket 07 step 8): the mock divides by Fluid Carousels' 1426 in every
+// variant, a number no client-side module holds because getRecordings filters
+// server-side. readRecordingsWithCounts is already unstable_cache'd above, so
+// this costs no additional Firestore read. Zero when the collection is empty or
+// unreadable, which the bar treats as its floor rather than a division by zero.
+export const getTopViewCount = cache(async (): Promise<number> =>
+  Math.max(0, ...(await readRecordingsWithCounts()).map((r) => r.view_count ?? 0))
+)

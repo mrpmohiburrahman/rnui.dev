@@ -69,21 +69,36 @@ type Result = {
 /**
  * Is this key already published?
  *
- * Asked per object rather than by listing the bucket once, because a listing
- * that silently comes back short would let the PUT below overwrite a live
- * object — and an overwrite is unrecoverable for a year. A HEAD that fails
- * loudly is worth 554 cheap Class B operations.
+ * Asked once per run by listing the whole bucket rather than per object,
+ * because this API answers HEAD with 405 — a per-object check that fails
+ * loudly on every key publishes nothing at all. The listing is paged through
+ * to the end (the `cursor` the API returns), and any page that fails loudly
+ * aborts the run: a listing that silently comes back short would let the PUT
+ * below overwrite a live object — and an overwrite is unrecoverable for a
+ * year. One complete listing replaces ~560 cheap Class B operations.
  */
-async function exists(path: string): Promise<boolean> {
-  const res = await fetch(`${api}/objects/${encodeKey(path)}`, {
-    method: "HEAD",
-    headers: auth,
-  })
-  if (res.status === 200) return true
-  if (res.status === 404) return false
-  throw new Error(
-    `HEAD ${path}: HTTP ${res.status} — refusing to guess whether it exists`
-  )
+async function loadPublishedKeys(): Promise<Set<string>> {
+  const keys = new Set<string>()
+  let cursor: string | undefined
+  for (;;) {
+    const url =
+      `${api}/objects?per_page=1000` +
+      (cursor ? `&cursor=${encodeURIComponent(cursor)}` : "")
+    const res = await fetch(url, { headers: auth })
+    if (!res.ok) {
+      throw new Error(
+        `LIST objects: HTTP ${res.status} — refusing to guess what exists`
+      )
+    }
+    const body = (await res.json()) as {
+      result: { key: string }[]
+      result_info?: { cursor?: string; is_truncated?: boolean }
+    }
+    for (const obj of body.result) keys.add(obj.key)
+    cursor = body.result_info?.cursor
+    if (!body.result_info?.is_truncated) break
+  }
+  return keys
 }
 
 async function publish(path: string): Promise<Result> {
@@ -180,14 +195,15 @@ async function main() {
   const results: Result[] = []
   const queue = [...paths]
   // ponytail: check-then-put, not an atomic conditional write — the Cloudflare
-  // REST API accepts and ignores If-None-Match. The window between the HEAD and
-  // the PUT is only a hazard with two concurrent publishers, and this is a
+  // REST API accepts and ignores If-None-Match. The window between the listing
+  // and the PUT is only a hazard with two concurrent publishers, and this is a
   // manual single-writer command. Move to the S3 endpoint with SigV4 and a real
   // conditional PUT if that ever stops being true.
+  const published = await loadPublishedKeys()
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
       for (let path = queue.shift(); path !== undefined; path = queue.shift()) {
-        const result = (await exists(path))
+        const result = published.has(path)
           ? ({ path, state: "already", bytes: 0 } as Result)
           : await publish(path)
         results.push(result)

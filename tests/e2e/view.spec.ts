@@ -80,7 +80,9 @@ test("opening a Recording and following its Source link bill one view each", asy
     // corner and the Demo fills the top. Both open the Recording the same way.
     await page.getByRole("heading", { level: 3 }).first().click()
     await expect(page.getByRole("dialog")).toBeVisible()
-    await page.getByRole("link", { name: "GitHub Repository" }).click()
+    await page
+      .getByRole("link", { name: /^Open source repo on GitHub/ })
+      .click()
   })
 
   // Two, from one Recording. expectNoActionRepeated is deliberately not used: this
@@ -125,7 +127,12 @@ test("a Recording opened cold counts one view, and playing its Demo adds none", 
 
   // Played, not merely mounted. Past the two-second threshold on purpose: a Demo
   // stopped at 0.1s would satisfy "the press billed nothing" vacuously.
-  const video = page.locator("video")
+  // The detail's own media box, not any <video> on the route. MORE FROM THIS
+  // CONTRIBUTOR now draws the catalogue's own Tile (Detail.dc.html:83), and a
+  // Tile mounts its Demo at `preload="none"` behind the Poster — two more
+  // <video> elements, neither of which ever plays here (their playback owner is
+  // suspended), but enough to make a bare `locator("video")` ambiguous.
+  const video = page.locator(".detail-media video")
   await expect
     .poll(() => video.evaluate((el: HTMLVideoElement) => el.currentTime), {
       timeout: 20_000,

@@ -1,6 +1,6 @@
 # 06 — The hero, the stats row and the headings
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 01, 02, 04
 
 Decision 6 and decision 10 (`.scratch/studio-dark/spec.md:117,121`). The surface is
@@ -343,3 +343,100 @@ Not blocking, but contended:
   The mock's `48 OF 277 · STILLS ONLY` result line (`Catalogue.dc.html:216`) is a branch of
   this ticket's `catalogueResultLine` (step 1), because one function owns that line on every
   route; 13 passes the flag in and asserts the string.
+
+## Comments
+
+### 2026-08-03 — Built. All acceptance met, one e2e failure is pre-existing.
+
+Everything in Work steps 1-8 and 10 is done. `tests/catalogue-heading.test.ts`
+(16 cases) covers both functions row-by-row; `tests/e2e/headings.spec.ts` (7
+cases) pins the computed hero style, the heading/result-line pair on every
+route, the `1 FILTER` singular, `No matches`, `Misc, by one contributor`, and
+the `min-width`/tabular-nums the CLS argument rests on.
+
+**The two bugs the ticket predicted were both confirmed on `main`:** the
+`categoryAuthor` eyebrow and the h3/xxl `GradientHeading` on a page with no `h1`
+are gone; the resultant `gradient-heading.tsx` was deleted with no remaining
+references (`grep -rn "GradientHeading|gradient-heading|headingVariants"` is
+empty) and its two shared dependencies are still used by `components/ui/*`.
+
+**Counts.** Derived in the server component the way `app/layout.tsx` already
+does. `/` renders `277`/`getUniqueContributors().length`/`18`, never a literal —
+`grep -rn "\b277\b|24 CONTRIBUTORS|18 CATEGORIES" app components lib` returns
+nothing.
+
+**Checked.** `pnpm check-types` clean; `pnpm test` 217/217; `pnpm lint` 0 errors
+in the changed files; `pnpm build` succeeds; Playwright 129/131 (the two fails
+are `nav-empty-states-layout.spec.ts:175` `/` and `/products at 768px` `fills
+its track`, both reproduced identically on committed HEAD with this change
+stashed — pre-existing and not the hero/headings' doing; nothing in this ticket
+touches the grid track).
+
+**Three specs updated beyond `home.spec.ts` for copy, not behaviour.** The ticket
+names `home.spec.ts` as the only edited spec, but `served-html.spec.ts` and
+`nav-empty-states-layout.spec.ts` also asserted the old strings ("Awesome React
+Native UI", "Bookmarks"), and the hero rewires both. Their edits swap the string
+for the new one and make the served-HTML check use a literal `\u00a0` (React
+emits the non-breaking `&nbsp;` as an actual U+00A0). No assertion about the
+grid track, `Total Items:` or pagination numbers was touched except as named
+by the ticket's own acceptance items.
+
+`components/recording-card-grid.tsx` still carries eight `bg-[#...]`/`dark:[#...]`
+literals, but they are the retained `PILL_CLASS` and the framed-panel shadow
+(ticket 04's), none introduced here; the two new colour-bearing surfaces in this
+ticket (`components/hero.tsx`, the heading row) use only ticket 02 tokens.
+
+### 2026-08-05 — Open question 1 answered: the direction, not the wording
+
+Open question 1 asked whether the hero sub-line ships the mock's `Every entry is
+a silent screen recording of a real phone, and a link to the repo that made it.`
+or applies the rename — noting that applying it "would need rewriting rather
+than substituting" because `Every recording is a silent screen recording…`
+repeats the word, and that the footer's twin sentence is ticket 04's, to be
+decided at the same time.
+
+**What shipped**, in commit `0bf8b85`: `components/hero.tsx` now reads
+
+> Each one is a silent screen recording of a real phone, and a link to the repo
+> that made it.
+
+with a comment at `components/hero.tsx:2-5` recording the same reasoning this
+question raised — the mock predates the rename and the literal substitution is
+a tautology, so the subject became "each one" instead of "every recording."
+
+**Two things decided it, both already in place before this commit:** spec.md
+decision 3, `Entry → **Recording**, author → **Contributor**, in code as well
+as copy` (`spec.md:145`), and `components/site-footer.tsx:25-27`, whose comment
+records that ticket 04 already broke this exact tie for the footer's twin
+sentence — `An open catalogue of React Native UI recordings. Every recording
+belongs to its contributor.` The hero now agrees with the footer; neither
+string says "entry."
+
+**The direction is settled; the wording is not.** Nothing pins "Each one is a
+silent screen recording…" as the sentence forever — only that it says
+"recording," not "entry." The exact phrasing is still the maintainer's to
+change.
+
+**What is still open.** Ticket 09's Open question 1 (`09-detail-overlay-and-
+shared-link.md:594-604`) raised this identical question for two more strings —
+`MISC · 148 ENTRIES` and `39% OF TOP ENTRY` on the Detail surface — and its
+2026-08-03 review comment counted four strings total, of which two said
+"recording" (footer, and now hero) and two still say "entry" (both ticket 09's).
+Those two are unresolved; a note is added to 09 pointing back here.
+
+**Acceptance re-check.** Every bullet this ticket's Acceptance list holds is
+still met by current code *except one, textually*: the bullet at line 258-259
+quotes the paragraph verbatim as `Every entry is a silent screen recording of a
+real phone, and a link to the repo that made it.`, which is no longer the
+string `components/hero.tsx` renders — the commit above changed it after this
+ticket was marked resolved, in exactly the way Open question 1 said might
+happen. No test pins the literal sentence (`grep -rn "silent screen recording"
+tests/` returns nothing), so nothing regressed; the bullet's quote is simply
+stale against today's tree. The substance the bullet was checking — a
+paragraph under the `h1`, `font-size: 13px`, one sentence, identical in light
+and dark — still holds. Left `Status: resolved`: the ticket's own delivery
+matched its Acceptance in full at the time it closed, and this is the sentence
+Open question 1 flagged as liable to move later, not a defect in what 06
+built. A future edit to this Acceptance bullet's quoted text, to match
+whatever the maintainer settles on, is fair game and does not require
+reopening this ticket.

@@ -16,8 +16,16 @@
 // a throw; init happens in the root provider's mount effect, well before any of
 // these can be triggered by a visitor.
 //
-// No property below carries visitor-entered text. `search_performed` is the one
-// event with a visitor's own words behind it and it reports their length.
+// One property below carries visitor-entered text, and it used to be exactly one:
+// `preview_survey_note`, the sentence somebody typed into the Preview's survey
+// panel. That panel is deleted (ADR-0009) — with the previous design published
+// beside the current one, "Compared to the old rnui.dev, this is…" has no referent
+// for a visitor who was never sent to the old one. **So there is now no event on
+// the site that carries visitor-entered text at all**, which makes the rule total
+// rather than exceptional. `search_performed` remains the event with a visitor's
+// own words behind it and still reports only their length; see that function for
+// why. If a future event needs to carry what somebody typed, that is the day this
+// paragraph is worth its length again.
 
 import type { Recording } from "@/data/recording"
 import posthog from "posthog-js"
@@ -108,8 +116,10 @@ export function recordingOpened(
   // link to the contributor's code (`data/recording.ts`), and `repo_clicked` is the
   // event about following it — so a property called `source` reading `card` would
   // mean something else entirely on the tile beside it. Free to spell correctly
-  // here because no event has been ingested yet.
-  openedFrom: "card" | "url"
+  // here because no event has been ingested yet. `keyboard` is the overlay's
+  // arrows (ticket 09 step 10): the visitor asked for that Recording, which is
+  // ADR-0007:3 reach, not interest.
+  openedFrom: "card" | "url" | "keyboard"
 ) {
   posthog.capture("recording_opened", { ...facts, opened_from: openedFrom })
 }
@@ -191,4 +201,22 @@ export function loadMoreClicked(page: number, recordingsShown: number) {
     page,
     recordings_shown: recordingsShown,
   })
+}
+
+/**
+ * The NOTIFY footer column's signup — the one conversion action on the site that
+ * had no event until now. Decision 9 made it the fourth footer column on every
+ * route (ticket 04 step 7), so a single newsletter signup is now exposed ten
+ * times what it was on `/` and `/subscribe` alone; it has to be measured.
+ *
+ * The only property is the route it fired from. The form takes an email address,
+ * but an event that carried it could reconstruct a visitor's address, and
+ * `session_recording.maskAllInputs` (lib/posthog-provider.tsx:41) is the only
+ * thing keeping that address out of recordings today. No email, no address, no
+ * PII — the route is the conversion signal, not the identity. This is the
+ * fourteenth and last event; ticket 15.1 is the only part of that ticket that
+ * adds rather than preserves. See the issue before reverting it.
+ */
+export function newsletterSubmitted(route: string) {
+  posthog.capture("newsletter_submitted", { route })
 }

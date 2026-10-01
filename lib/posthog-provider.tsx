@@ -7,6 +7,13 @@ import { PostHogProvider as PHProvider } from "posthog-js/react"
 
 import SuspendedPostHogPageView from "./posthog-page-view"
 
+declare global {
+  interface Window {
+    /** The posthog-js singleton, as the snippet install would expose it. */
+    posthog?: typeof posthog
+  }
+}
+
 //
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -41,6 +48,16 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         maskAllInputs: true,
       },
     })
+
+    // The snippet install exposes the instance as `window.posthog`; the npm
+    // module does not, so this restores it. It is the object PostHog's own docs
+    // tell you to poke from the console, and it is the only seam a browser test
+    // has: `lib/analytics.ts` captures through this same singleton, so wrapping
+    // `window.posthog.capture` sees all sixteen call sites. Without it
+    // tests/e2e/posthog-events.spec.ts polled for a `window.posthog` that never
+    // arrived and read an empty array — three assertions about deploy B's
+    // keyboard layer that could never have failed for the right reason.
+    window.posthog = posthog
   }, [])
 
   return (

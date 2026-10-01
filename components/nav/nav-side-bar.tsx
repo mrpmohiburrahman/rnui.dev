@@ -2,20 +2,13 @@
 
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
-import { Bookmark, HomeIcon, PanelLeftIcon, Rss } from "lucide-react"
+import type { FacetCount } from "@/data/recording"
 
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ModeToggle } from "@/app/providers"
-
-import { Logo } from "../logo"
 import { CatalogueNav } from "./catalogue-nav"
 
 type NavSidebarProps = {
-  categories: string[]
-  contributors?: string[]
+  categories: FacetCount[]
+  contributors?: FacetCount[]
 }
 
 export function NavSidebar({ contributors, categories }: NavSidebarProps) {
@@ -23,129 +16,40 @@ export function NavSidebar({ contributors, categories }: NavSidebarProps) {
   // and the nearest boundary was the root layout's — so eleven prerendered routes
   // served "Loading sidebar..." as their sidebar until React ran. The read now
   // lives on the one thing that needs it, inside CatalogueNav.
-  const [isSheetOpen, setSheetOpen] = useState(false)
-
-  const handleLinkClick = () => {
-    setSheetOpen(false)
-  }
-
+  //
+  // The rail's own appearance — width, the CATEGORIES / CONTRIBUTORS labels, the
+  // counts, the row treatment — is ticket 05's. The list scrolls natively (the
+  // Radix ScrollArea's viewport needed JavaScript, so a visitor without it could
+  // see the Categories but never reach the Contributors below them).
+  //
+  // The mobile sheet that used to live here has moved up into the site header's
+  // phone block (components/site-header.tsx): there can be only one "Toggle
+  // Menu" trigger, and the header is where the mock draws it.
   return (
-    <>
-      <aside
-        className="w-42 fixed inset-y-0 left-0 z-10 hidden sm:flex flex-col bg-[#FAFAFA] justify-center dark:bg-background pt-10"
-        // style={{ borderWidth: 1, borderColor: "black" }}
-      >
-        {/* Navigation Section */}
-        <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          <CatalogueNav categories={categories} contributors={contributors} />
-        </nav>
-
-        {/* Bottom Controls: Avatar and ModeToggle */}
-        <div className=" flex flex-col justify-center gap-4 items-start pl-4">
-          {/* Mode Toggle */}
-          <ModeToggle />
-        </div>
-      </aside>
-
-      {/* Mobile Header and Sheet.
-          `fixed`, not `absolute`: no ancestor is positioned, so an absolute
-          wrapper's containing block was the initial one — anchored to the
-          document, so the only route to Categories on a phone left the screen
-          after 10px of scroll. With `left` unset, `fixed` resolves to the same
-          static position, so at scroll 0 the trigger paints where it always did.
-          The `sticky top-0 z-30` on the header below could not have helped: its
-          containing block was this wrapper, whose height is the header's own, so
-          the sticky range was zero. `z-30` moves up here, leaving paint order
-          unchanged.
-
-          `sm:hidden` because the only thing in here is the trigger, which was
-          already `sm:hidden`: at `≥sm` this painted nothing but still occupied a
-          fixed 72×8px of the top-left corner at z-30, forever, over the aside.
-          It cost no pixels before because it scrolled away with the document;
-          now that it does not, it has to say so. That also makes the header's
-          `sm:` classes dead, so they go.
-
-          `pointer-events-none` for the same reason: the wrapper's own padding is
-          an 80×48px box where the header paints 56×40, so ~24px of it is
-          invisible and used to swallow taps on whatever is under it. Harmless
-          while it scrolled away; a permanent dead strip over the grid once it
-          stopped. The header takes the events back, so exactly what paints is
-          what responds. */}
-      <div className="fixed top-[10px] z-30 flex flex-col gap-4 pb-2 px-2 sm:hidden pointer-events-none">
-        <header className="flex h-10 mx-1 rounded-b-lg items-center gap-4 bg-background dark:bg-[#1E1E1E] pointer-events-auto">
-          {/* Mobile Menu Trigger */}
-          <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="sm:hidden bg-accent">
-                <PanelLeftIcon />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            {/* Logo in Mobile Header */}
-            {/* <div className="ml-auto mt-1 md:hidden">
-              <Logo />
-            </div> */}
-            {/* Mobile Sheet Content */}
-            <SheetContent
-              side="left"
-              className="sm:max-w-[15rem] py-4 pl-1 border-r border-primary/10"
-            >
-              <div className="ml-4 mt-1 md:hidden">
-                <Logo />
-              </div>
-              <nav className="flex flex-col justify-between h-full">
-                {/* Navigation Links */}
-                <div className="flex flex-col items-start gap-4 px-2 py-1">
-                  {/* `contributors` too, matching the desktop call above: the contributor
-                      facet used to be desktop-only. */}
-                  <CatalogueNav
-                    categories={categories}
-                    contributors={contributors}
-                    handleLinkClick={handleLinkClick}
-                  />
-                  <div className="my-4 space-y-3">
-                    <Link
-                      href="/subscribe"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <Rss className="h-5 w-5" />
-                      Subscribe
-                    </Link>
-                    <Link
-                      href="/bookmarks"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <Bookmark className="h-5 w-5" />
-                      Bookmarks
-                    </Link>
-                    <Link
-                      href="/"
-                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                      prefetch={false}
-                      onClick={handleLinkClick}
-                    >
-                      <HomeIcon className="h-5 w-5" />
-                      Home
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Bottom Controls: Avatar and ModeToggle */}
-                <div className="flex flex-col items-start pl-4">
-                  <nav className="mb-6 flex flex-col gap-4">
-                    {/* Mode Toggle */}
-                    <ModeToggle />
-                  </nav>
-                </div>
-              </nav>
-            </SheetContent>
-          </Sheet>
-        </header>
-      </div>
-    </>
+    // The mock's rail is width:232px;flex:none on every desktop variant
+    // (Catalogue.dc.html:36) — but that 232 is a *content* width. The mock has
+    // no reset, so the nav is content-box: 232 + 16px of padding either side +
+    // the 1px right border is 265px on screen, which is where the mock actually
+    // puts the grid's left edge (measured: nav 8->273 at a 1440 canvas). This
+    // aside is border-box like everything Tailwind touches, so `w-[232px]` drew
+    // a rail 33px narrower than the drawing. 265 is the same rail.
+    //
+    // It costs a column in the 1440-1472 band: the grid is auto-fill (see
+    // recording-card-grid.tsx GRID_CLASS) and five 208px tracks plus their gaps
+    // need 1136, which 1440 - 265 - 52 no longer holds. The mock does not fit
+    // there either — its own fifth column runs 13px past the 26px right gutter
+    // and is saved only by `overflow:hidden` on a fixed 1440 frame, which a
+    // responsive page cannot do without clipping real content. Five columns
+    // return at 1453 and up.
+    // The breakpoint is the filter dock's own (components/filter-dock.tsx, also
+    // `md:hidden`): below `md` the rail is gone and the sheet is the only route
+    // to a facet, so one boundary means one surface at any width — the 640-767px
+    // band has neither a rail over which a fixed dock paints nor a header with
+    // no sort control at all (site-header.tsx removes it below `md`).
+    <aside className="sticky top-[62px] hidden h-[calc(100vh-62px)] w-[265px] flex-none flex-col self-start border-r border-line bg-rail px-4 pb-[30px] pt-5 md:flex">
+      <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <CatalogueNav categories={categories} contributors={contributors} />
+      </nav>
+    </aside>
   )
 }

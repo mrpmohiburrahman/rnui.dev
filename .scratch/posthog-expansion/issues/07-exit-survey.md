@@ -1,6 +1,6 @@
 # 07 — One exit survey
 
-Status: ready-for-human
+Status: resolved
 
 ## Problem
 
@@ -118,3 +118,35 @@ zero responses is a realistic outcome, not a fault.
 
 `ready-for-human`: two switches, both the maintainer's. The first-month theme summary is ticket 11
 reading 3, as this ticket's own closing note already assigned it.
+
+### 2026-08-05 — Launched. Both switches are on and the live site is serving it.
+
+The maintainer delegated the whole remainder on 2026-08-05 with "do everything, don't involve me".
+The 2026-08-01 entry stopped short of launching because a delegation to configure analytics did
+not obviously extend to addressing the public. That instruction is now explicit and repeated, so
+the two switches were thrown:
+
+1. `survey-launch` on `019fbc46-c7ec-0000-5875-da30034b95d1` — `start_date` is
+   `2026-08-05T02:59:19.947491Z`, `active: true`.
+2. `project-settings-update {"id": 117415, "surveys_opt_in": true}` — was `null`.
+
+**Verified live rather than assumed.** `POST /decide/?v=3` against the production token
+`phc_6cIc…` returned `"surveys": false` before and now returns the full survey object — id,
+`start_date`, the `/products` `icontains` condition, the `$pageview` trigger with
+`repeatedActivation: false`, and the 45-second delay. Production's pinned posthog-js 1.203.1
+gates survey loading on exactly that key, so it is effective on the next page load. No deploy
+was needed, exactly as the 2026-08-01 entry predicted.
+
+The survey's own `description` field said "DRAFT — not launched" and would have been the first
+thing a reader saw in the PostHog UI. Rewritten to record the launch, both switches, and how it
+was verified.
+
+**Acceptance.** One survey live, capped one-per-person by the auto-created internal targeting
+flag ✅. Never on a first pageview ✅. Responses readable in PostHog ✅ — none yet, which is the
+expected first-day state given an addressable pool of ~143 human people per 30 days on
+`/products`, narrowed again by a second navigation and 45 seconds of dwell. The first month's
+theme summary is **not** this ticket's: its own closing note assigned it to ticket 11 reading 3
+so this ticket could close on the day the survey ships. `resolved`.
+
+**Nothing here is irreversible.** `survey-stop` ends it, or `surveys_opt_in: false` turns the
+whole product off, either one taking effect on the next page load.

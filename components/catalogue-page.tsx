@@ -11,25 +11,25 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
-import { usePathname } from "next/navigation"
-import type { Recording } from "@/data/recording"
+import { usePathname, useSearchParams } from "next/navigation"
+import type { FacetCount, Recording } from "@/data/recording"
 
+import type { CatalogueDiagnosis } from "@/lib/catalogue-filters"
 import {
   BOOKMARKS_KEY,
   useRememberedSet,
   VOTED_RECORDING_IDS_KEY,
 } from "@/hooks/use-remembered-set"
 import useSortedData from "@/hooks/use-sorted-data"
+import type { EmptyState } from "@/components/catalogue-empty"
+import { FilterDock } from "@/components/filter-dock"
+import { Hero } from "@/components/hero"
 import { PlaybackOwner } from "@/components/playback-owner"
-import {
-  RecordingCardGrid,
-  type GridTreatment,
-} from "@/components/recording-card-grid"
+import { RecordingCardGrid, shownCount } from "@/components/recording-card-grid"
 import { RecordingOverlay } from "@/components/recording-overlay"
 
 interface CataloguePageProps {
   recordings: Recording[]
-  treatment: GridTreatment
   /**
    * Show only the Recordings this visitor has bookmarked. The bookmarks route is
    * handed the whole catalogue and sets this, rather than filtering before it
@@ -38,15 +38,55 @@ interface CataloguePageProps {
    * visitor un-bookmarked it, until a reload.
    */
   bookmarkedOnly?: boolean
+  /** Render the hero above the heading row. `/` sets it, `/products` and
+   * `/bookmarks` do not (decision 10). */
+  showHero?: boolean
+  /** The three whole-catalogue counts the hero's stats row draws. Optional
+   * because `/bookmarks` cannot supply them — this route is a client component
+   * and counting here would pull the catalogue into a client chunk. */
+  stats?: { recordings: number; contributors: number; categories: number }
+  /** Whole-catalogue Recordings per Contributor — `RECORDINGS_PER_CONTRIBUTOR`,
+   * step 1's `catalogueFacts.perContributor`, folded in beside `stats` rather
+   * than added as a second facts object. Both server routes pass it because
+   * both hand over a filtered set, and a count derived from a filtered set is
+   * the size of the filter. `/bookmarks` omits it: that route fetches the whole
+   * catalogue and filters in here, so deriving is exact.
+   *
+   * Passing the map as a prop value does not put data/catalogue in a client
+   * chunk — it travels as RSC payload data, 23 entries, exactly as `stats`
+   * already does. */
+  perContributor?: Record<string, number>
+  /** The whole catalogue's top view count, the denominator of every tile's
+   * views bar. Threaded from the routes, like the Recordings themselves. */
+  topViewCount: number
+  /** Why the filtered catalogue is empty, computed by the route's server
+   * component and passed straight through — this module is "use client" and
+   * the diagnosis needs the whole catalogue to answer "what would I see if I
+   * dropped this one filter". Absent on /bookmarks, which can never show the
+   * zero panel. */
+  diagnosis?: CatalogueDiagnosis | null
   /** Rendered above the sort controls: a heading, a hero, a newsletter form. */
   children?: ReactNode
+  /** The phone filter sheet's two facet lists. Passed by the routes that can
+   *  (server components reading data/recording.ts), and absent on /bookmarks,
+   *  which is "use client" and must not value-import @/data/* into a client
+   *  chunk (components/catalogue-search.tsx:54-57). On that route the dock
+   *  renders the sort button alone and the sheet shows only its SORT block. */
+  categories?: FacetCount[]
+  contributors?: FacetCount[]
 }
 
 export function CataloguePage({
   recordings,
-  treatment,
   bookmarkedOnly = false,
+  showHero = false,
+  stats,
+  perContributor,
+  diagnosis,
   children,
+  topViewCount,
+  categories,
+  contributors,
 }: CataloguePageProps) {
   const { ids: bookmarks, toggle: toggleBookmark } =
     useRememberedSet(BOOKMARKS_KEY)
@@ -83,6 +123,13 @@ export function CataloguePage({
   )
   const { sortedData, sort, setSort } = useSortedData(visible)
 
+  // The filter dock's `Show N recordings` names the count the grid actually
+  // has on screen — page-capped, which is the first number in the result line
+  // (recording-card-grid.tsx computes the same figure from the same `page`).
+  const searchParams = useSearchParams()
+  const page = Math.max(1, Number(searchParams.get("page")) || 1)
+  const resultCount = shownCount(page, sortedData.length)
+
   // Which of the two empty states an empty list is, decided here because this is
   // the only place that knows. null means "not known yet, so say nothing".
   //
@@ -95,11 +142,54 @@ export function CataloguePage({
   //
   // The other routes are handed their Recordings by a server component, so an empty
   // list there is an answer rather than a gap.
-  const emptyMessage = !bookmarkedOnly
-    ? "No recordings match the current search or filters."
-    : bookmarks?.length === 0
-      ? "No bookmarked recordings yet. Bookmarks are kept in this browser on this device — there are no accounts, so they do not follow you to another browser or another device."
+  //
+  // `null` also covers the one case where there is nothing truthful to say: an
+  // empty list with no filter on it, which is what get-recordings.ts returns
+  // when the Firestore read throws. The zero panel diagnoses filters, and there
+  // are none, so it would draw an empty box.
+  const emptyState: EmptyState | null = !bookmarkedOnly
+    ? diagnosis
+      ? { kind: "zero", diagnosis }
       : null
+    : bookmarks?.length === 0
+      ? { kind: "saved" }
+      : null
+
+  // What the open Recording's detail draws.
+  //
+  // `contributorTotal` is the route's whole-catalogue map when it supplies one,
+  // and only falls back to counting the Recordings in hand when it does not
+  // (/bookmarks, where the two are the same answer). It used to always count the
+  // set in hand, which on /products?category=X is the *filtered* set — so the
+  // panel read "3 of the 277 recordings here are theirs" with a `See all 3 →`
+  // that landed on a page showing 124. The numerator was of the filter and the
+  // denominator was of the catalogue.
+  //
+  // `more` stays derived from the set in hand, deliberately: step 8 wants the
+  // Recordings themselves and getting those from anywhere else means importing
+  // data/catalogue into a client chunk. So on a filtered route the See-all link
+  // can now name a bigger number than the strip below it shows, which is the
+  // honest pair — the link goes where it says it goes.
+  const sameCategory = useMemo(
+    () => recordings.filter((r) => r.category === openRecording?.category),
+    [recordings, openRecording]
+  )
+  const catalogueTotalProvided = stats?.recordings ?? recordings.length
+  const contributorTotal = openRecording
+    ? (perContributor?.[openRecording.contributor] ??
+      recordings.filter((r) => r.contributor === openRecording.contributor)
+        .length)
+    : 0
+  const more = useMemo(() => {
+    if (!openRecording) return []
+    return recordings
+      .filter(
+        (r) =>
+          r.contributor === openRecording.contributor &&
+          r.id !== openRecording.id
+      )
+      .slice(0, 2)
+  }, [recordings, openRecording])
 
   return (
     <>
@@ -110,8 +200,10 @@ export function CataloguePage({
       <PlaybackOwner suspended={openRecording !== null}>
         <RecordingCardGrid
           sortedData={sortedData}
-          treatment={treatment}
-          emptyMessage={emptyMessage}
+          emptyState={emptyState}
+          hero={showHero && stats ? <Hero {...stats} /> : undefined}
+          catalogueTotal={stats?.recordings}
+          bookmarkedOnly={bookmarkedOnly}
           // Both stored sets are still null until an effect has read localStorage.
           // `[]` rather than a placeholder render: the server and the first client
           // render both see an empty set, so there is no hydration mismatch, and the
@@ -122,21 +214,56 @@ export function CataloguePage({
           toggleBookmark={toggleBookmark}
           votedRecordingIds={votedRecordingIds ?? []}
           toggleVote={toggleVote}
-          setSort={setSort}
-          currentSort={sort}
+          topViewCount={topViewCount}
         >
           {children}
         </RecordingCardGrid>
       </PlaybackOwner>
 
-      {/* history.back() is the whole close path, so Escape, the close button,
-          the tint and the browser's own Back button all do one identical thing.
-          Safe because the overlay only opens on an /recording/… pathname this page
-          pushed itself; a cold /recording/… renders app/recording/[id]/page.tsx, which
-          has no overlay. */}
+      {/* The phone's filter surface: the fixed dock and the bottom sheet. Below
+          `md` only, and only on the three catalogue routes — this is the one
+          module they all render, and the reason it lives here rather than in
+          the layout, which is never handed searchParams or a filtered count. */}
+      <FilterDock
+        categories={categories}
+        contributors={contributors}
+        resultCount={resultCount}
+        sort={sort}
+        setSort={setSort}
+      />
+
+      {/* history.back() is the whole close path, so every close — Escape, the
+          close button, the scrim, browser Back — does one identical thing. Safe
+          because the overlay only opens on an /recording/… pathname this page
+          pushed itself; a cold /recording/… renders app/recording/[id]/page.tsx,
+          which has no overlay. */}
       <RecordingOverlay
         recording={openRecording}
         onClose={() => window.history.back()}
+        topViewCount={topViewCount}
+        catalogueTotal={catalogueTotalProvided}
+        contributorTotal={contributorTotal}
+        more={more}
+        sequence={sameCategory}
+        saved={
+          openRecording
+            ? (bookmarks?.includes(openRecording.id) ?? false)
+            : false
+        }
+        voted={
+          openRecording
+            ? (votedRecordingIds?.includes(openRecording.id) ?? false)
+            : false
+        }
+        onToggleSave={() => openRecording && toggleBookmark(openRecording.id)}
+        onToggleVote={() => openRecording && toggleVote(openRecording.id)}
+        // The same two sets again, by id, for the detail's MORE FROM THIS
+        // CONTRIBUTOR strip — which draws the catalogue's own Tile, controls
+        // included, exactly as Detail.dc.html:83 imports it.
+        savedIds={bookmarks ?? []}
+        votedIds={votedRecordingIds ?? []}
+        onToggleSaveId={toggleBookmark}
+        onToggleVoteId={toggleVote}
       />
     </>
   )
