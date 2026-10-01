@@ -20,7 +20,7 @@ test("only Posters near the viewport are fetched", async ({ page }) => {
   await page.waitForLoadState("networkidle")
 
   expect(posters.size).toBeGreaterThan(0) // Posters still load
-  expect(posters.size).toBeLessThan(60) // 277 today
+  expect(posters.size).toBeLessThan(60) // one page, not the whole catalogue
 
   // …and the rest arrive on demand rather than never.
   const nearTop = posters.size

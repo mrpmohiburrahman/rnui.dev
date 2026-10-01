@@ -57,6 +57,56 @@ describe("catalog data integrity", () => {
     }
   })
 
+  // A Contributor's identity is the exact string in this field: it is the key
+  // RECORDINGS_PER_CONTRIBUTOR counts under, the value `?contributor=` filters
+  // on, and the text /contributors draws a row from. So `"Pushkar Tandon "` and
+  // `"Pushkar Tandon"` are two people to every one of them — one person, two
+  // rows, two addresses, two counts. Invisible in the data and invisible on the
+  // rail, which shows the top four; the directory is the surface that prints
+  // the lie. Guarded here rather than by trimming in the three derivations,
+  // because a fourth reader would need a fourth trim (ADR-0005).
+  it("no contributor name carries leading or trailing whitespace", () => {
+    const padded = allRecordings
+      .filter(
+        (recording) => recording.contributor !== recording.contributor.trim()
+      )
+      .map((recording) => `${recording.id}: "${recording.contributor}"`)
+    expect(
+      padded,
+      `contributor names with surrounding whitespace:\n${padded.join("\n")}`
+    ).toHaveLength(0)
+  })
+
+  // The other half of the same property, and the half the submission form leans
+  // on: the form suggests an existing name as a visitor types and adopts the
+  // catalogue's spelling when the typed name means one of them. If two catalogue
+  // names fold to the same person, that suggestion is ambiguous and which of the
+  // two a visitor gets depends on array order. Nothing collides today; nothing
+  // prevented it before this either.
+  //
+  // The fold is restated here rather than imported from lib/contributor-match.ts,
+  // for ADR-0005's reason: a test that takes its expectation from the code under
+  // test can no longer catch that code being wrong. lib/contributor-match.ts is
+  // what the form runs; this is what the data must satisfy.
+  it("no two contributor names fold to the same Contributor", () => {
+    const fold = (name: string) =>
+      name.normalize("NFC").trim().replace(/\s+/g, " ").toLowerCase()
+
+    const byFolded = new Map<string, string[]>()
+    for (const name of new Set(allRecordings.map((r) => r.contributor))) {
+      const folded = fold(name)
+      byFolded.set(folded, [...(byFolded.get(folded) ?? []), name])
+    }
+
+    const collisions = [...byFolded.entries()]
+      .filter(([, names]) => names.length > 1)
+      .map(([folded, names]) => `"${folded}" <- ${names.join(" / ")}`)
+    expect(
+      collisions,
+      `Contributor names that are one person to the form:\n${collisions.join("\n")}`
+    ).toHaveLength(0)
+  })
+
   it("all source URLs match https?://", () => {
     const bad = allRecordings.filter(
       (recording) => !recording.source.match(/^https?:\/\//)
@@ -70,6 +120,45 @@ describe("catalog data integrity", () => {
         typeof recording.id !== "string" || recording.id.trim() === ""
     )
     expect(bad).toHaveLength(0)
+  })
+})
+
+// The three fields `pnpm assets:measure` writes. Absent is legal — a Recording
+// that has not been measured yet has none — but where a field is present it has
+// to be sane: this is what catches a write-back that landed a value in the
+// wrong object, or a hue formula that regressed.
+describe("measured fields", () => {
+  it("where present, durationMs, aspect and hue are in range", () => {
+    const bad = allRecordings.flatMap((recording) => {
+      const problems: string[] = []
+      if (
+        recording.durationMs !== undefined &&
+        (!Number.isInteger(recording.durationMs) || recording.durationMs <= 0)
+      ) {
+        problems.push(
+          `durationMs ${recording.durationMs} is not a positive integer`
+        )
+      }
+      if (
+        recording.aspect !== undefined &&
+        (recording.aspect < 0.2 || recording.aspect > 5)
+      ) {
+        problems.push(`aspect ${recording.aspect} is outside [0.2, 5]`)
+      }
+      if (
+        recording.hue !== undefined &&
+        (!Number.isInteger(recording.hue) ||
+          recording.hue < 0 ||
+          recording.hue >= 360)
+      ) {
+        problems.push(`hue ${recording.hue} is outside [0, 360)`)
+      }
+      return problems.map((problem) => `${recording.id}: ${problem}`)
+    })
+    expect(
+      bad,
+      `out-of-range measured fields:\n${bad.join("\n")}`
+    ).toHaveLength(0)
   })
 })
 

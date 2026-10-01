@@ -1,5 +1,9 @@
 import { expect, test, type Page } from "@playwright/test"
 
+// The catalogue's size, read from the data. See the note in headings.spec.ts:
+// these result lines were pinned to 277 and went red when the catalogue passed it.
+import { allRecordings } from "../../data/catalogue"
+
 const CDN = process.env.NEXT_PUBLIC_CDN_URL ?? "https://cdn.rnui.dev"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -43,17 +47,28 @@ test("home page renders catalog and search", async ({ page }) => {
   await page.goto("/")
   await expect(page).not.toHaveTitle(/error/i)
 
-  // Hero / title visible. By role, because the footer repeats the name twice.
+  // Hero / title visible. By role, because it is the one h1 on the page — the
+  // comment that used to justify this ("the footer repeats the name twice") was
+  // retired with the old footer, which the ticket 04 footer replaced. The copy
+  // changed with the Studio Dark hero (ticket 06).
   await expect(
-    page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
+    page.getByRole("heading", {
+      level: 1,
+      name: "A dark room full of React Native interfaces, playing quietly.",
+    })
   ).toBeVisible()
 
-  // Search input present. By its accessible name, which it did not have when
-  // this was written — `input[placeholder]` used to identify it by being the
-  // only input on the page without one, and matched the newsletter's once the
-  // search box gained a placeholder of its own.
+  // Exactly one h1 on the route: the hero is it, and the heading row renders as
+  // an h2 beneath it (recording-card-grid.tsx).
+  await expect(page.locator("h1")).toHaveCount(1)
+
+  // Search input present, in the header now (ticket 04 step 5), named with the
+  // catalogue size. By its accessible name, which it did not have when this was
+  // written — `input[placeholder]` used to identify it by being the only input
+  // on the page without one, and matched the newsletter's once the search box
+  // gained a placeholder of its own.
   await expect(
-    page.getByRole("textbox", { name: "Search the catalogue" })
+    page.getByRole("textbox", { name: /Search \d+ recordings/ })
   ).toBeVisible()
 })
 
@@ -201,5 +216,93 @@ test.describe("reduced motion", () => {
 
     // The tiles are not blank: they hold their Poster.
     await expect(page.getByTestId("demo").first().locator("img")).toBeVisible()
+  })
+
+  // No <video> mounts, so `playing` is never true and nothing is ever brighter
+  // than anything else — a resting-by-default dim would hand the visitors who
+  // asked for less motion a permanently darkened catalogue (Specimen.dc.html:95).
+  // The brightness must live in CSS behind the media query rather than in the
+  // hook, whose server snapshot is `true`, so this is the assertion that would
+  // have caught shipping that dim.
+  test("tiles sit at full brightness, and say so", async ({ page }) => {
+    await page.goto("/")
+    const tile = page.getByTestId("demo").first()
+    await tile.waitFor()
+
+    expect(await tile.evaluate((el) => getComputedStyle(el).filter)).toBe(
+      "none"
+    )
+
+    // The state chip's text is the CSS ::before (globals.css), so it is read
+    // off the pseudo-element, not the element's textContent.
+    const label = await tile
+      .locator(".state-chip")
+      .evaluate((el) => getComputedStyle(el, "::before").content)
+    expect(label).toContain("STILLS ONLY")
+  })
+
+  // The result line names the mode the rest of the reduced-motion tests assume
+  // (Catalogue.dc.html:216). The grid reads its own preference and flips the
+  // tail to STILLS ONLY on hydration — the server rendered SORTED RECENT for
+  // everyone, because a served document must not claim stills for a visitor who
+  // will play Demos (components/recording-card-grid.tsx).
+  test("the result line reads 48 OF the catalogue · STILLS ONLY", async ({
+    page,
+  }) => {
+    await page.goto("/")
+    await expect(
+      page.getByText(`48 OF ${allRecordings.length} · STILLS ONLY`)
+    ).toBeVisible()
+  })
+
+  // The tailwindcss-animate gap (ticket 13 step 4d): `duration-*` emits
+  // `animation-duration`, not `transition-duration`, and `animate-in`/`animate-out`
+  // emit an animation that the media query's `transition-duration: 0s` would
+  // leave running at full length. The universal `*` rule in app/globals.css
+  // zeroes `animation-duration` too — this test is what notices if a future
+  // rewrite of that rule drops the second line.
+  //
+  // Of the three files that still carry an animate utility — components/ui/
+  // dropdown-menu.tsx, tooltip.tsx and navigation-menu.tsx — only the dropdown
+  // mounts (the theme switcher). The probe elements below use the exact class
+  // strings of the two that do not, so all three are pinned without needing
+  // their (nonexistent) triggers.
+  test("animate-in/out and duration utilities compute 0s under reduced motion", async ({
+    page,
+  }) => {
+    await page.goto("/")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    const menu = page.locator('[role="menu"]')
+    await expect(menu).toBeVisible()
+    await expect(menu).toHaveAttribute("data-state", "open")
+
+    const durations = await page.evaluate(() => {
+      const read = (el: Element) => getComputedStyle(el).animationDuration
+      const probe = (cls: string) => {
+        const el = document.createElement("div")
+        el.className = cls
+        document.body.appendChild(el)
+        const value = read(el)
+        el.remove()
+        return value
+      }
+      const menu = document.querySelector('[role="menu"]')
+      if (!menu) throw new Error("theme dropdown content never mounted")
+      return {
+        // The one real instance: the dropdown's content element, which carries
+        // `data-[state=open]:animate-in data-[state=open]:fade-in-0
+        // data-[state=open]:zoom-in-95` (components/ui/dropdown-menu.tsx).
+        dropdown: read(menu),
+        tooltip: probe("animate-in fade-in-0 zoom-in-95"),
+        navigation: probe(
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90"
+        ),
+      }
+    })
+
+    for (const value of Object.values(durations)) {
+      expect(value).toBe("0s")
+    }
   })
 })

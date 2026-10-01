@@ -2,13 +2,21 @@
 
 import type { ReactElement } from "react"
 import { permanentRedirect } from "next/navigation"
-import { BoxIcon, Search, User } from "lucide-react"
+import { allRecordings } from "@/data/catalogue"
+import {
+  categoriesWithCounts,
+  contributorsByCount,
+  getUniqueCategories,
+  getUniqueContributors,
+  RECORDINGS_PER_CONTRIBUTOR,
+} from "@/data/recording"
 
+import { catalogueDiagnosis } from "@/lib/catalogue-filters"
+import { catalogueHeading } from "@/lib/catalogue-heading"
 import { CataloguePage } from "@/components/catalogue-page"
-import { GradientHeading } from "@/components/cult/gradient-heading"
 
 // Adjust the import path if necessary
-import { getRecordings } from "../actions/get-recordings"
+import { getRecordings, getTopViewCount } from "../actions/get-recordings"
 
 interface PageProps {
   searchParams: Promise<{
@@ -48,34 +56,53 @@ const RecordingsPage = async ({
 
   const { search, category, contributor } = params
   const data = await getRecordings(search, category, contributor)
+  const topViewCount = await getTopViewCount()
 
+  const stats = {
+    recordings: allRecordings.length,
+    contributors: getUniqueContributors().length,
+    categories: getUniqueCategories().length,
+  }
+
+  // Why the result set is empty, computed here because only a server component
+  // can hold the whole catalogue: the zero panel has to answer "what would I see
+  // if I dropped this one filter". Against allRecordings rather than
+  // getRecordings() — the diagnosis reads caption, Category and Contributor
+  // only, none of which come from Firestore, so the plain array is both correct
+  // and free.
+  const diagnosis =
+    data.length === 0
+      ? catalogueDiagnosis(allRecordings, { category, contributor, search })
+      : null
+
+  // The phone filter sheet's two facet lists, the same two the rail's layout
+  // hands NavSidebar, threaded here rather than imported into the client page
+  // (ticket 11).
+  const categories = categoriesWithCounts()
+  const contributors = contributorsByCount()
+
+  // A plain block, exactly like `/` (app/page.tsx:51). This used to sit inside a
+  // `<div className="flex">` left over from the pre-redesign layout, whose old
+  // contents were `mx-auto` and so never revealed what the wrapper did: a block
+  // child of a flex row shrink-to-fits, so the grid's
+  // `repeat(auto-fill, 208px)` resolved against the chip row's width instead of
+  // the viewport's and the catalogue rendered one column.
   return (
-    <div className="flex">
-      <div className=" max-w-full pt-4">
-        <CataloguePage recordings={data} treatment="plain">
-          {(search || category || contributor) && (
-            <div className="md:mr-auto mx-auto flex flex-col items-center md:items-start">
-              <div className="flex mb-1 justify-center md:justify-start">
-                {search && (
-                  <Search className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {category && (
-                  <BoxIcon className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {contributor && (
-                  <User className="mr-1 bg-neutral-800 fill-yellow-300/30 stroke-yellow-500 size-6 p-1 rounded-full" />
-                )}
-                {search && "search"}
-                {category && "category"}
-                {contributor && "Contributor"}
-              </div>
-              <GradientHeading size="xxl">
-                {search || category || contributor}
-              </GradientHeading>
-            </div>
-          )}
-        </CataloguePage>
-      </div>
+    // No top padding — see app/page.tsx. `main` already spends the mock's 22px.
+    <div className="max-w-full">
+      <CataloguePage
+        recordings={data}
+        stats={stats}
+        // Required here, not optional: this route is always handed a filtered
+        // set (ticket 09 step 1), so deriving the count would give the size
+        // of the filter.
+        perContributor={RECORDINGS_PER_CONTRIBUTOR}
+        categories={categories}
+        contributors={contributors}
+        showHero={false}
+        topViewCount={topViewCount}
+        diagnosis={diagnosis}
+      />
     </div>
   )
 }

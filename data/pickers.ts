@@ -6,6 +6,9 @@ export const pickers: Recording[] = [
     caption: "Flash Cards",
     demoPath: "demo/pickers/pickers_konstantinos_efkarpidis.mp4",
     posterPath: "thumbnails/pickers/pickers_konstantinos_efkarpidis.avif",
+    durationMs: 29100,
+    aspect: 0.4758,
+    hue: 215,
     contributor: "Konstantinos Efkarpidis",
     source:
       "https://github.com/kostas64/react-native-animated-components/blob/master/src/screens/ValuePickersScreen.tsx",

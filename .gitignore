@@ -55,3 +55,32 @@ __data__
 # Scratch worktrees created by coding agents. They hold a full checkout and a
 # .next build, so eslint and vitest glob straight into them if they are tracked.
 .claude/worktrees/
+
+# Studio Dark before/after tour recordings (ticket 14). Megabytes of webm,
+# reproducible from a commit sha plus tests/tour/catalogue.spec.ts — not source.
+.scratch/studio-dark/recordings/
+
+# The visual QA contact sheet — 21MB of PNG, same bargain as the recordings
+# above: reproducible from `node scripts/visual-qa.mjs` against a build.
+.scratch/studio-dark/visual-qa/
+
+# Reproducible from scripts/checkpoint-13-lighthouse.mjs and -inp.mjs against two builds.
+.scratch/studio-dark/lighthouse-*.json
+.scratch/studio-dark/inp-*.json
+
+# The scrubbed mailing list (notify-and-preview ticket 03). This repo is public
+# and .scratch/ is tracked, so the one artifact that carries real addresses stays
+# out of it — reproducible from `pnpm scrub:emails` against Firestore.
+#
+# Any extension, not just .json: on 2026-08-16 a grouping of the list was wanted
+# as markdown, and a rule that only covered .json would have published it. The
+# `.local.` infix is the marker — name anything carrying a real address that way.
+.scratch/notify-and-preview/research/*.local.*
+
+# A Submission fetched with the bare `pnpm submissions:open <key>` lands in the
+# working directory — which for the maintainer is the repo root, and this repo is
+# PUBLIC. The bucket is private precisely so unreviewed work is not; an accidental
+# `git add -A` after a fetch would undo that, so root-level mp4s never stage.
+# Nothing legitimate lives here: Demos are served from cdn.rnui.dev, and the repo
+# tracks no root-level mp4 (checked 2026-09-25).
+/*.mp4

@@ -159,11 +159,23 @@ alert whose whole job is to fire.
 The first acceptance criterion — a thrown error in a preview deployment resolving to a real
 source file — cannot be checked from here. It needs:
 
-1. `POSTHOG_API_KEY` (personal API key, scope `error tracking: write`) and
-   `POSTHOG_PROJECT_ID=117415` added to the Vercel project's environment. Without them the
-   preview build silently skips the upload and traces stay minified.
-2. A deliberate throw on a preview URL, then Error tracking → the issue → confirm the frame
-   points at a `.tsx` path and not a chunk offset.
+1. ~~`POSTHOG_API_KEY` and `POSTHOG_PROJECT_ID` added to the Vercel project's environment.~~
+   **Done 2026-08-05.** Both are on `mrpmohiburrahmans-projects/rnui-dev` (`prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`),
+   type Sensitive, **Production only**. The key is the personal API key labelled
+   `vercel-sourcemaps-rnui-dev`, org-and-project-scoped to *rnui.dev dashboard* alone, with the
+   single scope `error tracking: write` — no other scope, no other project.
+2. A deliberate throw, then Error tracking → the issue → confirm the frame points at a `.tsx`
+   path and not a chunk offset. **This can no longer be done on a preview URL, and that is
+   deliberate.** Production-only scoping keeps the two variables matched in every environment,
+   so a preview build takes the disabled branch at `next.config.ts:63` and never trips the
+   half-configured warning at `next.config.ts:54`. Scoping only one of them to Preview would
+   print that warning on every preview build forever. So either verify on production after
+   deploy A, or first run `vercel env add POSTHOG_API_KEY preview` *and*
+   `vercel env add POSTHOG_PROJECT_ID preview` together — the key's value is shown once at
+   creation and was deliberately not retained anywhere, so that path needs a new key.
+
+   Note the type is Sensitive: the value cannot be read back by CLI or API, so this cannot be
+   reproduced in a local build either. The first real proof is the next production build.
 
 The second criterion holds by inspection: `demo_load_failed` is untouched at
 `components/interactive-video.tsx:79` and `components/demo-tile.tsx:92`. A `<video>` that

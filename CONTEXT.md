@@ -6,13 +6,33 @@ A catalogue of React Native UI components, each shown as a short screen recordin
 
 ### The catalogue
 
+**Submission**:
+A Demo somebody has sent that has not been reviewed or published. A Submission carries the fields
+a Recording carries — a Contributor, a caption, a Category, a source URL, profile links and a file
+— but it is not in `data/<category>.ts`, it is not on the site, and its file is deleted after 30
+days. Most Submissions never become Recordings, and the maintainer decides which do. A Submission
+becomes a Recording only by being published through the `add-recording` path; nothing on the site
+can promote one.
+_Avoid_: entry, item, proposal, contribution, pending recording, upload
+
 **Recording**:
 One catalogue record — a Contributor, a caption, source links, a Category, and the paths to its Demo and Poster. Recordings live in `data/<category>.ts`.
 _Avoid_: entry, item, card, component, animation
 
 **Contributor**:
-The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 277 Recordings.
+The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 280 Recordings. A Contributor has no identifier apart from that name — no id and no slug — so the name string *is* the identity, and everything else groups by it.
 _Avoid_: author, creator, owner, submitter, user
+
+Two spellings that differ only in letter case, in surrounding or repeated spaces, or in how an
+accented character is encoded name the **same** Contributor. Only one of them is ever published: the
+catalogue keeps the spelling it already holds and never rewrites it, which is why a duplicate is
+fixed where the name was entered rather than normalised away on the way out.
+
+A Contributor is a Contributor **from the moment they submit**, not from the moment they are
+published. A Submission's `contributor` value and profile links use exactly the same fields a
+Recording's do, so the term does not change at publication and the form does not need a second
+word for the person on the other end of it. This is why *submitter* stays avoided: it would name
+a state that does not exist.
 
 **Category**:
 The UI kind a Recording belongs to (Buttons, Sliders, Tabbars…). One `data/` file per Category. Its display name is the canonical form — the lowercase spellings that appear in URLs and Asset paths are derived from it, never the other way round.
@@ -27,6 +47,25 @@ The still frame shown in place of a Demo before it plays. Every Demo has exactly
 _Avoid_: thumbnail, placeholder, cover
 
 ### The site
+
+**Design**:
+The complete presentation of the catalogue — its type, colour, layout and motion. A
+Design decides how a Recording is shown, never which Recordings exist. A light and a
+dark theme are not two Designs; both belong to the current Design and are swapped at
+the visitor's will.
+_Avoid_: theme, skin, style, version, look, Studio Dark, deploy A, deploy B
+
+**previous design**:
+The Design rnui.dev served before the current one. Retired from every public route, but
+kept whole rather than deleted, so that a link written against it still resolves to the
+appearance it was written for.
+_Avoid_: the old rnui.dev, the old site, legacy, deploy A, deploy B, v1
+
+**Archive**:
+The frozen copy of the previous design, published alongside the live site rather than
+in place of it. It is a fixed point, not a version: it takes no further changes and
+makes no promises about what a visitor can do there beyond look.
+_Avoid_: old.rnui.dev, old site, legacy, archive site, snapshot, mirror, staging
 
 **Catalogue page**:
 The client module that renders a set of Recordings: the sort controls, the grid of

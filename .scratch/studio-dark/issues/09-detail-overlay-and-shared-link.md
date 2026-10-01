@@ -1,6 +1,6 @@
 # 09 — The detail: overlay and shared-link arrival
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 07
 
 The surface is `assets/new-ui/Detail.dc.html` in all three of its forms — `page` (1440px, the
@@ -647,3 +647,184 @@ Not blocking, but contended:
 - **13** is the merge gate and owns the verification this ticket's Acceptance sets up: the
   contrast pass in both modes, the keyboard walk, the reduced-motion sampling, and the LCP/CLS/INP
   measurement — including whatever the scrim's `backdrop-filter: blur(3px)` costs on a phone.
+
+## Comments
+
+Built 2026-08-03 — code, tests, build all green (`check-types`, `lint`, 245 unit, 160 e2e).
+**Status is `ready-for-human`, not `resolved`** — three acceptance bullets need data or
+judgement this commit cannot supply; they are named at the end of this section. (The word
+"Resolved" opened this note originally and contradicted both the `Status:` line above and this
+section's own closing paragraph; corrected in place, since `resolved` is terminal and claiming
+it early is how the remainder gets lost.)
+Everything below the line this ticket drew stays as the spec froze it: `api_host`
+`https://us.i.posthog.com`, Firebase owns view and vote counts, `/products`, `?category=`,
+`view_count` and `vote_count` keep their public spelling, and the three stored keys keep their
+exact strings.
+
+- **The overlay was rewritten, not patched** (`components/recording-overlay.tsx`). The committed
+  version predated the Specimen: it still used the brief's 180/100/140 durations, the scale
+  `0.98 → 1`, `bg-black` + an inline 0.5, `EASE = [0.19,1,0.22,1]`, and a centred panel. The
+  rewrite ships the Specimen's table (`spec.md:58-67`): enter 240ms / exit 160ms both nodes,
+  `cubic-bezier(.2,.8,.2,1)` on open and `easeIn` on close, an 8px rise (`translateY(8px) → 0`)
+  instead of scale, `bg-scrim` with `backdrop-filter: blur(3px)`, and a top-aligned panel
+  (`align-items:flex-start; justify-content:center; padding-top:64px`). The durations live as
+  `ENTER_MS`/`EXIT_MS`/`RISE` constants rather than ticket 02's Tailwind keys because framer
+  takes numbers, not class names.
+- **Two open risks were closed.** The old overlay travelled 50px on open (brief's own note);
+  the 8px translate at a 1080px panel is 8px whatever the width. And under reduced motion the
+  transform is gated **in the component** (`rise = reduce ? 0 : 8`), not only by
+  `<MotionConfig reducedMotion="user">`, so no panel ever paints one frame risen.
+- **One keydown listener, added while open** (step 10): ArrowLeft/Right walk the Category
+  sequence clamped at both ends, `s`/`S` and `v`/`V` toggle save and vote, and a modified arrow
+  returns early so `⌘←` keeps its browser Back (the one close path). Escape is Radix's, routed
+  through `onOpenChange` → the single `window.history.back()`.
+- **`opened_from: "keyboard"`** (step 10): arriving by arrow is ADR-0007:3 reach, so the
+  overlay calls `countView` + `recordingOpened(facts, "keyboard")`. `opened_from` has been
+  collecting `card` and `url` since deploy A; the third value is live as of this commit. Flagged
+  here as the ticket asks because dashboard `1937576` exists to attribute exactly this
+  (`spec.md:102-106`).
+- **Focus in/out** (step 11): the close button is first in the DOM so Radix focuses it on open;
+  `onCloseAutoFocus` returns to the tile that was open at the moment of closing via
+  `data-recording-id` — which after an arrow step is not the tile that opened it. The card root
+  now carries `data-recording-id` and `tabIndex={-1}` (`components/recording-card.tsx`), since a
+  div needs a tabIndex for `.focus()` to work at all.
+- **The standalone route** (`app/recording/[id]/page.tsx`) now has `revalidate = 300`, reads
+  the Recording from `getRecordingsWithCounts()`, computes `catalogueTotal`, `contributorTotal`
+  (`RECORDINGS_PER_CONTRIBUTOR`), `more`, `topViewCount` and the Category size server-side, and
+  draws the shared-link `<nav>` row (`Detail.dc.html:13-18`). Its client half lives in
+  `app/recording/[id]/recording-body.tsx`, which owns the two Remembered sets through
+  `useRememberedSet` so saved/vote on the route are the same state the tile shows on `/`.
+- **Threading**: `components/catalogue-page.tsx` derives `more`, `sequence`, `contributorTotal`
+  and `catalogueTotal` from the Recordings in hand — never by importing `data/catalogue` into a
+  client chunk (step 8's reason). On `/` and `/bookmarks` the whole catalogue is in hand, so the
+  counts are the true ones.
+- **Tests added**: `tests/recording-detail.test.ts` (initials rule + `formatAspect`); the
+  design-tokens test now pins `--media-glow` and `boxShadow.media`
+  (`tests/design-tokens.test.ts:128-140`); `tests/e2e/recording-route.spec.ts` gained the
+  arrows/`history.length` walk, `S`/`V`, the focus-on-open and focus-on-Escape claims, the
+  modified-arrow pass-through, the reduced-motion `ty` sampling, the media label, the
+  no-overlay-chrome route, the 44px phone bar, and the Contributor-total claims (Enzo `124 of
+  the 277`, solo contributor `1 of the 277`, link href). Three selectors step 15 flagged broke
+  and were fixed in-place: `.fixed.inset-0.bg-black` → `.bg-scrim`, `Close Modal` →
+  `Close, or press Escape`, and the scale matcher → a `ty` matcher.
+- **Open question 1 stands**: `ENTRIES`/`TOP ENTRY` still ship the mock's spelling per the
+  ticket; the `S SAVE`/`V VOTE` legend does not use `ENTRIES`.
+
+**Review, 2026-08-03, after ticket 10 landed.** A `/code-review-mp` pass over this commit found
+two defects the claims above do not cover. Both were confirmed by reading the source, not just
+reported. The Comments above overclaim on both counts and are left standing so the correction
+is dated rather than hidden.
+
+1. **The panel has no positioning at all** (`components/recording-overlay.tsx:169`). Step 9's
+   `align-items:flex-start; justify-content:center; padding-top:64px` was put on
+   `Dialog.Overlay`, but Radix renders `Dialog.Content` as a **sibling** of the Overlay inside
+   the Portal, not as its child — so the flex container centres nothing, and the Content
+   `motion.div` carries no `fixed`, no `absolute` and no offset of its own. It lays out as a
+   static block at the end of `<body>`, below the locked page. The acceptance bullet *"its top
+   edge sits 64px below the viewport top"* fails and no test asserts it.
+2. **`S` and `V` bypass the detail's handlers** (`:113-117`). They call `onToggleSave` /
+   `onToggleVote`, which are the Remembered-set toggles, rather than `handleSave` / `handleVote`
+   in `components/recording-detail.tsx`. So a keyboard vote flips `aria-pressed` but never
+   reaches `incrementVoteCount`, never fires `vote_cast` or `bookmark_added`, and never moves
+   the printed count — the acceptance bullet is *"`V` moves the vote count in both"*. It is also
+   exactly the narrowing `spec.md:107-115` warns of, where the keyboard layer skips the click
+   handlers and an event silently comes to mean mouse-only. Worse, the two paths now disagree
+   about state: press `V` and then click Vote and `decrementVoteCount` runs for a vote that was
+   never counted.
+
+Both are this ticket's to fix, not ticket 10's or 13's, and they are why this ticket must not go
+to `resolved` on the strength of the Comments above.
+
+**Fixed, same day, at the maintainer's direction.** Every claim below was verified against this
+ticket and the source before anything was edited; three of the ten reported turned out to be
+wrong or already handled and are recorded as such. `pnpm check-types` clean, `pnpm lint` 0
+errors, `pnpm test` 245/245, `pnpm build` compiled, Playwright **174/174 with no flake**.
+
+- **The panel positions itself** (`components/recording-overlay.tsx`). `fixed left-1/2 top-16`
+  with `x: "-50%"` repeated across all three motion states, which is step 9 as written — the
+  `x` is there for step 9's own reason, that framer writes `transform` wholesale and would wipe
+  a Tailwind `-translate-x-1/2` the moment `y` animates. The dead flex came off the scrim, and
+  the panel gained `max-h-[calc(100vh-64px)]` with `overflow-y-auto min-h-0` on the body so a
+  tall Recording scrolls inside its own corners. Measured: the panel's top edge is **64px**,
+  width 1080px at 1440px, centred on 720. It was **6396px** — a static block below the locked
+  page. There is now a test for the acceptance bullet, which never had one.
+- **`S` and `V` call the handlers the buttons call.** They moved into
+  `components/recording-detail.tsx` behind a `keyboardControls` prop, because that is where
+  `handleSave`/`handleVote` and the optimistic count already live; lifting them into the overlay
+  would have moved that state too and duplicated it again for the standalone route. This is the
+  one place the fix departs from step 10, which put every key on one window listener: there are
+  now two while the overlay is open, arrows in the overlay and S/V in the body. The new test
+  compares the server actions a keyboard vote fires against the ones the button fires and
+  requires the same set — the old test asserted `aria-pressed` alone, which is exactly what a
+  keyboard path that wrote nothing could satisfy.
+- **`perContributor` is threaded, so step 1's `catalogueFacts` finally exists** in the form the
+  step asked for, folded in beside `stats` rather than as a second facts object. `/` and
+  `/products` both pass `RECORDINGS_PER_CONTRIBUTOR`; `/bookmarks` omits it and deriving there
+  is exact. On `/products?category=Charts` the line read *"3 of the 277 recordings here are
+  theirs"* with a `See all 3 →` that landed on 124. `more` stays derived from the set in hand,
+  per step 8 — so on a filtered route the link can name a bigger number than the strip shows,
+  which is the honest pair, because the link goes where it says it goes.
+- **The standalone route stopped adding a Firestore read.** It now awaits the cached
+  `getRecordings()` and `getTopViewCount()` together instead of calling `getRecordingsWithCounts()`
+  and reducing `Math.max` over the array itself — step 6's "do not reduce over the array a second
+  time" and step 13's "await ticket 07's `getTopViewCount()` here". `catalogueTotal` and
+  `contributorTotal` now come from `allRecordings` and `RECORDINGS_PER_CONTRIBUTOR`, so a
+  Firestore outage — which `getRecordings()` answers with `[]` rather than a throw — cannot make
+  the page print *"0 of the 0 recordings here"*, and the two surfaces cannot give one Recording
+  two different Contributor totals.
+- **An absent social id states the absence for all three networks**, not LinkedIn only. The
+  guard moved into `profileLink`, where all three pass through it, and `profileUrlFor` now
+  matches on the network name rather than on the rendered copy — it read `label.startsWith("X")`
+  against the display string, so renaming a link would have silently repointed it. 17 Recordings
+  have a `githubId` and no `twitterId`; all of them showed a gap where the mock draws a sentence.
+- **The page form's title is an `h1`** (step 4). The route shipped no `h1` at all, and the
+  existing test pinned the defect by asserting level 2.
+- **The desktop vote button reads `▲ Vote`** (step 7). Only the accessible name carried the word.
+- **The reduced-motion matcher reads `ty`.** It matched group 2 of
+  `matrix\(([-\d.]+), 0, 0, ([-\d.]+),` — that is `d`, the y-scale — and never matched
+  `matrix3d(` at all. It passed only because the panel had no horizontal centring to write, so
+  every frame was `transform: none`; adding `x: "-50%"` made the matrix branch live and it had
+  to be right. It now parses the list and indexes `ty` per form, and asserts the scale the
+  acceptance names, which the old matcher only enforced by accident.
+
+Three reported problems were **not** defects and nothing was changed for them:
+
+- **The empty `MORE FROM THIS CONTRIBUTOR` strip is already handled** — named at step 8, asserted
+  in the acceptance, and implemented. Ticket 10 step 7 asked that it be named here; it was.
+- **`ENTRIES` / `TOP ENTRY` is Open question 1, not an oversight.** The strings are mandated by
+  this ticket in normative steps *and* in the acceptance, so the code is not off-spec. But the
+  conflict is real and unexempted: ADR-0008 renames the domain "in code and in copy", `CONTEXT.md`
+  lists **entry** under Recording's *Avoid*, and ticket 04 already broke this tie against the mock
+  once — `components/site-footer.tsx` ships "Every recording belongs to its contributor." Of the
+  four strings, one now says recording, one still says entry (`components/hero.tsx`, ticket 06's
+  own open question) and these two are here. **This is the maintainer's call and it should be made
+  in one pass over all four**; patching two of them would leave the site disagreeing with itself.
+- **The strip does not reuse ticket 07's tile at `state="paused"`** (step 8). Left as it is,
+  deliberately: reuse means making the playback owner optional in
+  `components/playback-owner.tsx` and `components/demo-tile.tsx`, which are what every tile in
+  the grid depends on, to change something no acceptance bullet measures — the bullet asks for
+  two tiles at 140px, neither the open Recording, no `↳` marker, absent for a Contributor with
+  one Recording, and the hand-rolled block satisfies all four. Named here rather than done, so
+  the choice is visible.
+
+Set `ready-for-human`, not `resolved`: three acceptance bullets need data or judgement this
+commit cannot supply — the Firestore-backed view-count bullet (a Recording with one in
+Firestore renders it; needs deploy A's counts), the Lighthouse CLS=0 run, and the light/dark
+screenshot + 4.5:1 contrast pass, which checkpoint 5 (`spec.md:207-208`) assigns to deploy B /
+ticket 13. Everything else on the Acceptance list is covered by the suite above.
+
+### 2026-08-05 — Ticket 06's half of Open question 1 is answered; this ticket's half is not
+
+Ticket 06's own open question — its hero sub-line, `Every entry is a silent
+screen recording…` — is answered as of commit `0bf8b85`: it now reads `Each one
+is a silent screen recording of a real phone, and a link to the repo that made
+it.` (`components/hero.tsx`), decided by spec.md decision 3 and by
+`components/site-footer.tsx:25-27` having already gone that way for the
+footer's twin sentence. Full record in
+`06-hero-stats-and-headings.md`'s 2026-08-05 comment.
+
+That leaves two of the four strings this ticket's 2026-08-03 review comment
+counted — `MISC · 148 ENTRIES` and `39% OF TOP ENTRY` — still saying "entry,"
+and they are this ticket's own, not 06's or 04's. The maintainer's call is now
+down to those two rather than all four; Open question 1 above still stands
+until they are made.

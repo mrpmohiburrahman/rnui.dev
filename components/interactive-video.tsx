@@ -12,6 +12,15 @@ import {
 import { getCdnUrl } from "@/lib/cdn"
 import { createPlayedWatcher, type PlayedWatcher } from "@/lib/view-signal"
 
+/** The detail body's four media states (ticket 09 step 3), surfaced to the
+ * chrome that overlays this box. This component holds the truth — it owns the
+ * <video> and its error — and the detail labels mirror it, so the chrome can
+ * never claim PLAYING while nothing is. */
+export type MediaState = {
+  playing: boolean
+  failed: boolean
+}
+
 interface InteractiveVideoProps {
   src: string
   /**
@@ -25,6 +34,8 @@ interface InteractiveVideoProps {
   className?: string
   controls?: boolean
   loop?: boolean
+  /** Report the media state to the recording detail's chrome. */
+  onStateChange?: (state: MediaState) => void
 }
 
 // MediaError codes, so a failure is reported as "decode" or "network" rather
@@ -38,6 +49,16 @@ const FAILURE_REASONS: Record<number, string> = {
   4: "unsupported",
 }
 
+// The failure chrome's mono line, per reason — the same map the tile draws
+// (components/demo-tile.tsx has its own), so a decode failure reads DECODE
+// FAILED and a missing Asset reads NETWORK FAILED.
+const FAILURE_LABELS: Record<string, string> = {
+  aborted: "◺ PLAYBACK ABORTED",
+  network: "◺ NETWORK FAILED",
+  decode: "◺ DECODE FAILED",
+  unsupported: "◺ FORMAT UNSUPPORTED",
+}
+
 const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   caption,
   src,
@@ -46,10 +67,18 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
   className = "",
   controls = true,
   loop = false,
+  onStateChange,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [failureReason, setFailureReason] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+
+  // The detail's chrome keys off the same object this box holds, so `PLAYING`
+  // cannot render over a box that is not. Reported from an effect because the
+  // truth lives in state here and nowhere else (ticket 09 step 3).
+  useEffect(() => {
+    onStateChange?.({ playing: isPlaying, failed: failureReason !== null })
+  }, [isPlaying, failureReason, onStateChange])
 
   // Both playback events fire once per opened Recording, not once per press. The
   // <video> unmounts whenever the visitor pauses it, so these refs sit here
@@ -161,12 +190,17 @@ const InteractiveVideo: React.FC<InteractiveVideoProps> = ({
         <div
           role="alert"
           data-testid="demo-error"
-          className="w-full h-full bg-neutral-900 text-neutral-200 flex flex-col items-center justify-center gap-1 p-4 text-center"
+          className="absolute inset-0 bg-[rgba(4,5,8,0.9)] flex flex-col items-center justify-center gap-[11px] p-[18px] text-center"
         >
-          <span className="text-sm font-medium">This demo failed to load</span>
-          <span className="text-xs text-neutral-400">
-            {caption ?? src} ({failureReason})
-          </span>
+          <div
+            className="font-mono text-[9px] tracking-[0.14em] text-[#F5B3A4]"
+            aria-hidden
+          >
+            {FAILURE_LABELS[failureReason] ?? "◺ PLAYBACK FAILED"}
+          </div>
+          <div className="text-xs leading-[1.45] text-[rgba(255,255,255,0.86)] text-pretty">
+            This recording won’t play in your browser. The source is still there.
+          </div>
         </div>
       ) : isPlaying ? (
         <video

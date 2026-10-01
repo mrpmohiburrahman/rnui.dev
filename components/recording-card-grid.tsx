@@ -1,74 +1,96 @@
 // components/recording-card-grid.tsx
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
 import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
+import { applySort, type SortType } from "@/hooks/use-sorted-data"
 
-import LastUpdated from "./last-updated"
+import { CatalogueEmpty, type EmptyState } from "./catalogue-empty"
+import { FilterChips } from "./filter-chips"
 import { RecordingCard } from "./recording-card"
 
-/** How many Recordings one page of the grid renders. The catalogue is 277. */
+/** How many Recordings one page of the grid renders. */
 const PAGE_SIZE = 48
 
 /**
- * The pill treatment, verbatim from the Last updated and Total items controls
- * below. Shared so the new Load more control introduces no colour, radius or
- * shadow value that was not already on the page.
+ * How many Recordings are on screen: whole pages, capped at what exists. This
+ * is the first number in the result line, and the filter dock's
+ * `Show N recordings` is the same figure — the acceptance pins the two together
+ * ("N matches the first number in the result line"), so they share the
+ * arithmetic rather than each doing it. `page` is read from the URL by both
+ * callers, which is where pagination lives.
  */
-const PILL_CLASS =
-  "px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] "
+export function shownCount(page: number, total: number): number {
+  return Math.min(page * PAGE_SIZE, total)
+}
 
 /**
- * Which of the two visual treatments to render. `framed` wraps the heading row
- * and the grid in a panel; `plain` leaves both bare.
+ * The mock's tile width at both of the two widths it draws — 208px desktop
+ * (Catalogue.dc.html:91) and 163px phone (CatalogueMobile.dc.html:37) — with
+ * their own column and row gaps, 16/20 and 24/28.
  *
- * It is a required prop rather than a default because it used to be a substring
- * test against the current address, performed in here: invisible from every call
- * site, and wrong the moment a route was added.
+ * `auto-fill` rather than the mock's literal `repeat(5, 208px)`: the container
+ * width belongs to the shell and the rail, and a hard five would overflow the
+ * moment either moved. A fixed track fits as many as the box holds and can never
+ * exceed it, so `scrollWidth === clientWidth` holds at every width by
+ * construction. The card stays `w-full`, which is the other half of that
+ * criterion — ticket 12's defect was card width ≠ track width, not fixed tracks.
  */
-export type GridTreatment = "framed" | "plain"
+const GRID_CLASS =
+  "grid grid-cols-[repeat(auto-fill,163px)] sm:grid-cols-[repeat(auto-fill,208px)] gap-x-4 gap-y-5 sm:gap-x-6 sm:gap-y-7"
 
 export interface RecordingCardGridProps {
   sortedData?: Recording[]
-  treatment: GridTreatment
   /**
-   * What to say when there is nothing to show, or null when the caller cannot
-   * yet tell whether there is anything — an empty list is a gap during a fetch
-   * as often as it is an answer, and a message shown across that gap is a false
-   * one.
+   * Which panel to render when there is nothing to show, or null when the caller
+   * cannot yet tell whether there is anything — an empty list is a gap during a
+   * fetch as often as it is an answer, and a panel shown across that gap is a
+   * false one.
    *
    * Required rather than defaulted: only the caller knows whether an empty list
    * means "no Recording matches this filter" or "this visitor has bookmarked
    * nothing", and a default here would quietly show the wrong one of those.
    */
-  emptyMessage: string | null
+  emptyState: EmptyState | null
   children?: React.ReactNode
   bookmarks: string[]
   toggleBookmark: (id: string) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
-  setSort?: (sort: "recent" | "top-voted" | "top-viewed") => void // New prop
-  currentSort?: "recent" | "top-voted" | "top-viewed" // New prop
+  /**
+   * The catalogue hero, rendered above the sort row and outside the framed
+   * panel. Absent on `/products` and `/bookmarks`, which show only the tabs.
+   */
+  hero?: React.ReactNode
+  /** The whole catalogue's size, never the filtered set. Used as the
+   * denominator of the result line. Absent on `/bookmarks`, whose saved view has
+   * no denominator. */
+  catalogueTotal?: number
+  /** The whole catalogue's top view count, the denominator of every tile's views
+   * bar (ticket 07 step 8). Threaded from the routes. */
+  topViewCount: number
+  /** Show only bookmarked Recordings; selects the `N SAVED · THIS BROWSER` form
+   * of the result line. */
+  bookmarkedOnly?: boolean
 }
 
 export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   sortedData,
-  treatment,
-  emptyMessage,
+  emptyState,
   children,
   bookmarks,
   toggleBookmark,
   votedRecordingIds,
   toggleVote,
-  setSort, // Destructure new prop
-  currentSort, // Destructure new prop
+  hero,
+  catalogueTotal,
+  bookmarkedOnly,
+  topViewCount,
 }) => {
-  const [isSortDropdownOpen, setSortDropdownOpen] = useState(false)
-
   // Pagination lives in the URL, not in state, so a page is shareable and Back
   // returns to the previous count. `page` is the only reader of the param that
   // catalogue-search.tsx has been deleting on every keystroke all along, which
@@ -76,9 +98,32 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   const searchParams = useSearchParams()
   const page = Math.max(1, Number(searchParams.get("page")) || 1)
   const total = sortedData?.length ?? 0
-  const shownCount = page * PAGE_SIZE
-  const hasMore = total > shownCount
+  // `pageEnd` is where the slice stops and may run past the data; `shown` is
+  // what is actually on screen, and is the number the result line and the
+  // filter dock's `Show N recordings` both print.
+  const pageEnd = page * PAGE_SIZE
+  const hasMore = total > pageEnd
   const isEmpty = total === 0
+  const shown = shownCount(page, total)
+
+  // The number of category / contributor / search filters that are on, read
+  // from the same useSearchParams already in hand. It drives the FILTERS tail of
+  // the result line, not any heading logic — a search term never enters the
+  // heading (lib/catalogue-heading.ts).
+  const activeCategory = searchParams.get("category") ?? ""
+  const activeContributor = searchParams.get("contributor") ?? ""
+  const search = searchParams.get("search") ?? ""
+  const filterCount = [activeCategory, activeContributor, search].filter(
+    Boolean
+  ).length
+
+  const sort = searchParams.get("sort")
+  const activeSort: SortType =
+    sort === "top-voted" || sort === "top-viewed" ? sort : "recent"
+
+  const changeSort = (next: SortType) => {
+    applySort(next)
+  }
 
   // pushState rather than router.push: the App Router picks it up through
   // useSearchParams, so it costs no server render and no Firestore read, it does
@@ -90,7 +135,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
     // The page and count the click arrives at, not the ones it left. The last
     // page is short, so `recordings_shown` is capped at what exists rather than
     // being page × 48.
-    loadMoreClicked(page + 1, Math.min((page + 1) * PAGE_SIZE, total))
+    loadMoreClicked(page + 1, shownCount(page + 1, total))
   }
 
   // `search_performed` is reported from here rather than from the search box,
@@ -102,7 +147,6 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   // The term itself never leaves this closure — `searchPerformed` takes a
   // length. `null` means nothing has been reported yet, which is how a page
   // arriving at /?search=slider from a shared link stays silent: nobody typed.
-  const search = searchParams.get("search") ?? ""
   const reported = useRef<string | null>(null)
   useEffect(() => {
     if (reported.current === search) return
@@ -114,156 +158,64 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   }, [search, total])
 
   return (
-    <div
-      // style={{ borderWidth: 1, borderColor: "purple" }}
-      className="flex flex-col md:items-start gap-4 overflow-hidden pb-4 md:mx-4 mx-0  relative"
-    >
-      <div
-        className={cn(
-          "px-4",
-          treatment === "plain"
-            ? "md:p-4 md:gap-3"
-            : "bg-white p-4 gap-3 dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
-        )}
-      >
-        {children}
-      </div>
-      {/* Wraps, and spaces its lines with `gap-y` rather than `space-y`.
-          The three sort pills have a 278px min-content and the two status pills
-          191px; together 470px, against the 440px `main` actually has at 640px
-          (a 640px viewport less the sidebar's 168px margin and this column's
-          32px of padding). A flex item cannot shrink below its min-content, so
-          `main` was floored at 502px and the document scrolled sideways for the
-          640-670px band — the band where the sidebar appears and this row turns
-          horizontal, but nothing is wide enough for both yet.
-
-          `gap-y-4` in place of `space-y-4 sm:space-y-0` because `space-y` is a
-          margin on every child but the first, which lands on the first item of
-          a wrapped line too. The two spell the same 16px in the column layout
-          and in the unwrapped row, so nothing moves where it already fitted. */}
-      <div className="flex flex-wrap flex-col sm:flex-row justify-between w-full items-start sm:items-center gap-y-4">
-        {setSort && currentSort && (
-          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            {/* Desktop Sorting Buttons */}
-            <div className="hidden sm:flex flex-row space-x-4 w-full">
-              <button
-                type="button"
-                className={` px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "recent" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("recent")}
-              >
-                <span className="w-full text-center">Recent</span>
-              </button>
-
-              <button
-                type="button"
-                className={`px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "top-viewed" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("top-viewed")}
-              >
-                <span className="w-full text-center">Top Viewed</span>
-              </button>
-              <button
-                type="button"
-                className={`px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)] ${
-                  currentSort === "top-voted" ? "border-2 border-gray-100" : ""
-                }`}
-                onClick={() => setSort("top-voted")}
-              >
-                <span className="w-full text-center">Top Voted</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        <div className="flex sm:hidden flex-col w-full">
-          <button
-            type="button"
-            className="w-full px-4 py-2 bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-inner border-2 border-transparent flex justify-between items-center transition-colors duration-200"
-            onClick={() => setSortDropdownOpen(!isSortDropdownOpen)}
-            aria-haspopup="true"
-            aria-expanded={isSortDropdownOpen}
-          >
-            <span>
-              {currentSort === "recent"
-                ? "Recent"
-                : currentSort === "top-viewed"
-                  ? "Top Viewed"
-                  : "Top Voted"}
-            </span>
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${
-                isSortDropdownOpen ? "transform rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+    // `pb-[calc(96px+...)] md:pb-4`: below `md` the filter dock is a fixed bar
+    // at the bottom of the viewport (CatalogueMobile.dc.html:32 draws the 96px
+    // as the dock's clearance), and without the reserve the last row of the
+    // grid sits under it forever. At `md` the dock is gone and the padding
+    // returns to the grid's own 1rem.
+    // No `gap`: the mock spaces this column from the blocks themselves, and
+    // each of them already carries its own figure — the hero's
+    // `padding-bottom:20px` (Catalogue.dc.html:62), the filter bar's
+    // `margin-bottom:20px` (:76) and the heading row's `padding-bottom:14px`
+    // (:85). A `gap-4` on top of those added 16px twice over, which put the
+    // grid's first row 32px below where the drawing has it.
+    <div className="relative flex w-full flex-col overflow-hidden pb-[calc(96px+env(safe-area-inset-bottom,0px))] md:items-start md:pb-4">
+      {/* Desktop only. CatalogueMobile.dc.html draws no hero at any variant —
+          its content block starts at the heading row (:32-36) — and the Hero
+          does not hide itself, so the gate is here. Below `md` the phone header
+          and the filter dock are the surface, and a 29px headline pushed the
+          first tile row off a 844px screen. */}
+      {hero && <div className="hidden w-full md:block">{hero}</div>}
+      {children && <div className="w-full">{children}</div>}
+      {/* The desktop filter bar, Catalogue.dc.html:76-82, above the heading row
+          exactly as the mock stacks them — below `md` the phone's own chips row
+          (components/site-header.tsx) is the filter surface and this bar is
+          `md` and up only. It draws itself only when a facet is on, so every
+          unfiltered route renders nothing. Not on the saved view: the three
+          params do not filter it, and a chip naming a filter that filters
+          nothing is the sort of thing decision 2 forbids. */}
+      {!bookmarkedOnly && (
+        <div className="hidden w-full md:block">
+          <FilterChips />
+        </div>
+      )}
+      {/* The heading row: sort tabs aligned left. */}
+      <div className="flex w-full items-baseline gap-4 pb-[11px] md:pb-[14px]">
+        {/* Sort segmented control */}
+        <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
+          {(
+            [
+              ["recent", "RECENT"],
+              ["top-viewed", "MOST VIEWED"],
+              ["top-voted", "MOST VOTED"],
+            ] as const
+          ).map(([value, label], index) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => changeSort(value)}
+              className={cn(
+                "px-[9px] py-[5px] font-mono text-[9.5px] tracking-[0.08em]",
+                (index < 2 || activeSort === value) && "rounded-badge",
+                activeSort === value ? "bg-acc-soft text-t1" : "text-t3"
+              )}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          {isSortDropdownOpen && (
-            <div className="mt-2 w-full bg-white dark:bg-[#1E1E1E] rounded-[1rem] shadow-inner border border-transparent">
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-t-[1rem] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("recent")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Recent
-              </button>
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("top-viewed")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Top Viewed
-              </button>
-              <button
-                type="button"
-                className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-[#2E2E2E] rounded-b-[1rem] transition-colors duration-200"
-                onClick={() => {
-                  setSort?.("top-voted")
-                  setSortDropdownOpen(false)
-                }}
-              >
-                Top Voted
-              </button>
-            </div>
-          )}
-        </div>
-        {/* last updade and total number of ites */}
-        <div className="flex flex-row space-x-4">
-          <button type="button" className={PILL_CLASS}>
-            <LastUpdated />
-          </button>
-          {/* Counts the whole set, not the rendered slice. */}
-          <button type="button" className={PILL_CLASS}>
-            <span>Total Items: {sortedData?.length}</span>
-          </button>
+              {label}
+            </button>
+          ))}
         </div>
       </div>
-      <div
-        className={cn(
-          "p-4 w-full",
-          treatment === "plain"
-            ? ""
-            : "bg-white dark:bg-[#1E1E1E] rounded-[2rem] shadow-[0_0_0_1px_rgba(0,0,0,0.1)_inset,0_0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_-0.5px_0.5px_rgba(0,0,0,0.05)_inset,0_1px_2px_rgba(0,0,0,0.1)] dark:shadow-[0_0_0_0.5px_rgba(255,255,255,0.06)_inset,0_0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_-0.5px_0.5px_rgba(255,255,255,0.1)_inset,0_0.5px_1px_rgba(0,0,0,0.3),0_1px_2px_rgba(0,0,0,0.4)]"
-        )}
-      >
+      <div className="w-full">
         {/* No Suspense boundary. Nothing below here is async — every card
             renders from props already in hand — but the server still emitted
             the "Loading…" fallback and streamed all 277 cards into a
@@ -275,42 +227,112 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           {/* An empty list used to render an empty grid: the only thing on
               screen was `Total Items: 0`, on a filtered catalogue and on a
               /bookmarks page with nothing saved alike. Both paths arrive here,
-              because CataloguePage is the only caller. */}
-          {isEmpty && emptyMessage ? (
-            <p className="text-sm text-neutral-700 dark:text-neutral-300">
-              {emptyMessage}
-            </p>
+              because CataloguePage is the only caller.
+
+              The panel replaces the grid rather than sitting under it, as the
+              mock's own switch does (Catalogue.dc.html:247), and the min-height
+              is that switch's other half (:252) — without it the footer rides up
+              under a 620px-shorter page. */}
+          {isEmpty && emptyState ? (
+            <div className="sm:min-h-[620px]">
+              <CatalogueEmpty
+                state={emptyState}
+                catalogueTotal={catalogueTotal ?? total}
+              />
+            </div>
           ) : (
-            /* Adjusted Grid Columns for Smaller Portrait Cards */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className={GRID_CLASS}>
               {/* Keyed by id alone. The key used to carry the array index, so
                   every key changed when the list reordered and a sort toggle
                   unmounted and remounted all 277 cards, restarting every Demo.
                   Ids are unique — tests/data-integrity.test.ts enforces it. */}
-              {sortedData
-                ?.slice(0, shownCount)
-                .map((recording) => (
-                  <RecordingCard
-                    key={recording.id}
-                    recording={recording}
-                    isBookmarked={bookmarks.includes(recording.id)}
-                    toggleBookmark={toggleBookmark}
-                    isVoted={votedRecordingIds.includes(recording.id)}
-                    toggleVote={toggleVote}
-                  />
-                ))}
+              {sortedData?.slice(0, pageEnd).map((recording, i, shown) => (
+                <RecordingCard
+                  key={recording.id}
+                  recording={recording}
+                  // The second of two adjacent tiles by the same Contributor
+                  // repeats its byline prefixed `↳ ` and in t3 — what the
+                  // mock's runRepeat means (Tile.dc.html:108-109). The grid
+                  // knows the neighbour; the card does not.
+                  repeatsContributor={
+                    i > 0 && shown[i - 1].contributor === recording.contributor
+                  }
+                  topViewCount={topViewCount}
+                  isBookmarked={bookmarks.includes(recording.id)}
+                  toggleBookmark={toggleBookmark}
+                  isVoted={votedRecordingIds.includes(recording.id)}
+                  toggleVote={toggleVote}
+                />
+              ))}
             </div>
           )}
         </div>
       </div>
+      {/* Load more, Catalogue.dc.html:125-127. The label is derived rather than
+          the mock's flat `Load 48 more`: the last page is short, and decision 2
+          is that nothing on screen lies.
+          `total` under it is the filtered count, not catalogueTotal: the heading
+          row answers "how much of the catalogue is this", this line answers "how
+          much of this result set is on screen", and printing the catalogue's own
+          size under a 60-result search would be false. */}
       {hasMore && (
-        <button
-          type="button"
-          className={cn(PILL_CLASS, "self-center")}
-          onClick={loadMore}
-        >
-          Load more
-        </button>
+        <div className="flex w-full flex-col items-center gap-[11px] pb-[6px] pt-[42px]">
+          <button
+            type="button"
+            className="rounded-[11px] border border-line2 bg-field px-[26px] py-3 text-[13.5px] font-medium text-t1 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-[3px]"
+            onClick={loadMore}
+          >
+            Load {Math.min(PAGE_SIZE, total - shown)} more
+          </button>
+          <span className="font-mono text-metric tracking-[0.1em] text-t3">
+            {shown} OF {total} SHOWN · NO INFINITE SCROLL
+          </span>
+        </div>
+      )}
+      {/* The end of the set, Catalogue.dc.html:132-141 — every card in a
+          non-empty result set is on screen, whether that took five pages or
+          none. The mock draws only END OF CATALOGUE, on its unfiltered variant;
+          `END OF CATALOGUE · 60 OF 60` under a Category filter would be false, so
+          one word is derived. */}
+      {!hasMore && total > 0 && (
+        <div className="w-full">
+          <div className="flex items-center gap-4 pb-[4px] pt-[34px]">
+            <div className="h-px flex-1 bg-line" />
+            <span className="font-mono text-metric tracking-[0.14em] text-t3">
+              {filterCount > 0 || bookmarkedOnly
+                ? "END OF RESULTS"
+                : "END OF CATALOGUE"}{" "}
+              · {total} OF {total}
+            </span>
+            <div className="h-px flex-1 bg-line" />
+          </div>
+          <div className="flex items-center justify-center gap-[10px] pt-[18px] text-[12.5px]">
+            {/* No smooth behaviour: smooth scrolling is one of the things
+                prefers-reduced-motion exists to suppress, and a jump needs no
+                exception. */}
+            <button
+              type="button"
+              className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+              onClick={() => window.scrollTo(0, 0)}
+            >
+              Back to top ↑
+            </button>
+            <span aria-hidden="true" className="text-t3">
+              ·
+            </span>
+            {/* Not repoClicked: that event is about following a Recording's
+                Source link (lib/analytics.ts:109-113) and this link belongs to
+                no Recording. */}
+            <a
+              href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
+            >
+              Add your own recording on GitHub ↗
+            </a>
+          </div>
+        </div>
       )}
     </div>
   )

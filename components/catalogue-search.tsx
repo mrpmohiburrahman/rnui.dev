@@ -1,17 +1,52 @@
 "use client"
 
 import { useEffect, useRef, useTransition } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input"
 
 /** How long the box stays quiet before it navigates. */
 const DEBOUNCE_MS = 300
 
-export function CatalogueSearch() {
+/**
+ * Where a search term change lands: the route the visitor is on, every other
+ * param kept, `page` dropped because a different term is a different result set.
+ *
+ * An empty term removes the param, which is what makes the filter bar's `Clear
+ * search` chip the same policy as emptying the box rather than a second one.
+ * `facetHref` (components/nav/catalogue-nav.tsx) cannot serve here: it always
+ * returns /products, and the search box works on whatever route it is on.
+ */
+export function searchHref(
+  pathname: string,
+  current: URLSearchParams,
+  term: string
+) {
+  const params = new URLSearchParams(current)
+  if (term) params.set("search", term)
+  else params.delete("search")
+  params.delete("page")
+  const query = params.toString()
+  return query ? `${pathname}?${query}` : pathname
+}
+
+export function CatalogueSearch({
+  recordingCount,
+  searchParams,
+}: {
+  /** The whole catalogue's size, for the mock's `Search 277 recordings`. */
+  recordingCount: number
+  /**
+   * Read by the header, not here. The search field lives inside the header's
+   * Suspense fallback, which renders instead of — not inside — the boundary, so
+   * a useSearchParams call here would bail out of static prerendering on every
+   * page (site-header.tsx carries the full reasoning). The header hands down the
+   * same URLSearchParams it renders the counter and sort from.
+   */
+  searchParams: URLSearchParams
+}) {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   // The pending flag has no reader. It drove a spinner inside an alternative input
   // that shipped commented out and has now been deleted.
@@ -22,14 +57,8 @@ export function CatalogueSearch() {
   // changed the query. The hook's value is the one this render was given.
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(window.location.search)
-    if (term) {
-      params.set("search", term)
-    } else {
-      params.delete("search")
-    }
-    params.delete("page")
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`)
+      router.replace(searchHref(pathname, params, term))
     })
   }
 
@@ -50,7 +79,16 @@ export function CatalogueSearch() {
   }, [])
 
   return (
-    <div className="relative max-w-[90%] md:min-w-[4rem] w-full md:max-w-[42ch] md:mr-auto ">
+    // `min-w-0` lets the field shrink below its placeholder's width in the
+    // header's flex row instead of pushing the document sideways between md and
+    // lg, where the six control groups nearly fill the viewport.
+    //
+    // 424, not the mock's literal `max-width:400px` (Catalogue.dc.html:19): the
+    // mock has no reset, so that 400 is a *content* max — the drawn field is
+    // 400 + `padding:0 11px` + a 1px border on each side = 424 across. This box
+    // is border-box, so 400 here drew a field 24px narrower than the drawing.
+    // Same content-box-vs-border-box reading as the rail (nav-side-bar.tsx).
+    <div className="relative min-w-0 max-w-[424px]">
       {/* The rotating Category hint this component used to feed the input is
           gone, and with it the module-scope getUniqueCategories() call — the
           last value import of @/data/* from any client component, so
@@ -62,6 +100,7 @@ export function CatalogueSearch() {
         defaultValue={searchParams.get("search") ?? ""}
         onChange={handleInputChange}
         onSubmit={() => {}}
+        recordingCount={recordingCount}
       />
     </div>
   )

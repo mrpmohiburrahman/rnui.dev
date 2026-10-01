@@ -9,101 +9,228 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/demo/**", (route) => route.abort())
 })
 
-// One bookmark button per card, as pagination.spec.ts counts them.
-const cards = (page: Page) => page.getByRole("button", { name: /Bookmark$/ })
+// One save button per card, as pagination.spec.ts counts them.
+const cards = (page: Page) => page.getByRole("button", { name: /^Saved?$/ })
 
-const NO_MATCHES = "No recordings match the current search or filters."
+// The empty panel's own escape routes, scoped to the panel: the filter bar above
+// it carries a `Clear all` of its own, and the point of these cases is what the
+// diagnosis derived, not what the bar always draws. The dashed border is the
+// panel's, and on a zero-result page it is the only dashed thing on screen.
+const panelActions = (page: Page) =>
+  page.locator('[class*="border-dashed"]').first().getByRole("link")
+
+// The one sentence is gone: the zero panel diagnoses itself now, so each of
+// these paths has its own derived headline (lib/catalogue-filters.ts). The
+// strings are the mock's forms, not a constant the component holds.
+const NO_MATCHES: Record<string, string> = {
+  "/products?search=zzzzz": "Nothing in the catalogue matches “zzzzz”.",
+  "/?search=zzzzz": "Nothing in the catalogue matches “zzzzz”.",
+  "/products?category=Buttons&contributor=zzzzz":
+    "Nothing in Buttons is by zzzzz.",
+}
 
 test.describe("the full catalogue is reachable from the nav", () => {
-  // Wide enough for the desktop aside (`hidden sm:flex`), narrow enough that
-  // TopNavBar (`hidden md:block`) is still absent — the band where the aside is
-  // the only nav there is.
-  test.use({ viewport: { width: 700, height: 900 } })
+  // Wide enough for the desktop aside, which is now `hidden md:flex` (the rail
+  // moved from `sm` to `md` in ticket 11). The header draws its desktop row at
+  // `md` and up and its two-row phone block below that, so a desktop width sees
+  // the rail as drawn. 1024px is comfortably past the `md` joint and asserts
+  // only that the aside is present and reachable at all.
+  test.use({ viewport: { width: 1024, height: 900 } })
 
-  test("the aside link lands on the unfiltered catalogue", async ({ page }) => {
-    await page.goto("/products?category=Buttons")
-
-    await page
-      .locator("aside")
-      .getByRole("link", { name: "All recordings", exact: true })
-      .click()
-
-    // No query string at all: the Category the visitor arrived with is dropped,
-    // which is the whole point of a link to the *full* catalogue.
-    await expect(page).toHaveURL(/\/products$/)
-    await expect(page.getByText(/^Total Items: /)).toHaveText(
-      `Total Items: ${allRecordings.length}`
-    )
-  })
-
-  // The class attribute, not a screenshot: the link is authorised by decision 13
-  // to exist, not to introduce a treatment of its own. A category link at rest is
-  // the only appearance it is allowed to have.
-  test("it is dressed exactly like an inactive category link", async ({
+  // The rail used to open with an `All recordings` row on decision 13's
+  // reasoning. The drawing has no such row — Catalogue.dc.html:36-56 is the
+  // CATEGORIES label, 18 Category rows, the CONTRIBUTORS label, four
+  // Contributor rows and the See-all link — so it is gone, and the rail now
+  // starts on its first Category.
+  test("the rail opens on CATEGORIES, with no row above it", async ({
     page,
   }) => {
     await page.goto("/products?category=Buttons")
     const aside = page.locator("aside")
 
-    const link = await aside
-      .getByRole("link", { name: "All recordings", exact: true })
-      .getAttribute("class")
-    // Accordions, not Buttons: Buttons is the active one and carries the
-    // highlight.
-    const inactive = await aside
-      .getByRole("link", { name: "Accordions", exact: true })
-      .getAttribute("class")
+    await expect(
+      aside.getByRole("link", { name: "All recordings", exact: true })
+    ).toHaveCount(0)
 
-    expect(link).toBe(inactive)
-    expect(link).not.toContain("bg-yellow-400")
+    // The first link in the rail is the first Category, alphabetically.
+    await expect(aside.getByRole("link").first()).toHaveAccessibleName(
+      /Accordions/
+    )
+  })
+
+  // The route to the unfiltered catalogue on a desktop is the filter bar's own
+  // `Clear all`, which is drawn (Catalogue.dc.html:81) and is on screen exactly
+  // when there is a filter to drop — which is the only time the question comes
+  // up.
+  test("the filter bar's Clear all lands on the unfiltered catalogue", async ({
+    page,
+  }) => {
+    await page.goto("/products?category=Buttons")
+
+    await page.getByRole("link", { name: "Clear all", exact: true }).click()
+
+    // No query string at all: the Category the visitor arrived with is dropped,
+    // which is the whole point of a route to the *full* catalogue.
+    await expect(page).toHaveURL(/\/products$/)
   })
 })
 
-test("the sheet carries the same link on a phone", async ({ page }) => {
+// On a phone the aside is below `md`, and the route to the full catalogue is
+// the sheet: the dock's Filters button opens it, and with a Category applied
+// its "Clear all" link is the sheet's equivalent of the aside's "All
+// recordings" — the drawing's chips row (CatalogueMobile.dc.html:24-29) has no
+// "All recordings" of its own, only the two facet chips.
+test("the sheet carries a route to the full catalogue on a phone", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("/products?category=Buttons")
 
-  await page.getByRole("button", { name: "Toggle Menu" }).click()
+  await page.getByRole("button", { name: /Filters/ }).click()
   await page
     .getByRole("dialog")
-    .getByRole("link", { name: "All recordings", exact: true })
+    .getByRole("link", { name: "Clear all", exact: true })
     .click()
 
-  await expect(page).toHaveURL(/\/products$/)
-  await expect(page.getByText(/^Total Items: /)).toHaveText(
-    `Total Items: ${allRecordings.length}`
-  )
+  // Clear all keeps `sort` and `filters` (filter-dock.tsx), so the sheet stays
+  // open — what the visitor asked for is gone, the Category.
+  await expect(page).toHaveURL(/\/products/)
+  await expect(page).not.toHaveURL(/category=/)
 })
 
 test.describe("something is rendered when there is nothing to render", () => {
-  for (const path of [
-    "/products?search=zzzzz",
-    "/?search=zzzzz",
-    "/products?category=Buttons&contributor=zzzzz",
-  ]) {
+  for (const [path, headline] of Object.entries(NO_MATCHES)) {
     test(`${path} says so`, async ({ page }) => {
       await page.goto(path)
-      await expect(page.getByText(NO_MATCHES)).toBeVisible()
+      await expect(page.getByText(headline)).toBeVisible()
       await expect(cards(page)).toHaveCount(0)
     })
   }
+
+  // The mock's own query, and the panel's whole reason for computing rather
+  // than rendering a string: the mock's sentence names Pickers, the data says
+  // Sliders, and all three of its single drops are non-empty where the mock
+  // draws one.
+  test("the zero panel diagnoses itself against the real catalogue", async ({
+    page,
+  }) => {
+    await page.goto(
+      `/products?category=Misc&contributor=${encodeURIComponent(
+        "Enzo Manuel Mangano (Reactiive)"
+      )}&search=wheel`
+    )
+
+    await expect(cards(page)).toHaveCount(0)
+    await expect(
+      page.getByText(`0 OF ${allRecordings.length} MATCH`)
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        "Nothing in Misc by Enzo Manuel Mangano (Reactiive) matches “wheel”."
+      )
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        "Loosen one of the three. Wheel Picker is by this contributor, but it lives in Sliders — not Misc."
+      )
+    ).toBeVisible()
+
+    const actions = panelActions(page)
+    await expect(actions).toHaveText([
+      "Drop the category filter",
+      "Drop the contributor filter",
+      "Clear the search",
+      `Search all ${allRecordings.length} for “wheel”`,
+      "Clear all three",
+    ])
+
+    // The whole panel is operable from the keyboard with no pointer, and every
+    // action rings while it holds focus — checkpoint 5 makes that acceptance.
+    const labels = await actions.allTextContents()
+    const rung: string[] = []
+    for (let i = 0; i < 80 && rung.length < labels.length; i++) {
+      await page.keyboard.press("Tab")
+      const active = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement | null
+        return (
+          el && {
+            label: el.textContent?.trim() ?? "",
+            outline: getComputedStyle(el).outlineWidth,
+          }
+        )
+      })
+      if (active && labels.includes(active.label)) {
+        expect(active.outline).toBe("3px")
+        rung.push(active.label)
+      }
+    }
+    expect(rung).toEqual(labels)
+
+    // Every escape route lands somewhere with at least one card.
+    const hrefs = await actions.evaluateAll((links) =>
+      links.map((link) => (link as HTMLAnchorElement).getAttribute("href")!)
+    )
+    for (const href of hrefs) {
+      await page.goto(href)
+      expect(await cards(page).count()).toBeGreaterThan(0)
+    }
+  })
+
+  test("one filter offers one action and no Clear all", async ({ page }) => {
+    await page.goto("/products?search=zzzzz")
+
+    await expect(
+      page.getByText("Nothing in the catalogue matches “zzzzz”.")
+    ).toBeVisible()
+    await expect(page.getByText(/^Loosen one of the/)).toHaveCount(0)
+    await expect(panelActions(page)).toHaveText(["Clear the search"])
+  })
+
+  test("a query no single drop explains says exactly that", async ({
+    page,
+  }) => {
+    // Nothing in Accordions is by this Contributor, and nothing in the
+    // catalogue matches the term — so every pair is empty too.
+    await page.goto(
+      `/products?category=Accordions&contributor=${encodeURIComponent(
+        "Enzo Manuel Mangano (Reactiive)"
+      )}&search=zzzzz`
+    )
+
+    await expect(
+      page.getByText(
+        "No single filter explains it — nothing matches any two of the three."
+      )
+    ).toBeVisible()
+    await expect(panelActions(page)).toHaveText(["Clear all three"])
+  })
 
   test("an empty Saved list says where bookmarks live", async ({ page }) => {
     await page.goto("/bookmarks")
 
     // Under the heading the route already renders, not instead of it.
-    await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Saved on this device" })
+    ).toBeVisible()
 
-    const sentence = page.getByText(/^No bookmarked recordings yet\./)
-    await expect(sentence).toBeVisible()
+    await expect(
+      page.getByText(/^You haven’t saved anything yet\./)
+    ).toBeVisible()
 
     // Decision 18: the copy has to be plain that the set is local to this
-    // browser, and must not imply an account exists.
-    const copy = (await sentence.textContent()) ?? ""
-    expect(copy).toContain("this browser")
-    expect(copy).toContain("this device")
-    expect(copy).toContain("no accounts")
-    expect(copy).not.toMatch(/sign in|log ?in|sync/i)
+    // browser, and must not imply an account exists. The `sync` clause is gone
+    // from the matcher because the replacement copy says "nothing is synced",
+    // which is the same promise stated positively — the property is the same,
+    // the regexp was checking it the wrong way round.
+    const copy = (await page.getByText(/^Tap ◇ Save/).textContent()) ?? ""
+    expect(copy).toContain("this browser on this device only")
+    expect(copy).toContain("no account")
+    expect(copy).not.toMatch(/sign in|log ?in/i)
+
+    // Drawn, so it works (decision 2).
+    await page.getByRole("link", { name: "Browse the catalogue" }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(cards(page)).toHaveCount(48)
   })
 
   // The bookmarks route mounts with no Recordings and fetches them from an effect,
@@ -137,17 +264,19 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
     // The heading is up, so the route has rendered — this is the window the
     // false sentence used to appear in, not a moment before it.
-    await expect(page.getByRole("heading", { name: "Bookmarks" })).toBeVisible()
+    await expect(
+      page.getByRole("heading", { name: "Saved on this device" })
+    ).toBeVisible()
     await expect(cards(page)).toHaveCount(0)
-    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
-      0
-    )
+    await expect(
+      page.getByText(/^You haven’t saved anything yet\./)
+    ).toHaveCount(0)
 
     release()
     await expect(cards(page)).toHaveCount(1)
-    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
-      0
-    )
+    await expect(
+      page.getByText(/^You haven’t saved anything yet\./)
+    ).toHaveCount(0)
 
     await context.close()
   })
@@ -164,25 +293,53 @@ test.describe("something is rendered when there is nothing to render", () => {
     await page.goto("/bookmarks")
 
     await expect(cards(page)).toHaveCount(1)
-    await expect(page.getByText(/^No bookmarked recordings yet\./)).toHaveCount(
-      0
-    )
+    await expect(
+      page.getByText(/^You haven’t saved anything yet\./)
+    ).toHaveCount(0)
 
     await context.close()
   })
 })
 
+// The mock's own grid, measured rather than described: five 208px tracks, 28px
+// between rows and 24px between columns (Catalogue.dc.html:91, and the
+// Specimen's spacing scale names both gaps outright). The row gap used to be a
+// single `gap-6` on both axes, so it was 4px short.
+test("the grid is the mock's five tracks at 1440px", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto("/")
+
+  const measured = await page.evaluate(() => {
+    const grid = document.querySelector('[class*="auto-fill"]')!
+    const style = getComputedStyle(grid)
+    return {
+      columns: style.gridTemplateColumns,
+      rowGap: style.rowGap,
+      columnGap: style.columnGap,
+    }
+  })
+
+  expect(measured.columns).toBe("208px 208px 208px 208px 208px")
+  expect(measured.rowGap).toBe("28px")
+  expect(measured.columnGap).toBe("24px")
+})
+
 test.describe("a card fills its track instead of overflowing it", () => {
   // `sm` and up, where the card used to be a fixed 221px against a fractional
   // track. Below `sm` the grid is one column and the card was already `w-full`.
-  for (const width of [640, 768, 1024, 1280, 1440]) {
+  //
+  // The tracks are fixed now — `repeat(auto-fill, 208px)`, ticket 08 step 4 —
+  // which satisfies this by construction rather than by measurement. It is still
+  // measured: fixed tracks are what ticket 12 removed, and the defect it removed
+  // them for was card width ≠ track width, which is the thing below.
+  for (const width of [390, 640, 768, 1024, 1280, 1440]) {
     for (const path of ["/", "/products"]) {
       test(`${path} at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 })
         await page.goto(path)
 
         const measured = await page.evaluate(() => {
-          const grid = document.querySelector('[class*="xl:grid-cols-5"]')
+          const grid = document.querySelector('[class*="auto-fill"]')
           if (!grid) return null
           const track = parseFloat(
             getComputedStyle(grid).gridTemplateColumns.split(" ")[0]
@@ -223,23 +380,38 @@ test.describe("a card fills its track instead of overflowing it", () => {
 })
 
 test.describe("the page never scrolls sideways", () => {
-  // 640px is where the sidebar appears (`hidden sm:flex`) and `main` picks up
-  // its 168px left margin, and where the sort controls turn horizontal. For a
-  // 30px-wide band above it the three sort pills and the two status pills had a
-  // 470px min-content against the 440px `main` had left, and a flex item cannot
-  // shrink below its min-content — so `main` was floored wider than the
-  // viewport and the whole document scrolled. 700px is past the band, 639px is
-  // below the margin, and both were always clean.
-  for (const width of [390, 639, 640, 660, 700, 768, 1024, 1440]) {
+  // 768px is where the sidebar appears (`hidden md:flex`) and `main` picks up
+  // its 168px left margin, and where the dock gives way to the rail's filter
+  // route. For a 30px-wide band above the old 640px boundary the three sort
+  // pills and the two status pills had a 470px min-content against the 440px
+  // `main` had left, and a flex item cannot shrink below its min-content — so
+  // `main` was floored wider than the viewport and the whole document scrolled.
+  //
+  // 640, 660 and 700 stay in the list even though the boundary moved: that band
+  // is now where a fixed dock paints over a page that has no rail, which is the
+  // other half of the same question. 767 is the new width either side of the
+  // joint, and 768 was already here.
+  for (const width of [390, 639, 640, 660, 700, 767, 768, 1024, 1280, 1440]) {
     for (const path of ["/", "/products", "/bookmarks"]) {
       test(`${path} at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 })
+        const measure = () =>
+          page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+          }))
+
         await page.goto(path)
-        const measured = await page.evaluate(() => ({
-          scrollWidth: document.documentElement.scrollWidth,
-          clientWidth: document.documentElement.clientWidth,
-        }))
-        expect(measured.scrollWidth).toBeLessThanOrEqual(measured.clientWidth)
+        const closed = await measure()
+        expect(closed.scrollWidth).toBeLessThanOrEqual(closed.clientWidth)
+
+        // And with the filter sheet up. `?filters=open` is the whole open
+        // state, so it opens on a cold load at any width — a panel pinned
+        // `inset-x-0` over the document is exactly the shape that widens it if
+        // a padding is added outside the box instead of inside.
+        await page.goto(`${path}?filters=open`)
+        const open = await measure()
+        expect(open.scrollWidth).toBeLessThanOrEqual(open.clientWidth)
       })
     }
   }
@@ -250,24 +422,57 @@ test.describe("the content clears the header instead of sitting under it", () =>
     page.evaluate(
       () => document.querySelector("main")!.getBoundingClientRect().top
     )
+  const headerBottom = (page: Page) =>
+    page.evaluate(
+      () => document.querySelector("header")!.getBoundingClientRect().bottom
+    )
 
-  // TopNavBar is `h-[83px] fixed top-0` and renders at `md` and up. The offset
-  // was 64px, so the top 19px of every page was painted over.
-  for (const width of [768, 1440]) {
+  // The header is in flow now (ticket 04), sticky rather than fixed, so `main`
+  // starts exactly where the header ends at every width. It used to be
+  // `h-[83px] fixed top-0` paid for with a 64px spacer that let it paint over
+  // the top 19px of every page at `md` and up.
+  for (const width of [390, 768, 1440]) {
     for (const path of ["/", "/products", "/bookmarks"]) {
       test(`${path} at ${width}px`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 })
         await page.goto(path)
-        expect(await mainTop(page)).toBeGreaterThanOrEqual(83)
+        expect(await mainTop(page)).toBe(await headerBottom(page))
       })
     }
   }
 
-  // Below `md` no header renders and the 64px is what clears the mobile sheet
-  // trigger, so it has to stay exactly where it was.
-  test("/ at 390px is unchanged", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto("/")
-    expect(await mainTop(page)).toBe(64)
-  })
+  // The three catalogue routes are one component behind one flag (spec.md
+  // decision 10), so at a given width they get the same number of grid tracks.
+  //
+  // Counting tracks rather than checking `scrollWidth === clientWidth`: an
+  // extra gutter does not overflow anything, it just costs a column, so the
+  // overflow check passes on a grid that has silently lost one. Two stale
+  // wrappers from the pre-redesign scaffold did exactly that to /products —
+  // `<div className="flex">` in its page (a block child of a flex row
+  // shrink-to-fits) and a `md:px-4` app/products/layout.tsx with no counterpart
+  // on / or /bookmarks, which at 1440px left 1124px where five 208px tracks
+  // plus four 24px gaps need 1136px. Both are gone; this is what says so.
+  for (const width of [1440, 1280]) {
+    test(`the three catalogue routes lay out the same grid at ${width}px`, async ({
+      page,
+    }) => {
+      const tracks: Record<string, string> = {}
+      for (const path of ["/", "/products", "/bookmarks"]) {
+        await page.setViewportSize({ width, height: 900 })
+        await page.goto(path)
+        tracks[path] = await page.evaluate(() => {
+          const grid = Array.from(document.querySelectorAll<HTMLElement>("div")).find(
+            (el) =>
+              getComputedStyle(el).display === "grid" &&
+              el.querySelector('a[href^="/recording/"]')
+          )
+          return grid ? getComputedStyle(grid).gridTemplateColumns : "no grid"
+        })
+      }
+      // /bookmarks holds whatever this browser saved, which is nothing here, so
+      // it has no grid to measure — the claim is about the two that do.
+      expect(tracks["/products"], JSON.stringify(tracks)).toBe(tracks["/"])
+      expect(tracks["/"].split(" ").length).toBeGreaterThan(1)
+    })
+  }
 })

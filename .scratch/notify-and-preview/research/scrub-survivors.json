@@ -1,0 +1,123 @@
+{
+  "note": "Consent dates for the surviving list. Addresses deliberately absent — this file is committed to a public repo. Rejoin docId against Firestore emails/ for the address.",
+  "survivors": 29,
+  "verified": false,
+  "consent": [
+    {
+      "docId": "8hHysd66IHGnJF6MpjSD",
+      "createdAt": "2024-12-30T09:38:23.316Z"
+    },
+    {
+      "docId": "Qbnp7FLJEwiyvcB7Z3Ep",
+      "createdAt": "2025-01-04T10:53:13.999Z"
+    },
+    {
+      "docId": "cw2luvHiLJ5AiZyuYfpW",
+      "createdAt": "2025-01-07T15:21:53.266Z"
+    },
+    {
+      "docId": "YSf18p2oeqI9rLgiZThD",
+      "createdAt": "2025-02-03T17:32:03.947Z"
+    },
+    {
+      "docId": "R0tGFnuqsdr9BsckH3IF",
+      "createdAt": "2025-02-11T10:18:48.048Z"
+    },
+    {
+      "docId": "pSdi7oRPBkdUS4lU5v0d",
+      "createdAt": "2025-03-18T23:34:08.216Z"
+    },
+    {
+      "docId": "JBp0U4kRdeorlUIjTHoC",
+      "createdAt": "2025-03-26T04:20:38.646Z"
+    },
+    {
+      "docId": "C9vQTJfUlhpw6uveV65w",
+      "createdAt": "2025-04-09T04:54:40.084Z"
+    },
+    {
+      "docId": "wgYsUXBkxRwi8hT2E9KY",
+      "createdAt": "2025-07-03T10:17:17.514Z"
+    },
+    {
+      "docId": "V5fX7NmFGJWL5QPH5H11",
+      "createdAt": "2025-07-07T11:01:06.653Z"
+    },
+    {
+      "docId": "duKc4YA4EuS4EGyoAysq",
+      "createdAt": "2025-07-28T16:53:37.047Z"
+    },
+    {
+      "docId": "CGdmUBNz9AxS5qYDdWQI",
+      "createdAt": "2025-08-11T13:44:26.523Z"
+    },
+    {
+      "docId": "qkTALn9SFkEAnilq61lV",
+      "createdAt": "2025-09-22T07:59:47.182Z"
+    },
+    {
+      "docId": "5wH6YgMTqXyIlFqLvkkk",
+      "createdAt": "2025-10-03T15:12:37.458Z"
+    },
+    {
+      "docId": "wWyeXBHsl8VDlmj83HMp",
+      "createdAt": "2025-10-09T02:56:36.165Z"
+    },
+    {
+      "docId": "CJZo3tkjSTVDiLU6m0Bc",
+      "createdAt": "2025-10-23T04:17:36.469Z"
+    },
+    {
+      "docId": "6rP82FZmcyoCOrPyjhfP",
+      "createdAt": "2025-10-28T12:00:31.814Z"
+    },
+    {
+      "docId": "yXiEz92P0lb2bnuWdHji",
+      "createdAt": "2025-11-28T06:14:55.891Z"
+    },
+    {
+      "docId": "lAbxdQl33jEmvtJd0QIi",
+      "createdAt": "2025-12-10T06:14:53.373Z"
+    },
+    {
+      "docId": "vwNwcSBnj9qCMfcaF0Ti",
+      "createdAt": "2026-01-15T02:32:01.168Z"
+    },
+    {
+      "docId": "UwPlnjaNMB3WB1LG8wmw",
+      "createdAt": "2026-03-08T13:45:54.970Z"
+    },
+    {
+      "docId": "JoGXpkBIPU4DCaFaDctg",
+      "createdAt": "2026-03-16T15:13:53.908Z"
+    },
+    {
+      "docId": "ePZq5vN3sACcUua8PsEk",
+      "createdAt": "2026-04-28T10:58:25.690Z"
+    },
+    {
+      "docId": "IC7ykrHB9bnXjbZzMzVJ",
+      "createdAt": "2026-05-13T21:50:15.754Z"
+    },
+    {
+      "docId": "HQXk60L5rBnXnyJMzTiM",
+      "createdAt": "2026-06-03T04:52:49.142Z"
+    },
+    {
+      "docId": "DR9twqta0Km17obRUdNm",
+      "createdAt": "2026-06-10T17:27:58.655Z"
+    },
+    {
+      "docId": "dUATFYQN3DW78QnQQ4bI",
+      "createdAt": "2026-06-22T22:12:06.853Z"
+    },
+    {
+      "docId": "oBGw5SZvmaloWRW7kLwJ",
+      "createdAt": "2026-07-14T11:24:32.229Z"
+    },
+    {
+      "docId": "2DAiRBehgyAdb6BKNHIZ",
+      "createdAt": "2026-08-07T07:41:15.231Z"
+    }
+  ]
+}

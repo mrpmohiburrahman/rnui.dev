@@ -77,3 +77,29 @@ this first on a 1440px desktop viewport, which is where the panel is widest.
 
 Second, smaller: exit timings of 100/140ms are tuned by reasoning, not by eye. They are the
 first thing to adjust after seeing it run.
+
+---
+
+## Correction — 2026-08-04 — superseded by Studio Dark
+
+`studio-dark/spec.md:15-19` overturns `ui-ux-overhaul`'s decision 1 ("the look is frozen as
+it renders today") for the look only, and `spec.md`'s own mock — `assets/new-ui/*.dc.html` —
+replaces every number in this brief. The Superseded column of the gate
+(`studio-dark/issues/13-motion-accessibility-and-performance.md`, step 2) records the new
+values read from the built site; the four that this brief fixed are named here so nobody reopens
+the brief looking for a decision.
+
+| Value | This brief | Studio Dark (`Specimen.dc.html`, `Catalogue.dc.html`) | Notes |
+|---|---|---|---|
+| Enter | 180ms, `scale 0.98 → 1`, `cubic-bezier(0.19,1,0.22,1)` | **240ms**, `opacity 0 → 1`, `y 8px → 0`, `cubic-bezier(.2,.8,.2,1)` | No scale. The 8px rise replaces the 2% scale. |
+| Exit | 100ms panel / 140ms backdrop, `cubic-bezier(0.19,1,0.22,1)` | **160ms**, `opacity → 0`, `y → 8px`, **`ease-in`** | Open is rise; close is `ease-in` by the Specimen's own table (`:165`). |
+| Origin | centred, *"deliberately not anchored"*, zero travel | centred + 8px rise | The "anchored to the tile" option was never taken; Studio Dark adds travel to the centre. |
+| Reduced motion | opacity survives, scale drops, 120/100ms | opacity survives, transform drops, **240/160ms** | The reductions now match the unreduced durations; only the rise is removed. |
+
+`studio-dark` ticket 09 builds these exactly; this file is corrected in place rather than
+rewritten because `ui-ux-overhaul` is a finished effort and `spec.md:15-19` says its files are
+corrected, not reopened. The bottom-sheet brief beside this one (`motion-brief-sheet.md`) covers
+the only moment this brief never specified — the mobile sheet's 260ms spring — and
+`studio-dark` ticket 11 builds it as a 260ms `cubic-bezier(.2,.8,.2,1)` transition, explicitly
+**not** a framer spring (the Specimen's *"260ms spring, no overshoot"* is the curve it drew,
+absent a named easing, and ticket 11 pins the curve).

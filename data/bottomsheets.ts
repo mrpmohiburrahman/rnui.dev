@@ -8,7 +8,10 @@ export const bottomsheets: Recording[] = [
       "demo/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/bottomsheets/bottom_sheet_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 6483,
+    aspect: 0.8218,
+    hue: 257,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/what-about-gestures/tree/main/03-full-bottom-sheet",
     twitterId: "reactiive_",
@@ -23,6 +26,9 @@ export const bottomsheets: Recording[] = [
     demoPath: "demo/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.mp4",
     posterPath:
       "thumbnails/bottomsheets/reanimated_bottom_sheet_kacper_kapusciak.avif",
+    durationMs: 3413,
+    aspect: 1.7778,
+    hue: 346,
     contributor: "Kacper Kapuściak",
     source:
       "https://github.com/software-mansion-labs/reanimated-bottom-sheet-video",
@@ -39,7 +45,10 @@ export const bottomsheets: Recording[] = [
       "demo/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 2334,
+    aspect: 0.4611,
+    hue: 353,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/alert-drawer",
     twitterId: "reactiive_",
@@ -55,7 +64,10 @@ export const bottomsheets: Recording[] = [
     demoPath: "demo/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/bottomsheets/dot-sheet_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 3540,
+    aspect: 0.4611,
+    hue: 347,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/dot-sheet",
     twitterId: "reactiive_",
@@ -72,7 +84,9 @@ export const bottomsheets: Recording[] = [
       "demo/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/bottomsheets/floating-modal_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 7459,
+    aspect: 0.4611,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/floating-modal",
     twitterId: "reactiive_",
@@ -89,7 +103,10 @@ export const bottomsheets: Recording[] = [
       "demo/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/bottomsheets/skia-bottom-sheet_enzo_manuel_mangano_reactiive.avif",
-    contributor: "Enzo Manuel Mangano ( Reactiive )",
+    durationMs: 4567,
+    aspect: 0.4611,
+    hue: 36,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/skia-bottom-sheet",
     twitterId: "reactiive_",

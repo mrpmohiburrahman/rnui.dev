@@ -13,7 +13,7 @@ Background: [ADR-0001](adr/0001-assets-served-from-object-storage-not-the-repo.m
 | Zone | `rnui.dev` (`b8902b2df1b2f88edbc54ac0618387fe`) |
 | Bucket | `rnui-assets`, location hint WEUR, Standard storage |
 | Public URL | `https://cdn.rnui.dev` — an R2 **custom domain**, not `r2.dev` |
-| Objects | 554 — 277 Demos, 277 Posters, 74.1 MB against a 10 GB free tier |
+| Objects | 554 when this was written — 277 Demos, 277 Posters, 74.1 MB, against a 10 GB free tier. The catalogue has grown since, so re-measure before relying on this row |
 | Object metadata | `Cache-Control: public, max-age=31536000, immutable`, plus `video/mp4` or `image/avif` |
 
 The `r2.dev` development subdomain is deliberately unused: Cloudflare rate-limits
@@ -66,6 +66,79 @@ pnpm check:videos:production        # every Published Asset, from the CDN
 `NEXT_PUBLIC_CDN_URL` must be set in the Vercel project settings. Without it the
 site resolves Assets to root-relative paths, which no longer exist in a
 deployment — see the warning `lib/cdn.ts` logs on startup.
+
+## The Submissions bucket
+
+A second bucket, `rnui-submissions`, holds **Submissions** — work somebody sent that has not been
+reviewed or published (`CONTEXT.md`). It exists as a **separate bucket rather than a
+`submissions/` prefix inside `rnui-assets`**, and that is the load-bearing decision: public access
+in R2 is a bucket-level setting with **no per-prefix exclusion**, so a prefix would have been
+world-readable at `cdn.rnui.dev/submissions/<key>` and cached `immutable` for a year. Unreviewed
+work by somebody else must be neither.
+
+| Thing | Value |
+| --- | --- |
+| Bucket | `rnui-submissions`, location hint WEUR, Standard storage, created 2026-09-25 |
+| Public URL | **none, deliberately** — no custom domain, and the `r2.dev` managed domain is disabled |
+| Keys | `<ulid>.mp4` — one flat namespace, no prefix. A Submission is not an Asset and its key is not an Asset path (ADR-0003) |
+| Lifecycle | `expire-submissions` — `deleteObjectsTransition` `{type: "Age", maxAge: 2592000}`, i.e. 30 days |
+| Environment | `R2_SUBMISSIONS_BUCKET`, optional; the tooling defaults to `rnui-submissions` |
+
+### Creating it
+
+```bash
+npx wrangler login
+npx wrangler r2 bucket create rnui-submissions
+```
+
+**Stop there.** Do not run the `domains/custom` call above, and do not enable the `r2.dev` managed
+domain. Either one makes submissions public, which is the entire thing the separate bucket exists
+to prevent.
+
+### The 30-day rule
+
+`maxAge` is **seconds** in this API — 2592000 for 30 days. This endpoint is a **full replace**, so
+a `PUT` that omits the default multipart-abort rule deletes it:
+
+```bash
+API="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/r2/buckets/rnui-submissions"
+curl -s -X PUT "$API/lifecycle" -H "Authorization: Bearer $CLOUDFLARE_R2_TOKEN" \
+  -H "Content-Type: application/json" -d '{"rules":[
+    {"id":"Default Multipart Abort Rule","enabled":true,"conditions":{},
+     "abortMultipartUploadsTransition":{"condition":{"type":"Age","maxAge":604800}}},
+    {"id":"expire-submissions","enabled":true,"conditions":{},
+     "deleteObjectsTransition":{"condition":{"type":"Age","maxAge":2592000}}}]}'
+```
+
+Objects are typically removed within 24 hours of the expiry time, not at it.
+
+### Reading one back
+
+```bash
+pnpm submissions:open <key>              # writes it here
+pnpm submissions:open <key> --out <dir>  # writes it into <dir>
+pnpm submissions:open --list             # everything still inside the 30 days
+```
+
+**Not a presigned URL.** A presigned GET expires in at most 7 days (604,800 s) while the object
+lives 30, so a link inside a notification email is dead long before it is used. The command uses
+the same `CLOUDFLARE_R2_TOKEN` as `pnpm assets:publish`.
+
+### What was verified, and how — 2026-09-25
+
+| Check | Result |
+| --- | --- |
+| Anonymous GET via the `r2.dev` hostname | 401 |
+| Anonymous GET at the S3 endpoint | 400 — no object served; note this is **not** a clean 403 |
+| Anonymous LIST | 400 |
+| `cdn.rnui.dev/<key>` | 404 |
+| Authenticated GET | 200 |
+| Authenticated PUT, then DELETE | 200, 200 |
+
+The bucket carries no custom domain and no enabled managed domain, which is what those numbers
+measure. Do not treat the 400s as a deliberate refusal — they are R2 rejecting an unsigned
+request, and they are offered as evidence only because no object was served and the same request
+authenticated returned 200.
 
 ## Things that will bite you
 

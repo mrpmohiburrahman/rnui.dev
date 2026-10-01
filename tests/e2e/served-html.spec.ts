@@ -35,12 +35,17 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
 }) => {
   const html = await (await request.get("/")).text()
 
-  expect(html).toMatch(/<h1[^>]*>Awesome React Native UI<\/h1>/)
+  // React renders the hero's `&nbsp;` as an actual U+00A0, not the literal text.
+  expect(html).toMatch(
+    /<h1[^>]*>A dark room full of React\u00A0Native interfaces, playing quietly\.<\/h1>/
+  )
 
-  // All three desktop sort buttons. They are what the guard dropped along with
-  // the grid, since the heading is passed through the grid as children.
-  for (const label of ["Recent", "Top Viewed", "Top Voted"]) {
-    expect(html).toContain(`>${label}</span>`)
+  // All three sort controls, now the header's segment (ticket 04 step 7). They
+  // are what the guard dropped along with the grid, since the heading is passed
+  // through the grid as children; the header is served from its Suspense
+  // fallback, which carries the whole control set unhighlighted.
+  for (const label of ["RECENT", "MOST VIEWED", "MOST VOTED"]) {
+    expect(html).toContain(`>${label}<`)
   }
 
   // One full page of cards, in the document rather than added by script. This
@@ -65,7 +70,24 @@ test("the served HTML of /bookmarks carries its heading", async ({
   request,
 }) => {
   const html = await (await request.get("/bookmarks")).text()
-  expect(html).toMatch(/<h1[^>]*>Bookmarks<\/h1>/)
+  expect(html).toMatch(/<h1[^>]*>Saved on this device<\/h1>/)
+})
+
+// Ticket 13 step 4a: the served HTML contains no <video> for anybody, not only
+// reduced-motion visitors. demo-tile.tsx:49's server snapshot of `() => true`
+// is what buys this — the element appears only after hydration, and only for
+// visitors who did not ask for less motion. A served document that ships a
+// <video> would fetch and decode a first frame before hydration ever ran.
+test("no route serves a <video> in its document", async ({ request }) => {
+  const recording = await (await request.get(`/recording/${allRecordings[0].id}`)).text()
+  for (const html of [
+    await (await request.get("/")).text(),
+    await (await request.get("/products")).text(),
+    await (await request.get("/bookmarks")).text(),
+    recording,
+  ]) {
+    expect(html).not.toContain("<video")
+  }
 })
 
 for (const route of ROUTES) {
@@ -91,7 +113,10 @@ test("/ is readable with JavaScript turned off", async ({ browser }) => {
   await page.goto("/")
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "Awesome React Native UI" })
+    page.getByRole("heading", {
+      level: 1,
+      name: "A dark room full of React Native interfaces, playing quietly.",
+    })
   ).toBeVisible()
   await expect(page.getByTestId("demo").first()).toBeVisible()
 
@@ -124,14 +149,18 @@ for (const route of [...ROUTES, "/aboutus"]) {
   })
 }
 
-// The read has to stay during render, not move to an effect: ticket 11 builds
-// each href from the current query so filters compose, and an href computed
-// after mount is already wrong in the document that was served.
+// The read has to stay during render, not move to an effect: the hrefs are built
+// from the current query so filters compose, and an href computed after mount is
+// already wrong in the document that was served. The applied rail row wears a
+// 1px accent outline at 1px offset (ticket 05), and `outline-offset-1` appears
+// nowhere else — the focus ring uses 2px — so it is the served-HTML marker that
+// the active Category was highlighted before hydration, where `bg-yellow-400`
+// used to be.
 test("the active filter is highlighted in the served HTML, not after hydration", async ({
   request,
 }) => {
   const html = await (await request.get("/products?category=Buttons")).text()
-  expect(html).toContain("bg-yellow-400")
+  expect(html).toContain("outline-offset-1")
 })
 
 test("/bookmarks never shows more than the bookmarked Recordings, at any frame", async ({

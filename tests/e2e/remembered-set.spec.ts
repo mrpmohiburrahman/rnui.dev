@@ -42,9 +42,9 @@ test("a set stored by the previous build still loads after the hook merge", asyn
 
   // Both labels are the flipped ones, so both sets hydrated rather than only one.
   await expect(
-    page.getByRole("button", { name: "Remove Bookmark" })
+    page.getByRole("button", { name: "Saved" })
   ).toBeVisible()
-  await expect(page.getByRole("button", { name: "Unvote" })).toBeVisible()
+  await expect(page.getByRole("button", { name: /^Unvote/ })).toBeVisible()
 
   // Un-bookmarking drops the card from the list immediately. Two copies of the set
   // — one in the route, one in the Catalogue page — would leave it there until a
@@ -56,8 +56,31 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   // heading rather than the button keeps the whole card group hovered while the
   // pointer travels to it.
   await page.getByRole("heading", { level: 3 }).hover()
-  await page.getByRole("button", { name: "Remove Bookmark" }).click()
+  await page.getByRole("button", { name: "Saved" }).click()
   await expect(page.getByTestId("demo")).toHaveCount(0)
 
   await context.close()
+})
+
+// The header is not under the catalogue, so it cannot be handed the set as a
+// prop the way recording-detail.tsx is (recording-detail.tsx:107-111). It calls
+// useRememberedSet itself — and while that hook kept per-instance useState, its
+// copy of the set was whatever it read at mount: saving a Recording from a tile
+// left `◆ Saved 0` on screen next to a Recording that was, in fact, saved.
+// Decision 2 — nothing on screen lies.
+test("saving a tile moves the header's Saved count without a reload", async ({
+  page,
+}) => {
+  await page.route("**/*posthog.com/**", (route) => route.abort())
+  await page.route("**/demo/**", (route) => route.abort())
+  await page.goto("/")
+
+  const savedChip = page.locator('header a[href="/bookmarks"]').first()
+  await expect(savedChip).toContainText("0")
+
+  await page.getByRole("heading", { level: 3 }).first().hover()
+  await page.getByRole("button", { name: "Save" }).first().click()
+
+  // No reload between the click and this read — that is the whole assertion.
+  await expect(savedChip).toContainText("1")
 })
