@@ -1,6 +1,6 @@
 # 02 — The `old` branch, and the three Archive-side code changes
 
-Status: ready-for-agent
+Status: ready-for-human
 Blocked by: 01
 
 ## Problem

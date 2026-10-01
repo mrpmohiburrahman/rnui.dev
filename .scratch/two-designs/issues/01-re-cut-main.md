@@ -1,6 +1,6 @@
 # 01 — Re-cut `main` from `feat/studio-dark`
 
-Status: ready-for-agent
+Status: ready-for-human
 
 ## Problem
 
