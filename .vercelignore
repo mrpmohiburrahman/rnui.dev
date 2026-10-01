@@ -1,0 +1,34 @@
+# Why this file exists on this branch and nowhere else.
+#
+# The live site is deployed by Vercel's Git integration, which uploads only
+# committed files. A `vercel deploy` from a working copy uploads everything
+# git does *not* ignore — and on this branch that is several hundred megabytes
+# of local scratch work plus a broken symlink that fails the build outright:
+#
+#   Error: /vercel/path0/.scratch/demos/android/demosnitro is not a valid symlink
+#
+# That is the shape of every manual redeploy of the Archive. Nothing pushes to
+# `old` — it is frozen, by definition (ADR-0009) — so a manual redeploy from a
+# dirty checkout is the *only* way this host is ever rebuilt, and this file is
+# what makes that work. It changes nothing about what is served.
+#
+# `.gitignore` already covers /public/demo/ and /public/thumbnails/, the local
+# staging copies of Assets (ADR-0001). What it does not cover is the rest of
+# what accumulates in a working copy.
+
+# Effort records. Never served, and .scratch/demos/android/demosnitro is a
+# symlink to a path that no longer exists.
+/.scratch/
+
+# Stray recordings and images at the repo root. A 486MB .mp4 here is a
+# Staging copy that was never published.
+/*.mp4
+/*.png
+/*.svg
+
+# Build output and local tooling, for completeness. The Git integration never
+# uploads these; a CLI deploy would.
+/.next
+/test-results
+/playwright-report
+/node_modules
