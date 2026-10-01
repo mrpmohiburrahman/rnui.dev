@@ -23,6 +23,52 @@ const nextConfig: NextConfig = {
     ]
   },
 
+  async headers() {
+    return [
+      // The Archive. `www.rnui.dev` serves the current Design and this branch
+      // serves the previous one, and between them they publish the same 277
+      // Recordings — so without this, `old.rnui.dev` is indexable duplicate
+      // content against the live site. next-sitemap's `siteUrl` is
+      // `https://www.rnui.dev`, so both hosts also claim the same canonical
+      // URLs.
+      //
+      // Header rather than a robots.txt rule, for the same reason the live site
+      // uses one: `Disallow` stops the crawl, and a page that is never crawled
+      // is a page whose noindex is never read — a URL blocked that way can
+      // still be indexed from inbound links. The committed `public/robots.txt`
+      // says `Allow: /` and carries only a Yandex `Host:` hint, which Google
+      // does not read as an instruction.
+      //
+      // No `rel=canonical`, deliberately. `X-Robots-Tag: noindex` makes Google
+      // ignore canonical outright, so one adds nothing; and Next cannot
+      // interpolate the matched path into a header value, so the only canonical
+      // available is the bare site root — which would tell a crawler that every
+      // page of the Archive duplicates the homepage rather than the page it
+      // mirrors. The header alone is the honest instruction.
+      //
+      // Two hosts, for the same reason the live branch covers two: the Archive
+      // is *also* served at `rnui-dev-archive-*.vercel.app`, which is the same
+      // duplicate content on a hostname a crawler can find. Matching both means
+      // the protection does not depend on which URL somebody shares.
+      //
+      // `has` is the whole safety of this rule: unconditional, it would deindex
+      // rnui.dev itself. Neither alternative can match the live host — there is
+      // deliberately no bare `rnui\.dev` alternative, and this branch is never
+      // deployed to `www` — so even read unanchored the blast radius stays on
+      // the Archive.
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "old\\.rnui\\.dev|rnui-dev-archive-.*\\.vercel\\.app",
+          },
+        ],
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+    ]
+  },
+
   webpack: (config) => {
     // Allow watching public/demo for local video fallback
     config.watchOptions = {
