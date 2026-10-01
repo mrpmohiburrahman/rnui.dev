@@ -48,6 +48,25 @@ _Avoid_: thumbnail, placeholder, cover
 
 ### The site
 
+**Design**:
+The complete presentation of the catalogue — its type, colour, layout and motion. A
+Design decides how a Recording is shown, never which Recordings exist. A light and a
+dark theme are not two Designs; both belong to the current Design and are swapped at
+the visitor's will.
+_Avoid_: theme, skin, style, version, look, Studio Dark, deploy A, deploy B
+
+**previous design**:
+The Design rnui.dev served before the current one. Retired from every public route, but
+kept whole rather than deleted, so that a link written against it still resolves to the
+appearance it was written for.
+_Avoid_: the old rnui.dev, the old site, legacy, deploy A, deploy B, v1
+
+**Archive**:
+The frozen copy of the previous design, published alongside the live site rather than
+in place of it. It is a fixed point, not a version: it takes no further changes and
+makes no promises about what a visitor can do there beyond look.
+_Avoid_: old.rnui.dev, old site, legacy, archive site, snapshot, mirror, staging
+
 **Catalogue page**:
 The client module that renders a set of Recordings: the sort controls, the grid of
 cards, and whichever Recording the visitor has opened. Three routes render one —
