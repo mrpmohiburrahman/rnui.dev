@@ -47,9 +47,19 @@ const nextConfig: NextConfig = {
       // mirrors. The header alone is the honest instruction.
       //
       // Two hosts, for the same reason the live branch covers two: the Archive
-      // is *also* served at `rnui-dev-archive-*.vercel.app`, which is the same
-      // duplicate content on a hostname a crawler can find. Matching both means
-      // the protection does not depend on which URL somebody shares.
+      // is *also* served at `rnui-dev-archive.vercel.app` and at
+      // `rnui-dev-archive-<hash>.vercel.app`, which are the same duplicate
+      // content on hostnames a crawler can find. Matching both means the
+      // protection does not depend on which URL somebody shares.
+      //
+      // The bare prefix, not `rnui-dev-archive-.*`: the project's own domain
+      // has no hash after the name, and a pattern that required one silently
+      // left the canonical production URL indexable. Measured, not assumed —
+      // the first version of this rule matched only the hashed form and
+      // `rnui-dev-archive.vercel.app` answered 200 with no `x-robots-tag`.
+      //
+      // It cannot reach the live project. That is a different project on the
+      // `rnui-dev` prefix, and `old\.rnui\.dev` does not match `www.rnui.dev`.
       //
       // `has` is the whole safety of this rule: unconditional, it would deindex
       // rnui.dev itself. Neither alternative can match the live host — there is
@@ -61,7 +71,7 @@ const nextConfig: NextConfig = {
         has: [
           {
             type: "host",
-            value: "old\\.rnui\\.dev|rnui-dev-archive-.*\\.vercel\\.app",
+            value: "old\\.rnui\\.dev|rnui-dev-archive.*\\.vercel\\.app",
           },
         ],
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
