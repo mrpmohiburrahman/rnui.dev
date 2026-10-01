@@ -18,7 +18,13 @@ const ARCHIVE_HOST = "old.rnui.dev"
 // The same build is served at its own Vercel alias, which is the same duplicate
 // content on a third hostname. Vercel is widely said to noindex its deployment
 // URLs; the rule covers this rather than depending on that.
-const BRANCH_ALIAS = "rnui-dev-archive-mrpmohiburrahmans-projects.vercel.app"
+const PROJECT_DOMAIN = "rnui-dev-archive-mrpmohiburrahmans-projects.vercel.app"
+
+// The deployment's own hash URL. The first version of this rule required a
+// hash after the project name, so the project's canonical domain fell through
+// it and answered 200 with no X-Robots-Tag. Both forms are pinned.
+const DEPLOYMENT_ALIAS =
+  "rnui-dev-archive-8tb2ye1jz-mrpmohiburrahmans-projects.vercel.app"
 
 test("the Archive host answers noindex", async ({ request }) => {
   const response = await request.get("/", { headers: { host: ARCHIVE_HOST } })
@@ -27,11 +33,15 @@ test("the Archive host answers noindex", async ({ request }) => {
   expect(response.headers()["x-robots-tag"]).toBe("noindex")
 })
 
-test("the Archive's Vercel alias answers noindex", async ({ request }) => {
-  const response = await request.get("/", { headers: { host: BRANCH_ALIAS } })
+test("both of the Archive's Vercel hosts answer noindex", async ({ request }) => {
+  for (const host of [PROJECT_DOMAIN, DEPLOYMENT_ALIAS]) {
+    const response = await request.get("/", { headers: { host } })
 
-  expect(response.status()).toBe(200)
-  expect(response.headers()["x-robots-tag"]).toBe("noindex")
+    expect(response.status(), `${host} answers`).toBe(200)
+    expect(response.headers()["x-robots-tag"], `${host} is noindexed`).toBe(
+      "noindex"
+    )
+  }
 })
 
 test("every other host does not", async ({ request }) => {
