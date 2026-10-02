@@ -1,6 +1,6 @@
 # 04 — `www.rnui.dev` → studio-dark, and retire `preview.rnui.dev`
 
-Status: ready-for-human
+Status: resolved
 Blocked by: 01, 03
 
 ## Problem
@@ -46,3 +46,55 @@ deployment. The cut has to move all of them or leave some behind pointing at the
 - `preview.rnui.dev` 301s to `https://www.rnui.dev`.
 - `vercel alias ls` shows no alias still pointing at the superseded deployment.
 - PostHog shows `$pageview` from both hosts within minutes, separable on `$host`.
+
+## Comments
+
+### 2026-10-02 — Done. The cut is made.
+
+`main` is the Production branch of `rnui-dev` (it already was — no change was needed), the
+merged tree is deployed, and `preview.rnui.dev` 308s to `www.rnui.dev`. Measured, not assumed:
+
+| host | http | `x-robots-tag` | serves |
+|---|---|---|---|
+| `www.rnui.dev` | 200 | *(none — indexable)* | the current Design |
+| `rnui.dev` | 307 → `www` | *(none)* | the current Design |
+| `old.rnui.dev` | 200 | `noindex` | the previous Design |
+| `preview.rnui.dev` | **308** → `www` | `noindex` | the current Design |
+
+PostHog on **both** hosts is `phc_6cIcFcQK` — project 117415, unchanged from deploy A. This
+was the decision that had to survive the cut, and it did without an env change: `rnui-dev`'s
+Production environment already held 117415's key, and the studio-dark *branch* held 559028's.
+Choosing the production **branch** over the branch's own env is what made 559028 a
+non-event.
+
+`/`, `/products`, `/contributors`, `/submit`, `/subscribe`, `/contactus`, `/privacypolicy` all
+200 on the live site.
+
+### Three things that went wrong on the way, recorded because two were mine
+
+**1. I pushed `main` by accident, in a cleanup command, one line after writing
+"(main NOT pushed — pushing it is ticket 04, the cut)".** That queued a production deploy to
+`rnui.dev`. The API cancel endpoints (`PATCH v13/v12/v6/deployments/{id}`, and
+`POST …/cancel`) all 404; `vercel rm <deployment-url>` worked. `www.rnui.dev` never moved.
+A label in a shell command is not a safeguard — the safeguard is not running the command.
+
+**2. Two ADRs were numbered 0009.** `docs/adr/0009-a-contributors-identity-is-their-name-string.md`
+already existed and is cited in four places; I added `0009-the-previous-design-…` without
+scanning the directory, so `ADR-0009` named two decisions. Renumbered to **0010** and **0011**,
+with four references corrected. Found while about to deploy — which is the only reason it was
+found, and it is the second time in this effort that reading a rule was not the same as
+running it.
+
+**3. The redirect's first test was wrong, not the redirect.** `:path*` matches empty at the
+root, so the destination is emitted as `https://www.rnui.dev` with no trailing slash. The
+assertion expected the slash and failed; the config was right. The test now asserts what is
+emitted and says why, because a redirect that silently gained a slash is one nobody checked.
+
+### One thing left over, and it is not cosmetic
+
+`rnui-dev` is connected to this repository, so pushing `old` also built the Archive as a
+**Preview on the live project** — `rnui-dev-archive-git-main-…vercel.app`. It is noindexed by
+the `headers()` rule and unreachable, but it exists on the production project. It disappears
+when `old` is deleted from `origin`, which is the last line of this effort and is deliberately
+not done here: deleting the branch the Archive is built from would leave the Archive
+reproducible only from this worktree.
