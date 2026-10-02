@@ -81,7 +81,7 @@ Twenty-two decisions. Every one was asked and answered; none is a default.
     getting answers, and its first question is unanswerable once the previous design is a
     real link rather than a description.
 21. `studio-dark` checkpoint 5 is overridden by the maintainer. Contrast, keyboard and
-    reduced-motion verification and the LCP/CLS/INP measurement are outstanding. ADR-0010
+    reduced-motion verification and the LCP/CLS/INP measurement are outstanding. ADR-0011
     exists so the repo never reads as though the gate had been met.
 22. The keyboard-parity specs ticket 15 reported failing are **green, 3/3** — the failure was
     real on 2026-08-04 and was fixed by the provider assigning `window.posthog` at init.

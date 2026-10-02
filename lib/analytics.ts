@@ -18,7 +18,7 @@
 //
 // One property below carries visitor-entered text, and it used to be exactly one:
 // `preview_survey_note`, the sentence somebody typed into the Preview's survey
-// panel. That panel is deleted (ADR-0009) — with the previous design published
+// panel. That panel is deleted (ADR-0010) — with the previous design published
 // beside the current one, "Compared to the old rnui.dev, this is…" has no referent
 // for a visitor who was never sent to the old one. **So there is now no event on
 // the site that carries visitor-entered text at all**, which makes the rule total

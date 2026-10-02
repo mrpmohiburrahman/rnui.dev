@@ -26,7 +26,7 @@ deploy in between, the boundary is now a **host** boundary.
    ticket 03 deletes. Mark them superseded rather than rewriting their history — they are
    closed records and should keep saying what was true when they were written.
 5. Do **not** touch `.scratch/studio-dark/checkpoint-13-gate.md`. It is the verification
-   artefact ADR-0010 points at.
+   artefact ADR-0011 points at.
 
 ## Acceptance
 
