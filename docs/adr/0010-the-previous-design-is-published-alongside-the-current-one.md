@@ -73,3 +73,25 @@ sits on the `www`/`old` split, and both hosts live in one PostHog project, so
 `studio-dark` spec Goal 4 is met by a filter rather than by a timestamp. And survey `019fbc46`
 — "Didn't find what you were looking for?" — still has to be anchored away from the Archive,
 because `/products` is served by both and `icontains` matches both.
+
+## The retired project is named for what it is not
+
+Project 559028 was renamed `rnui.dev old` on 2026-10-02, from `rnui.dev Preview`. The name
+had started lying the moment the swap landed: it named a host that 308s to `www`, and nothing
+writes to it at all — measured, not inferred: no deployed build compiles its `phc_oFZiXjSi…`
+key, and `www.rnui.dev` and `old.rnui.dev` both compile 117415's.
+
+**It does not hold the previous Design's numbers, and its name cannot be read as though it
+does.** Its data is the *current* Design's behaviour while that Design was still under review
+at `preview.rnui.dev`, between 2026-08-15 and 2026-10-02. The previous Design's numbers are
+in 117415, before 2026-08-15, and the Archive's numbers are in 117415 too. So the honest
+one-line reading is: `rnui.dev old` is *the old host's project*, and 117415 is the only
+project any Design's live traffic has ever gone to. That sentence is repeated in the
+project's own `product_description`, because a name in a project switcher is read without the
+ADR open beside it.
+
+This is the third naming that had to be corrected by the swap rather than by taste — `old
+rnui.dev` was a description inside a survey question before it was a hostname, and
+`preview.rnui.dev` was a live host before it was a redirect. Each time the word outlived the
+thing it named, and in an analytics project the cost is a number read against the wrong
+Design.
