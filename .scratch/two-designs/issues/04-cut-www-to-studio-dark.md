@@ -26,7 +26,7 @@ deployment. The cut has to move all of them or leave some behind pointing at the
 ## Work
 
 1. Make `main` the Production branch of `rnui-dev`. **Read the current setting first** —
-   `studio-dark`'s checkpoint 13 gates deploy B, and that gate is what ADR-0010 moved.
+   `studio-dark`'s checkpoint 13 gates deploy B, and that gate is what ADR-0011 moved.
 2. Deploy `main` to Production. Watch the build; the two hosts must not be dark at once.
 3. Point `www.rnui.dev`, `rnui.dev`, `rnui-dev.vercel.app` at the new deployment. Verify with
    `vercel alias ls` — a leftover alias on the old deployment is a silent second site.
