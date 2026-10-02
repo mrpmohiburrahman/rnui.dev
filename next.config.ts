@@ -9,6 +9,26 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // `preview.rnui.dev` was where the studio-dark Design was reviewed while it
+      // was still a branch. That Design is `www.rnui.dev` now, so the hostname is
+      // a second address for the live site and answers 200 with identical bytes
+      // — which is the duplicate-content problem the `headers()` rule below was
+      // written for, except here a redirect also *answers* it.
+      //
+      // 308 rather than 307, the opposite of the `/feedback` rule below and for
+      // the opposite reason: this one is permanent by intent. The Design is not
+      // coming back to that hostname, and a permanent redirect is the only
+      // signal that hands its link equity to `www` rather than dropping it.
+      //
+      // `has` on the host, because the same build serves both names and a
+      // path-only rule would redirect `www.rnui.dev` to itself.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "preview\\.rnui\\.dev" }],
+        destination: "https://www.rnui.dev/:path*",
+        permanent: true,
+      },
+
       // /feedback was a copy of /contactus — same form, same `userFeedback`
       // collection — and is deleted. `app/not-found.tsx` does not cover this:
       // it answers 404 with a `location` header, which no browser follows, so
