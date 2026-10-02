@@ -158,3 +158,16 @@ ticket's recorded failure is cheaper than believing it.
 - **`studio-dark`'s eight `ready-for-human` tickets**, unchanged and deliberately not taken.
   Checkpoint 5 — contrast, keyboard, reduced-motion, and the LCP/CLS/INP measurement — remains
   outstanding. ADR-0011 records that the Design shipped anyway.
+
+### What was closed afterwards
+
+**2026-10-02 — the retired project's name.** Project 559028 was `rnui.dev Preview`, which
+stopped being true the moment `preview.rnui.dev` began 308-ing to `www`. Renamed
+**`rnui.dev old`**, with a `product_description` recording what it does and does not hold,
+because the trap is real: its data is the *current* Design's behaviour during its preview
+era, not the previous Design's numbers. Those are in 117415, as are the Archive's. Nothing
+writes to it any more — verified by compiling the key out of both live builds rather than by
+trusting the env var. ADR-0010 carries the reasoning.
+
+Project 117415 keeps its name, `rnui.dev dashboard`. It is now the only project any Design's
+traffic has gone to, live or archived, so the name is thinner than it was rather than wrong.
