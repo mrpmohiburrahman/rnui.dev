@@ -1,6 +1,6 @@
 # 03 — `rnui-dev-archive`: create, link, env, assign `old.rnui.dev`
 
-Status: ready-for-human
+Status: resolved
 Blocked by: 02
 
 ## Problem
@@ -124,3 +124,62 @@ All four were removed rather than left holding a wrong value. Consequence:
   the Archive from a clean worktree, not a working copy.**
 - `.vercel/project.json` exists only for `rnui-dev`. Anything driven from the CLI needs
   `--project`.
+
+### 2026-10-02 — Done. `old.rnui.dev` is live.
+
+All four blockers closed, in reverse order of how they were found.
+
+**The Resend keys**, from `.env.local`, verified by SHA-256 against the local file and then
+re-hidden as sensitive. My first attempt failed because I read them out of
+`vercel env pull`, which returns the literal string `"[SENSITIVE]"` for write-only vars —
+see the earlier entry for the full error.
+
+**The production branch.** Vercel exposes no API for it: `PATCH /v9/projects/{id}` and
+`PATCH /v2/projects/{id}` both reject `productionBranch`, `DELETE …/git-connection` 404s, and
+`vercel git connect` re-derives it from the repository's default branch on every invocation
+(tried: disconnect, then reconnect with `old` checked out). It was set through the dashboard
+with `bsk` driving a real Chrome: **Settings → Environments → Production → Branch Tracking**,
+not Git — that is the only place it lives. Vercel replied *"Branch tracking saved; redeploy a
+deployment from 'old' to this environment"*, and the API now reports
+`link.productionBranch: old`.
+
+**The CNAME**, through Cloudflare's new `cf` CLI rather than the API. `CLOUDFLARE_API_TOKEN`
+returns `success: true` with **zero zones**, which is why the direct API route was a dead end.
+`cf auth login` fixes that — it authorises the account through OAuth rather than a scoped
+token — but it refuses to run while `CLOUDFLARE_API_TOKEN` is exported, because that variable
+takes priority over every stored profile. The whole flow:
+
+```bash
+nvm install 22                       # cf needs >= 22.18; yours was 22.13.1
+npm install --global cf               # v1.0.0-beta.10
+cf cli search "create a CNAME dns record"
+cf auth login --no-browser            # with CLOUDFLARE_API_TOKEN unset
+cf zones list --name rnui.dev         # 1 zone — where the token saw 0
+cf dns records create --zone <id> \
+  --body '{"type":"CNAME","name":"old","content":"cname.vercel-dns.com","proxied":false,"ttl":300}' \
+  --dry-run                           # then for real
+```
+
+Two things worth knowing. `cf dns records create` has an **empty `requestBodyFields`** in
+`cf schema` — the body must be passed whole with `--body`, exactly as the docs warn. And the
+record is byte-identical in shape to `www.rnui.dev` and `preview.rnui.dev`, `proxied: false`;
+proxied would have broken Vercel's certificate validation.
+
+**The certificate** needed a nudge. DNS resolved in 8s and verified against both Cloudflare
+nameservers, but TLS failed for ~3 minutes with `SSL_ERROR_SYSCALL` — Vercel had not issued a
+cert for the hostname. One `vercel deploy --prod` triggered issuance and it was 200 within
+10s. *Waiting was not enough and would not have been conclusive.*
+
+### Verified, measured
+
+| check | result |
+|---|---|
+| `old.rnui.dev` resolves | `cname.vercel-dns.com` — confirmed against `harleigh` **and** `keaton` |
+| `https://old.rnui.dev/` | `200`, `x-robots-tag: noindex` |
+| same build as the verified Archive deployment | chunk-set md5 **identical** (`d947e0c6…`) |
+| serves the previous Design, not the current one | `NOTIFY` 0 on `old`, 2 on `preview` |
+| PostHog project | `phc_6cIcFcQK` — **117415 on both hosts**, as decided |
+| `/submit` | `404` |
+| `/`, `/products`, `/subscribe`, `/contactus` | `200` |
+
+`resolved`. Nothing here is outstanding.
