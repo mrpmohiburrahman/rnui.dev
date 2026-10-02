@@ -4,6 +4,15 @@ Status: resolved
 Type: task
 Blocked by: 12
 
+
+> **Superseded 2026-10-02 by `.scratch/two-designs/`.** This file keeps saying "deploy A"
+> and "deploy B" because it was true when it was written, and rewriting a closed record
+> erases the thing it is for. `deploy A` / `deploy B` are now retired vocabulary —
+> `CONTEXT.md` lists both under `_Avoid:`. Read them as **the previous Design** and **the
+> current Design**. The boundary between them is a `$host` filter on PostHog project
+> `117415`, not a deploy and not a project: both hosts report there, and annotations
+> `392228` and `471250` mark the two points.
+
 ## Question
 
 Two pieces. A prompt on `rnui.dev` inviting visitors to try the Preview, and the survey itself

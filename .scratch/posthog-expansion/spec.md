@@ -6,6 +6,15 @@ numbers trustworthy enough to judge the UI/UX work against.
 Measured 2026-07-30 against project **117415 "rnui.dev dashboard"**
 (token ending `sBr4Ihce`), 90-day window, via the PostHog MCP.
 
+
+> **Superseded 2026-10-02 by `.scratch/two-designs/`.** This file keeps saying "deploy A"
+> and "deploy B" because it was true when it was written, and rewriting a closed record
+> erases the thing it is for. `deploy A` / `deploy B` are now retired vocabulary —
+> `CONTEXT.md` lists both under `_Avoid:`. Read them as **the previous Design** and **the
+> current Design**. The boundary between them is a `$host` filter on PostHog project
+> `117415`, not a deploy and not a project: both hosts report there, and annotations
+> `392228` and `471250` mark the two points.
+
 ## What is running today
 
 Measured 2026-07-30; the **Now** column is kept current as tickets land, so a fresh session does

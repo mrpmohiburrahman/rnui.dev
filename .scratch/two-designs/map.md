@@ -119,3 +119,42 @@ Twenty-two decisions. Every one was asked and answered; none is a default.
 04 is the maintainer's because it is the outward-facing, hard-to-reverse cut: it is the
 moment visitors see the new design. 05–08 are blocked on one action — `opencode mcp auth
 posthog` — and not on judgement.
+## Closed 2026-10-02
+
+All nine tickets resolved. Nothing outstanding except what belongs to a person.
+
+| # | Ticket | Outcome |
+|---|---|---|
+| 01 | re-cut `main` from `feat/studio-dark` | `36921ef`, 118 commits. `CLAUDE.md`'s claim that `main` carried a lockfile fix the branch never received was **false** — `main` changed nothing in `package.json` since the merge-base. |
+| 02 | the `old` branch | `539f042` + four commits. `noindex` on all three Archive hosts. |
+| 03 | `rnui-dev-archive` | live at `old.rnui.dev`, env SHA-verified against `.env.local`. |
+| 04 | the cut | `www` serves the current Design, `preview` 308s to it. |
+| 05 | stop survey `01a00821` | stopped; description records why. |
+| 06 | anchor survey `019fbc46` | `regex` on `^https://(www\.)?rnui\.dev/products`, tested against 8 URLs first. |
+| 07 | the annotation | `471250` at `2026-10-02T01:40:25Z` — the deployment's *ready* time. |
+| 08 | `$host` filter | dashboard-level, on all three dashboards rather than 24 queries. |
+| 09 | retire the vocabulary | `CLAUDE.md` rewritten; four closed `.scratch/` records given dated supersession notes rather than rewritten. |
+
+`feat/studio-dark` deleted from local and `origin` once `main` carried it. Two live branches:
+`main` and `old`.
+
+### Three things that were true when charted and stopped being true
+
+**The `$host` filter needs no code.** Decision 15 assumed plumbing. posthog-js 1.409 already
+attaches `$host` to every capture from the client's own `location`, so decision 15 was free —
+what it costs is discipline, and it is now applied at the dashboard level on all three
+dashboards instead of by editing 24 queries.
+
+**`/submit` never existed on the previous Design.** Decision 11 said to take the form down on
+the Archive. There was no form to take down; the route is current-Design-only. Decision 12 —
+keeping `/subscribe` and `/contactus` — is what actually had work, and both work.
+
+**Ticket 15's keyboard-parity specs were already green.** They were reported 3/3 failing on
+2026-08-04 and were fixed by the provider assigning `window.posthog` at init. Re-running a
+ticket's recorded failure is cheaper than believing it.
+
+### What belongs to a person
+
+- **`studio-dark`'s eight `ready-for-human` tickets**, unchanged and deliberately not taken.
+  Checkpoint 5 — contrast, keyboard, reduced-motion, and the LCP/CLS/INP measurement — remains
+  outstanding. ADR-0011 records that the Design shipped anyway.

@@ -562,3 +562,80 @@ The unsuffixed "— candidate" rows are the final proposal (alpha 0.94, matching
 Patch: `.scratch/studio-dark/contrast-repaint.patch` — `git apply --check .scratch/studio-dark/contrast-repaint.patch` → no output, exit code 0 (verified twice, once immediately after writing the patch and once again as a final check before reporting). The patch applies cleanly against the current working tree.
 Rendered proof: `.scratch/studio-dark/contrast-live-new-before.png` and
 `.scratch/studio-dark/contrast-live-new-after.png` (captured separately; reference them by path).
+
+## What deploy B resets
+
+Read out of PostHog project `117415` on 2026-10-02, not guessed. 25 saved insights across
+three dashboards, plus the annotation and filter work in `.scratch/two-designs`.
+
+### Autocapture-based — invalidated by the restyle
+
+| insight | dashboard | events | verdict |
+|---|---|---|---|
+| `10646192` Rage clicks and dead clicks | `1937576` | `$rageclick`, `$dead_click` | **accept-broken** |
+
+`$rageclick` and `$dead_click` key on DOM position, element text and CSS selector. A restyle of
+ten routes invalidates all of them at once. The *findings* before the boundary still stand as
+findings — they named real controls that did nothing — but the counts do not continue across
+it. The `$host` filter does not help here: this is a selector problem, not a host problem.
+
+**No heatmaps exist in this project.** Recorded because ticket 15 assumed there were some, and
+because "there are none" is the kind of answer that gets assumed the other way later.
+
+### Custom events — survive the restyle unchanged
+
+`repo_clicked`, `demo_watched`, `demo_played`, `recording_opened`, `filter_applied`,
+`filter_cleared`, `search_performed`, `sort_changed`, `bookmark_added`, `bookmark_removed`,
+`vote_cast`, `load_more_clicked`, `newsletter_submitted` — thirteen events, spelled once in
+`lib/analytics.ts`. They carry across the boundary because that module is the reason they can.
+This is what makes deploy A and deploy B comparable at all, and it is why `1937576` is built on
+them.
+
+`preview_survey_shown` / `_verdict` / `_note` are **gone** — the panel was deleted
+(`.scratch/two-designs` decision 20). They fired only on `preview.rnui.dev`, which now 308s to
+`www`, so the host never matches again.
+
+### Everything else — URL- and session-keyed, so it survives
+
+`$pageview`, `$pathname`, `$web_vitals`, `$referrer`, `$virt_is_bot`, error tracking. None of
+these reads the DOM, so none of them breaks at a restyle. They all *do* need the `$host` filter.
+
+### The `$host` filter, applied
+
+posthog-js attaches `$host` to every capture from the browser's own `location`, so separating
+the two hosts needed **no code** — only the discipline of applying it. Both hosts report to
+project `117415`, so nothing else separates them. `bookmark_added` and `vote_cast` from the
+Archive are byte-identical to live ones and feed the "most saved" and "most voted" sorts.
+
+Applied as a **dashboard-level** filter on all three, rather than by editing 24 queries by hand:
+
+| dashboard | id | tiles |
+|---|---|---|
+| My App Dashboard | `295272` | 6 |
+| Web performance — field | `1937530` | 13 |
+| Redesign — before / after | `1937576` | 8 |
+
+```json
+{"properties": [{"key": "$host", "value": ["www.rnui.dev"], "operator": "exact", "type": "event"}]}
+```
+
+One insight sits on **no** dashboard and therefore inherited nothing: `10645422` "New error
+tracking issues". It is a session-scoped issue list rather than a chart, so it is left alone and
+named here instead.
+
+Two things a `$host` filter cannot fix, recorded so nobody assumes it did:
+
+- **`person_profiles: "always"`** means one browser is one person across *both* hosts. A visitor
+  who uses `www` and then `old` is a single person with double the pageviews. Correct for the
+  Archive's own traffic count, wrong for anything per-person.
+- The Archive's counters come from Firestore, which keeps moving. The Archive is frozen; its
+  numbers are not.
+
+### The annotation
+
+`471250`, dated `2026-10-02T01:40:25Z` — the *ready* timestamp of the first cut deployment
+(`36921ef`), not the time this was written. Scope `project`. It names the host boundary and the
+`$host` requirement, so a chart opened cold says to filter rather than looking trustworthy.
+
+Deploy A's annotation (`392228`, `2026-08-15T00:45:37Z`) is untouched. There were exactly two
+annotations before this one and two after, and the gap ticket 15 identified was real.

@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test"
 
 // The single scripted tour for ticket 14's before/after recordings. One script,
-// run against three checkouts (main, deploy A, Studio Dark) and twice per mode.
+// run against two checkouts (main = the current Design, old = the previous
+// one) and twice per mode.
 // The identity of the script — same waits, same scroll offsets, same actions — is
 // the whole value: two clips that pause in the same places at the same moments
 // compare; two hand-driven captures do not.
@@ -23,14 +24,14 @@ import { expect, test } from "@playwright/test"
 // The route. The clip is about the catalogue, not the ten routes.
 const PATH = "/"
 
-// Per-state selectors. S1 (`main`) predates the Entry→Recording rename and has
-// no keyboard layer; Studio Dark and deploy A share the post-rename vocabulary.
-// Keep the differences tiny and declared here so the body stays identical.
+// Per-state selectors. `old` predates the Entry→Recording rename and has no
+// keyboard layer; `main` has both. Keep the differences tiny and declared here
+// so the body stays identical.
 const PER_STATE = {
-  // Both Studio Dark and deploy A label the control "Save"; main labelled it
-  // "Bookmark". Match either so one script runs on all three checkouts.
+  // `main` labels the control "Save"; `old` labelled it "Bookmark". Match
+  // either so one script runs on both checkouts.
   saveButton: 'button:has-text("Save"), button:has-text("Bookmark")',
-  // A Category chip in the rail. "Buttons" exists in all three states.
+  // A Category chip in the rail. "Buttons" exists in both states.
   categoryChip: 'button:has-text("Buttons")',
   // First card headline link — opens the detail overlay.
   firstCard: "h3 a",

@@ -91,6 +91,13 @@ The order is load-bearing and was decided deliberately. Nothing here is a prefer
 4  DEPLOY B    -> annotate
 ```
 
+**Superseded 2026-10-02.** Step 4 happened, and the annotation is `471250` on dashboard
+`1937576`. But "DEPLOY B" is retired vocabulary — `CONTEXT.md` lists it under `_Avoid:` —
+and the boundary is no longer a deploy. `www.rnui.dev` serves the current Design and
+`old.rnui.dev` serves this one, **both in PostHog project 117415**, so what separates their
+numbers is a `$host` filter and not a deploy or a project. See ADR-0010 and
+`.scratch/two-designs/`.
+
 *Amendment, 2026-08-01, at the maintainer's direction.* Two deliverables were added to the end of
 the effort, as tickets 14 and 15. Neither moves the four steps above.
 
@@ -160,7 +167,9 @@ Studio Dark is built.
 2. One vocabulary in code, copy and URLs.
 3. The behaviour `ui-ux-overhaul` shipped survives intact — autoplay, five slots, the view
    signal, pagination, the overlay, the filters.
-4. Deploy B is measurable against deploy A.
+4. Deploy B is measurable against deploy A. — **Met, and differently than written.** The
+   annotation exists (`471250`), but the boundary is a *host* boundary: two hosts in one
+   project, separated by `$host = www.rnui.dev` on every dashboard.
 
 ## Non-goals
 

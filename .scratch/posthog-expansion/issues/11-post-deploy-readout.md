@@ -21,6 +21,15 @@ action is a date check: when the earliest reading below is ripe, set `Status: re
 Do not convert it early — reading two days of dead clicks and calling it a breakdown is worse
 than not reading it, because it looks like an answer.
 
+
+> **Superseded 2026-10-02 by `.scratch/two-designs/`.** This file keeps saying "deploy A"
+> and "deploy B" because it was true when it was written, and rewriting a closed record
+> erases the thing it is for. `deploy A` / `deploy B` are now retired vocabulary —
+> `CONTEXT.md` lists both under `_Avoid:`. Read them as **the previous Design** and **the
+> current Design**. The boundary between them is a `$host` filter on PostHog project
+> `117415`, not a deploy and not a project: both hosts report there, and annotations
+> `392228` and `471250` mark the two points.
+
 ## Readings
 
 ### 1. Exception noise — one week after ticket 02 deploys
