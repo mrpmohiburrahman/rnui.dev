@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 291", () => {
+  it("counts the whole catalogue, per Category, summing to 297", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -27,7 +27,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       "Full Apps": 5,
       Headers: 3,
       List: 17,
-      Loaders: 4,
+      Loaders: 10,
       Misc: 161,
       Onboarding: 6,
       Parallaxes: 4,
@@ -40,16 +40,16 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(291)
+    expect(total).toBe(297)
   })
 })
 
 describe("RECORDINGS_PER_CONTRIBUTOR", () => {
-  it("counts 23 contributors, the whole catalogue again", () => {
-    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(23)
-    expect(
-      RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]
-    ).toBe(138)
+  it("counts 24 contributors, the whole catalogue again", () => {
+    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(24)
+    expect(RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]).toBe(
+      138
+    )
     expect(RECORDINGS_PER_CONTRIBUTOR["Hewad Mubariz"]).toBe(31)
 
     // 23 and not the mock's 24, and this is the entry that makes the
@@ -78,12 +78,14 @@ describe("contributorsByCount", () => {
       { name: "Konstantinos Efkarpidis", count: 11 },
       { name: "William Candillon", count: 10 },
       // The two 8s are the tie to break: Alireza sorts before Kacper, so the
-      // ranked list is stable when the data changes.
+      // ranked list is stable when the data changes. The three 6s tie the same
+      // way, and David Mokos sorts last of them.
       { name: "Alireza Hadjar", count: 8 },
       { name: "Kacper Kapuściak", count: 8 },
       { name: "Thomino", count: 7 },
       { name: "Aashu Dubey", count: 6 },
       { name: "Alek Mikucki", count: 6 },
+      { name: "David Mokos", count: 6 },
       { name: "Aswin C", count: 5 },
       { name: "Daehyeon Mun (문대현)", count: 4 },
       { name: "Andreev Danila", count: 3 },
@@ -98,6 +100,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(291)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(297)
   })
 })
