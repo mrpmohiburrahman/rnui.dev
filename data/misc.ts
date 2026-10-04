@@ -2794,4 +2794,24 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-04T13:29:16.000Z",
   },
+
+  {
+    id: "01M44BNYVCB2EPRJ2YWFN2HVED",
+    caption: "Liquid Glass Playground",
+    demoPath:
+      "demo/misc/liquid_glass_playground_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/liquid_glass_playground_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 8158,
+    aspect: 0.46,
+    hue: 96,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/liquid-glass-playground",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T21:03:54.000Z",
+  },
 ]
