@@ -19,6 +19,21 @@ _Avoid_: entry, item, proposal, contribution, pending recording, upload
 One catalogue record — a Contributor, a caption, source links, a Category, and the paths to its Demo and Poster. Recordings live in `data/<category>.ts`.
 _Avoid_: entry, item, card, component, animation
 
+**Re-record**:
+Replacing a Recording's Demo with a newly captured one without becoming a different Recording. The
+Recording keeps its identity — the same `id`, the same Contributor, the same `created_at` — and only
+its Asset paths change, because a path names bytes and never the same bytes twice (see **Asset
+path**, ADR-0003). A Re-record therefore keeps the Recording's view and vote counts, and every
+visitor's **Remembered set** entry, all of which a fresh `id` would silently discard.
+
+A Re-record is neither a **Submission** nor a second Recording: it is the same Recording, and the
+catalogue counts it once. Its new Demo and Poster sit beside the superseded Asset paths rather than
+replacing them, so the old Published Assets stay on R2 and accumulate as orphans.
+
+A Re-record is not spelled as a modifier — there is no "re-recorded Recording", only a Recording and
+the Re-record that happened to it.
+_Avoid_: refresh, replace, re-upload, re-capture, update
+
 **Contributor**:
 The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 280 Recordings. A Contributor has no identifier apart from that name — no id and no slug — so the name string *is* the identity, and everything else groups by it.
 _Avoid_: author, creator, owner, submitter, user
@@ -89,11 +104,13 @@ _Avoid_: favourites, likes, saved items, selection, local state
 **Asset**:
 A Demo or a Poster — the binary files the catalogue points at, as opposed to the Recording metadata that points at them.
 _Avoid_: media, file, resource
-
 **Asset path**:
-The string in a Recording that locates an Asset, e.g. `demo/buttons/split_button_hewad_mubariz.mp4`. An Asset path identifies **specific bytes**, not a Demo: re-recording a Demo yields a new Asset path, and a path is never reused for different bytes.
+The string in a Recording that locates an Asset, e.g. `demo/buttons/split_button_hewad_mubariz.mp4`. An
+Asset path identifies **specific bytes**, not a Demo: a **Re-record** yields a new Asset path for the
+new bytes, and a path is never reused for different bytes. It is derived from those bytes rather than
+chosen beside them, so the same capture always lands on the same path and a different capture cannot
+land on the old one.
 _Avoid_: src, url, filename
-
 **Staging copy**:
 The local, unpublished copy of an Asset. Not part of the repo and not deployed; the thing a Demo is recorded into and checked before it is published.
 _Avoid_: local copy, original, working file
