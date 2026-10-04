@@ -132,7 +132,7 @@ export function DemoTile({
     <div
       data-testid="demo"
       data-playing={playing ? "" : undefined}
-      className={`tile-media relative aspect-[9/16] rounded-tile overflow-hidden bg-plinth w-full ${className}`}
+      className={`tile-media relative aspect-[1206/2622] rounded-tile overflow-hidden bg-plinth w-full ${className}`}
       style={{ "--tile-hue": tileHue } as React.CSSProperties}
     >
       {/* The drawing's three media layers (Tile.dc.html:12-14) — the hue wash,
@@ -144,7 +144,7 @@ export function DemoTile({
           screen capture, which is the one thing a catalogue of screen captures
           must not do. So they stay as the plinth's own treatment: what shows
           while the Poster is still loading, and in any letterbox a recording
-          that is not exactly 9:16 leaves behind. */}
+          that is not exactly the box's own ratio leaves behind. */}
       <div className="tile-wash" />
       <div className="tile-hatch" />
       <div className="tile-notch" />

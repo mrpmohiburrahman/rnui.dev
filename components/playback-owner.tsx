@@ -148,9 +148,11 @@ export function PlaybackOwner({
         },
         // ponytail: threshold 0 — any pixel on screen makes a tile a candidate
         // and the five-slot cap in document order does the rest. Raise to 0.1 if
-        // tiles start on a sliver. Not higher: a 9/16 tile in a phone's landscape
-        // viewport cannot reach an intersectionRatio of 0.25 at all, and would
-        // then never play. rootMargin is 0 and not the old 200px, which would
+        // tiles start on a sliver. Not higher: a tile in a phone's landscape
+        // viewport cannot reach a high intersectionRatio at all, and would then
+        // never play — and the tile is 1206/2622, which is TALLER for a given
+        // width than the 9/16 box this replaced, so it clears less of the
+        // viewport, not more. rootMargin is 0 and not the old 200px, which would
         // play a tile a screen away.
         { threshold: 0, rootMargin: "0px" }
       )
