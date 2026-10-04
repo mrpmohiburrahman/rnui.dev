@@ -244,11 +244,11 @@ export const misc: Recording[] = [
   {
     id: "01JGKF92A010BBMHWYG4Z0ZDKY",
     caption: "Neural Network",
-    demoPath: "demo/misc/neural_network_enzo_manuel_mangano_reactiive.mp4",
+    demoPath: "demo/misc/neural_network_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
-      "thumbnails/misc/neural_network_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 9960,
-    aspect: 0.4787,
+      "thumbnails/misc/neural_network_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 7270,
+    aspect: 0.46,
     hue: 315,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source: "https://github.com/enzomanuelmangano/mnist-expo",
@@ -1792,16 +1792,16 @@ export const misc: Recording[] = [
 
   {
     id: "01KAY9AT32JJ2S1FXB1D8EGGH5",
-    caption: "Empty Qr Code",
-    demoPath: "demo/misc/empty-qr-code_enzo_manuel_mangano_reactiive.mp4",
+caption: "Empty Qr Code",
+    demoPath: "demo/misc/empty_qr_code_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
-      "thumbnails/misc/empty-qr-code_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 6789,
-    aspect: 0.4611,
-    hue: 45,
+      "thumbnails/misc/empty_qr_code_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 9183,
+    aspect: 0.46,
+    hue: 197,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
-      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qr-code",
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/empty-qrcode",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2224,15 +2224,15 @@ export const misc: Recording[] = [
   {
     id: "01KAY9AY42DFE1M9NFCHKXEGC0",
     caption: "Qr Code Generator",
-    demoPath: "demo/misc/qr-code-generator_enzo_manuel_mangano_reactiive.mp4",
+    demoPath: "demo/misc/qr_code_generator_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
-      "thumbnails/misc/qr-code-generator_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 8228,
-    aspect: 0.4611,
-    hue: 285,
+      "thumbnails/misc/qr_code_generator_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 13175,
+    aspect: 0.46,
+    hue: 25,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
-      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qr-code-generator",
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/qrcode",
     twitterId: "reactiive_",
     linkedInId: "enzomanuelmangano",
     githubId: "enzomanuelmangano",
@@ -2576,9 +2576,10 @@ export const misc: Recording[] = [
   {
     id: "01M33JV1VWVTFFVR05FN4EKCA8",
     caption: "Sphere Waves",
-    demoPath: "demo/misc/sphere_waves_enzo_manuel_mangano_reactiive.mp4",
-    posterPath: "thumbnails/misc/sphere_waves_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 10617,
+    demoPath: "demo/misc/sphere_waves_v2_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/sphere_waves_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 29460,
     aspect: 0.46,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
@@ -2593,10 +2594,10 @@ export const misc: Recording[] = [
   {
     id: "01M33JV1VXFNRVXFWSH6K9X7XA",
     caption: "Scrollable Shapes",
-    demoPath: "demo/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.mp4",
+    demoPath: "demo/misc/scrollable_shapes_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
-      "thumbnails/misc/scrollable_shapes_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 10802,
+      "thumbnails/misc/scrollable_shapes_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 12383,
     aspect: 0.46,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
@@ -2644,5 +2645,153 @@ export const misc: Recording[] = [
     githubId: "enzomanuelmangano",
     category: "Misc",
     created_at: "2026-10-04T10:15:36.000Z",
+  },
+
+  {
+    id: "01M43HNGQGCG5557SJ8XEQP4HF",
+    caption: "Atlas Sphere",
+    demoPath: "demo/misc/atlas_sphere_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/atlas_sphere_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 11152,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/atlas-sphere",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQH3XJSBD7HTX4P6BQS",
+    caption: "Blur Cards",
+    demoPath: "demo/misc/blur_cards_enzo_manuel_mangano_reactiive.mp4",
+    posterPath: "thumbnails/misc/blur_cards_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 8020,
+    aspect: 0.46,
+    hue: 301,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/blur-cards",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQH2MAXA4694X0D1S7X",
+    caption: "Chessboard",
+    demoPath: "demo/misc/chessboard_v2_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/chessboard_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 7557,
+    aspect: 0.46,
+    hue: 184,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/chessboard",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQH7TXW3PTW0QMTV332",
+    caption: "Github Terrain",
+    demoPath: "demo/misc/github_terrain_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/github_terrain_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 10093,
+    aspect: 0.46,
+    hue: 153,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/github-terrain",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQHRHGAMS9WW70WRMPT",
+    caption: "Light on Painting",
+    demoPath: "demo/misc/light_on_painting_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/light_on_painting_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 13058,
+    aspect: 0.46,
+    hue: 45,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/light-on-painting",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQH4Q5GER9TENGB3GBM",
+    caption: "Magnet Spring",
+    demoPath: "demo/misc/magnet_spring_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/magnet_spring_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 8938,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/magnet-spring",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQHNCQAVVE4A7BMYFH7",
+    caption: "Notion QR Code",
+    demoPath: "demo/misc/notion_qr_code_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/notion_qr_code_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 7626,
+    aspect: 0.46,
+    hue: 222,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/notion-qrcode",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
+
+  {
+    id: "01M43HNGQHX2XQWX48Q079JBP4",
+    caption: "The Little Prince",
+    demoPath: "demo/misc/the_little_prince_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/the_little_prince_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 6189,
+    aspect: 0.46,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/the-little-prince",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T13:29:16.000Z",
   },
 ]
