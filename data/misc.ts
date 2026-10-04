@@ -2611,10 +2611,10 @@ export const misc: Recording[] = [
   {
     id: "01M33JV1VXECCZ92P3AQZQA2WY",
     caption: "Cherry Blossom QR",
-    demoPath: "demo/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.mp4",
+    demoPath: "demo/misc/cherry_blossom_qr_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
-      "thumbnails/misc/cherry_blossom_qr_enzo_manuel_mangano_reactiive.avif",
-    durationMs: 10622,
+      "thumbnails/misc/cherry_blossom_qr_v2_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 14139,
     aspect: 0.46,
     hue: 331,
     contributor: "Enzo Manuel Mangano (Reactiive)",
