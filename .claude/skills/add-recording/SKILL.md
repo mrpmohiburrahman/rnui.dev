@@ -10,6 +10,60 @@ Walk the user through adding one Recording to the catalogue, one question at a t
 
 Vocabulary (CONTEXT.md): Recording (never animation/entry), Contributor (never author), Demo (never video), Poster (never thumbnail), Asset / Asset path, Staging copy, Published Asset, Category.
 
+## Before Step 1 - Recording the Demo
+
+**Only when the maintainer records the Demo themselves.** A Demo that arrived through `/submit` was
+shot on the Contributor's own device and this section does not apply - its ratio is already whatever
+the Contributor recorded, and nothing here can change it. Do not ask a Contributor to re-record.
+
+### The standard
+
+**Record on the iPhone 18 Pro simulator (iOS 27.0). Device screen only.**
+
+That produces **1206x2622, ratio 0.459954** - measured from a real `simctl io recordVideo` output,
+not assumed. Evidence and the full device comparison: `.scratch/demo-capture-ratio/evidence/`.
+
+### How to record
+
+**Device Hub** - the GUI, and the easy way. Xcode 27 replaced the old Simulator.app with Device Hub
+(`/Applications/Xcode.app/Contents/Applications/DeviceHub.app`), which runs standalone. Boot the
+iPhone 18 Pro, start its record control, perform the Demo, stop.
+
+**`simctl`** - when it has to be scripted:
+
+```sh
+xcrun simctl boot booted            # or the iPhone 18 Pro's UDID
+xcrun simctl io booted recordVideo --codec=h264 --force /tmp/demo.mp4 &
+#   ...perform the Demo by hand...
+kill -INT %1                        # Ctrl-C also stops it
+```
+
+`simctl io` reads the CoreSimulator framebuffer directly, so what it records is the device's own
+screen and never a Simulator window - which is also why it keeps working with Device Hub closed.
+
+### Verify before going further
+
+```sh
+ffprobe -v error -select_streams v:0 -show_entries stream=width,height,codec_name \
+  -of default=noprint_wrappers=1 /tmp/demo.mp4
+```
+
+- Done when: `width=1206` and `height=2622`.
+- **Outside +/-0.5% on the ratio?** Re-record rather than publish. 0.5% is not arbitrary: the
+  catalogue's own commonest ratio is 0.4611, which is 0.25% away, so a tighter band would reject the
+  Demos already published.
+- **Step 5 preserves it.** `compress-demo.sh` scales by `trunc(iw/2)*2:trunc(ih/2)*2`, and both 1206
+  and 2622 are already even, so the Demo is not rescaled and the ratio reaches the CDN intact.
+
+### Two things that go wrong
+
+- **Recording the Simulator window instead of the screen.** The whole point is the device display
+  and nothing else - no bezel, no title bar. Both methods above already exclude it; the ffprobe check
+  will not catch it, so eyeball the first frame.
+- **Trusting the wall clock.** `simctl io recordVideo` writes a frame only when the screen *changes*,
+  so a mostly-still Demo records a short file with a low frame rate. `Recording.durationMs` is
+  measured from the file, so it records the motion, not the time spent holding still.
+
 ## Step 1 - Demo location
 
 Ask: "Where is the Demo file, and did it arrive through /submit?" Accept a local absolute path, a
@@ -185,3 +239,5 @@ Never invent an address, and never read it from Firestore. `firestore.rules` den
 - Committing anything under `public/demo/` or `public/thumbnails/`.
 - Asking for R2 credentials or attempting upload. Never do either.
 - Skipping Step 10 for a Submission, or inventing an address for it. Either the notice goes, or the user is told it did not.
+- Recording a Demo on anything but the iPhone 18 Pro simulator, or publishing one whose measured ratio is more than 0.5% from 0.459954. The standard is in *Before Step 1*; re-record rather than publish a deviation.
+- Applying the capture standard to a Submission. Its bytes came from the Contributor's device and are what they are.
