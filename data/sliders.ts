@@ -313,4 +313,23 @@ export const sliders: Recording[] = [
     category: "Sliders",
     created_at: "2025-11-25T19:55:45.000Z",
   },
+
+  {
+    id: "01M43HNGQHAV5CAY5QB14MANVK",
+    caption: "Calendar Days",
+    demoPath: "demo/sliders/calendar_days_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/sliders/calendar_days_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 9476,
+    aspect: 0.46,
+    hue: 1,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/calendar-days",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Sliders",
+    created_at: "2026-10-04T13:29:16.000Z",
+  },
 ]
