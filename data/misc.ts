@@ -2626,4 +2626,23 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-09-22T03:34:04.925Z",
   },
+
+  {
+    id: "01M436JWEVBV4SRWD6532EZ0BN",
+    caption: "Art Gallery",
+    demoPath: "demo/misc/art_gallery_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/art_gallery_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 14250,
+    aspect: 0.46,
+    hue: 85,
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/main/src/animations/art-gallery",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-04T10:15:36.000Z",
+  },
 ]
