@@ -34,9 +34,12 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   cannot star a repo for a visitor — starring is an authenticated `PUT /user/starred/{owner}/{repo}`
   against the signed-in user — so the button's job is to get the visitor to the Star button, and its
   label must not claim otherwise.
-- **The count source charting chose did not survive its own ticket.** Charting settled on
-  `metrics/weekly.json` and flagged it as the decision most likely to be reopened by evidence. It was:
-  the file's writer has never succeeded. See Decisions so far.
+- **The count source charting chose did not survive its own ticket, and neither did the source its
+  replacement chose.** Charting settled on `metrics/weekly.json` and flagged it as the decision most
+  likely to be reopened by evidence. It was: the file's writer has never succeeded. Ticket 02 then
+  replaced it with an ISR fetch, and the maintainer has now replaced *that* with a committed
+  single-purpose file plus a repaired weekly workflow. Read ticket 03 for the design that is actually
+  shipping; tickets 01 and 02 are history.
 - **The direction is settled: variant F.** A's chip shape at every desktop width, words only from `xl`.
   Read the linked ticket's Answer before designing anything further — the full measurement table and
   the PostHog traffic split are there.
@@ -44,13 +47,25 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   2026-10-05: `◆ Saved` wraps to 46px and the mode toggle to 49px at 768 and 820. `site-header.tsx:90-92`
   already records that the md-to-lg band does not fit. Any design in this map is being added to a band
   that has zero headroom, which is why measurement — not taste — settled the direction.
-- **The count's source is settled: an ISR server fetch, ≤ 6 hours old, with the committed JSON as
-  fallback only.** Read the linked ticket before writing any code — it carries the verified rate-limit
-  headers, the corrected root cause, and the one framework behaviour it could not exercise.
+- **The count's source is settled, and it is not the source ticket 02 chose.** Read
+  [What may a stale count be allowed to say](issues/03-what-may-a-stale-count-be-allowed-to-say.md)
+  before writing any code — it **supersedes ticket 02's mechanism**. The count is a **committed file
+  holding only the star count**, refreshed weekly by the repaired `metrics-update.yml` workflow, and it
+  **always renders with no expiry and no date**. The bound is on the refresh (fail if the file is more
+  than 7 days old), not on the render. GitHub is never in a visitor's request path.
+- **The map's CI-repair boundary has moved, and only half of it.** `metrics-update.yml` is now **in
+  scope** — the maintainer overrode the earlier ruling, because the chosen design *is* that workflow.
+  `.github/workflows/ci.yml`'s identical `version: 10` pin is **still out of scope** and is a separate
+  defect. Do not fix both together.
+- **One thing about the alert cannot be verified from this repo:** GitHub only emails on a failed
+  workflow if Actions email notifications are enabled in the maintainer's account settings. If they are
+  off, the 7-day assertion becomes the *only* defence and nothing would announce that it had fired.
+
 - **`main`'s CI is red right now** (6 consecutive failures, both jobs, `Multiple versions of pnpm
   specified`) and the weekly metrics job has never succeeded. Both are the same class of mistake —
-  `pnpm/action-setup` pinned with `version:` against a `packageManager` field. Repair is out of scope
-  here (see Out of scope) but the star control does not wait on it, by design.
+  `pnpm/action-setup` pinned with `version:` against a `packageManager` field, fixed by deleting the
+  pin. **The two are now on opposite sides of the scope line:** the metrics workflow's repair is in
+  scope and required, `ci.yml`'s is out of scope. See the note above and Out of scope.
 - **Standing preference:** prototypes go through `/prototype` and are throwaway. Rough is correct;
   high fidelity spent before the direction is chosen is waste. Prototype work lands on a
   `prototype/<name>` branch, never `main`.
@@ -65,9 +80,18 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   binding constraint is a width budget, not taste: A clips the theme toggle at 768 and the md-to-lg
   band is 1.1% of real pageviews. Also repairs a header that already wraps at 768–880 today.
 - [Where does a live-enough star count come from](issues/02-where-does-a-live-enough-star-count-come-from.md) —
-  **ISR server fetch of `api.github.com` with `revalidate: 21600`, falling back to
-  `metrics/weekly.json`.** Bound: ≤ 6 hours, enforced by the framework. The committed file is
-  **demoted to fallback** — its writer has never succeeded (18 runs, 18 failures, since it was added).
+  **SUPERSEDED by ticket 03 — read the answer there, not here.** It chose an ISR server fetch with
+  `revalidate: 21600`; the maintainer replaced that with a committed file written weekly by GitHub
+  Actions. Its *research* is now load-bearing rather than superseded: the proof that the weekly workflow
+  has failed 18 runs out of 18 is what makes its repair mandatory, and that workflow's documented
+  one-line fix is the fix this map now depends on.
+- [What may a stale count be allowed to say](issues/03-what-may-a-stale-count-be-allowed-to-say.md) —
+  **Always show the number, never hide it, no date, no render-time expiry.** The staleness defence is a
+  **refresh-time assertion**: the weekly workflow fails if its own output file is more than 7 days old,
+  and that failure is the email. The count is meant to be **checked** against GitHub, which at 0.4
+  stars/week means the rendered number runs 0–1 behind — the accepted cost, stated rather than
+  discovered. Side effect: GitHub is never in a visitor's request path, so ticket 02's rate-limit,
+  layout-shift and outage costs are all gone.
 
 ## Not yet specified
 
@@ -75,22 +99,27 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   header lands: if the header carries a count, the footer's CONTRIBUTE column and `/aboutus` are the
   two places a count would *also* belong, and the legacy-alias repo links sit in both. Still not sharp
   as its own question — "does it belong elsewhere" depends on F's final spec.
-- **Whether anything acknowledges the press** — a toast, a PostHog-only signal, nothing. Depends on
-  whether the Preview is in scope (the surfaces ticket) and on whether the count can be current.
 - **How the control interacts with the two conversion paths it now sits beside** — `/submit` and
   `/subscribe` in the footer. A star control is also a request for a favour; whether it competes with
   them or feeds them is not phrasable until its final weight in the row is known.
 
+*(The fog patch "whether anything acknowledges the press" has graduated to
+[Does anything acknowledge the press](issues/09-does-anything-acknowledge-the-press.md) — the refresh
+cycle made it stateable, and part of it may collapse into ticket 05.)*
+
 ## Out of scope
 
-- **Repairing `.github/workflows/ci.yml` and `metrics-update.yml`.** Found by
-  [Where does a live-enough star count come from](issues/02-where-does-a-live-enough-star-count-come-from.md)
-  and **not this map's job**: `main`'s CI has been red since 2026-09-25 (both jobs,
-  `Multiple versions of pnpm specified`) and the metrics job has failed all 18 runs it has ever had.
-  Both are the same mistake — `pnpm/action-setup` pinned with `version:` against `packageManager:
-  pnpm@11.15.1` — and the fix is to drop the pin, per the action's own README. It needs its own effort
-  because it is a build-and-delivery defect, not a header feature, and because it should not be
-  bundled into a PR whose subject is a star button.
+- **Repairing `.github/workflows/ci.yml`.** Still out of scope, and deliberately **narrower than it
+  was**: `metrics-update.yml`'s repair moved *into* this effort when the maintainer chose it as the
+  count's mechanism (see Notes). `ci.yml` carries the same `pnpm/action-setup` pin against the same
+  `packageManager` field and has been red on `main` since 2026-09-25, but it is **not on this path** —
+  nothing the star control does runs through it. Fixing it belongs in a build-and-delivery effort, and
+  bundling it into a PR whose subject is a star button is how a one-line fix gets reviewed as four.
+- **Runtime fetching of the star count, and any token to do it with.** Ruled out by
+  [What may a stale count be allowed to say](issues/03-what-may-a-stale-count-be-allowed-to-say.md):
+  the number comes from a committed file, so GitHub is never in a visitor's request path. This also
+  rules out `GITHUB_TOKEN` in Vercel, and any ISR `revalidate` window.
+
 - **Actually starring the repo from the site.** Impossible without the visitor's GitHub session —
   this is a constraint, not a work item, and the destination was drawn around it.
 - **Sponsorship, pricing and any other star-adjacent monetisation.** Already researched in
