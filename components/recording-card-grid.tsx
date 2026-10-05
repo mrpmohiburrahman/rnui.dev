@@ -351,7 +351,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
                 Source link (lib/analytics.ts:109-113) and this link belongs to
                 no Recording. */}
             <a
-              href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+              href="https://github.com/mrpmohiburrahman/rnui.dev"
               target="_blank"
               rel="noopener noreferrer"
               className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"
