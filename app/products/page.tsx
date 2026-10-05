@@ -1,5 +1,6 @@
 // app/products/page.tsx
 
+import type { Metadata } from "next"
 import type { ReactElement } from "react"
 import { permanentRedirect } from "next/navigation"
 import { allRecordings } from "@/data/catalogue"
@@ -13,10 +14,15 @@ import {
 
 import { catalogueDiagnosis } from "@/lib/catalogue-filters"
 import { catalogueHeading } from "@/lib/catalogue-heading"
+import { existingContributor } from "@/lib/contributor-match"
+import { contributorCardUrl } from "@/lib/og-contributor-url"
 import { CataloguePage } from "@/components/catalogue-page"
 
 // Adjust the import path if necessary
 import { getRecordings, getTopViewCount } from "../actions/get-recordings"
+
+/** Every spelling the catalogue holds, for ADR-0009's matcher. */
+const CONTRIBUTOR_NAMES = [...new Set((allRecordings as { contributor: string }[]).map((r) => r.contributor))]
 
 interface PageProps {
   searchParams: Promise<{
@@ -34,6 +40,61 @@ interface PageProps {
     // alive".
     author?: string
   }>
+}
+
+/**
+ * The Contributor card, on the filtered catalogue.
+ *
+ * **A filtered `/products` link gets the Contributor's fan; an unfiltered one does not.** The
+ * card is about a person, so `?contributor=` is the only thing that changes it — and leaving the
+ * root card alone for every other shape of this route means the change is additive and cannot
+ * regress the link people already share.
+ *
+ * **`twitter.images` is set as well as `openGraph.images`, and that is not belt-and-braces.**
+ * They are two independent caches, so a card is only as good as its worse slot. The Recording
+ * route sets `openGraph.images` and forgets the Twitter one, which is why sharing a demo link
+ * to X shows a stale photo; that bug is recorded in the effort's ticket 01 and is the reason
+ * this one sets both.
+ *
+ * `generateMetadata` receives `searchParams` — confirmed against Next's docs, and the reason
+ * this is possible at all: an `opengraph-image` file convention gets `params: undefined` and
+ * never sees a search param, so the card has to be a route. See
+ * `app/api/og/contributor/route.ts`.
+ */
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const { contributor } = await searchParams
+  if (!contributor) return {}
+
+  // The exact catalogue spelling, not the query string. `?contributor=` reaches this route
+  // through links, redirects and hand-typed URLs, and the name string is the identity
+  // (ADR-0009) — so it is resolved through `lib/contributor-match.ts`, the module that
+  // already implements that rule, and then rendered as the catalogue writes it, Hangul and
+  // parentheses intact. This was the third hand-rolled copy of that fold in this feature.
+  const known = existingContributor(contributor, CONTRIBUTOR_NAMES)
+
+  // An unknown name falls through to the root card rather than 404-ing: the *page* is a real
+  // catalogue view with an empty result set and its own zero panel, and a metadata function is
+  // the wrong place to decide the page does not exist.
+  if (!known) return {}
+
+  const title = `${known} — rnui.dev`
+  const description = `All animations by ${known} on rnui.dev.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [{ url: contributorCardUrl(known), width: 1200, height: 630, alt: `${known} on rnui.dev` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [contributorCardUrl(known)],
+    },
+  }
 }
 
 const RecordingsPage = async ({
@@ -99,6 +160,14 @@ const RecordingsPage = async ({
         perContributor={RECORDINGS_PER_CONTRIBUTOR}
         categories={categories}
         contributors={contributors}
+        // The grid's visually-hidden `h1`, restored in commit 6acf554's wake. This
+        // route always receives a filtered set, so `data.length` is the filtered
+        // count and the facet names come from the URL the catalogue links to.
+        heading={catalogueHeading({
+          category,
+          contributor,
+          total: data.length,
+        })}
         showHero={false}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
