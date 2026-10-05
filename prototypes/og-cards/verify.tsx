@@ -21,8 +21,6 @@ import { createElement as h } from "react"
 import { ImageResponse } from "next/og"
 
 import { probeFonts } from "./probe/fonts"
-
-import { probeFonts } from "./probe/fonts"
 import sharp from "sharp"
 
 import { allRecordings } from "../../data/catalogue"
