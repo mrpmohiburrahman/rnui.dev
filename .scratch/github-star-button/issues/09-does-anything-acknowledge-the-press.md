@@ -1,6 +1,6 @@
 # Does anything acknowledge the press
 
-Status: open
+Status: resolved
 Type: grilling
 Blocked by: 03
 
@@ -68,3 +68,122 @@ the exact words, plus whether they are the same words on every surface.
   What is left is the question this ticket was really asking, and it is unchanged: **does the live site
   narrate an action it cannot observe?** Nothing / a visible acknowledgement. If the latter, it must say
   something *true* — a toast thanking a visitor for starring claims an observation the site cannot make.
+
+## Answer
+
+Resolved 2026-10-05. **No. The site narrates nothing.** Two decisions, both taken as recommended, and
+three facts found on the way that reframed the question before it could be asked.
+
+### 1. Ticket 03's "no date anywhere" is absolute
+
+Reopening it was the only route to a truthful acknowledgement, and it is closed. The returning visitor's
+one truthful set of words is *"this number is a snapshot from Sunday"* — words about the date, which 03
+ruled out and 05 then declined to leak into PostHog for the same reason. Reopening would re-litigate two
+settled decisions to serve one predicted embarrassment, and it would buy something unbounded: a date in
+the UI is a standing claim that this number is good enough to date, so 03's 9-day failure — two missed
+weekly runs, ≈14 days' silence — becomes a number the page has publicly committed to and visibly broken.
+The alert goes to the maintainer, which is the right place for it.
+
+### 2. Nothing visitor-facing, and the remaining options fall on their own terms
+
+- **(c) a toast thanking the visitor** is out on truth grounds regardless of decision 1. "Thanks for
+  starring" asserts an observation the site never made.
+- **(d) `★ 350` → `★ Starred` for a returning clicker** is the only zero-width option, and the only one
+  with an honesty problem left once the date is gone: it claims something about the visitor's GitHub
+  account on the evidence of one outbound click. It also **spends the count**, which 03 called "the
+  entire social proof", to buy the acknowledgement.
+- **(b) a toast that instructs — "On GitHub, tap Star"** is true and free, and was rejected because it
+  is redundant: a visitor who clicked a `★ 350` chip and landed on a GitHub repo page is already looking
+  at the largest button on that page.
+
+So: `★ 350` renders, and nothing else renders, ever.
+
+### Three facts that reframed the question
+
+- **The ticket's width premise was false.** A visible acknowledgement was costed as *"width in a header
+  that already wraps"*, which holds only for copy placed in the header row. `sonner` is already a
+  dependency, already mounted at `app/layout.tsx:116` with `richColors`, theme-aware through
+  `components/ui/sonner.tsx` — and has **zero call sites in the repo**. A toast is an overlay and costs
+  no header width at all.
+- **The mechanism for acknowledging a returning visitor already exists, in the footer.**
+  `newsletterSubscribed` is written on submit success (`components/newsletter-form.tsx:55`) and read on
+  mount (`:38`) to swap the form for *"Check your inbox — the Digest starts once you confirm."* That copy
+  was **rewritten** when double opt-in landed, because *"you are on the list"* stopped being true. The
+  precedent is really a warning: this repo has already been bitten by an acknowledgement that outran its
+  evidence, and fixed it by making the words describe what happened.
+- **The binding constraint had never been restated here** — see decision 1.
+
+### 3. A discrepancy is now detected from the file's own git history
+
+Settling "nothing" weakens ticket 05's claim that `stars_shown` is "how a rendered-versus-actual
+discrepancy would be noticed": `star_clicked` fires on `onClick`, so `stars_shown` is the number as
+**clickers** saw it, never as **viewers**.
+
+**The detection channel is the git history of `scripts/star-count.json`.** Every weekly commit is a
+dated before→after diff of the stars, and the workflow that writes the file already knows the true
+number because it *is* what fetches it — so ground truth is in the repo, diffed and dated, with no
+visitor telemetry at all. This is stronger than any sampled event rather than a fallback, and it costs
+nothing. `star_clicked.stars_shown` remains as a secondary signal, correctly narrowed.
+
+### 4. "Nothing" is pinned by one negative assertion
+
+Without it, "nothing" is the path of least resistance: a future contributor adds
+`title="as of {generated_at}"` because it seemed helpful, every existing test passes, and 03's decision
+is silently reversed by someone who never read 03. **One assertion in PR2's test file** — the control
+renders no `title`, and `generated_at` never reaches the DOM — by the same reasoning that already put a
+truth-table test on the surface gate.
+
+### Domain modelling
+
+**No term added to `CONTEXT.md`.** The control is **stateless** — no localStorage key, no
+sessionStorage key. Nothing here renames or reshapes the vocabulary.
+
+### What this removes from the build
+
+No `toast()` call anywhere; no `sonner` import; no acknowledgement component; no return-visit state;
+no new stored browser key. PR2 is unchanged in size, and `star-count.json`'s `generated_at` stays
+write-only.
+
+### What it costs, stated rather than discovered
+
+- The returning visitor who starred and comes back to an unmoved number **gets nothing**. The site
+  cannot do otherwise: the only truthful words are the date, and decision 1 closed the date.
+- The discrepancy is invisible from **both** ends — no acknowledgement to the visitor, and
+  `star_clicked` fires only for clickers.
+
+Accepted because the truth lives in the repo (the file's history plus the weekly assertion), not because
+the embarrassment is unreal. It is real and predictable; it is answered by an alert to the maintainer
+rather than by the page.
+
+### The ticket's two named dependencies, confirmed collapsed
+
+- **05's PostHog signal already existed.** The ticket predicted "this may not be a separate decision at
+  all" — it was not one. Folded into `star_clicked`; **no second analytics decision was opened.**
+- **06's surface boundary did not exist.** `preview.rnui.dev` 308s and serves no build; the Archive is
+  out by structure. So the ticket's *"the same words on every surface"* is moot — there is exactly one
+  surface, and it says nothing.
+
+## Comments
+
+- 2026-10-05 — Grilling ran as two rounds of two questions; the maintainer accepted all four
+  recommendations. The deciding fact was not in the ticket: **`sonner` is mounted and unused**, which
+  made the ticket's own cost argument ("it costs width in a header that already wraps") false, and left
+  the real constraint — which is not width but **truthfulness** — as the only thing standing.
+- 2026-10-05 — **Correcting the map, found while verifying this ticket.** The map's Notes said ticket 08
+  "deleted" `metrics/weekly.json`, `scripts/metrics-update.ts`, `metrics:update` and
+  `metrics-update.yml`, and that "none of them exists any more". **All four are still on disk**
+  (verified 2026-10-05): `metrics/weekly.json` (416 B, `generated_at` 2026-06-04, stars 343),
+  `scripts/metrics-update.ts`, `.github/workflows/metrics-update.yml`, and `"metrics:update"` at
+  `package.json:24`. `scripts/star-count.json` and `.github/workflows/star-count.yml` do not exist
+  either. Nothing in this map has been implemented — the map is a plan. An `/implement` session reading
+  the map as written would skip PR0's four deletions and ship it as three subjects instead of seven.
+  Corrected in `map.md`.
+- 2026-10-05 — **Out-of-map finding, not acted on.** `CLAUDE.md` records "the three stored browser keys
+  `"bookmarkedItems"`, `"votedItems"` and `"viewedEntryIds"`". `viewedEntryIds` is **sessionStorage**, and
+  `lib/view-signal.ts:71-72` says so deliberately ("Deliberately not a Remembered set… those are
+  localStorage"), so it is not one of the two Remembered sets the sentence groups it with. And there is a
+  **fourth** localStorage key the sentence omits: `newsletterSubscribed`. Left alone — `CLAUDE.md` is
+  outside this map's destination and carries a standing constraint, so the correction is the
+  maintainer's call. It is load-bearing only as evidence for this ticket, and this ticket's answer adds
+  no key of its own.
+
