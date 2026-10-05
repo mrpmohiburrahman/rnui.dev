@@ -1,0 +1,117 @@
+name: Star Count
+
+# The header's star count is inlined from scripts/star-count.json at build time,
+# so GitHub is never in a visitor's request path. This job is the only thing
+# that keeps that file true, and it is deliberately shell-only: no setup-node, no
+# pnpm/action-setup, no install. The job it replaced failed 18 runs out of 18
+# dying at a missing `pnpm` binary before any of its API calls — a failure
+# surface that is entirely toolchain and not at all GitHub. Nothing here needs a
+# toolchain, so it does not have one.
+
+on:
+  schedule:
+    # Mondays 09:00 UTC. Unchanged from the workflow this replaces.
+    - cron: "0 9 * * 1"
+  # Kept: this is how a maintainer repairs by hand.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      # Default shallow depth. The workflow this replaces asked for fetch-depth: 0
+      # only because its script counted commits with `git log`. Nothing here reads
+      # history.
+      - uses: actions/checkout@v4
+
+      # Load-bearing: this runs BEFORE the fetch step writes, and the assertion at
+      # the bottom reads what this step captured. An assertion placed after the
+      # write that re-read the file would read the copy the fetch just made, be 0
+      # days old every single time, and never fire — while looking entirely
+      # correct. Whole days in UTC, compared as integers.
+      - id: age
+        name: Capture the committed count's age
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # A fixed-shape extraction, not a JSON parser: the file has exactly two
+          # keys and this workflow is the only thing that writes it. If the shape
+          # ever changes, grep finds nothing, `set -e` fails the step, and the
+          # assertion below reports that no age was captured.
+          generated_at="$(grep -oE '"generated_at"[[:space:]]*:[[:space:]]*"[^"]+"' scripts/star-count.json | cut -d'"' -f4)"
+
+          generated_epoch="$(date -u -d "$generated_at" +%s)"
+          now_epoch="$(date -u +%s)"
+          days=$(( (now_epoch - generated_epoch) / 86400 ))
+
+          echo "Count was generated $generated_at, $days whole days ago."
+          echo "days=$days" >> "$GITHUB_OUTPUT"
+          echo "generated_at=$generated_at" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch, write and commit the count
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # `gh api --jq` is gh's own filter, not a call to a `jq` binary, so the
+          # job still needs nothing installed.
+          stars="$(gh api repos/mrpmohiburrahman/rnui.dev --jq .stargazers_count)"
+
+          # The date is load-bearing, twice over. It is what the staleness
+          # assertion reads, and it is what makes this file always differ week to
+          # week — a file holding only a number whose value happened not to move
+          # would take the "no changes to commit" branch below and the run would
+          # pass having written nothing.
+          printf '{\n  "stars": %s,\n  "generated_at": "%s"\n}\n' \
+            "$stars" "$(date -u +%Y-%m-%d)" > scripts/star-count.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scripts/star-count.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(stars): weekly update $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      # `always()` so the staleness check still runs on a run where the fetch
+      # failed — that is precisely when a maintainer most needs to hear about it.
+      # Guarded to scheduled runs so a manual repair cannot fail on a file it is
+      # about to refresh. This is the cross-run check, and the only thing in the
+      # system that can say the refresh has been broken since a given date: a
+      # failed refresh alone fails the job by itself, one cycle earlier and
+      # without saying since when.
+      #
+      # It cannot detect its own non-execution. A workflow that never runs fires
+      # no step, and no threshold changes that.
+      - name: Assert the count is not stale
+        if: always() && github.event_name == 'schedule'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          days="${{ steps.age.outputs.days }}"
+          generated_at="${{ steps.age.outputs.generated_at }}"
+
+          if [ -z "$days" ]; then
+            echo "::error::No age was captured, so staleness cannot be asserted. The file is missing, malformed, or the checkout step failed."
+            exit 1
+          fi
+
+          # 9 days against a 7-day schedule: two consecutive failed runs before
+          # anyone is told, so a single cancelled or delayed run does not train a
+          # maintainer to ignore the alert. At the measured growth of 0.4
+          # stars/week, even that silence leaves the rendered number ~0.8 behind.
+          if [ "$days" -gt 9 ]; then
+            echo "::error::scripts/star-count.json is $days days old (generated $generated_at), over the 9-day threshold. The refresh has been broken since $generated_at."
+            exit 1
+          fi
+
+          echo "Count is $days days old (generated $generated_at), within the 9-day threshold."

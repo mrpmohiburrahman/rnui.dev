@@ -25,7 +25,6 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "postbuild": "next-sitemap",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
-    "metrics:update": "tsx scripts/metrics-update.ts",
     "scrub:emails": "tsx scripts/scrub-email-list.ts",
     "scrub:group": "tsx scripts/group-email-list.ts",
     "rules:verify": "tsx scripts/verify-firestore-rules.ts",

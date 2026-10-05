@@ -4,7 +4,7 @@
  * Run via: pnpm scrub:emails
  *
  * notify-and-preview ticket 03. Reads Firestore directly with a gcloud bearer
- * token, the way scripts/metrics-update.ts shells out to gh, because the client
+ * token, the way group-email-list.ts does, because the client
  * SDK needs the app running and `.env.local` points at the -dev collections.
  *
  * Two things this deliberately does NOT do:
