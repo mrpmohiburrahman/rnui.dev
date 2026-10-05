@@ -54,3 +54,17 @@ the exact words, plus whether they are the same words on every surface.
 ## Notes
 
 - Grilling. This is short, and part of it may collapse into ticket 05 — check 05's Answer first.
+- **Both dependencies named in the Question are now answered. Do not re-open them.**
+  - **05 already put the PostHog-only signal on the control.** It settled `star_clicked` carrying
+    `stars_shown`, called from `onClick` in both layouts through one shared handler. So the Question's
+    second bullet — "this may not be a separate decision at all" — is answered: **it is not one.** Fold
+    it into 05's event and do not open a second analytics decision.
+  - **The surface boundary does not exist.** 06 resolved this ticket's `old`-and-Preview worry:
+    `preview.rnui.dev` **308s and serves no build**, and the Archive is out **by structure** — `old` is
+    a separate Vercel project, `origin/old` has no `site-header.tsx`, and the control is gated to the
+    live site. So a visible acknowledgement, if chosen, exists on **exactly one** surface and cannot be
+    contradicted by a second frozen Deployment. That removes the reason 06 had to be consulted.
+
+  What is left is the question this ticket was really asking, and it is unchanged: **does the live site
+  narrate an action it cannot observe?** Nothing / a visible acknowledgement. If the latter, it must say
+  something *true* — a toast thanking a visitor for starring claims an observation the site cannot make.
