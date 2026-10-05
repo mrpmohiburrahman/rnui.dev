@@ -1,6 +1,6 @@
 # Put the tile on the capture ratio
 
-Status: ready-for-human
+Status: resolved
 Type: grilling
 Blocked by:
 
@@ -71,6 +71,11 @@ falls to roughly zero, because the box finally matches the shape of the thing in
    `studio-dark` spec records field LCP p75 at **4,212ms desktop / 4,515ms mobile, both in Google's
    poor band**, and names a per-tile glow as one of two things most able to undo that work. More height
    is more tiles below the fold, so this must be measured, not assumed.
+   > **ANSWER, measured 2026-10-06: it costs nothing.** Both arms as local production builds on one
+   > port, five runs each — every LCP delta inside its own arm's spread, CLS 0, DOM identical. The
+   > suspicion behind this cost was reasonable and wrong, and it was wrong in the change's favour:
+   > a taller grid puts fewer tiles below the fold, so the Poster gate fetches **fewer** of them.
+   > Full table under "What was measured".
 2. **The 108 outliers get worse.** Landscape goes 31.6% → **25.9%** of width visible; square 56.2% →
    46.0%. They are already unusable at this size and become slightly more so.
 3. **The Detail page is a separate question.** `recording-detail.tsx:266` derives its box from
@@ -118,25 +123,37 @@ now says this, with the measured numbers in the comment rather than the old clai
 **Grid height**, from the same run: 370 → 452 at `w=208`, **+82px per tile**, an 18% taller grid. 48
 tiles per page.
 
-**LCP**, mobile preset, five runs per route, local production build on `:3111`
-(`scripts/checkpoint-13-lighthouse.mjs`, arm `tile-capture-ratio`):
+**LCP, both arms, measured 2026-10-06.** This was the one DoD bullet left open when the tile shipped,
+and it is now closed. `scripts/checkpoint-13-lighthouse.mjs`, five runs per arm per preset per route,
+both arms as **local production builds on the same port (3111)**, one arm differing from the other by
+the single `aspect-[…]` literal and nothing else. Arms `arm-A-1206-2622` (shipped) and `arm-B-9x16`
+(the box it replaced); raw reports in `.scratch/studio-dark/lighthouse-arm-*.json` (gitignored, the
+reports are reproducible), and `evidence/compare-arms.mjs` computes the comparison including whether
+each delta falls inside its own arm's spread.
 
-| route | LCP runs (ms) | median | TBT median | perf median |
-| --- | --- | --- | --- | --- |
-| `/` | 3670, 3772, 3803, 3781, 3773 | **3773** | 213 | 85 |
-| `/products` | 3946, 3792, 3704, 3775, 3821 | **3792** | 276 | 83 |
+| route | LCP new (1206/2622) | LCP old (9/16) | delta | spread | verdict |
+| --- | --- | --- | --- | --- | --- |
+| mobile `/` | 3699 | 3780 | **−81ms** | 214 | inside spread |
+| mobile `/products` | 3774 | 3777 | **−2ms** | 322 | inside spread |
+| desktop `/` | 775 | 776 | **−1ms** | 479 | inside spread |
+| desktop `/products` | 883 | 763 | **+119ms** | 918 | inside spread |
 
-**Read this as a single arm, and do not read a delta into it.** The comparison the DoD asks for needs
-both boxes measured the same way in the same session, and the 9/16 arm was not run — so these are
-absolute numbers, not evidence that the taller grid is flat. What they do show is that the taller grid
-loads at all: an 18%-taller grid of 48 tiles does not push LCP into a regime the site has not already
-been in. The two-arm measurement in `53345a1` (3018ms → 3010ms median, TBT 91ms → 76ms) remains the
-comparison of record; it was taken on a different machine state and these numbers are not comparable
-to it. **A 9/16 arm is still owed if anyone wants the delta re-verified.**
+**The cost the ticket named does not exist. Every LCP delta falls inside the spread of five runs of its
+own arm**, including the one that moves the other way: desktop `/products` is nominally 119ms *worse*
+and its spread is 918ms, so that is noise, not a regression. TBT moves the same way — +22ms on mobile
+`/` against a 168ms spread. CLS is 0 and DOM size is identical (1427 nodes on both routes) in every
+arm, which is what the tile's reserved box was supposed to guarantee.
+
+**One thing did move, and it moved in the change's favour:** the new box fetches **fewer bytes and
+fewer requests** — 58 requests against 60 on mobile, 69 against 73 on desktop, and ~156KB less on
+mobile `/`. That is not a mystery. The grid is 18% taller, so at any given viewport **fewer tiles fit
+below the fold**, and the tile's own lazy Poster gate (`tests/e2e/poster-loading.spec.ts`) therefore
+fetches fewer Posters. The taller grid bought back part of its own height in bytes.
 
 The field baseline this effort is measured against is LCP p75 **4,212ms desktop / 4,515ms mobile**
-(`.scratch/studio-dark/spec.md`), both in Google's poor band. The lab figures above sit under it, as
-lab figures always do — the point of the ticket's cost was never that lab LCP is the number.
+(`.scratch/studio-dark/spec.md`), both in Google's poor band — and the desktop lab numbers here are
+775–883ms, because a lab run on loopback is not that number. The honest reading is the delta between
+the arms, not the level.
 
 ### What to decide
 
@@ -215,12 +232,14 @@ three unanswered decisions.
    numbers were wrong.** See "What was measured". `threshold: 0` stands, now for a stronger reason
    than the ticket gave, and `components/playback-owner.tsx` carries the measured figures instead of a
    claim that had never been checked.
-5. **Grid height and LCP measured against the baseline — partially met, and the gap is named.** Grid
-   height is exact: 370 → 452 at `w=208`, **+82px**, 18% taller. LCP was measured on the shipped box
-   (mobile, five runs per route: 3773ms median on `/`, 3792ms on `/products`) but **the 9/16 arm was
-   not run**, so these are absolute numbers and no delta can be read from them. The two-arm comparison
-   in `53345a1` remains the comparison of record. **A 9/16 arm is owed** and is the one thing here
-   still open.
+5. **Grid height and LCP measured against the baseline — met, both arms, 2026-10-06.** Grid height is
+   exact: 370 → 452 at `w=208`, **+82px**, 18% taller. LCP was measured on **both** boxes as local
+   production builds on one port, five runs per arm per preset per route, differing by one literal.
+   **All four LCP deltas fall inside their own arm's spread** (−81, −2, −1, +119ms against spreads of
+   214, 322, 479, 918ms), so the 18%-taller grid costs nothing measurable, and the ticket's headline
+   cost does not exist. CLS is 0 and DOM identical in both arms. The grid also fetches **fewer bytes
+   and fewer requests** (58 vs 60 mobile, 69 vs 73 desktop) because a taller grid puts fewer tiles
+   below the fold for the Poster gate to fetch. See "What was measured".
 
 ### The three unanswered decisions
 
