@@ -60,6 +60,19 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
 - **One thing about the alert cannot be verified from this repo:** GitHub only emails on a failed
   workflow if Actions email notifications are enabled in the maintainer's account settings. If they are
   off, the 7-day assertion becomes the *only* defence and nothing would announce that it had fired.
+- **`preview.rnui.dev` is a redirect, and "the Preview" is a dead word.** Measured 2026-10-05: `/` and
+  a deep path both 308 to `www.rnui.dev`. There is no Preview build. What replaced it as a live public
+  surface is **every `rnui-dev-git-*.vercel.app` branch alias**, each carrying the Preview
+  environment's variables — which is why a branch deployment compiles the retired PostHog project
+  559028's key while `www` and `old` compile 117415's. ADR-0010 says no deployed build compiles it;
+  that is true of anything serving a hostname and **false of branch aliases**, and this map amends the
+  sentence. Say **branch deployment**, not "the Preview" — `preview` is already `_Avoid:` on `CONTEXT.md`
+  for a Demo, and `CONTEXT.md` has no term for this surface at all.
+- **The spec must verify the surface gate rather than trust it.** `NEXT_PUBLIC_VERCEL_ENV` is documented
+  by Vercel but has never been read in this repo, so there is no in-repo evidence it is populated. The
+  implementer's first check is to grep a built preview chunk against production — the same check that
+  caught the ADR-0010 error. It also **fails open** (absent ⇒ shown), deliberately, so local `next dev`
+  still builds the control; that is why it needs a test pinning its truth table and not inspection.
 
 - **`main`'s CI is red right now** (6 consecutive failures, both jobs, `Multiple versions of pnpm
   specified`) and the weekly metrics job has never succeeded. Both are the same class of mistake —
@@ -104,8 +117,21 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   44px phone hit target by the `✕`'s transparent-`::before` method, and one PostHog event `star_clicked`
   carrying only `stars_shown`. Found and fixed on the way: **the phone `Saved` chip has no accessible name
   today** — it announces a bare "12" — so the star control's phone shape would have inherited the fault.
-  Desktop chips stay under 44; not this ticket's business. Bound on ticket 07: the `Saved` accessible
-  name must survive its word drop.
+Desktop chips stay under 44; not this ticket's business. Bound on ticket 07: the `Saved` accessible
+   name must survive its word drop.
+- [Which surfaces carry the control](issues/06-which-surfaces-carry-the-control.md) —
+  **The live site only, gated on `NEXT_PUBLIC_VERCEL_ENV !== "preview"` — one predicate, read by both
+  layouts.** The ticket's premise was stale, and correcting it is most of the answer:
+  **`preview.rnui.dev` 308s to `www` and serves no build at all**, so there was nothing to exclude
+  there. The surface that *can* carry the control is **every Vercel branch deployment of `rnui-dev`** —
+  public, because Authentication is off, and compiling the **retired** PostHog project 559028's key.
+  Smaller than it looked: branch URLs only travel to people already inside this work. What it would
+  really have cost is ticket 05's `star_clicked` landing in a drawer nobody opens, on the one surface
+  where a click is easiest to test. The Archive is out **by structure, not by a check** — `old` is a
+  separate Vercel project and `origin/old` has no `site-header.tsx` at all, and it already carries
+  its **own** star ask at `top-nav-bar.tsx:63-76` pointing at the old alias. Left alone; divergence
+  recorded. Found on the way: **ADR-0010's "no deployed build compiles `phc_oFZiXjSi…`" is false** —
+  branch aliases do — so that one sentence is amended here, as its own commit.
 
 ## Not yet specified
 
@@ -153,3 +179,9 @@ cycle made it stateable, and part of it may collapse into ticket 05.)*
   The five literals go in as they stand. `lib/cdn.ts` and `lib/publication-notice.ts`'s `SITE_ORIGIN`
   are the precedent if the drift ever comes back — but a tidy import is an implementation choice
   inside a spec, not a decision on the route, and the destination is a spec.
+- **Correcting the Archive's own star link.** `origin/old:components/nav/top-nav-bar.tsx:63-76` carries
+  `☆ Star us on GitHub` → `awesome-react-native-ui`, the alias ticket 04 corrected in four places on
+  `main`. **Left alone deliberately, and recorded so it is never read as drift this map left behind.**
+  Not "frozen is frozen" hand-waving: the Archive's promise is that it shows the previous Design *as it
+  was*, and a link repointed at today's repository would be a false claim about the past. ADR-0010
+  already rules backporting out; this adds no new ruling, only the record.
