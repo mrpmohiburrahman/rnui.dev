@@ -110,7 +110,7 @@ test("the end of the catalogue is a rule, and both links under it work", async (
     page.getByRole("link", { name: "Add your own recording on GitHub ↗" })
   ).toHaveAttribute(
     "href",
-    "https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+    "https://github.com/mrpmohiburrahman/rnui.dev"
   )
 
   await page.evaluate(() => window.scrollTo(0, 4_000))

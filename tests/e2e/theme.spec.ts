@@ -178,7 +178,7 @@ test("the footer still carries the repository link, server-rendered", async ({
   const response = await page.goto("/")
   const html = (await response?.text()) ?? ""
   expect(html).toContain(
-    'href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"'
+    'href="https://github.com/mrpmohiburrahman/rnui.dev"'
   )
 
   await expect(page.getByRole("link", { name: /Repository/ })).toBeVisible()
