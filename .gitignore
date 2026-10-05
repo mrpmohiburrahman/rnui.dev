@@ -14,6 +14,12 @@
 .pnp.js
 .yarn/install-state.gz
 
+# Generated prototype renders. `pnpm ogcards:render` rebuilds all 25 in ~30s, and they are
+# 3.1MB of derived PNG — the *source* for all five variants is committed, which is what makes
+# them re-selectable. The tiles under prototypes/og-cards/tiles/ ARE committed, because they are
+# built from gitignored Posters and nothing here can run without them on a fresh clone.
+/prototypes/og-cards/out/
+
 # testing
 /coverage
 /test-results
