@@ -37,29 +37,38 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
 - **Settled in charting:** the count comes from `metrics/weekly.json`, **subject to
   [Where does a live-enough star count come from](#02)** — the file's refresher is currently broken
   (see that ticket), so this is the one settled decision most likely to be reopened by evidence.
+- **The direction is settled: variant F.** A's chip shape at every desktop width, words only from `xl`.
+  Read the linked ticket's Answer before designing anything further — the full measurement table and
+  the PostHog traffic split are there.
+- **The header already breaks at 768–880, today, with no star control involved.** Measured on
+  2026-10-05: `◆ Saved` wraps to 46px and the mode toggle to 49px at 768 and 820. `site-header.tsx:90-92`
+  already records that the md-to-lg band does not fit. Any design in this map is being added to a band
+  that has zero headroom, which is why measurement — not taste — settled the direction.
 - **Standing preference:** prototypes go through `/prototype` and are throwaway. Rough is correct;
-  high fidelity spent before the direction is chosen is waste.
+  high fidelity spent before the direction is chosen is waste. Prototype work lands on a
+  `prototype/<name>` branch, never `main`.
 - **This effort plans.** `/implement` builds it afterwards.
 
 ## Decisions so far
 
 <!-- one line per closed ticket -->
 
-_None yet._
+- [Five directions for the star control](issues/01-five-directions-for-the-star-control.md) — **F**:
+  A's chip shape at every desktop width, words "Saved" and "Star" only from `xl`. Chosen because the
+  binding constraint is a width budget, not taste: A clips the theme toggle at 768 and the md-to-lg
+  band is 1.1% of real pageviews. Also repairs a header that already wraps at 768–880 today.
 
 ## Not yet specified
 
-- **A consistency sweep beyond the header.** If the header ends up carrying a count, the footer's
-  CONTRIBUTE column and `/aboutus` are the two places a count would *also* belong — and the repo's
-  legacy-alias links sit in both. Not phrasable as its own question until the header's visual grammar
-  is chosen, because "does it belong elsewhere" depends on what it looks like.
-- **Whether a stale count degrades visibly.** Depends on both the accuracy policy and what the count
-  source can actually promise; neither is settled.
+- **A consistency sweep beyond the header.** Now answerable enough to be worth revisiting once the
+  header lands: if the header carries a count, the footer's CONTRIBUTE column and `/aboutus` are the
+  two places a count would *also* belong, and the legacy-alias repo links sit in both. Still not sharp
+  as its own question — "does it belong elsewhere" depends on F's final spec.
 - **Whether anything acknowledges the press** — a toast, a PostHog-only signal, nothing. Depends on
-  whether the Preview is in scope (see the surfaces ticket) and on whether the count can be current.
-- **How the control interacts with the two conversion paths it now sits beside** — `/submit` in the
-  footer, `/subscribe` in the footer's NOTIFY column. A star control is also a request for a favour;
-  whether it competes with them or feeds them is not phrasable until its weight in the row is known.
+  whether the Preview is in scope (the surfaces ticket) and on whether the count can be current.
+- **How the control interacts with the two conversion paths it now sits beside** — `/submit` and
+  `/subscribe` in the footer. A star control is also a request for a favour; whether it competes with
+  them or feeds them is not phrasable until its final weight in the row is known.
 
 ## Out of scope
 
