@@ -13,7 +13,6 @@ import {
 } from "@/data/recording"
 
 import { catalogueDiagnosis } from "@/lib/catalogue-filters"
-import { catalogueHeading } from "@/lib/catalogue-heading"
 import { existingContributor } from "@/lib/contributor-match"
 import { contributorCardUrl } from "@/lib/og-contributor-url"
 import { CataloguePage } from "@/components/catalogue-page"
@@ -160,14 +159,6 @@ const RecordingsPage = async ({
         perContributor={RECORDINGS_PER_CONTRIBUTOR}
         categories={categories}
         contributors={contributors}
-        // The grid's visually-hidden `h1`, restored in commit 6acf554's wake. This
-        // route always receives a filtered set, so `data.length` is the filtered
-        // count and the facet names come from the URL the catalogue links to.
-        heading={catalogueHeading({
-          category,
-          contributor,
-          total: data.length,
-        })}
         showHero={false}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
