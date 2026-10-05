@@ -148,12 +148,16 @@ export function PlaybackOwner({
         },
         // ponytail: threshold 0 — any pixel on screen makes a tile a candidate
         // and the five-slot cap in document order does the rest. Raise to 0.1 if
-        // tiles start on a sliver. Not higher: a tile in a phone's landscape
-        // viewport cannot reach a high intersectionRatio at all, and would then
-        // never play — and the tile is 1206/2622, which is TALLER for a given
-        // width than the 9/16 box this replaced, so it clears less of the
-        // viewport, not more. rootMargin is 0 and not the old 200px, which would
-        // play a tile a screen away.
+        // tiles start on a sliver. Not higher, and the reason is measured rather
+        // than assumed: in an 844x390 landscape viewport, across all 48 tiles on
+        // a served page, the peak intersectionRatio is 0.236 for the current
+        // 1206/2622 box and 0.288 for the 9/16 box this replaced (demo-capture-
+        // ratio ticket 02). Both are above 0, which is all threshold 0 asks for,
+        // and neither clears 0.25 — so any threshold at or above 0.25 would stop
+        // every tile in that viewport playing at all. The taller box scores
+        // LOWER, not higher, so the old box would not have saved it either.
+        // rootMargin is 0 and not the old 200px, which would play a tile a
+        // screen away.
         { threshold: 0, rootMargin: "0px" }
       )
     }
