@@ -60,6 +60,15 @@ export const runtime = "nodejs"
  */
 export const dynamic = "force-dynamic"
 
+/**
+ * Ask for more than the default function budget.
+ *
+ * The 504s this addresses were a hard 10s wall, hit at 10.4s and 10.7s. The 1x tiles are the
+ * real fix and should bring a full eight-tile fan well inside the default; this is headroom
+ * for a cold start on a busy lambda, and is harmlessly ignored if the plan caps it lower.
+ */
+export const maxDuration = 60
+
 /** Every spelling the catalogue holds, for the matcher. */
 const NAMES = [...new Set((allRecordings as { contributor: string }[]).map((r) => r.contributor))]
 
@@ -87,13 +96,25 @@ async function tileFor(posterPath: string, w: number): Promise<string | null> {
   if (hit) return hit
 
   try {
-    const res = await fetch(getCdnUrl(posterPath))
+    // **4s, and no retry.** One slow Poster must not be able to spend the whole function
+    // budget: a missing tile costs a tile, a timeout costs the entire card.
+    const res = await fetch(getCdnUrl(posterPath), { signal: AbortSignal.timeout(4000) })
     if (!res.ok) return null
     const src = Buffer.from(await res.arrayBuffer())
 
-    // **2x, capped at the source.** A 287px tile on a 1200px card is legible at 1x but soft
-    // on a retina preview; `withoutEnlargement` stops it upscaling the 332px Posters, which
-    // are the smallest in the catalogue.
+    // **1x, and this is the fix for the 504s.**
+    //
+    // This was 2x, for a retina preview that cannot happen: an OG card is 1200x630 and every
+    // client that shows one shows it at 400-600px, so nothing ever sees a tile at native size.
+    // Meanwhile 2x made the base64 payload Satori must decode and composite **four times
+    // larger**, and that — not sharp, which measures 19ms a tile — is where the time went.
+    //
+    // Measured in production: one tile rendered in 2.9s, five in 10.4s, which is Vercel's
+    // function limit, so thirteen of twenty-four Contributors returned 504. At 1x the payload
+    // falls 4x and the fan fits inside the budget.
+    //
+    // `withoutEnlargement` still stops it upscaling the 332px Posters, the smallest in the
+    // catalogue.
     //
     // **JPEG, not PNG.** This was PNG at `compressionLevel: 9`, which measured 27ms and 4KB a
     // tile here and blew the function budget on a cold lambda with eight of them. JPEG at
@@ -103,7 +124,7 @@ async function tileFor(posterPath: string, w: number): Promise<string | null> {
     // whole reason these tiles are converted at all is that Satori refuses **AVIF**, not that
     // it refuses JPEG.
     const jpg = await sharp(src)
-      .resize(w * 2, hh * 2, { fit: "cover", position: "top", withoutEnlargement: true })
+      .resize(w, hh, { fit: "cover", position: "top", withoutEnlargement: true })
       .jpeg({ quality: 82, mozjpeg: true })
       .toBuffer()
 
