@@ -92,16 +92,30 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   stars/week means the rendered number runs 0–1 behind — the accepted cost, stated rather than
   discovered. Side effect: GitHub is never in a visitor's request path, so ticket 02's rate-limit,
   layout-shift and outage costs are all gone.
+- [Which repository URL is canonical](issues/04-which-repository-url-is-canonical.md) —
+  **`github.com/mrpmohiburrahman/rnui.dev`**, and all four places carrying the old alias are
+  corrected: two shipped links plus two e2e assertions that pinned it as a string. The ticket's
+  own measurement said two places; there were four, so the correction is four lines and the tests
+  keep their purpose (they assert *a* repository link, not *this* one). `package.json` is renamed
+  and gains `repository`/`homepage`/`bugs`. Its own commit — the star control writes this same
+  string, so unlike `ci.yml`'s out-of-scope fix, the drift is on-topic here.
 
 ## Not yet specified
 
 - **A consistency sweep beyond the header.** Now answerable enough to be worth revisiting once the
   header lands: if the header carries a count, the footer's CONTRIBUTE column and `/aboutus` are the
-  two places a count would *also* belong, and the legacy-alias repo links sit in both. Still not sharp
-  as its own question — "does it belong elsewhere" depends on F's final spec.
+  two places a count would *also* belong. Still not sharp as its own question — "does it belong
+  elsewhere" depends on F's final spec. **Charting got the premise wrong and it is now settled:**
+  `/aboutus` links the maintainer's four *other* repos and carries no link to this one in either
+  spelling, so there is no alias to clean there. Ticket 04 fixed the footer's link, and that was the
+  only alias outside the catalogue's contribution link.
 - **How the control interacts with the two conversion paths it now sits beside** — `/submit` and
   `/subscribe` in the footer. A star control is also a request for a favour; whether it competes with
-  them or feeds them is not phrasable until its final weight in the row is known.
+  them or feeds them is not phrasable until its final weight in the row is known. **Ticket 04 added a
+  third path here**: `recording-card-grid.tsx:327`, "Add your own recording on GitHub ↗", which is the
+  legacy drive-by ask the footer's `/submit` link replaced. Ticket 04 corrected its address and
+  deliberately left its wording and its existence alone — that question belongs in this patch, next to
+  whether `/submit` and `/subscribe` now overlap with it.
 
 *(The fog patch "whether anything acknowledges the press" has graduated to
 [Does anything acknowledge the press](issues/09-does-anything-acknowledge-the-press.md) — the refresh
@@ -127,3 +141,8 @@ cycle made it stateable, and part of it may collapse into ticket 05.)*
   must not duplicate or reopen it.
 - **Public Submissions and the `/submit` flow.** A separate effort lives in
   `.scratch/public-submissions/`; nothing here touches the form.
+- **A shared constant for the repository URL.** Put to the maintainer as part of
+  [Which repository URL is canonical](issues/04-which-repository-url-is-canonical.md) and declined.
+  The five literals go in as they stand. `lib/cdn.ts` and `lib/publication-notice.ts`'s `SITE_ORIGIN`
+  are the precedent if the drift ever comes back — but a tidy import is an implementation choice
+  inside a spec, not a decision on the route, and the destination is a spec.
