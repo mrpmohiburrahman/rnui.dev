@@ -34,9 +34,9 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   cannot star a repo for a visitor — starring is an authenticated `PUT /user/starred/{owner}/{repo}`
   against the signed-in user — so the button's job is to get the visitor to the Star button, and its
   label must not claim otherwise.
-- **Settled in charting:** the count comes from `metrics/weekly.json`, **subject to
-  [Where does a live-enough star count come from](#02)** — the file's refresher is currently broken
-  (see that ticket), so this is the one settled decision most likely to be reopened by evidence.
+- **The count source charting chose did not survive its own ticket.** Charting settled on
+  `metrics/weekly.json` and flagged it as the decision most likely to be reopened by evidence. It was:
+  the file's writer has never succeeded. See Decisions so far.
 - **The direction is settled: variant F.** A's chip shape at every desktop width, words only from `xl`.
   Read the linked ticket's Answer before designing anything further — the full measurement table and
   the PostHog traffic split are there.
@@ -44,6 +44,13 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   2026-10-05: `◆ Saved` wraps to 46px and the mode toggle to 49px at 768 and 820. `site-header.tsx:90-92`
   already records that the md-to-lg band does not fit. Any design in this map is being added to a band
   that has zero headroom, which is why measurement — not taste — settled the direction.
+- **The count's source is settled: an ISR server fetch, ≤ 6 hours old, with the committed JSON as
+  fallback only.** Read the linked ticket before writing any code — it carries the verified rate-limit
+  headers, the corrected root cause, and the one framework behaviour it could not exercise.
+- **`main`'s CI is red right now** (6 consecutive failures, both jobs, `Multiple versions of pnpm
+  specified`) and the weekly metrics job has never succeeded. Both are the same class of mistake —
+  `pnpm/action-setup` pinned with `version:` against a `packageManager` field. Repair is out of scope
+  here (see Out of scope) but the star control does not wait on it, by design.
 - **Standing preference:** prototypes go through `/prototype` and are throwaway. Rough is correct;
   high fidelity spent before the direction is chosen is waste. Prototype work lands on a
   `prototype/<name>` branch, never `main`.
@@ -57,6 +64,10 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   A's chip shape at every desktop width, words "Saved" and "Star" only from `xl`. Chosen because the
   binding constraint is a width budget, not taste: A clips the theme toggle at 768 and the md-to-lg
   band is 1.1% of real pageviews. Also repairs a header that already wraps at 768–880 today.
+- [Where does a live-enough star count come from](issues/02-where-does-a-live-enough-star-count-come-from.md) —
+  **ISR server fetch of `api.github.com` with `revalidate: 21600`, falling back to
+  `metrics/weekly.json`.** Bound: ≤ 6 hours, enforced by the framework. The committed file is
+  **demoted to fallback** — its writer has never succeeded (18 runs, 18 failures, since it was added).
 
 ## Not yet specified
 
@@ -72,6 +83,14 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
 
 ## Out of scope
 
+- **Repairing `.github/workflows/ci.yml` and `metrics-update.yml`.** Found by
+  [Where does a live-enough star count come from](issues/02-where-does-a-live-enough-star-count-come-from.md)
+  and **not this map's job**: `main`'s CI has been red since 2026-09-25 (both jobs,
+  `Multiple versions of pnpm specified`) and the metrics job has failed all 18 runs it has ever had.
+  Both are the same mistake — `pnpm/action-setup` pinned with `version:` against `packageManager:
+  pnpm@11.15.1` — and the fix is to drop the pin, per the action's own README. It needs its own effort
+  because it is a build-and-delivery defect, not a header feature, and because it should not be
+  bundled into a PR whose subject is a star button.
 - **Actually starring the repo from the site.** Impossible without the visitor's GitHub session —
   this is a constraint, not a work item, and the destination was drawn around it.
 - **Sponsorship, pricing and any other star-adjacent monetisation.** Already researched in
