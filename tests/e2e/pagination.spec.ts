@@ -72,10 +72,28 @@ test("Load more states what it will load and how much is on screen", async ({
 
   // The last page is short for any catalogue size that is not a multiple of 48,
   // and decision 2 is that nothing on screen lies.
-  await page.goto("/?page=5")
-  const remaining = allRecordings.length - PAGE_SIZE * 5
+  //
+  // The label is `min(PAGE_SIZE, total - shown)`, **not** `total - shown`
+  // (components/recording-card-grid.tsx:312) — a page loads at most one page's
+  // worth however much is left. The test used to compute `total - shown`
+  // outright, which only agreed with the component while the catalogue was
+  // small enough that the last page was also the shortest one to load; at 298
+  // Recordings, page 5 has 58 left and the button correctly says 48, so the
+  // assertion was testing arithmetic that had stopped being true. The short-page
+  // case is asserted at the real end of the catalogue instead, where `shown`
+  // is 288 and 10 remain.
+  await page.goto("/?page=6")
+  const remaining = allRecordings.length - PAGE_SIZE * 6
+  expect(remaining).toBeLessThan(PAGE_SIZE) // the premise, asserted not assumed
   await expect(
     page.getByRole("button", { name: `Load ${remaining} more` })
+  ).toBeVisible()
+
+  // …and a page with more than a page left still loads exactly one page.
+  await page.goto("/?page=5")
+  expect(allRecordings.length - PAGE_SIZE * 5).toBeGreaterThan(PAGE_SIZE)
+  await expect(
+    page.getByRole("button", { name: `Load ${PAGE_SIZE} more` })
   ).toBeVisible()
 })
 
