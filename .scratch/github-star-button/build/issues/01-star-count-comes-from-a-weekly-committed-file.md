@@ -60,11 +60,12 @@ committed diff. `npm test`, lint and typecheck neither pass nor fail on it, whic
 
 ## Comments
 
-- 2026-10-05 — **Built.** Twelve bullets, eleven done. The twelfth needs a person and is named below. The change is
-  seven paths, exactly as ticket 08's change list predicted: two created
-  (`.github/workflows/star-count.yml`, `scripts/star-count.json`) and five deleted
-  (`metrics-update.yml`, `metrics/weekly.json`, `metrics/`, `scripts/metrics-update.ts`,
-  `package.json`'s `metrics:update`).
+- 2026-10-05 — **Built.** Twelve bullets, eleven done. The twelfth needs a person and is named below.
+  The change is **seven paths**, which is ticket 08's change list with one row swapped: **two
+  created** (`.github/workflows/star-count.yml`, `scripts/star-count.json`), **three deleted**
+  (`.github/workflows/metrics-update.yml`, `metrics/weekly.json` and with it the emptied `metrics/`,
+  `scripts/metrics-update.ts`), **one edited** (`package.json`, dropping `metrics:update`), and **one
+  path the list does not have at all** — see below.
 
   The seeded file is `350` / `2026-10-05`, and `350` was re-measured live at build time
   (`gh api repos/mrpmohiburrahman/rnui.dev --jq .stargazers_count`). It is written with a trailing
@@ -76,9 +77,10 @@ committed diff. `npm test`, lint and typecheck neither pass nor fail on it, whic
   "the way `scripts/metrics-update.ts` shells out to gh", and this change deletes that file, so it
   would have left a comment naming a path that no longer exists. One line, repointed at
   `group-email-list.ts`, which does the same `gcloud auth print-access-token` + `curl` thing. It is
-  here rather than silent because the map's own rule about not bundling unrelated fixes does not
-  cover a dangling reference this change creates. Ticket 08's list was right about the four paths it
-  missed and incomplete about the fifth.
+  here rather than silent because the map's own rule against bundling unrelated fixes does not cover
+  a dangling reference **this change creates** — that one is not an unrelated fix, it is a loose end
+  of this one. Ticket 08's change list is otherwise complete: nothing else it names was missed, and
+  nothing it misses besides this one needed doing.
 
 - 2026-10-05 — **The workflow's shell was executed, not read.** The acceptance says the staleness
   assertion is verified by "a manual dispatch plus a green run", and a dispatch needs the workflow on
@@ -86,7 +88,7 @@ committed diff. `npm test`, lint and typecheck neither pass nor fail on it, whic
   out of the shipped YAML and run against a throwaway repo with a bare remote and a fake `gh` on
   `PATH` — including a fake `gh` that fails, so the failed-fetch path is genuinely walked rather than
   argued about. `date` was shimmed to the real GNU `date`, since the runner is `ubuntu-latest` and
-  this machine's BSD `date` rejects `-d`. **46 checks, all passing.** The ones that matter:
+  this machine's BSD `date` rejects `-d`. **39 checks, all passing.** The ones that matter:
 
   - **The trap, walked deliberately.** A **400-day-old** file whose fetch *succeeds*: the assertion
     still fires, reporting 400 days. An assertion that re-read the file there would have seen the copy
@@ -122,8 +124,8 @@ committed diff. `npm test`, lint and typecheck neither pass nor fail on it, whic
   `pnpm build` **fails on this branch, and it fails identically at HEAD without this change**:
   `components/prototype/star-control-prototype.tsx` calls `useSearchParams()` with no Suspense
   boundary, so prerendering `/prototype/star-button` throws. Proven pre-existing by building HEAD in a
-  throwaway worktree. With that one prototype route set aside, HEAD builds 317 pages and this branch
-  builds **316/316 pages cleanly** — the count differs only because the route was removed. So this
+  throwaway worktree. With that one prototype route set aside, **both HEAD and this branch compile and
+  prerender cleanly**, and this branch prerenders **316/316** pages. So this
   change is build-clean, and the prototype's missing Suspense boundary is a separate pre-existing
   break on a branch nobody is going to merge. **It is worth knowing that `pnpm build` is red on this
   branch and that this ticket did not cause it** — and worth not reading it as new.
