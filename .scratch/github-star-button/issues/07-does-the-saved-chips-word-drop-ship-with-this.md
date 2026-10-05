@@ -4,6 +4,18 @@ Status: open
 Type: grilling
 Blocked by:
 
+## Notes
+
+**From ticket 05, and binding on the decision below however it lands.** Ticket 05 settled that a chip's
+accessible name is **one string spoken at every width**, and it fixed the phone `Saved` chip's missing
+word as part of that — so both layouts announce "Saved {count}" today. Ticket 01's word drop removes the
+*visible* word below `xl`. If the accessible name goes with it, the desktop bar announces a bare number
+between `md` and `xl`, which is the exact fault the phone chip had and the reason 05's rule exists.
+
+So whatever is decided about shipping the word drop, and about which widths drop it: **the accessible
+name must stay "Saved {count}" at every width.** The word becomes visual-only from `xl`, exactly as
+ticket 05 made it for the star control. This constrains the decision; it does not make it.
+
 ## Question
 
 **The chosen direction costs a change to a component the star control was never meant to touch.**

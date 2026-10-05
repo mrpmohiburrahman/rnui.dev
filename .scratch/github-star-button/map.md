@@ -99,6 +99,13 @@ map **plans**; it does not build. Implementation is a separate `/implement` run.
   keep their purpose (they assert *a* repository link, not *this* one). `package.json` is renamed
   and gains `repository`/`homepage`/`bugs`. Its own commit — the star control writes this same
   string, so unlike `ci.yml`'s out-of-scope fix, the drift is on-topic here.
+- [What the control is called, and does it say anything](issues/05-what-the-control-is-called-and-does-it-say-anything.md) —
+  **One spoken string at every width: "Star {count} stars on GitHub"**, new tab with the footer's `↗`,
+  44px phone hit target by the `✕`'s transparent-`::before` method, and one PostHog event `star_clicked`
+  carrying only `stars_shown`. Found and fixed on the way: **the phone `Saved` chip has no accessible name
+  today** — it announces a bare "12" — so the star control's phone shape would have inherited the fault.
+  Desktop chips stay under 44; not this ticket's business. Bound on ticket 07: the `Saved` accessible
+  name must survive its word drop.
 
 ## Not yet specified
 
