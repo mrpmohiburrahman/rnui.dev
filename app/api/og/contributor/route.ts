@@ -94,12 +94,20 @@ async function tileFor(posterPath: string, w: number): Promise<string | null> {
     // **2x, capped at the source.** A 287px tile on a 1200px card is legible at 1x but soft
     // on a retina preview; `withoutEnlargement` stops it upscaling the 332px Posters, which
     // are the smallest in the catalogue.
-    const png = await sharp(src)
+    //
+    // **JPEG, not PNG.** This was PNG at `compressionLevel: 9`, which measured 27ms and 4KB a
+    // tile here and blew the function budget on a cold lambda with eight of them. JPEG at
+    // q82 is 19ms and about half the payload, and it is what the approved prototype renders
+    // used (`probe/tiles.ts`, `jpeg({ quality: 76, mozjpeg: true })`), so this also matches
+    // what was signed off. Satori takes a JPEG data URI exactly as it takes a PNG one — the
+    // whole reason these tiles are converted at all is that Satori refuses **AVIF**, not that
+    // it refuses JPEG.
+    const jpg = await sharp(src)
       .resize(w * 2, hh * 2, { fit: "cover", position: "top", withoutEnlargement: true })
-      .png({ compressionLevel: 9 })
+      .jpeg({ quality: 82, mozjpeg: true })
       .toBuffer()
 
-    const uri = `data:image/png;base64,${png.toString("base64")}`
+    const uri = `data:image/jpeg;base64,${jpg.toString("base64")}`
     tileCache.set(key, uri)
     return uri
   } catch {
@@ -139,14 +147,28 @@ export async function GET(request: Request) {
 
   const png = await renderContributorCard({ name: match, count: theirs.length, tiles: tiles.map((src) => ({ src })) })
 
-  // **No ETag and no Last-Modified.** Deliberate, and it is what the settled cards already do:
-  // these images are rendered per request and the URL already carries the cache key, so a
-  // validator here would only invite a 304 against bytes a scraper should re-fetch. Ticket 03
-  // found every other lever already pulled.
+  // **`immutable`, and this is a correction rather than a flourish.**
+  //
+  // The first version sent `public, max-age=0, must-revalidate` — what the settled cards send,
+  // and what ticket 03 concluded was the tightest thing RFC 9111 permits. That is right for a
+  // card whose URL is stable, and **wrong for this one**, because this URL is not stable: it
+  // carries `v`, a hash of the folded name and the newest Recording's id. When the fan or the
+  // count changes, `v` changes, so the address changes, so the response at any one address
+  // never changes. That is a content-addressed URL and the correct header for it is immutable.
+  //
+  // It matters because of what the first version did in production: **every contributor with 5
+  // or more Recordings returned 504.** A cold lambda re-fetches and re-converts up to eight
+  // tiles from the CDN on every single request, because the tile memo is per-process and dies
+  // with the lambda — so four concurrent scrapes meant four cold renders, and the fan was the
+  // most expensive one on the site. With `immutable` the edge serves it after the first hit and
+  // the cost is paid once per Contributor-version instead of once per request.
+  //
+  // No ETag and no Last-Modified still: a validator would invite a 304 re-running the render,
+  // which is the one thing this route cannot afford.
   return new NextResponse(new Uint8Array(png), {
     headers: {
       "Content-Type": "image/png",
-      "Cache-Control": "public, max-age=0, must-revalidate",
+      "Cache-Control": "public, max-age=31536000, immutable",
     },
   })
 }
