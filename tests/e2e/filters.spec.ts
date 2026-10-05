@@ -1,6 +1,10 @@
 import { expect, test, type Page } from "@playwright/test"
 
 import { allRecordings } from "../../data/catalogue"
+import {
+  categoriesWithCounts,
+  contributorsByCount,
+} from "../../data/recording"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
 // autocaptures into the production PostHog project.
@@ -354,12 +358,17 @@ test.describe("on a phone", () => {
     await expect(sheet(page)).toBeVisible()
     await expect(page).toHaveURL(/filters=open/)
 
-    // `Show N recordings` closes it and does nothing else — the filters were
-    // applied on the way in — and N is the first number in the result line.
-    const shown = (await page
-      .getByText(/^\d+ OF \d+ · /)
-      .first()
-      .textContent())!.match(/^\d+/)![0]
+    // `Show N recordings` closes the sheet and does nothing else — the filters were
+    // applied on the way in — and N is the number of tiles actually on screen.
+    //
+    // **N is read from the tiles, not from a result line.** `c956a9e` deleted
+    // the heading row's `48 OF 298 · SORTED RECENT` line, and this assertion was
+    // scraping N out of it with a regex; with the line gone the scrape hung and
+    // the test timed out. Counting `data-testid="demo"` states the same
+    // agreement — the dock's number is the grid's tile count — from the side
+    // that still exists. The dock and the grid share `shownCount`, so they agree
+    // by construction rather than by coincidence.
+    const shown = await page.getByTestId("demo").count()
     await page.getByRole("button", { name: `Show ${shown} recordings` }).click()
 
     await expect(sheet(page)).toHaveCount(0)
@@ -494,17 +503,27 @@ test("the legacy ?author= spelling redirects to ?contributor=", async ({
 })
 
 // The decision in (b): the rail counts the whole catalogue, so no filter moves a
-// number. Misc is 148 and Hewad Mubariz 31 no matter what is applied. A later
-// "improvement" that made the counts filter-aware would quietly reverse this,
-// which is why it is asserted rather than described.
+// number. A later "improvement" that made the counts filter-aware would quietly
+// reverse this, which is why it is asserted rather than described.
+//
+// **The counts are read from the catalogue, not written down.** Misc was 148
+// here, hard-coded, and the catalogue grew to 161 — so this test failed by
+// looking like a filtering bug rather than a stale literal. Read from
+// `categoriesWithCounts`, which is the same function the rail renders, so what
+// is asserted is the *rule* ("no filter moves a number") and not a snapshot of
+// one day's catalogue. The fixed figure stays in the comment because the number
+// itself is not the point.
 test("the rail counts the whole catalogue, not the filtered result set", async ({
   page,
 }) => {
+  const MISC = categoriesWithCounts().find((c) => c.name === "Misc")!.count
   await page.goto(
     "/products?category=Misc&contributor=Hewad+Mubariz&search=ticket"
   )
-  await expect(facet(page, "Misc")).toContainText("148")
-  await expect(facet(page, AUTHOR)).toContainText("31")
+  await expect(facet(page, "Misc")).toContainText(String(MISC))
+  await expect(facet(page, AUTHOR)).toContainText(
+    String(contributorsByCount().find((c) => c.name === AUTHOR)!.count)
+  )
 })
 
 // Four of twenty-four contributors is the design, not a placeholder — and a

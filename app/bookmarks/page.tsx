@@ -59,10 +59,25 @@ const BookmarksPage = () => {
     // fallback is null: which Recordings show is decided by localStorage, so
     // the grid itself was never going to be in the served HTML anyway.
     <div className="max-w-full">
-      <Suspense fallback={null}>
+      {/* The fallback carries this route's `h1`. `6acf554` set it to `null` along
+          with the rest of the heading row, which left /bookmarks with no `h1`
+          at all — and then with none in its *served* HTML either, since the grid
+          below only renders once the client has read localStorage. The heading
+          element is what the grid hands to the section head, so repeating it
+          here keeps one `h1` in the document rather than two: Suspense shows
+          this until the grid resolves, then swaps it out. */}
+      <Suspense
+        fallback={
+          <h1 className="sr-only text-section m-0 text-t1">Saved on this device</h1>
+        }
+      >
         <CataloguePage
           recordings={recordings}
           bookmarkedOnly
+          // The grid's visually-hidden `h1`, restored in commit 6acf554's wake.
+          // Without it this route carries no `h1` at all. The saved view has no
+          // filtered count to derive a heading from, so it names itself.
+          heading="Saved on this device"
           topViewCount={topViewCount}
         />
       </Suspense>

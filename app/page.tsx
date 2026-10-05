@@ -62,6 +62,13 @@ async function Page({
         contributors={contributors}
         topViewCount={topViewCount}
         diagnosis={diagnosis}
+        // The grid's visually-hidden `h1`, restored in commit 6acf554's wake: the
+        // element is what gives this route a document outline. `data` is already
+        // filtered by the search and facets, so `data.length` is the count the
+        // heading is a function of.
+        heading={catalogueHeading({
+          total: data.length,
+        })}
         // The mock's own showHero rule (Catalogue.dc.html:245) leaves the
         // filtered variant — which has only a search term beyond the facets —
         // off the list, so a search hides the hero.

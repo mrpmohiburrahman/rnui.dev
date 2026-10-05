@@ -12,6 +12,7 @@
 // catalogue — same components, same data, same density, prototype confined to
 // one throwaway URL.
 import { allRecordings } from "@/data/catalogue"
+import { catalogueHeading } from "@/lib/catalogue-heading"
 import {
   categoriesWithCounts,
   contributorsByCount,
@@ -46,6 +47,9 @@ async function Page({
       <StarControlPrototype />
       <CataloguePage
         recordings={data}
+        // The grid's visually-hidden `h1`. This throwaway route filters nothing,
+        // so it is always the unfiltered heading.
+        heading={catalogueHeading({ total: data.length })}
         stats={{
           recordings: allRecordings.length,
           contributors: getUniqueContributors().length,
