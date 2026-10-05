@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 297", () => {
+  it("counts the whole catalogue, per Category, summing to 298", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -24,7 +24,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Charts: 9,
       "Circular Progress Bars": 3,
       "Drop Down": 1,
-      "Full Apps": 5,
+      "Full Apps": 6,
       Headers: 3,
       List: 17,
       Loaders: 10,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(297)
+    expect(total).toBe(298)
   })
 })
 
@@ -78,14 +78,14 @@ describe("contributorsByCount", () => {
       { name: "Konstantinos Efkarpidis", count: 11 },
       { name: "William Candillon", count: 10 },
       // The two 8s are the tie to break: Alireza sorts before Kacper, so the
-      // ranked list is stable when the data changes. The three 6s tie the same
-      // way, and David Mokos sorts last of them.
+      // ranked list is stable when the data changes. The two 7s tie the same way,
+      // and David Mokos sorts before Thomino.
       { name: "Alireza Hadjar", count: 8 },
       { name: "Kacper Kapuściak", count: 8 },
+      { name: "David Mokos", count: 7 },
       { name: "Thomino", count: 7 },
       { name: "Aashu Dubey", count: 6 },
       { name: "Alek Mikucki", count: 6 },
-      { name: "David Mokos", count: 6 },
       { name: "Aswin C", count: 5 },
       { name: "Daehyeon Mun (문대현)", count: 4 },
       { name: "Andreev Danila", count: 3 },
@@ -100,6 +100,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(297)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(298)
   })
 })
