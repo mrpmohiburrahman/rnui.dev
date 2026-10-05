@@ -14,10 +14,12 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
 import { cn } from "@/lib/utils"
+import { showStarControl } from "@/lib/star-surface"
 import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
+import { StarControl } from "./star-control"
 import { CHIPS } from "./filter-chips"
 import { facetHref, reportFacetClick } from "./nav/catalogue-nav"
 
@@ -52,6 +54,12 @@ function SiteHeaderBar({
 
   const savedCount = bookmarks?.length ?? 0
   const onBookmarks = pathname === "/bookmarks"
+  // github-star-button ticket 04: the live site only. Read **once, here**, and
+  // handed to both layouts below — the desktop bar and the phone header are
+  // separate components that have already drifted once (`Saved` has two
+  // spellings for one fact), and two evaluations of the gate is two chances to
+  // disagree. Fails open, so a local dev server renders it: see lib/star-surface.
+  const showStars = showStarControl()
   // The two routes a Category or Contributor actually filters. /bookmarks
   // passes no searchParams to getRecordings and filters by the Remembered set
   // instead, and the other eight routes hold no Recordings at all.
@@ -115,9 +123,22 @@ function SiteHeaderBar({
             column and justify-end pushes its content to the gutter. */}
         <div className="flex flex-1 items-center justify-end gap-[10px]">
           {/* The Saved chip (Catalogue.dc.html:30). Accent on /bookmarks,
-              plain elsewhere. */}
+              plain elsewhere.
+
+              `aria-label` carries the whole name at every width, so the visible
+              word below is free to disappear without taking the accessible name
+              with it. github-star-button ticket 03: the word was pinned to the
+              name, which meant the chip could not drop it — and dropping it is
+              what repairs the live 768–880 wrap, where the chip breaks onto two
+              lines and pushes the mode toggle off-screen. The phone form below
+              announces a bare number for the same reason, and the label is what
+              fixes that too.
+
+              Both halves are `aria-hidden` because the label already says all of
+              it; leaving them readable would announce the name twice. */}
           <Link
             href="/bookmarks"
+            aria-label={`Saved ${savedCount}`}
             className={cn(
               "flex items-center gap-[6px] rounded-chip border px-[10px] py-[6px] text-[12.5px]",
               onBookmarks
@@ -127,19 +148,34 @@ function SiteHeaderBar({
           >
             {/* `◆ Saved` is one flex item, as the mock has it — a text node and
                 the count span, so the 6px gap is spent once. Split into three
-                the glyph bought a second gap the drawing does not have. */}
-            <span>
-              <span aria-hidden="true">◆</span> Saved
+                the glyph bought a second gap the drawing does not have.
+
+                `hidden lg:inline` on the word, not a conditional render: the text
+                stays in the DOM at every width and only the painting stops, which
+                is the difference between "the name is gone" and "the name is not
+                drawn". */}
+            <span aria-hidden="true">
+              <span>◆</span>{" "}
+              <span className="hidden lg:inline">Saved</span>
             </span>
             {/* No width reservation. It used to carry `min-w-[2ch]` so 0 → 3
                 could not shove the mode toggle sideways; the mock reserves
-                nothing (Catalogue.dc.html:30). `tabular-nums` still holds the
-                digits on one advance width, so the reflow is one character wide
-                at 3 → 10. */}
-            <span className="font-mono text-[10px] text-t3 tabular-nums">
+                nothing (Catalogue.dc.html:30), and github-star-button ticket 03
+                is explicit that the rule stays removed. `tabular-nums` still holds
+                the digits on one advance width, so the reflow is one character
+                wide at 3 → 10. */}
+            <span
+              aria-hidden="true"
+              className="font-mono text-[10px] text-t3 tabular-nums"
+            >
               {savedCount}
             </span>
           </Link>
+
+          {/* The star chip, between Saved and the toggle (Catalogue.dc.html:30-31).
+              The count is inlined from scripts/star-count.json at build time, so
+              GitHub is never in a visitor's request path. */}
+          {showStars && <StarControl variant="desktop" />}
 
           <ModeToggle />
         </div>
@@ -163,6 +199,11 @@ function SiteHeaderBar({
 
           <Link
             href="/bookmarks"
+            // github-star-button ticket 03. The phone chip announces a bare
+            // number today — `◆ 3` with nothing to attach the three to — and the
+            // fix is this label, not a visible word: 320px has no room for one,
+            // and adding one would shrink the glyph rather than the chip.
+            aria-label={`Saved ${savedCount}`}
             className={cn(
               // 38, not the mock's `min-height:36px`: content-box plus its 1px
               // border (CatalogueMobile.dc.html's ◆ chip).
@@ -174,6 +215,13 @@ function SiteHeaderBar({
           >
             <span aria-hidden="true">◆</span> {savedCount}
           </Link>
+
+          {/* The same control as the desktop bar's, one layout narrower — the
+              phone form is `★ 350` because 320px has no room for the word, which
+              is why the accessible name is a constant rather than a function of
+              what is drawn. `ml-auto` moved onto the Saved chip above, so this
+              sits beside it rather than pushing it. */}
+          {showStars && <StarControl variant="phone" className="ml-[6px]" />}
 
           <ModeToggle compact />
         </div>
