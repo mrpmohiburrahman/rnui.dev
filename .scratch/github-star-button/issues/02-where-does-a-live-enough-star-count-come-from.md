@@ -105,6 +105,16 @@ absorb it.
 
 ## Comments
 
+- 2026-10-05 — **This ticket's mechanism was superseded on 2026-10-05 by
+  [What may a stale count be allowed to say](03-what-may-a-stale-count-be-allowed-to-say.md).** The
+  maintainer replaced the ISR server fetch with a **committed file holding only the star count,
+  refreshed weekly by the repaired `metrics-update.yml` workflow**, always rendered with no expiry and
+  no date. **The answer above is history and must not be built.** The *research* in this ticket is
+  still correct and is now load-bearing rather than superseded: the proof that the workflow has failed
+  18 runs out of 18 is what makes its repair mandatory, and the documented one-line fix is the fix the
+  star control now depends on. Kept rather than rewritten, because `resolved` is terminal and the
+  chain of reasoning is part of how the map arrived here.
+
 - 2026-10-05 — Research was meant to run as a `/research` subagent per the wayfinder ticket type.
   Subagents are unavailable in this environment (`explore` and `general` both fail with
   `Model not found`), so the research was done in-session. That is permitted for research tickets and
