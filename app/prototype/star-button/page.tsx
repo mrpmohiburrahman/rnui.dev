@@ -25,7 +25,19 @@ import { StarControlPrototype } from "@/components/prototype/star-control-protot
 
 import { getRecordings } from "@/app/actions/get-recordings"
 
-async function Page() {
+// Reading searchParams here is what makes this route dynamic, and it has to be
+// dynamic: `CataloguePage` calls `useSearchParams` itself
+// (components/catalogue-page.tsx:129), and a statically prerendered route that
+// does so fails the build with "useSearchParams() should be wrapped in a suspense
+// boundary". The real catalogue routes never hit this because their own pages
+// already read searchParams server-side. Nothing consumes the value — it is read
+// for its effect on rendering.
+async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  await searchParams
   const data = await getRecordings()
   const topViewCount = 0
 

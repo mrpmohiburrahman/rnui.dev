@@ -587,7 +587,13 @@ function Switcher({
   )
 }
 
-export function StarControlPrototype() {
+// `useSearchParams` opts its subtree out of static prerendering, so the read has
+// to sit BELOW a Suspense boundary or `next build` fails prerendering this route
+// ("should be wrapped in a suspense boundary"). The boundary that used to wrap
+// only HeaderShell was one level too low to help this component's own read, so
+// the read moved into this inner component and the boundary moved up to it. The
+// fallback still renders the A header, which is the default variant.
+function StarControlByQuery() {
   const searchParams = useSearchParams()
   const key = searchParams.get("variant") ?? "A"
   const current = Math.max(
@@ -598,10 +604,16 @@ export function StarControlPrototype() {
 
   return (
     <>
-      <Suspense fallback={<HeaderShell variant={VariantA} />}>
-        <HeaderShell variant={variant} />
-      </Suspense>
+      <HeaderShell variant={variant} />
       <Switcher variants={VARIANTS} current={current} />
     </>
+  )
+}
+
+export function StarControlPrototype() {
+  return (
+    <Suspense fallback={<HeaderShell variant={VariantA} />}>
+      <StarControlByQuery />
+    </Suspense>
   )
 }
