@@ -64,14 +64,17 @@ The tile was cropping the majority in order to be uniform with a minority that n
 ## Open tickets
 
 - **[Put the tile on the capture ratio](issues/02-put-the-tile-on-the-capture-ratio.md)** —
-  `ready-for-human`. **The tile shipped on 2026-10-04 in `53345a1` and this ticket closed on 2026-10-06,
-  late and for a different reason than it was written for:** what shipped was the tile, and what was
-  left undone was the ticket — unresolved, its map entry still open, its autoplay table unverified, and
-  its decision 2 leaving the standard unpinned. Four of its five Definition-of-Done bullets are now met
-  and measured. What is left is **one measurement, not a decision: the 9/16 arm of the LCP
-  comparison**, which was never run, so the figures recorded are absolute rather than a delta.
+  **`resolved` 2026-10-06.** **The tile shipped on 2026-10-04 in `53345a1` and the ticket closed two
+  days later, late and for a different reason than it was written for:** what shipped was the tile, and
+  what was left undone was the ticket — unresolved, its map entry still open, its autoplay table
+  unverified, its decision 2 leaving the standard unpinned, and its headline cost never measured.
+  **The cost does not exist:** both arms measured as local production builds on one port, five runs
+  each, every LCP delta (−81, −2, −1, +119ms) inside its own arm's spread (214, 322, 479, 918ms), CLS
+  0 and DOM identical throughout. The taller grid also fetches **fewer requests and ~156KB less**,
+  because fewer tiles fall below the fold for the Poster gate to fetch — the 18% height partly bought
+  itself back.
 
-  The three findings worth carrying:
+  The three other findings worth carrying:
 
   - **The tile's autoplay table was wrong in both directions and did not reproduce.** Measured on the
     served production page — all 48 tiles, 844×390 landscape, both boxes applied to the same page in
@@ -92,8 +95,8 @@ The tile was cropping the majority in order to be uniform with a minority that n
   - **`pnpm build` was broken on this branch and it was not this effort's doing.** `be949ab`, the
     *github-star-button* prototype, called `useSearchParams` with no `Suspense` boundary, so
     prerendering `/prototype/star-button` failed and **no production build existed at all** — which also
-    blocked this ticket's LCP measurement. Fixed in two small edits, recorded in the ticket, and named
-    as another effort's bug. `next build` now exits 0.
+    blocked this ticket's LCP measurement, since that needs a production server. Fixed in two small
+    edits, recorded in the ticket, and named as another effort's bug. `next build` now exits 0.
 
 - **[What happens when the device or the runtime changes](issues/01-what-happens-when-the-device-or-the-runtime-changes.md)**
   — blocked by the above, and now unblocked by it. A standard that names a device expires; whether it
