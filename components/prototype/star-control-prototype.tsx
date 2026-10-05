@@ -36,6 +36,12 @@ type Variant = {
   key: string
   name: string
   idea: string
+  /**
+   * Render the Saved chip without its "Saved" word below `lg`. The phone header
+   * already does this — site-header.tsx:175 draws `◆ 0`, not `◆ Saved 0` — so
+   * the wordless form is an existing shape, not a new one.
+   */
+  savedWordlessBelowXl?: boolean
   Desktop: (p: { savedCount: number }) => React.ReactNode
   Phone: (p: { savedCount: number }) => React.ReactNode
 }
@@ -286,7 +292,44 @@ const VariantE: Variant = {
   ),
 }
 
-const VARIANTS: Variant[] = [VariantA, VariantB, VariantC, VariantD, VariantE]
+/* ------------------------------------------------------------------ *
+ * F — A's shape at md too, paid for out of the Saved chip. The star   *
+ *     control never changes shape; the Saved chip drops its word      *
+ *     below lg and gets it back at lg. Pure CSS, the phone's own      *
+ *     treatment, and it also repairs the wrapping that ships at 768.   *
+ * ------------------------------------------------------------------ */
+
+const VariantF: Variant = {
+  key: "F",
+  name: "A's chip, paid from Saved",
+  idea: "A's chip at every desktop width. Both words — Saved's and Star's — appear only from xl, which is the first width with room for them. Chip shape never changes.",
+  savedWordlessBelowXl: true,
+  Desktop: ({ savedCount }) => (
+    <StarLink
+      label="Star rnui.dev on GitHub"
+      srLabel={`Star rnui.dev on GitHub, ${STARS} stars`}
+      className="border-line bg-transparent text-t2"
+    >
+      <GlyphStar />
+      {/* The word is what the narrow bands cannot spare, twice over. `sr-only`
+          below xl keeps the accessible name whole — the same trick the Saved
+          chip uses, and the reason this is not a label change. */}
+      <span className="hidden xl:inline">Star</span>
+      <span className="sr-only xl:hidden">Star</span>
+      <Count />
+    </StarLink>
+  ),
+  Phone: VariantA.Phone,
+}
+
+const VARIANTS: Variant[] = [
+  VariantA,
+  VariantB,
+  VariantC,
+  VariantD,
+  VariantE,
+  VariantF,
+]
 
 /* ------------------------------------------------------------------ *
  * The shell — a faithful copy of components/site-header.tsx.          *
@@ -357,12 +400,20 @@ function HeaderShell({ variant }: { variant: Variant }) {
           {variant.key === "D" && (
             <>
               {variant.Desktop({ savedCount })}
-              <SavedChip savedCount={savedCount} on={onBookmarks} />
+              <SavedChip
+                savedCount={savedCount}
+                on={onBookmarks}
+                wordlessBelowXl={variant.savedWordlessBelowXl}
+              />
             </>
           )}
           {variant.key !== "D" && (
             <>
-              <SavedChip savedCount={savedCount} on={onBookmarks} />
+              <SavedChip
+                savedCount={savedCount}
+                on={onBookmarks}
+                wordlessBelowXl={variant.savedWordlessBelowXl}
+              />
               {variant.Desktop({ savedCount })}
             </>
           )}
@@ -409,17 +460,38 @@ function HeaderShell({ variant }: { variant: Variant }) {
   )
 }
 
-function SavedChip({ savedCount, on }: { savedCount: number; on: boolean }) {
+function SavedChip({
+  savedCount,
+  on,
+  wordlessBelowXl,
+}: {
+  savedCount: number
+  on: boolean
+  wordlessBelowXl?: boolean
+}) {
   return (
     <Link
       href="/bookmarks"
       className={cn(
         "flex items-center gap-[6px] rounded-chip border px-[10px] py-[6px] text-[12.5px]",
-        on ? "border-acc bg-acc-soft text-t1" : "border-line bg-transparent text-t2"
+        on
+          ? "border-acc bg-acc-soft text-t1"
+          : "border-line bg-transparent text-t2"
       )}
     >
       <span>
-        <span aria-hidden="true">◆</span> Saved
+        <span aria-hidden="true">◆</span>{" "}
+        {/* Variant F: the word is the width this band cannot spare, and the
+            phone header at site-header.tsx:175 already drops it. The count
+            keeps its tabular figures either way. */}
+        {wordlessBelowXl ? (
+          <>
+            <span className="hidden xl:inline">Saved</span>
+            <span className="sr-only xl:hidden">Saved</span>
+          </>
+        ) : (
+          "Saved"
+        )}
       </span>
       <span className="font-mono text-[10px] text-t3 tabular-nums">
         {savedCount}
