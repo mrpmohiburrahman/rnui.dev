@@ -139,8 +139,21 @@ storage product, and it means the write path is where the ceiling lives.
 | `CLOUDFLARE_D1_DATABASE_ID` | Everything D1. The UUID `c55f79bd-…`, never the name — the D1 API requires the id. |
 | `CLOUDFLARE_D1_API_TOKEN` | The app **and** `pnpm saved:d1:migrate`. Needs `Account → D1 → Edit`. |
 
-**On Vercel:** all three, for Production. Until they are set, the save routes
-refuse every request — the same shape as the missing Turnstile secrets noted in
+**On Vercel: all three are set** on `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`, on
+2026-10-06. `CLOUDFLARE_D1_DATABASE_ID` and `FIREBASE_PROJECT_ID` are on
+production, preview and development; `CLOUDFLARE_D1_API_TOKEN` is on production
+and preview, as **`sensitive`** so it is write-only and never readable back.
+
+The token itself was minted for this database with a policy of exactly three
+permission groups — D1 Metadata Read, D1 Read, D1 Write — on this account alone,
+named `rnui-dev saved-demos D1`. Least privilege was checked rather than assumed:
+it reads and writes D1, and `GET /r2/buckets` returns **refused**, where
+`CLOUDFLARE_R2_TOKEN` succeeds. (`GET /workers/scripts` answers 200 with `[]`;
+the account has no Worker scripts and the policy grants nothing under Workers, so
+that is the endpoint answering rather than access.)
+
+If any of the three is ever missing, the save routes refuse every request rather
+than degrading — the same shape as the missing Turnstile secrets noted in
 `.env.example`.
 
 **A separate token from `CLOUDFLARE_R2_TOKEN`, and not a distinction in the
