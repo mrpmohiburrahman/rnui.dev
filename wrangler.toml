@@ -1,0 +1,31 @@
+# wrangler.toml
+#
+# Cloudflare resources for rnui.dev. This file owns the D1 database's identity —
+# which account, which database — so `wrangler d1 migrations apply` and the app
+# cannot drift onto two different schemas.
+#
+# The site is Next.js on Vercel, so nothing here is deployed as a Worker and the
+# `DB` binding is never read at runtime: lib/saved-demos.ts goes to the account's
+# REST /query endpoint with a token scoped Account -> D1 -> Edit. The binding is
+# declared anyway, because it is what makes `wrangler d1 migrations apply <name>`
+# name the same database the app reads, and because anything that later needs a
+# Worker already has one.
+#
+# Mirrors docs/r2-setup.md for R2. Reproduce with `pnpm saved:d1:migrate`.
+
+name = "rnui-dev"
+compatibility_date = "2026-10-06"
+
+# Cloudflare account id. The same account as the R2 buckets (docs/r2-setup.md).
+account_id = "b3a4cec2f17469072a5e97c44424ae14"
+
+[[d1_databases]]
+# A Reader's saved Demos. One row per Reader — the schema shape and the reason
+# for it are in migrations/0001_saved-demos.sql, and the measured justification
+# is in .scratch/sign-in-to-save/issues/05-stand-up-d1-schema-and-read-discipline.md.
+binding = "DB"
+database_name = "rnui-saved-demos"
+database_id = "c55f79bd-cd22-4a8e-9047-269024722ff7"
+# WEUR, matching both R2 buckets, so a Reader's saved Demos and their Assets sit
+# in the same region.
+migrations_dir = "migrations"

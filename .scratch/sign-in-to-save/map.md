@@ -1,0 +1,109 @@
+# Sign in to save
+
+## Destination
+
+A visitor can sign in from the top nav with Google or another social provider — no email,
+no password, no Google Cloud project of ours — and only a signed-in **Reader** can save a Demo.
+Their saved Demos persist across devices in Cloudflare D1, the saved Demos already sitting in
+their browser merge into their account on first sign-in, and the domain language and ADRs say
+so rather than staying silent about a change this significant.
+
+This effort **carries its own execution**. The maintainer asked to implement the feature, not
+to receive a spec, so implementation tickets live on this map alongside the decision tickets.
+
+## Notes
+
+- Read `CONTEXT.md` and `docs/adr/` before touching code. The domain is **Recording**,
+  **Contributor** and **Reader**, never Entry or author. `user` is on Contributor's *avoid* list.
+- Skills every session should consult: `/grilling`, `/domain-modeling`.
+- Read `docs/agents/issue-tracker.md` for how tickets, blocking and the frontier work here.
+- Ticket 03 settled the vocabulary; it is in `CONTEXT.md` and ADR-0013, not here.
+
+### Settled at charting
+
+Six decisions, all made by the maintainer against researched options. They bind the tickets.
+
+1. **Firebase Authentication is the identity provider.** Google is available without a Google
+   Cloud project of ours, which Clerk and Supabase both require for production instances. Clerk
+   Hobby remains usable and free (50,000 MRU, no credit card) and needs no Firebase, so this is
+   revisited only if ticket 01 disqualifies Firebase.
+2. **Base Firebase Auth only. Never enable Identity Platform.** Enabling it drops the Spark plan
+   from unlimited users to 3,000 daily active users. Nothing this feature needs requires it.
+3. **Cloudflare D1 stores saved Demos, verified by Firebase ID token against Google's public
+   JWKS.** Chosen over Firestore because Spark *refuses* operations past 50,000 reads/day rather
+   than throttling them, so one viral day breaks saving sitewide until midnight UTC. D1's free
+   tier is roughly 100× plausible peak. The cost is hand-written token verification, treated as
+   security-sensitive code with tests.
+4. **Existing local bookmarks merge on first sign-in.** Nobody loses what they saved. This is the
+   only option that loses nothing; the alternative splits one person's saved set in two.
+5. **Voting stays anonymous and browser-local.** Out of scope. Touching it would widen into the
+   paused `posthog-expansion` effort.
+6. **Saving requires sign-in.** Anonymous visitors cannot save, by the maintainer's decision.
+
+### Settled at ticket 03
+
+Decided by grilling on 2026-10-06, recorded in `CONTEXT.md` and ADR-0013. These bind the tickets
+that follow and are not reopened without a reason.
+
+7. **The signed-in person is a `Reader`.** Not a `user`, not a `member`, not an `account`. `visitor`
+   is left as the informal word for someone not signed in. A Reader is not a Contributor and one
+   human may be both.
+8. **`Remembered set` keeps its current meaning and now covers voting alone.** Its definition was
+   already exactly right for `votedItems`, so it was not redefined to straddle two things.
+9. **No new noun for the saved collection.** Prose says "saved Demos". `Library` was proposed and
+   declined as glossary bloat.
+10. **Both providers ship, and accounts must link across them.** With Firebase's "one account per
+    email address" off by default, one human using Google on one device and GitHub on another gets
+    two saved-Demos lists — which presents to them as silent data loss. Ticket 08 owns the fix. The
+    fallback if that proves too expensive is one provider only, never two without linking.
+
+### Constraints
+
+- No email and password sign-in. Not a preference to defer — leave Firebase's email provider off.
+- No Google Cloud project, no OAuth client of ours, no consent screen, no Google verification.
+- Free tier only. Any move past it is a maintainer decision, not an agent's.
+- **Never enable Identity Platform** (decision 2).
+- The stored browser key `"bookmarkedItems"` keeps its exact spelling — renaming it silently
+  discards every bookmark a visitor has already made (ADR-0008).
+- A saved-demo read is **one document read per visitor**, never one per Recording. This is the
+  decision that keeps D1 cheap and would be expensive to retrofit; see ticket 03.
+
+## Decisions so far
+
+<!-- one line per closed ticket -->
+
+- [Does Firebase's shared Google client show an unverified-app warning?](issues/01-does-firebase-google-show-unverified-warning.md) — it does not, because the warning is triggered by *sensitive scopes* and Firebase requests only `openid`/`email`/`profile`. The real cost of the no-GCP-project constraint is that our name and logo cannot appear on Google's consent screen.
+- [How is a Firebase ID token verified on the way to D1?](issues/02-verify-firebase-id-token-for-d1.md) — with `jose` against Google's public JWKS, ~30 lines, no service-account credential in our stack. Revocation is not checkable without a per-request round trip, and that limitation is accepted and recorded rather than papered over.
+- [Name the signed-in visitor and saved set](issues/03-name-the-signed-in-visitor-and-saved-set.md) — the signed-in person is a **Reader**, explicitly not a Contributor. `Remembered set` keeps its meaning and now covers voting alone, so "nothing on the server can read one" stays true rather than going stale. No new noun was invented for the saved collection. Written to `CONTEXT.md` and ADR-0013.
+- [Sign-in UI and pressing Save while signed out](issues/04-sign-in-ui-and-press-save-while-signed-out.md) — a **hybrid** of two prototype variants, and the asymmetry is the point: a "Sign in" chip with a person glyph when signed out, a bare avatar circle with the Reader's initial when signed in. Pressing Save while signed out opens a provider sheet **in place and saves the Demo on return**, rather than losing the click.
+- [Stand up D1, its schema, and the read discipline](issues/05-stand-up-d1-schema-and-read-discipline.md) — **one row per Reader** holding a JSON array, measured: a Reader who saved all 298 Demos costs **1 row read** against 596 for the row-per-save shape. All D1 SQL lives in `lib/saved-demos.ts` with `d1Query` module-private, so the discipline is structural rather than a rule to remember. Two corrections worth carrying: **D1 on the Free plan refuses at the daily cap just as Firestore on Spark does**, so the case for D1 is headroom (100×), not behaviour; and **writes, not reads, are the binding ceiling** at 100,000/day. Blocked on the maintainer setting three Vercel variables.
+
+## Not yet specified
+
+- Whether the nav button shows an account menu or a plain avatar, and what it looks like
+  signed-out versus signed-in. Blocked on ticket 04's prototype; sharpen once that lands.
+- What a signed-in Reader sees on `/bookmarks` that an anonymous visitor cannot, beyond the list
+  itself.
+- Whether sign-in can be triggered from anywhere besides the nav button — for instance by
+  pressing Save itself while signed out. Largely answered by ticket 04's prototype; what remains is
+  whether the pending-save intent should also survive a *closed* tab rather than only the OAuth
+  redirect.
+- Whether D1 needs a scheduled cleanup for saved ids whose Recording has since left the
+  catalogue.
+- What happens to the merge if a Reader signs in on a second device before ever signing in on
+  the first. Probably nothing, but it is unasked.
+- **A periodic sweep deleting saved Demos belonging to accounts deleted from Firebase.** The
+  ADR-0013 limitation is that a deleted account's token stays valid for up to an hour, so rows
+  outlive their owner by that much. Accepted for now; a stored `lastSeenAt` and a scheduled job
+  would close it properly, and it only matters if the feature grows toward anything sensitive.
+  Ticket 05 deliberately did **not** add the column: nothing reads or writes it yet, and a nullable
+  `ALTER TABLE` when the sweep is built costs one migration.
+
+## Out of scope
+
+- Voting, and any change to the `votedItems` Remembered set. Decision 5.
+- Any change to `view_count` / `vote_count` field names or the `/products` and `?category=`
+  public spellings (ADR-0008's frozen boundary).
+- The Archive at `old.rnui.dev`. It is frozen and takes no further changes.
+- Profiles, avatars uploaded by users, social posting, or any sharing of a saved set.
+- Migrating existing anonymous bookmarks proactively. They merge on sign-in, not before.
