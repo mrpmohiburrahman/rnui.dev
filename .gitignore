@@ -90,3 +90,9 @@ __data__
 # Nothing legitimate lives here: Demos are served from cdn.rnui.dev, and the repo
 # tracks no root-level mp4 (checked 2026-09-25).
 /*.mp4
+
+# Wrangler's local state. `wrangler d1 migrations list` creates a local miniflare
+# database even when you only wanted to read the pending list, and the .sqlite
+# files land here. Nothing in it is source, and `wrangler.toml` — the file that
+# actually pins the D1 database's identity — is tracked.
+.wrangler/
