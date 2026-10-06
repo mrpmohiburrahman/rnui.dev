@@ -43,10 +43,19 @@ export function ShellChrome({
   rail: ReactNode
   children: ReactNode
 }) {
-  // `recording` is the folder name of app/recording/[id], and the segment the
+// `recording` is the folder name of app/recording/[id], and the segment the
   // root layout sees when that route is the one actually rendered.
-  if (useSelectedLayoutSegment() === "recording") {
-    return <div className="flex flex-1 flex-col">{children}</div>
+  const segment = useSelectedLayoutSegment()
+  if (segment === "recording") {
+    return <div className="flex-1 flex-col">{children}</div>
+  }
+
+  // PROTOTYPE — throwaway, wayfinder ticket 01. The prototype's own header shell
+  // has to sit in the real header's box or the width and centring judgements are
+  // meaningless, and a page cannot replace a layout's header. Opting the segment
+  // out of the chrome is the seam this file already owns. Delete with the rest.
+  if (segment === "prototype") {
+    return <div className="flex w-full flex-1 flex-col">{children}</div>
   }
 
   return (

@@ -82,10 +82,17 @@ test("a row lands on that Contributor's filtered catalogue", async ({
 // eats, a CJK name that NFKD-then-strip empties, and a pipe. Each is exact and
 // unambiguous inside `?contributor=`, and each has to survive the round trip
 // through the URL to the filtered catalogue.
+// Counts read from the catalogue rather than written down. They were literals,
+// and they went stale silently: Enzo was 124 here while the catalogue held 138,
+// which reads as a filtering bug rather than a test that stopped being true.
+// See tests/e2e/headings.spec.ts:8 for the same correction on TOTAL.
+const COUNT_FOR = (name: string) =>
+  allRecordings.filter((r) => r.contributor === name).length
+
 for (const [name, expected] of [
-  ["Enzo Manuel Mangano (Reactiive)", 124],
-  ["Daehyeon Mun (문대현)", 4],
-  ["Epicode | 0xV", 2],
+  ["Enzo Manuel Mangano (Reactiive)", COUNT_FOR("Enzo Manuel Mangano (Reactiive)")],
+  ["Daehyeon Mun (문대현)", COUNT_FOR("Daehyeon Mun (문대현)")],
+  ["Epicode | 0xV", COUNT_FOR("Epicode | 0xV")],
 ] as const) {
   test(`\`${name}\` addresses its own ${expected} recordings`, async ({
     page,

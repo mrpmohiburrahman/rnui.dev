@@ -139,10 +139,34 @@ export function repoClicked(facts: RecordingFacts, surface: Surface) {
 }
 
 /**
+ * The header's star control was followed — the outbound link to the repository,
+ * as opposed to any Recording's source link.
+ *
+ * **Its own event, not a reuse of `repoClicked`.** That event carries a
+ * Recording's facts, because it means "a Contributor shipped this and you went
+ * to look at it", and its headline metric depends on that. A star control has no
+ * Recording behind it, so reusing the name would mean sending null fields, or —
+ * worse — giving an existing event a second meaning and splitting a metric that
+ * has been counted since the site launched.
+ *
+ * **One property, and it is the number that was on screen.** Not the count at
+ * click time, which is the same number: the file is read at build time and
+ * cannot change within a page's life. Deliberately **no staleness property** —
+ * `star-count.json` carries a date, and the render deliberately keeps it out of
+ * the page; leaking it here would reintroduce through analytics the one
+ * disclosure github-star-button ticket 03 decided against. A future contributor
+ * adding `generated_at` here reopens a settled decision from the far end, which
+ * is why the test asserts the key list and not just the value.
+ */
+export function starClicked(stars: number) {
+  posthog.capture("star_clicked", { stars })
+}
+
+/**
  * A facet was set. `active_filter_count` counts the facets in force *after* the
- * click, so 2 means the visitor has intersected a Category with a contributor — the
- * thing the sidebar only started supporting recently and nothing yet knows the
- * appetite for.
+ * click, so 2 means the visitor has intersected a Category with a contributor —
+ * the thing the sidebar only started supporting recently and nothing yet knows
+ * the appetite for.
  */
 export function filterApplied(
   facet: Facet,

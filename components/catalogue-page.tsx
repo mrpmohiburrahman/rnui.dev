@@ -67,6 +67,14 @@ interface CataloguePageProps {
   diagnosis?: CatalogueDiagnosis | null
   /** Rendered above the sort controls: a heading, a hero, a newsletter form. */
   children?: ReactNode
+  /**
+   * The section head for this route's filter state, handed to the grid's
+   * visually-hidden `h1`/`h2`. Computed here rather than in each route because
+   * it is a function of the filter *and* the filtered count, and this is the one
+   * module that has both — the routes hand over a filtered `recordings` array
+   * but never learn the count the client ends up filtering to.
+   */
+  heading: string
   /** The phone filter sheet's two facet lists. Passed by the routes that can
    *  (server components reading data/recording.ts), and absent on /bookmarks,
    *  which is "use client" and must not value-import @/data/* into a client
@@ -84,6 +92,7 @@ export function CataloguePage({
   perContributor,
   diagnosis,
   children,
+  heading,
   topViewCount,
   categories,
   contributors,
@@ -202,6 +211,7 @@ export function CataloguePage({
           sortedData={sortedData}
           emptyState={emptyState}
           hero={showHero && stats ? <Hero {...stats} /> : undefined}
+          heading={heading}
           catalogueTotal={stats?.recordings}
           bookmarkedOnly={bookmarkedOnly}
           // Both stored sets are still null until an effect has read localStorage.

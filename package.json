@@ -1,5 +1,13 @@
 {
-  "name": "awesome-react-native-ui",
+  "name": "rnui.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrpmohiburrahman/rnui.dev"
+  },
+  "homepage": "https://www.rnui.dev",
+  "bugs": {
+    "url": "https://github.com/mrpmohiburrahman/rnui.dev/issues"
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,7 +33,6 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "postbuild": "next-sitemap",
     "update:lastcommit": "node scripts/updateLastCommitDate.js",
-    "metrics:update": "tsx scripts/metrics-update.ts",
     "scrub:emails": "tsx scripts/scrub-email-list.ts",
     "scrub:group": "tsx scripts/group-email-list.ts",
     "rules:verify": "tsx scripts/verify-firestore-rules.ts",

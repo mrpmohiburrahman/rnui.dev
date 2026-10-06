@@ -66,6 +66,21 @@ export interface RecordingCardGridProps {
    * panel. Absent on `/products` and `/bookmarks`, which show only the tabs.
    */
   hero?: React.ReactNode
+  /**
+   * The section head for this route's filter state, from
+   * `lib/catalogue-heading.ts` — "Recent", the Category, the Contributor's name,
+   * "No matches".
+   *
+   * It is rendered as the row's `h1` (or `h2` under a hero) but **visually
+   * hidden**, and it is required rather than optional. `6acf554` removed the
+   * visible heading and took the element with it, which left `/products` and
+   * `/bookmarks` with **no `h1` at all** — the deleted code's own comment said
+   * "every route carries exactly one h1 — /products has none without this".
+   * A page with no `h1` loses its document outline for anyone navigating by
+   * heading, which is the one thing the element was for; the visible text was
+   * the part worth dropping, and `sr-only` drops only that.
+   */
+  heading: string
   /** The whole catalogue's size, never the filtered set. Used as the
    * denominator of the result line. Absent on `/bookmarks`, whose saved view has
    * no denominator. */
@@ -87,6 +102,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
   votedRecordingIds,
   toggleVote,
   hero,
+  heading,
   catalogueTotal,
   bookmarkedOnly,
   topViewCount,
@@ -189,8 +205,19 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
           <FilterChips />
         </div>
       )}
-      {/* The heading row: sort tabs aligned left. */}
+      {/* The heading row: the section head, visually hidden, and the sort tabs
+          aligned left. The head is the `h1` on a route with no hero and the
+          `h2` on one with it, so every catalogue route carries exactly one
+          `h1` — `/products` and `/bookmarks` have none without it. `sr-only`
+          rather than removed: `6acf554` dropped the visible text on purpose and
+          this keeps that, while the element it deleted along with the text is
+          what gives the page its outline. */}
       <div className="flex w-full items-baseline gap-4 pb-[11px] md:pb-[14px]">
+        {hero ? (
+          <h2 className="sr-only">{heading}</h2>
+        ) : (
+          <h1 className="sr-only">{heading}</h1>
+        )}
         {/* Sort segmented control */}
         <div className="flex items-center gap-[2px] rounded-chip border border-line bg-field p-[3px]">
           {(
@@ -324,7 +351,7 @@ export const RecordingCardGrid: React.FC<RecordingCardGridProps> = ({
                 Source link (lib/analytics.ts:109-113) and this link belongs to
                 no Recording. */}
             <a
-              href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+              href="https://github.com/mrpmohiburrahman/rnui.dev"
               target="_blank"
               rel="noopener noreferrer"
               className="text-acc underline underline-offset-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-2"

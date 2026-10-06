@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 
 import {
@@ -44,6 +45,21 @@ describe("catalogueHeading", () => {
   })
 })
 
+/**
+ * `catalogueResultLine` no longer renders anywhere.
+ *
+ * `c956a9e` ("move sort tabs to heading row, remove result line") deleted the
+ * heading row's result line, and `6acf554` deleted the heading beside it. The
+ * string functions stayed — `catalogueHeading` is the grid's visually-hidden
+ * `h1` and `catalogueMatchLine` is the zero panel's eyebrow — but this one lost
+ * its only caller and became dead code.
+ *
+ * These tests are **kept deliberately, and the guard below is the reason.** They
+ * pin the exact wording and precedence of a string this codebase has already
+ * deleted once. If the line is ever wanted back, this is the specification of
+ * what it must say, and it still passes; nothing has to be reconstructed from
+ * a diff. The guard that keeps it honest is the last test in this block.
+ */
 describe("catalogueResultLine", () => {
   const base = { shown: 48, catalogueTotal: 277, sort: "recent" as const }
 
@@ -144,6 +160,36 @@ describe("catalogueResultLine", () => {
         loading: true,
       })
     ).toBe("RESERVING SPACE FOR 48")
+  })
+
+  // The one test in this file that asserts a *fact* rather than a string: this
+  // function has no caller, and that is the state a reader of lib/ cannot see
+  // from the module itself. Written as an explicit allowlist rather than a
+  // source scan so that adding a caller updates the decision instead of
+  // quietly passing — if `catalogueResultLine` is ever rendered again, the
+  // e2e specs that assert its text have to come back with it, and this fails
+  // first.
+  const RENDERED_CALLERS = [
+    "components/recording-card-grid.tsx",
+    "components/catalogue-page.tsx",
+    "components/filter-dock.tsx",
+    "app/page.tsx",
+    "app/products/page.tsx",
+    "app/bookmarks/page.tsx",
+  ]
+
+  it("is still rendered by nobody", () => {
+    const callers = RENDERED_CALLERS.filter((file) => {
+      const source = readFileSync(file, "utf8")
+      return /catalogueResultLine/.test(source)
+    })
+    expect(
+      callers,
+      `catalogueResultLine is called from ${callers.join(", ")}. The heading row's ` +
+        `result line is being brought back: delete this guard, restore the e2e ` +
+        `assertions on its text in tests/e2e/headings.spec.ts and home.spec.ts, ` +
+        `and update the comment above this block.`
+    ).toEqual([])
   })
 })
 

@@ -50,7 +50,7 @@ export function SiteFooter() {
             Submit a recording
           </Link>
           <Link
-            href="https://github.com/mrpmohiburrahman/awesome-react-native-ui"
+            href="https://github.com/mrpmohiburrahman/rnui.dev"
             target="_blank"
             rel="noopener noreferrer"
             className="text-[11.5px] text-acc underline underline-offset-3"
