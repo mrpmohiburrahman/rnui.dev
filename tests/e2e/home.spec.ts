@@ -4,6 +4,10 @@ import { expect, test, type Page } from "@playwright/test"
 // these result lines were pinned to 277 and went red when the catalogue passed it.
 import { allRecordings } from "../../data/catalogue"
 
+// Kept in step with PAGE_SIZE in components/recording-card-grid.tsx, the same
+// way tests/e2e/pagination.spec.ts states it.
+const PAGE_SIZE = 48
+
 const CDN = process.env.NEXT_PUBLIC_CDN_URL ?? "https://cdn.rnui.dev"
 
 // A CI run is not a site visit. Without this every test would post pageviews and
@@ -54,7 +58,7 @@ test("home page renders catalog and search", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "A dark room full of React Native interfaces, playing quietly.",
+      name: "A community-made catalogue of React Native interfaces.",
     })
   ).toBeVisible()
 
@@ -241,18 +245,20 @@ test.describe("reduced motion", () => {
     expect(label).toContain("STILLS ONLY")
   })
 
-  // The result line names the mode the rest of the reduced-motion tests assume
-  // (Catalogue.dc.html:216). The grid reads its own preference and flips the
-  // tail to STILLS ONLY on hydration — the server rendered SORTED RECENT for
-  // everyone, because a served document must not claim stills for a visitor who
-  // will play Demos (components/recording-card-grid.tsx).
-  test("the result line reads 48 OF the catalogue · STILLS ONLY", async ({
+  // The result line used to name the mode here, and `c956a9e` deleted it — the
+  // state chip's CSS ::before is what carries "STILLS ONLY" now, and the test
+  // above already reads it. This one used to be the *count* half of that line,
+  // `48 OF 277 · STILLS ONLY`, so what remains worth asserting is the count's
+  // own surface: under reduction no `<video>` mounts, so the tile count is still
+  // the page's 48 and nothing about it changes. The grid's reserved box is what
+  // guarantees those 48 are there before any of it is visible.
+  test("the grid still reserves 48 tiles when no Demo mounts", async ({
     page,
   }) => {
     await page.goto("/")
-    await expect(
-      page.getByText(`48 OF ${allRecordings.length} · STILLS ONLY`)
-    ).toBeVisible()
+    await expect(page.getByTestId("demo")).toHaveCount(PAGE_SIZE)
+    // And no video element was mounted at all, which is what reduction buys.
+    await expect(page.locator("video")).toHaveCount(0)
   })
 
   // The tailwindcss-animate gap (ticket 13 step 4d): `duration-*` emits

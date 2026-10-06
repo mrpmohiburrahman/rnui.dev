@@ -14,6 +14,15 @@ export default defineConfig({
     // collected twice and the reported count doubled.
     // `tests/tour/**` holds Playwright specs (ticket 14's before/after tour) that
     // run under playwright.tour.config.ts, not the unit runner.
-    exclude: ["**/node_modules/**", "**/tests/e2e/**", "**/tests/tour/**", ".claude/**"],
+    // `.ogcard-verify/**` for the same reason as `.claude/**` above: it is a
+    // whole second copy of tests/, so the same submit-route suite is collected
+    // twice and its 15 cases fail against the copy's own module graph.
+    exclude: [
+      "**/node_modules/**",
+      "**/tests/e2e/**",
+      "**/tests/tour/**",
+      ".claude/**",
+      ".ogcard-verify/**",
+    ],
   },
 })

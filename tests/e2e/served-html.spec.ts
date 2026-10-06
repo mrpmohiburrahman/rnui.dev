@@ -37,7 +37,7 @@ test("the served HTML of / carries the heading, the sort controls and its cards"
 
   // React renders the hero's `&nbsp;` as an actual U+00A0, not the literal text.
   expect(html).toMatch(
-    /<h1[^>]*>A dark room full of React\u00A0Native interfaces, playing quietly\.<\/h1>/
+    /<h1[^>]*>A community-made catalogue of React\u00A0Native interfaces.<\/h1>/
   )
 
   // All three sort controls, now the header's segment (ticket 04 step 7). They
@@ -115,7 +115,7 @@ test("/ is readable with JavaScript turned off", async ({ browser }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "A dark room full of React Native interfaces, playing quietly.",
+      name: "A community-made catalogue of React Native interfaces.",
     })
   ).toBeVisible()
   await expect(page.getByTestId("demo").first()).toBeVisible()
