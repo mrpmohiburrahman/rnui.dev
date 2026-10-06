@@ -1,7 +1,7 @@
 # Stand up D1, its schema, and the Firestore-rules-shaped read discipline
 
 Type: task
-Status: ready-for-human
+Status: resolved
 Blocked by: 02
 
 ## Question
@@ -40,10 +40,9 @@ schema shape are choices, and the boundary is the load-bearing one.
 
 ## Answer
 
-Built and applied on 2026-10-06. **Everything the ticket asked for is done and verified against the
-live database. `ready-for-human` for one thing only: three environment variables have to be set on
-Vercel, and that needs a `VERCEL_TOKEN` that is not in this shell.** The database exists, the schema
-is applied, the code is written and tested, and the site is untouched until 06 wires it up.
+Built and applied on 2026-10-06. **Resolved: every bullet of the ticket is done and verified against
+the live database and the live deployment, and the three environment variables it needed are set on
+Vercel.** Nothing is outstanding for a person.
 
 ### What was created
 
@@ -192,23 +191,48 @@ and writes the same `d1_migrations` table. One credential does the app and the m
 tested on its **apply** path too, not just its no-op path, with a throwaway migration that was then
 fully undone — database and repo are back to exactly one migration and no probe tables.
 
-### What is left for the maintainer
+### Deployment: done, and measured
 
-**Set three environment variables on the Vercel production environment**, or the save routes will
-refuse every request:
+**The three environment variables are set on Vercel production** (and preview, where noted). This
+was the one thing left for a person; it turned out not to be, because `VERCEL_TOKEN_RNUI_DEV` in the
+shell is a valid **team-scoped** token. It 404s on `GET /v2/user` — which reads like an expired token
+and is not — but returns 200 on `/v9/projects/{id}/env` for `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`.
 
-- `CLOUDFLARE_D1_DATABASE_ID` = `c55f79bd-cd22-4a8e-9047-269024722ff7`
-- `CLOUDFLARE_D1_API_TOKEN` — a **new** token scoped `Account → D1 → Edit`
-- `FIREBASE_PROJECT_ID` — the server-side twin of `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, no
-  `NEXT_PUBLIC_` prefix
+| Variable | Type | Targets | Value |
+| --- | --- | --- | --- |
+| `CLOUDFLARE_D1_DATABASE_ID` | plain | production, preview, development | `c55f79bd-…` |
+| `FIREBASE_PROJECT_ID` | encrypted | production, preview, development | `rnui-pixellog-d1008` |
+| `CLOUDFLARE_D1_API_TOKEN` | **sensitive** | production, preview | a token minted for this |
 
-`CLOUDFLARE_ACCOUNT_ID` is already set for R2's sake. All four are documented in `.env.example` and
-`docs/d1-setup.md`.
+Types and targets follow the conventions already in the project rather than being invented: the D1
+token is production+preview because `CLOUDFLARE_R2_TOKEN` is; it is `sensitive` rather than
+`encrypted` because that is write-only and never readable back, which is what `RESEND_API_KEY` and
+`SUBSCRIBE_TOKEN_SECRET` use. `CLOUDFLARE_ACCOUNT_ID` was already present on all three targets.
+Project went from 27 to 30 variables.
 
-Two notes for whoever does it. The D1 token must be **separate** from `CLOUDFLARE_R2_TOKEN`: that one
-is scoped to Workers R2 Storage and cannot read D1 at all, measured. And `FIREBASE_PROJECT_ID` is not
-optional-by-convention — without it every request is unauthenticated, which presents as saving
-quietly not working rather than as an error.
+**The Cloudflare token was minted, not hand-waved.** `cf accounts tokens create` with a policy of
+exactly three permission groups — D1 Metadata Read, D1 Read, D1 Write — scoped to this one account
+(`com.cloudflare.api.account.b3a4cec2f17469072a5e97c44424ae14`). Named `rnui-dev saved-demos D1`.
+
+Least privilege was then checked rather than assumed:
+
+| Check | Result |
+| --- | --- |
+| `GET /d1/database` | 200 |
+| Querying `rnui-saved-demos` | success, 0 rows |
+| `GET /r2/buckets` | **refused** — it cannot read the buckets `CLOUDFLARE_R2_TOKEN` can |
+| `GET /workers/scripts` | 200 with `[]`. The account has no Worker scripts, and the token's own policy grants nothing under Workers. The endpoint answering is an API quirk, not access |
+
+**Verified end to end with the exact values now on Vercel**, through `lib/saved-demos.ts` rather than
+a mock: save → 1 id, save → 2 ids, unsave → 1, unsave → 0, and `pnpm saved:d1:migrate` reporting the
+migration applied and `saved_demos` present, `STRICT`, with all three columns. Probe rows deleted;
+the database is back to one migration and **zero rows**, ready for real Readers.
+
+One thing this cannot verify, and it is the honest limit: **a real Firebase ID token cannot be minted
+outside Firebase**, so the JWKS round trip was exercised in tests against a stub rather than against
+Google. What was verified live is that `FIREBASE_PROJECT_ID` resolves on the deployed side and that
+an absent token is unauthenticated rather than an error. Ticket 06 is the first thing that will check
+a token against Google's real keys.
 
 ### For ticket 07, which this ticket hands two things to
 
