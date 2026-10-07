@@ -33,7 +33,16 @@ import { facetHref } from "./nav/catalogue-nav"
  * still treats it as the switch for whether anything renders at all.
  */
 export type EmptyState =
-  | { kind: "saved" }
+  | {
+      kind: "saved"
+      /**
+       * Which invitation the panel is. Signed out, it points at sign-in —
+       * there is an account now, and saying otherwise would be the old world's
+       * copy surviving into the new one. Signed in, the Reader's account list
+       * is genuinely empty. One panel cannot say both truthfully.
+       */
+      signedIn: boolean
+    }
   | { kind: "zero"; diagnosis: CatalogueDiagnosis | null }
 
 // The shell both panels share, Catalogue.dc.html:99 and :112. 14px is off the
@@ -82,7 +91,7 @@ export function CatalogueEmpty({
   /** The whole catalogue, the denominator of the eyebrow and of `Search all N`. */
   catalogueTotal: number
 }) {
-  if (state.kind === "saved") return <EmptySaved />
+  if (state.kind === "saved") return <EmptySaved signedIn={state.signedIn} />
   return <ZeroResults diagnosis={state.diagnosis} total={catalogueTotal} />
 }
 
@@ -148,7 +157,7 @@ function ZeroResults({
   )
 }
 
-function EmptySaved() {
+function EmptySaved({ signedIn }: { signedIn: boolean }) {
   return (
     <div className={cn(PANEL, "gap-[15px]")}>
       {/* Three placeholder rectangles, aria-hidden: they carry nothing the copy
@@ -164,17 +173,24 @@ function EmptySaved() {
         ))}
       </div>
       <div className={HEADLINE}>You haven’t saved anything yet.</div>
-      <p className="m-0 max-w-[520px] text-[13px] leading-[1.55] text-t2">
-        {/* ◇ Save is the glyph and word the tile actually draws
-            (components/recording-card.tsx:355-356); the sentence would be a lie
-            otherwise, which decision 2 forbids. */}
-        Tap ◇ Save on any recording to keep it here. Saves stay in{" "}
-        <strong className="font-medium text-t1">
-          this browser on this device only
-        </strong>{" "}
-        — there is no account and nothing is synced. Clearing site data clears
-        them.
-      </p>
+      {signedIn ? (
+        <p className="m-0 max-w-[520px] text-[13px] leading-[1.55] text-t2">
+          {/* ◇ Save is the glyph and word the tile actually draws
+              (components/recording-card.tsx:355-356); the sentence would be a lie
+              otherwise, which decision 2 forbids. */}
+          Tap ◇ Save on any recording to keep it here. Your saved Demos follow
+          your account across devices.
+        </p>
+      ) : (
+        <p className="m-0 max-w-[520px] text-[13px] leading-[1.55] text-t2">
+          Tap ◇ Save on any recording to keep it here.{" "}
+          <strong className="font-medium text-t1">
+            Sign in to save Demos across devices
+          </strong>{" "}
+          — without a sign-in they stay in this browser only, and clearing site
+          data clears them.
+        </p>
+      )}
       <Link href="/" prefetch={false} className={cn(BUTTON, PRIMARY)}>
         Browse the catalogue
       </Link>

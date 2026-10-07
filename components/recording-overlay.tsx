@@ -18,7 +18,7 @@ import type { Recording } from "@/data/recording"
 import * as Dialog from "@radix-ui/react-dialog"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 
-import { recordingFacts, recordingOpened } from "@/lib/analytics"
+import { recordingFacts, recordingOpened, type RecordingFacts } from "@/lib/analytics"
 
 import { countView } from "./playback-owner"
 import { RecordingDetail } from "./recording-detail"
@@ -63,10 +63,11 @@ export function RecordingOverlay({
   onToggleSave: () => void
   onToggleVote: () => void
   /** Relayed to the body's MORE FROM THIS CONTRIBUTOR strip, which draws the
-   *  catalogue's own Tile and so needs both Remembered sets. */
+   *  catalogue's own Tile and so needs both Remembered sets. The save toggle
+   *  carries facts: see components/recording-card.tsx. */
   savedIds: string[]
   votedIds: string[]
-  onToggleSaveId: (id: string) => void
+  onToggleSaveId: (id: string, facts: RecordingFacts) => void
   onToggleVoteId: (id: string) => void
   sequence: Recording[]
 }) {

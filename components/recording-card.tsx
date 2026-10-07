@@ -5,12 +5,11 @@ import Link from "next/link"
 import type { Recording } from "@/data/recording"
 
 import {
-  bookmarkAdded,
-  bookmarkRemoved,
   recordingFacts,
   recordingOpened,
   repoClicked,
   voteCast,
+  type RecordingFacts,
 } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
@@ -22,7 +21,13 @@ import { countView } from "./playback-owner"
 interface RecordingCardProps {
   recording: Recording
   isBookmarked: boolean
-  toggleBookmark: (id: string) => void
+  /**
+   * Persist a save or stage its gate. The facts ride along because the
+   * `bookmark_added` / `bookmark_removed` events fire only on a confirmed
+   * write (sign-in-to-save ticket 07) — the toggle, not the card, decides
+   * when that is, including after a sign-in redirect the card never sees.
+   */
+  toggleBookmark: (id: string, facts: RecordingFacts) => void
   isVoted: boolean
   toggleVote: (id: string) => void
   /** The whole catalogue's top view count — the views bar's denominator, which
@@ -153,14 +158,9 @@ const RecordingCardComponent: React.FC<RecordingCardProps> = ({
   const handleBookmarkClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
-      // Read before the toggle: `isBookmarked` describes the state the visitor
-      // clicked out of, which is the one that says which of the two events this
-      // was. Reading it after would report every save as a removal.
-      if (isBookmarked) bookmarkRemoved(facts)
-      else bookmarkAdded(facts)
-      toggleBookmark(recording.id)
+      void toggleBookmark(recording.id, facts)
     },
-    [toggleBookmark, recording.id, isBookmarked, facts]
+    [toggleBookmark, recording.id, facts]
   )
 
   // A vote records no view. ADR-0007:3 lists the three signals and voting is not

@@ -69,38 +69,47 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/demo/**", (route) => route.abort())
 })
 
-test("S and the Save button emit one bookmark_added with identical properties", async ({
+// sign-in-to-save ticket 07: anonymous visitors cannot save (map decision
+// 6), so a signed-out press opens the sign-in sheet in place and fires
+// nothing — an abandoned sign-in is not a save. `bookmark_added` fires only
+// on a confirmed write, which needs a signed-in Reader no e2e context can be
+// (real Firebase OAuth), so the browser pins the negative half: both paths
+// gate, neither emits, and the sheet they open is the same one.
+test("signed-out Save presses emit no bookmark event and open sign-in", async ({
   browser,
 }) => {
   // Scoped to the dialog and taken first, not last: the panel's MORE FROM THIS
   // CONTRIBUTOR strip now draws the catalogue's own Tile with its own Save
   // (Detail.dc.html:83), so `.last()` clicked a strip card and reported that
   // Recording's id. Inside the dialog the panel's own control comes first.
-  const fromButton = await eventsFrom(browser, (page) =>
-    page
+  const fromButton = await eventsFrom(browser, async (page) => {
+    await page
       .getByRole("dialog")
       .getByRole("button", { name: /^Saved?$/ })
       .first()
       .click()
-  )
-  const fromKey = await eventsFrom(browser, (page) =>
-    page.keyboard.press("s")
-  )
+    // The gate opens the nav's provider sheet in place — no navigation, no
+    // save, and the press is stashed for the return trip instead.
+    await expect(
+      page.getByText("Sign in to save Demos").first()
+    ).toBeVisible()
+  })
+  const fromKey = await eventsFrom(browser, async (page) => {
+    await page.keyboard.press("s")
+    await expect(
+      page.getByText("Sign in to save Demos").first()
+    ).toBeVisible()
+  })
 
-  const buttonAdds = fromButton.filter(([e]) => e === "bookmark_added")
-  const keyAdds = fromKey.filter(([e]) => e === "bookmark_added")
-
-  expect(buttonAdds, "button path emits bookmark_added").toHaveLength(1)
-  expect(keyAdds, "keyboard path emits bookmark_added").toHaveLength(1)
-
-  // Both carry exactly { recording_id, caption } — no more, no less. The same
-  // two-property shape handleSave passes to bookmarkAdded / bookmarkRemoved.
-  const expectedKeys = ["caption", "recording_id"]
-  expect(Object.keys(buttonAdds[0][1]).sort()).toEqual(expectedKeys)
-  expect(Object.keys(keyAdds[0][1]).sort()).toEqual(expectedKeys)
-  // And the same Recording: the overlay opened on the first card both times
-  // against the same catalogue order.
-  expect(buttonAdds[0][1].recording_id).toBe(keyAdds[0][1].recording_id)
+  for (const [name, captured] of [
+    ["button", fromButton],
+    ["keyboard", fromKey],
+  ] as const) {
+    const adds = captured.filter(([e]) => e === "bookmark_added")
+    const removes = captured.filter(([e]) => e === "bookmark_removed")
+    expect(adds, `${name} path emits no bookmark_added while signed out`).toHaveLength(0)
+    expect(removes, `${name} path emits no bookmark_removed while signed out`).toHaveLength(0)
+  }
 })
 
 test("V and the Vote control emit one vote_cast with identical properties", async ({

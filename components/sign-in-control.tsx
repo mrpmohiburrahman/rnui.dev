@@ -24,16 +24,24 @@
 // diverges from the decision, not from a typo.
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react"
 import Link from "next/link"
 
+import { getGateRequest, getGateServerSnapshot, subscribeGateRequest } from "@/lib/pending-save"
 import {
   READER_PROVIDERS,
   readerInitial,
   useReader,
   type ReaderProviderId,
 } from "@/hooks/use-reader"
-import type { LinkAction } from "@/lib/reader-link"
+import { useSavedDemos } from "@/hooks/use-saved-demos"
+import type { LinkAction, LinkPhase } from "@/lib/reader-link"
 
 function PersonGlyph({ className }: { className?: string }) {
   return (
@@ -212,10 +220,16 @@ function ProviderSheet({
 function AccountPanel({
   displayName,
   email,
+  linkPhase,
+  linkAction,
+  onRetryMerge,
   onSignOut,
 }: {
   displayName: string | null
   email: string | null
+  linkPhase: LinkPhase
+  linkAction: LinkAction
+  onRetryMerge: () => void
   onSignOut: () => void
 }) {
   const name = displayName ?? email ?? "Reader"
@@ -245,6 +259,28 @@ function AccountPanel({
       >
         Saved Demos
       </Link>
+      {/*
+        Ticket 07 publishes the phase ticket 08 declared: the link landed but
+        the D1 merge did not verify. This is the only surface that can reach a
+        signed-in Reader about it — the provider sheet only opens while signed
+        out — so the retry lives here, in the copy ticket 08 wrote for it
+        (`decideLinkAction`, single-sourced, not reworded). Shown only in this
+        phase: a cancelled link is a different offer with its own door.
+      */}
+      {linkPhase === "merge-unconfirmed" && (
+        <div className="mt-[6px] rounded-[6px] border border-acc/40 bg-acc-soft/50 p-[9px]">
+          <p className="text-[11.5px] leading-[1.45] text-t2">
+            {linkAction.copy}
+          </p>
+          <button
+            type="button"
+            onClick={onRetryMerge}
+            className="mt-[8px] w-full rounded-[6px] border border-line bg-header px-[10px] py-[7px] text-[12.5px] text-t1"
+          >
+            Try again
+          </button>
+        </div>
+      )}
       <button
         type="button"
         onClick={onSignOut}
@@ -261,41 +297,16 @@ export function SignInControl() {
     reader,
     authError,
     linkAction,
+    linkPhase,
     beginSignIn,
     beginJoin,
     endSession,
     dismissError,
   } = useReader()
-  const [open, setOpen] = useState(false)
+  const { retry: retryMerge } = useSavedDemos()
+  const [manualOpen, setManualOpen] = useState(false)
   const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
-
-  // Outside click and Escape close whichever surface is open. Closing clears
-  // the error: a failure that reappears on every open is nagging, and the
-  // retry is one click away.
-  useEffect(() => {
-    if (!open) return
-    const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false)
-        setSigningIn(null)
-        dismissError()
-      }
-    }
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false)
-        setSigningIn(null)
-        dismissError()
-      }
-    }
-    document.addEventListener("pointerdown", onPointerDown)
-    document.addEventListener("keydown", onKeyDown)
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown)
-      document.removeEventListener("keydown", onKeyDown)
-    }
-  }, [open, dismissError])
 
   // Compared as a boolean for the sheet below: a redirect sign-in always
   // reloads the page, so there is no in-page transition from signed-out to
@@ -305,13 +316,66 @@ export function SignInControl() {
   // behaviour: on the fresh load after the redirect the sheet is simply gone.
   const signedIn = reader !== null
 
+  // Ticket 07's gate: a Save press on a card or in the detail body, while
+  // signed out, publishes a request here and this control opens its provider
+  // sheet — the press's "open the sign-in in place" half. The save itself
+  // resumes after the redirect (`hooks/use-saved-demos.ts`), so opening is
+  // all this owns.
+  //
+  // Derived, not effected: the sheet is open when the Reader opened it or an
+  // unseen gate request is pending. Dismissing records the request as seen, so
+  // the same press never reopens it — and a signed-in Reader never sees it at
+  // all. No effect, so no cascading render for the lint to flag.
+  const gateRequest = useSyncExternalStore(
+    subscribeGateRequest,
+    getGateRequest,
+    getGateServerSnapshot
+  )
+  const [seenGateEpoch, setSeenGateEpoch] = useState(0)
+  const gateOpen = !signedIn && gateRequest.epoch > seenGateEpoch
+  const open = manualOpen || gateOpen
+
+  // Every close path — the chip, outside click, Escape, "Not now" — lands
+  // here: the sheet shuts and the current gate request, if any, counts as
+  // seen. The stashed intent itself is untouched (ticket 04: dismissal is not
+  // an error); its timestamp is what stops it resurrecting later.
+  const dismiss = useCallback(() => {
+    setManualOpen(false)
+    setSeenGateEpoch(getGateRequest().epoch)
+    setSigningIn(null)
+    dismissError()
+  }, [dismissError])
+
+  // Outside click and Escape close whichever surface is open. Closing clears
+  // the error: a failure that reappears on every open is nagging, and the
+  // retry is one click away.
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        dismiss()
+      }
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dismiss()
+      }
+    }
+    document.addEventListener("pointerdown", onPointerDown)
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown)
+      document.removeEventListener("keydown", onKeyDown)
+    }
+  }, [open, dismiss])
+
   if (reader) {
     const label = reader.displayName ?? reader.email ?? "Reader"
     return (
       <div ref={rootRef} className="relative">
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => (open ? dismiss() : setManualOpen(true))}
           title={`Signed in as ${label}`}
           aria-label={`Signed in as ${label}. Account menu`}
           aria-expanded={open}
@@ -328,8 +392,13 @@ export function SignInControl() {
           <AccountPanel
             displayName={reader.displayName}
             email={reader.email}
+            linkPhase={linkPhase}
+            linkAction={linkAction}
+            onRetryMerge={() => {
+              void retryMerge()
+            }}
             onSignOut={() => {
-              setOpen(false)
+              setManualOpen(false)
               void endSession()
             }}
           />
@@ -342,7 +411,7 @@ export function SignInControl() {
     <div ref={rootRef} className="relative">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? dismiss() : setManualOpen(true))}
         title="Sign in to save Demos"
         aria-label="Sign in to save Demos"
         aria-expanded={open}
@@ -373,8 +442,7 @@ export function SignInControl() {
             })
           }}
           onDismiss={() => {
-            setOpen(false)
-            dismissError()
+            dismiss()
           }}
         />
       )}

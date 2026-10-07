@@ -15,11 +15,13 @@ import { usePathname, useSearchParams } from "next/navigation"
 import type { FacetCount, Recording } from "@/data/recording"
 
 import type { CatalogueDiagnosis } from "@/lib/catalogue-filters"
+import { recordingFacts } from "@/lib/analytics"
 import {
-  BOOKMARKS_KEY,
-  useRememberedSet,
   VOTED_RECORDING_IDS_KEY,
+  useRememberedSet,
 } from "@/hooks/use-remembered-set"
+import { useReader } from "@/hooks/use-reader"
+import { useSavedDemos } from "@/hooks/use-saved-demos"
 import useSortedData from "@/hooks/use-sorted-data"
 import type { EmptyState } from "@/components/catalogue-empty"
 import { FilterDock } from "@/components/filter-dock"
@@ -97,8 +99,12 @@ export function CataloguePage({
   categories,
   contributors,
 }: CataloguePageProps) {
-  const { ids: bookmarks, toggle: toggleBookmark } =
-    useRememberedSet(BOOKMARKS_KEY)
+  // Saves live on the Reader's account now (sign-in-to-save ticket 07), so
+  // this is the D1 list while signed in and the browser's merge input while
+  // signed out — read-only in the latter, and never written back to
+  // `"bookmarkedItems"`. Votes stay on the Remembered set below.
+  const { ids: bookmarks, toggleSave: toggleBookmark } = useSavedDemos()
+  const { reader } = useReader()
   const { ids: votedRecordingIds, toggle: toggleVote } = useRememberedSet(
     VOTED_RECORDING_IDS_KEY
   )
@@ -161,7 +167,10 @@ export function CataloguePage({
       ? { kind: "zero", diagnosis }
       : null
     : bookmarks?.length === 0
-      ? { kind: "saved" }
+      ? // Signed out, the empty panel invites sign-in; signed in, it says the
+        // account's list is empty. One panel cannot say both truthfully, which
+        // is why the state carries which Reader it is talking to.
+        { kind: "saved", signedIn: reader !== null }
       : null
 
   // What the open Recording's detail draws.
@@ -265,7 +274,13 @@ export function CataloguePage({
             ? (votedRecordingIds?.includes(openRecording.id) ?? false)
             : false
         }
-        onToggleSave={() => openRecording && toggleBookmark(openRecording.id)}
+        onToggleSave={() =>
+          openRecording &&
+          void toggleBookmark(
+            openRecording.id,
+            recordingFacts(openRecording)
+          )
+        }
         onToggleVote={() => openRecording && toggleVote(openRecording.id)}
         // The same two sets again, by id, for the detail's MORE FROM THIS
         // CONTRIBUTOR strip — which draws the catalogue's own Tile, controls

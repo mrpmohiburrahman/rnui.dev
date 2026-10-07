@@ -105,7 +105,7 @@ test("focused controls draw a ring, clicked ones do not", async ({ page }) => {
 test.describe("touch", () => {
   test.use({ hasTouch: true })
 
-  test("the bookmark control is usable with no pointer on the card", async ({
+  test("the bookmark control opens sign-in with no pointer on the card", async ({
     page,
   }) => {
     await page.goto("/")
@@ -116,10 +116,15 @@ test.describe("touch", () => {
       "1"
     )
 
-    // A tap toggles the bookmark and does not open the Recording behind it.
+    // sign-in-to-save ticket 07: a signed-out tap gates rather than toggles —
+    // the provider sheet opens in place, nothing saves, and the tap does not
+    // open the Recording behind the control either.
     await bookmark.tap()
     await expect(
-      page.getByRole("button", { name: "Saved" }).first()
+      page.getByText("Sign in to save Demos").first()
+    ).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Save" }).first()
     ).toBeVisible()
     await expect(page).not.toHaveURL(/\/recording\//)
   })

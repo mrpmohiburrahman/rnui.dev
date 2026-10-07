@@ -15,7 +15,7 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 import { showStarControl } from "@/lib/star-surface"
 import { cn } from "@/lib/utils"
-import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
+import { useSavedDemos } from "@/hooks/use-saved-demos"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
@@ -51,7 +51,10 @@ function SiteHeaderBar({
   searchParams = new URLSearchParams(),
 }: SiteHeaderProps & { searchParams?: URLSearchParams }) {
   const pathname = usePathname()
-  const { ids: bookmarks } = useRememberedSet(BOOKMARKS_KEY)
+  // The Saved chip counts the same list the grid filters by: the D1 list
+  // while signed in, the browser's merge input while signed out
+  // (sign-in-to-save ticket 07).
+  const { ids: bookmarks } = useSavedDemos()
 
   const savedCount = bookmarks?.length ?? 0
   const onBookmarks = pathname === "/bookmarks"

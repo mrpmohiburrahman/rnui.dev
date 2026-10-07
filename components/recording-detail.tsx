@@ -15,13 +15,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Recording } from "@/data/recording"
 
 import {
-  bookmarkAdded,
-  bookmarkRemoved,
   filterApplied,
   recordingFacts,
   recordingOpened,
   repoClicked,
   voteCast,
+  type RecordingFacts,
 } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 import { decrementVoteCount } from "@/app/actions/decrement-vote-count"
@@ -129,10 +128,11 @@ export function RecordingDetail({
    *  Tile (Detail.dc.html:83), controls included, so those two cards need the
    *  sets the same way a grid card does — and for the same reason as the four
    *  props above, they arrive from the caller rather than from a second
-   *  useRememberedSet in here. */
+   *  useRememberedSet in here. The save toggle carries facts: see
+   *  components/recording-card.tsx. */
   savedIds: string[]
   votedIds: string[]
-  onToggleSaveId: (id: string) => void
+  onToggleSaveId: (id: string, facts: RecordingFacts) => void
   onToggleVoteId: (id: string) => void
 }) {
   // No local view count here, and no counting on play. This component used to
@@ -201,11 +201,14 @@ export function RecordingDetail({
     }
   }, [onToggleVote, voted, recording.id, facts])
 
+  // The save reports through the toggle, not from here: `bookmark_added` /
+  // `bookmark_removed` fire only on a confirmed write (sign-in-to-save ticket
+  // 07), and a signed-out press opens the sign-in sheet instead of saving —
+  // the toggle owns that gate and the facts it was handed, including across
+  // the redirect the press leads to.
   const handleSave = useCallback(() => {
-    if (saved) bookmarkRemoved(facts)
-    else bookmarkAdded(facts)
     onToggleSave()
-  }, [saved, facts, onToggleSave])
+  }, [onToggleSave])
 
   // `S` and `V`, the two keys the overlay's legend promises. They call exactly
   // the handlers the buttons call, which is the whole point of them being here:
@@ -459,8 +462,13 @@ export function RecordingDetail({
             </a>
           </div>
           <p className="m-0 text-[11.5px] leading-[1.5] text-t2">
-            Your vote and your save stay in this browser on this device. No
-            account exists — clearing site data clears them.
+            {/* Votes never left the browser (map decision 5); saves did.
+                Sign-in-to-save ticket 07: a save needs a signed-in Reader and
+                then follows their account across devices. One sentence for both
+                states, because this body does not know which it is in. */}
+            Your vote stays in this browser on this device — clearing site data
+            clears it. Saving needs a sign-in, and your saved Demos follow your
+            account.
           </p>
         </div>
 

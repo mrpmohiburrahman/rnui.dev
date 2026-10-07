@@ -5,7 +5,11 @@ import { useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import type { Recording } from "@/data/recording"
 
-import { loadMoreClicked, searchPerformed } from "@/lib/analytics"
+import {
+  loadMoreClicked,
+  searchPerformed,
+  type RecordingFacts,
+} from "@/lib/analytics"
 import { cn } from "@/lib/utils"
 import { applySort, type SortType } from "@/hooks/use-sorted-data"
 
@@ -58,7 +62,11 @@ export interface RecordingCardGridProps {
   emptyState: EmptyState | null
   children?: React.ReactNode
   bookmarks: string[]
-  toggleBookmark: (id: string) => void
+  /**
+   * See components/recording-card.tsx: the toggle carries the facts the
+   * confirmed write reports.
+   */
+  toggleBookmark: (id: string, facts: RecordingFacts) => void
   votedRecordingIds: string[]
   toggleVote: (id: string) => void
   /**

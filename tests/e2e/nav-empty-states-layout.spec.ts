@@ -217,15 +217,14 @@ test.describe("something is rendered when there is nothing to render", () => {
       page.getByText(/^You haven’t saved anything yet\./)
     ).toBeVisible()
 
-    // Decision 18: the copy has to be plain that the set is local to this
-    // browser, and must not imply an account exists. The `sync` clause is gone
-    // from the matcher because the replacement copy says "nothing is synced",
-    // which is the same promise stated positively — the property is the same,
-    // the regexp was checking it the wrong way round.
+    // Decision 18, restated for the signed-in world (sign-in-to-save ticket
+    // 07): there IS an account now, so the copy points a signed-out visitor at
+    // sign-in instead of claiming none exists. Unsigned saves stay in this
+    // browser only, which is what the panel still promises.
     const copy = (await page.getByText(/^Tap ◇ Save/).textContent()) ?? ""
-    expect(copy).toContain("this browser on this device only")
-    expect(copy).toContain("no account")
-    expect(copy).not.toMatch(/sign in|log ?in/i)
+    expect(copy).toContain("Sign in to save Demos across devices")
+    expect(copy).toContain("this browser only")
+    expect(copy).not.toMatch(/there is no account|nothing is synced/)
 
     // Drawn, so it works (decision 2).
     await page.getByRole("link", { name: "Browse the catalogue" }).click()

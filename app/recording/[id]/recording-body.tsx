@@ -9,11 +9,12 @@
 
 import type { Recording } from "@/data/recording"
 
+import { recordingFacts } from "@/lib/analytics"
 import {
-  BOOKMARKS_KEY,
-  useRememberedSet,
   VOTED_RECORDING_IDS_KEY,
+  useRememberedSet,
 } from "@/hooks/use-remembered-set"
+import { useSavedDemos } from "@/hooks/use-saved-demos"
 import { RecordingDetail } from "@/components/recording-detail"
 
 export function RecordingBody({
@@ -29,8 +30,10 @@ export function RecordingBody({
   contributorTotal: number
   more: Recording[]
 }) {
-  const { ids: bookmarks, toggle: toggleBookmark } =
-    useRememberedSet(BOOKMARKS_KEY)
+  // Saves live on the Reader's account (sign-in-to-save ticket 07); votes
+  // stay browser-local. The same state the tile shows, so a /recording/<id>
+  // agrees with / about the same Recording.
+  const { ids: bookmarks, toggleSave: toggleBookmark } = useSavedDemos()
   const { ids: voted, toggle: toggleVote } = useRememberedSet(
     VOTED_RECORDING_IDS_KEY
   )
@@ -49,7 +52,9 @@ export function RecordingBody({
       more={more}
       saved={bookmarks?.includes(recording.id) ?? false}
       voted={voted?.includes(recording.id) ?? false}
-      onToggleSave={() => toggleBookmark(recording.id)}
+      onToggleSave={() =>
+        void toggleBookmark(recording.id, recordingFacts(recording))
+      }
       onToggleVote={() => toggleVote(recording.id)}
       // The same two sets for the MORE FROM THIS CONTRIBUTOR strip's cards.
       // `[]` until localStorage has been read, as everywhere else.
