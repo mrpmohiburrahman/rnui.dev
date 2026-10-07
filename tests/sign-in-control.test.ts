@@ -2,9 +2,13 @@ import { describe, expect, it } from "vitest"
 
 import {
   isSilentSignInDismissal,
+  lastUsedProvider,
   READER_PROVIDERS,
   readerErrorMessage,
   readerInitial,
+  readerPhoto,
+  readerProviderFromFirebaseId,
+  rememberProvider,
 } from "../hooks/use-reader"
 
 // sign-in-to-save ticket 06: the nav sign-in's three load-bearing facts that a
@@ -81,6 +85,57 @@ describe("the failure copy", () => {
     expect(isSilentSignInDismissal("auth/popup-blocked")).toBe(false)
     expect(isSilentSignInDismissal("auth/network-request-failed")).toBe(false)
     expect(isSilentSignInDismissal("")).toBe(false)
+  })
+})
+
+describe("the photo", () => {
+  it("passes a provider URL through verbatim, and nothing else", () => {
+    // Presentational, like the name: never fabricated here, never persisted
+    // through here. An empty string is not a photo.
+    expect(
+      readerPhoto("https://avatars.githubusercontent.com/u/123?v=4")
+    ).toBe("https://avatars.githubusercontent.com/u/123?v=4")
+    expect(readerPhoto(null)).toBeNull()
+    expect(readerPhoto(undefined)).toBeNull()
+    expect(readerPhoto("")).toBeNull()
+  })
+})
+
+describe("the familiar door", () => {
+  function storage(contents: Record<string, string> = {}) {
+    const map = new Map(Object.entries(contents))
+    return {
+      getItem: (key: string) => (map.has(key) ? map.get(key)! : null),
+      setItem: (key: string, value: string) => {
+        map.set(key, value)
+      },
+    }
+  }
+
+  it("maps Firebase's provider ids onto our union, and nothing else", () => {
+    expect(readerProviderFromFirebaseId("github.com")).toBe("github")
+    expect(readerProviderFromFirebaseId("google.com")).toBe("google")
+    expect(readerProviderFromFirebaseId("password")).toBeNull()
+    expect(readerProviderFromFirebaseId("")).toBeNull()
+    expect(readerProviderFromFirebaseId(null)).toBeNull()
+    expect(readerProviderFromFirebaseId(undefined)).toBeNull()
+  })
+
+  it("remembers the door just used and reads it back", () => {
+    const store = storage()
+    expect(lastUsedProvider(store)).toBeNull()
+    rememberProvider("github", store)
+    expect(lastUsedProvider(store)).toBe("github")
+    rememberProvider("google", store)
+    expect(lastUsedProvider(store)).toBe("google")
+  })
+
+  it("reads garbage and absence as no marker, never as a crash", () => {
+    expect(lastUsedProvider(storage())).toBeNull()
+    expect(lastUsedProvider(storage({ "rnui:last-provider": "facebook" }))).toBeNull()
+    expect(lastUsedProvider(storage({ "rnui:last-provider": "" }))).toBeNull()
+    expect(lastUsedProvider(null)).toBeNull()
+    rememberProvider("github", null)
   })
 })
 

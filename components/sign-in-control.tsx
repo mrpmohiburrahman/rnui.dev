@@ -35,6 +35,7 @@ import Link from "next/link"
 
 import { getGateRequest, getGateServerSnapshot, subscribeGateRequest } from "@/lib/pending-save"
 import {
+  lastUsedProvider,
   READER_PROVIDERS,
   readerInitial,
   useReader,
@@ -119,6 +120,7 @@ const PROVIDER_IDS_TO_ID: Record<ReaderProviderId, string> = {
 function ProviderSheet({
   authError,
   linkAction,
+  lastUsed,
   signingIn,
   onPick,
   onJoin,
@@ -126,6 +128,8 @@ function ProviderSheet({
 }: {
   authError: string | null
   linkAction: LinkAction
+  /** The door that worked last time, or null. A hint, never a gate. */
+  lastUsed: ReaderProviderId | null
   signingIn: ReaderProviderId | null
   onPick: (id: ReaderProviderId) => void
   onJoin: (providerId: string) => void
@@ -191,6 +195,14 @@ function ProviderSheet({
             >
               <Mark className="size-[15px] shrink-0" />
               {signingIn === id ? "Waiting for the provider…" : label}
+              {/* The familiar door, named but never forced: both doors stay
+                  clickable, because hiding one is the dead end ticket 08
+                  exists to prevent. */}
+              {lastUsed === id && signingIn === null && (
+                <span className="ml-auto shrink-0 font-mono text-[9px] tracking-[0.08em] text-t3">
+                  LAST USED
+                </span>
+              )}
             </button>
           )
         })
@@ -217,9 +229,48 @@ function ProviderSheet({
   )
 }
 
+/**
+ * The Reader's face in the nav: the session provider's photo when there is
+ * one, the initial-letter glyph otherwise. The photo is presentational —
+ * never persisted, never matched on — and `referrerPolicy` keeps the page's
+ * address out of the provider's logs. Same circle, same sizes, either way.
+ */
+function ReaderAvatar({
+  photoURL,
+  displayName,
+  email,
+  sizeClass,
+}: {
+  photoURL: string | null
+  displayName: string | null
+  email: string | null
+  sizeClass: string
+}) {
+  if (photoURL) {
+    return (
+      <img
+        src={photoURL}
+        alt=""
+        aria-hidden="true"
+        referrerPolicy="no-referrer"
+        className={`shrink-0 rounded-full object-cover ${sizeClass}`}
+      />
+    )
+  }
+  return (
+    <span
+      className={`flex shrink-0 items-center justify-center rounded-full bg-acc-soft font-mono font-semibold text-acc ${sizeClass} text-[10px]`}
+      aria-hidden="true"
+    >
+      {readerInitial(displayName, email)}
+    </span>
+  )
+}
+
 function AccountPanel({
   displayName,
   email,
+  photoURL,
   linkPhase,
   linkAction,
   onRetryMerge,
@@ -227,6 +278,7 @@ function AccountPanel({
 }: {
   displayName: string | null
   email: string | null
+  photoURL: string | null
   linkPhase: LinkPhase
   linkAction: LinkAction
   onRetryMerge: () => void
@@ -237,12 +289,12 @@ function AccountPanel({
     <div className="absolute right-0 top-[calc(100%+8px)] z-[60] w-[232px] rounded-card border border-line bg-header p-[10px] shadow-2xl">
       <div className="border-b border-line px-[6px] pb-[9px]">
         <div className="flex items-center gap-[8px]">
-          <span
-            className="flex size-[30px] shrink-0 items-center justify-center rounded-full bg-acc-soft font-mono text-[10px] font-semibold text-acc"
-            aria-hidden="true"
-          >
-            {readerInitial(displayName, email)}
-          </span>
+          <ReaderAvatar
+            photoURL={photoURL}
+            displayName={displayName}
+            email={email}
+            sizeClass="size-[30px]"
+          />
           <div className="min-w-0">
             <div className="truncate text-[12.5px] font-medium text-t1">
               {name}
@@ -306,6 +358,9 @@ export function SignInControl() {
   const { retry: retryMerge } = useSavedDemos()
   const [manualOpen, setManualOpen] = useState(false)
   const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
+  // The familiar door, read once per mount: signing in flips the branch and
+  // unmounts the sheet anyway, so no subscription is needed.
+  const [lastUsed] = useState<ReaderProviderId | null>(() => lastUsedProvider())
   const rootRef = useRef<HTMLDivElement>(null)
 
   // Compared as a boolean for the sheet below: a popup sign-in completes
@@ -382,17 +437,18 @@ export function SignInControl() {
           aria-expanded={open}
           className="flex items-center px-[2px] py-[2px]"
         >
-          <span
-            className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-acc-soft font-mono text-[10px] font-semibold text-acc"
-            aria-hidden="true"
-          >
-            {readerInitial(reader.displayName, reader.email)}
-          </span>
+          <ReaderAvatar
+            photoURL={reader.photoURL}
+            displayName={reader.displayName}
+            email={reader.email}
+            sizeClass="size-[26px]"
+          />
         </button>
         {open && (
           <AccountPanel
             displayName={reader.displayName}
             email={reader.email}
+            photoURL={reader.photoURL}
             linkPhase={linkPhase}
             linkAction={linkAction}
             onRetryMerge={() => {
@@ -426,6 +482,7 @@ export function SignInControl() {
         <ProviderSheet
           authError={authError}
           linkAction={linkAction}
+          lastUsed={lastUsed}
           signingIn={signingIn}
           onPick={(id) => {
             setSigningIn(id)

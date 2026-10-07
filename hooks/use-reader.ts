@@ -69,12 +69,83 @@ export const READER_PROVIDERS: readonly ReaderProviderId[] = [
   "google",
 ]
 
+/**
+ * Which door this Reader used last, so the sheet can point at the familiar
+ * one. A Reader with one account who walks through the wrong door gets
+ * `auth/account-exists-with-different-credential` (ticket 08) — a badge
+ * naming the door that worked last time prevents the error rather than
+ * explaining it. Both doors always stay clickable: hiding one would be the
+ * dead end ticket 08 exists to prevent.
+ */
+const LAST_PROVIDER_KEY = "rnui:last-provider"
+
+/** Firebase's provider ids, as they appear on credentials and users. */
+const FIREBASE_PROVIDER_IDS: Record<string, ReaderProviderId> = {
+  "github.com": "github",
+  "google.com": "google",
+}
+
+/** Our union from a Firebase id, or null for anything we do not ship. */
+export function readerProviderFromFirebaseId(
+  providerId: string | null | undefined
+): ReaderProviderId | null {
+  if (typeof providerId !== "string") return null
+  return FIREBASE_PROVIDER_IDS[providerId] ?? null
+}
+
+function defaultLocalStore(): Pick<
+  Storage,
+  "getItem" | "setItem"
+> | null {
+  if (typeof window === "undefined") return null
+  try {
+    return window.localStorage
+  } catch {
+    // Safari in private mode throws on access rather than returning null.
+    return null
+  }
+}
+
+/** Record the door just used. Never throws; a full store must not break sign-in. */
+export function rememberProvider(
+  id: ReaderProviderId,
+  storage: Pick<Storage, "getItem" | "setItem"> | null = defaultLocalStore()
+): void {
+  if (!storage) return
+  try {
+    storage.setItem(LAST_PROVIDER_KEY, id)
+  } catch {
+    // Quota, or a storage the browser refuses. The badge is a hint, not the
+    // flow — losing it costs nothing.
+  }
+}
+
+/** The door remembered by `rememberProvider`, or null when none or nonsense. */
+export function lastUsedProvider(
+  storage: Pick<Storage, "getItem"> | null = defaultLocalStore()
+): ReaderProviderId | null {
+  if (!storage) return null
+  try {
+    const raw = storage.getItem(LAST_PROVIDER_KEY)
+    return raw === "github" || raw === "google" ? raw : null
+  } catch {
+    return null
+  }
+}
+
 /** What the nav shows. `null` display name means "signed out". */
 export type ReaderSnapshot = {
   /** `false` until the browser has answered — every caller renders signed-out. */
   ready: boolean
   displayName: string | null
   email: string | null
+  /**
+   * The session provider's photo, for the avatar circle. Provider-owned like
+   * the display name: display-only, never matched on, never persisted, never a
+   * key (CONTEXT.md, ticket 03). Null when the provider gave none, and then
+   * the initial-letter glyph shows instead — so the glyph path never goes away.
+   */
+  photoURL: string | null
   /** The last sign-in failure, in the Reader's words. Cleared on retry. */
   authError: string | null
   /**
@@ -95,6 +166,9 @@ export type ReaderSnapshot = {
  * prototype rule, extended to the email for a Reader whose provider gave no
  * name. Provider-owned and display-only: never a key, never matched on, never
  * persisted (CONTEXT.md, ticket 03). `tests/sign-in-control.test.ts` pins it.
+ *
+ * Still the fallback, not the past: when the provider gives no photo, this is
+ * what the circle shows.
  */
 export function readerInitial(
   displayName: string | null,
@@ -104,10 +178,21 @@ export function readerInitial(
   return source.charAt(0)
 }
 
+/**
+ * The photo for the avatar circle, or null for the initial-letter glyph.
+ * A provider URL verbatim or nothing: an empty string is not a photo, and
+ * "fixing" one up here would be inventing identity. Never persisted, never
+ * matched on — presentational, like the name it hangs beside.
+ */
+export function readerPhoto(photoURL: string | null | undefined): string | null {
+  return typeof photoURL === "string" && photoURL !== "" ? photoURL : null
+}
+
 const INITIAL: ReaderSnapshot = {
   ready: false,
   displayName: null,
   email: null,
+  photoURL: null,
   authError: null,
   linkPhase: "signed-out",
 }
@@ -271,9 +356,15 @@ function providerFor(id: ReaderProviderId) {
 
 function fromUser(
   user: User | null
-): Pick<ReaderSnapshot, "displayName" | "email"> {
-  if (!user) return { displayName: null, email: null }
-  return { displayName: user.displayName, email: user.email }
+): Pick<ReaderSnapshot, "displayName" | "email" | "photoURL"> {
+  if (!user) return { displayName: null, email: null, photoURL: null }
+  return {
+    displayName: user.displayName,
+    email: user.email,
+    // The door they walked through this session — which is the decided rule
+    // for linked Readers: session provider's photo, never merged, never stored.
+    photoURL: readerPhoto(user.photoURL),
+  }
 }
 
 /**
@@ -367,6 +458,15 @@ function ensureSubscription(firebaseAuth: Auth) {
     if (user && linkCache.peek()) {
       void linkPendingTo(firebaseAuth, user)
     }
+
+    // Bootstrap the last-used door for a returning Reader whose sign-in
+    // predates the marker: unambiguous only with exactly one provider on the
+    // account. A linked account names two, and guessing between them would
+    // point at the wrong door with confidence.
+    if (user && user.providerData.length === 1) {
+      const only = readerProviderFromFirebaseId(user.providerData[0]?.providerId)
+      if (only) rememberProvider(only)
+    }
   })
 }
 
@@ -458,6 +558,8 @@ export function useReader() {
       // `onAuthStateChanged` publishes this too; saying it here as well answers
       // the press at once instead of a tick later.
       publish({ ...snapshot, ready: true, ...fromUser(result.user) })
+      const used = readerProviderFromFirebaseId(result.providerId)
+      if (used) rememberProvider(used)
     } catch (error: unknown) {
       // The popup is the whole trip: reaching here means it never completed.
       // A dismissal stays silent; anything else goes through the shared
@@ -489,6 +591,8 @@ export function useReader() {
       // `onAuthStateChanged` publishes this too; saying it here as well answers
       // the press at once instead of a tick later.
       publish({ ...snapshot, ready: true, ...fromUser(result.user) })
+      const used = readerProviderFromFirebaseId(result.providerId)
+      if (used) rememberProvider(used)
     } catch (error: unknown) {
       handleSignInFailure(error)
     }
@@ -515,7 +619,11 @@ export function useReader() {
   return {
     reader:
       state.displayName || state.email
-        ? { displayName: state.displayName, email: state.email }
+        ? {
+            displayName: state.displayName,
+            email: state.email,
+            photoURL: state.photoURL,
+          }
         : null,
     ready: state.ready,
     authError: state.authError,
