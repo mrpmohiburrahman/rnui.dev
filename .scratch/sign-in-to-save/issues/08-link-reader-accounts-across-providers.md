@@ -48,19 +48,48 @@ a comment.
 
 ### Every branch lands somewhere
 
-| Branch | Where the Reader ends up |
-| --- | --- |
-| Link succeeds | One uid; credential consumed only here |
-| Reader cancels | Signed in as whoever they came in as; Demos untouched; offer stands |
-| `linkWithCredential` refuses | Same as cancel; credential **retained** |
-| Credential unreadable | Same as cancel; retained |
-| Redirect never started | Same as cancel; retained |
-| Merge fails closed (JWKS) | `offer-retry` — claims success on the link, nothing on the merge |
+| Branch | Reachable now? | Where the Reader ends up |
+| --- | --- | --- |
+| Link succeeds | yes | One uid; credential consumed only here |
+| Reader cancels | yes | Signed in as whoever they came in as; Demos untouched; offer stands |
+| `linkWithCredential` refuses | yes | Same as cancel; credential **retained** |
+| Credential unreadable | yes | Same as cancel; retained |
+| Redirect never started | yes | Same as cancel; retained |
+| Merge fails closed (JWKS) | **no — ticket 07** | `offer-retry` — claims success on the link, nothing on the merge |
 
-The last row is the one worth arguing about. A failed *merge* is not a failed *link*: the
-Reader is one person the moment `linkWithCredential` returns. Telling them "error" would
-overstate a retryable condition; telling them "done" would overstate a merge that did not
-happen. The copy is written to be true about both halves.
+The last row is the one worth arguing about, and the one worth being precise
+about: **it is not reachable from this ticket.** Nothing here performs a merge — that
+is `lib/saved-demos.ts` meeting an authenticated route, which is ticket 07. `merge-unconfirmed`
+is declared, has copy, is handled in `decideLinkAction`, and is tested, but no code path
+publishes it yet. `grep -rn 'linkPhase: "' hooks/use-reader.ts` shows five phases published
+and `merge-unconfirmed` is not among them.
+
+It is here anyway on purpose. The copy decision belongs to this ticket, not to 07: "a failed
+merge is not a failed link" is a statement about how to talk to a Reader, and the person who
+wrote the link flow is the one who can say what the link did. 07 publishes the phase; if it
+does not, the tests here are what tell it the copy was written for a reason.
+
+So: a failed *merge* is not a failed *link*. The Reader is one person the moment
+`linkWithCredential` returns. Telling them "error" would overstate a retryable condition;
+telling them "done" would overstate a merge that did not happen. The copy is written to be
+true about both halves — and until 07 publishes the phase, nothing reaches it.
+
+### Two corrections this review found
+
+**`OAuthProvider.credentialFromError(error)` already exists and is public.** The first version
+hand-rolled it: it cast the error to `{ code?, credential?: { toJSON } }` and read the
+credential off it. That worked, but it encoded Firebase's internal error shape in a cast
+this repo did not have to own. The public static does the `_tokenResponse` mapping itself and
+returns null rather than throwing when there is nothing usable. Replaced.
+
+**`merge-unconfirmed` was documented as a live branch when it is not.** The first version of
+the table above listed it alongside five branches the code actually reaches, which is how a
+reader concludes it has been exercised. It has not. Corrected, with the reason it is still
+here at all.
+
+Both were found by reviewing this ticket's own diff — the Spec reviewer returned an empty
+report, so these came from checking the claims by hand against
+`@firebase/auth` 1.8.1's source and by grepping what the code actually publishes.
 
 ### Tests — 19, all five the ticket asked for
 

@@ -26,6 +26,7 @@ import {
   getRedirectResult,
   linkWithCredential,
   OAuthCredential,
+  OAuthProvider,
   onAuthStateChanged,
   signInWithRedirect,
   signOut,
@@ -114,51 +115,40 @@ const INITIAL: ReaderSnapshot = {
 const linkCache = pendingLinkCache()
 
 /**
- * Firebase's "that email already has an account" error, and the credential it
- * hands back on the way out.
- *
- * `account-exists-with-different-credential` is only thrown once "one account per
- * email address" is on (ticket 08 turned it on). Firebase attaches the credential
- * it was about to use, which is what makes the case recoverable rather than a
- * dead end: it is the thing `linkWithCredential` needs.
- */
-type PendingCredentialError = Error & {
-  code?: string
-  /**
-   * Typed by what this file actually calls on it — `toJSON()` — rather than by
-   * the whole `OAuthCredential` surface, so the only requirement is the one we
-   * depend on. Typing it as the full class would be a promise about a shape this
-   * code does not use and would break the first time Firebase changed one of the
-   * other eight methods.
-   */
-  credential?: { toJSON?: () => Record<string, unknown> }
-}
-
-/**
  * Pull a `PendingLink` out of a Firebase error, or null when it carries none.
  *
- * The credential is taken through its own `toJSON()` rather than by picking fields
- * off it. That is the supported round-trip, and it is also the only one that
- * works: Firebase rebuilds a credential through `_fromParams`, which sets
- * `pendingToken` only inside its `if (idToken || accessToken)` branch — so a
- * hand-rolled `{ pendingToken, nonce }` fails at link time with
+ * The credential comes off `OAuthProvider.credentialFromError(error)` rather than
+ * off `error.credential` directly. Both work; the public static is better for two
+ * reasons. It is the API Firebase documents for exactly this error, and it maps
+ * `_tokenResponse`'s `oauthIdToken`/`oauthAccessToken` onto the credential's own
+ * fields itself — so this file does not encode Firebase's internal error shape in
+ * a hand-written cast that a minor version could invalidate. It returns null
+ * rather than throwing when there is nothing usable.
+ *
+ * The serialised form is carried whole, because Firebase cannot rebuild a
+ * credential from a bare pending token: `fromJSON` routes through `_fromParams`,
+ * which sets `pendingToken` only inside its `if (idToken || accessToken)` branch,
+ * so a `{ pendingToken, nonce }` object falls to the `else` and throws
  * `auth/argument-error`. See `PendingLink.credentialJson`.
  */
 function pendingLinkFrom(error: unknown): PendingLink | null {
-  const candidate = error as PendingCredentialError | null
-  if (
-    !candidate ||
-    candidate.code !== "auth/account-exists-with-different-credential"
-  ) {
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? String((error as { code?: unknown }).code)
+      : ""
+  if (code !== "auth/account-exists-with-different-credential") return null
+
+  let credential: OAuthCredential | null = null
+  try {
+    credential = OAuthProvider.credentialFromError(error as Parameters<
+      typeof OAuthProvider.credentialFromError
+    >[0])
+  } catch {
+    // A malformed error object. Nothing to offer, and saying so beats offering a
+    // button that cannot work.
     return null
   }
-  const credential = candidate.credential
-  if (!credential || typeof credential.toJSON !== "function") {
-    // The code without a usable credential is the one unrecoverable case: we know
-    // an account exists but cannot reach it. Say so rather than offering a button
-    // that cannot work.
-    return null
-  }
+  if (!credential) return null
 
   const json = credential.toJSON() as Record<string, unknown>
   if (
