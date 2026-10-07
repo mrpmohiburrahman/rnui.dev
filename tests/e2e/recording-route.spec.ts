@@ -341,7 +341,7 @@ test("the arrows walk the Category without wrapping and without growing history"
   expect(await page.evaluate(() => history.length)).toBe(historyBefore)
 })
 
-test("S and V drive the tile's save and vote behind the scrim", async ({
+test("S opens sign-in while signed out; V still drives the vote", async ({
   page,
 }) => {
   await page.goto("/")
@@ -349,9 +349,7 @@ test("S and V drive the tile's save and vote behind the scrim", async ({
   await expect(page.getByRole("dialog")).toBeVisible()
   const openId = new URL(page.url()).pathname.split("/").pop()!
 
-  // The tile behind the scrim carries the same recording-id (ticket 07). S
-  // toggles its bookmark (visible text "Save"/"Saved", no aria-label on the
-  // card), V its vote ("Vote, N").
+  // The tile behind the scrim carries the same recording-id (ticket 07).
   const tile = page.locator(`[data-recording-id="${openId}"]`)
   await expect(tile).toBeVisible()
 
@@ -361,10 +359,17 @@ test("S and V drive the tile's save and vote behind the scrim", async ({
   const vote = tile
     .locator('[aria-label^="Vote"], [aria-label^="Unvote"]')
     .first()
+  // sign-in-to-save ticket 07: anonymous visitors cannot save, so S opens the
+  // provider sheet in place instead of toggling the tile — the press is
+  // stashed for the return trip, and the tile's state does not move.
   const before = await save.getAttribute("aria-pressed")
-  const votesBefore = await vote.getAttribute("aria-pressed")
   await page.keyboard.press("s")
-  expect(await save.getAttribute("aria-pressed")).not.toBe(before)
+  await expect(
+    page.getByText("Sign in to save Demos").first()
+  ).toBeVisible()
+  expect(await save.getAttribute("aria-pressed")).toBe(before)
+  // V is untouched by the gate: voting stays anonymous and browser-local.
+  const votesBefore = await vote.getAttribute("aria-pressed")
   await page.keyboard.press("V")
   expect(await vote.getAttribute("aria-pressed")).not.toBe(votesBefore)
 

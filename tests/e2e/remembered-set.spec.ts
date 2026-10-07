@@ -46,9 +46,10 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   ).toBeVisible()
   await expect(page.getByRole("button", { name: /^Unvote/ })).toBeVisible()
 
-  // Un-bookmarking drops the card from the list immediately. Two copies of the set
-  // — one in the route, one in the Catalogue page — would leave it there until a
-  // reload, which is the regression the collapse in ticket 12 was written to avoid.
+  // sign-in-to-save ticket 07: the stored bookmarks are merge input now, and
+  // anonymous visitors cannot save — so pressing the tile's button no longer
+  // un-saves. It opens the provider sheet in place and stashes the press for
+  // the return trip, and the card stays put: nothing is written anywhere.
   //
   // The card has to be hovered first: the bookmark button carries
   // `pointer-events-none group-hover:pointer-events-auto`, so until the pointer is
@@ -57,18 +58,21 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   // pointer travels to it.
   await page.getByRole("heading", { level: 3 }).hover()
   await page.getByRole("button", { name: "Saved" }).click()
-  await expect(page.getByTestId("demo")).toHaveCount(0)
+  await expect(
+    page.getByText("Sign in to save Demos").first()
+  ).toBeVisible()
+  await expect(page.getByTestId("demo")).toHaveCount(1)
 
   await context.close()
 })
 
 // The header is not under the catalogue, so it cannot be handed the set as a
-// prop the way recording-detail.tsx is (recording-detail.tsx:107-111). It calls
-// useRememberedSet itself — and while that hook kept per-instance useState, its
-// copy of the set was whatever it read at mount: saving a Recording from a tile
-// left `◆ Saved 0` on screen next to a Recording that was, in fact, saved.
-// Decision 2 — nothing on screen lies.
-test("saving a tile moves the header's Saved count without a reload", async ({
+// prop the way recording-detail.tsx is (recording-detail.tsx:107-111).
+// sign-in-to-save ticket 07: an anonymous press no longer saves anywhere — it
+// opens the provider sheet in place and stashes the press for the return trip
+// — so what this test pins is the gate, not the count: the chip stays honest
+// at 0 and the sheet is the answer the press gets.
+test("saving a tile while signed out opens sign-in and saves nothing", async ({
   page,
 }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
@@ -81,6 +85,9 @@ test("saving a tile moves the header's Saved count without a reload", async ({
   await page.getByRole("heading", { level: 3 }).first().hover()
   await page.getByRole("button", { name: "Save" }).first().click()
 
-  // No reload between the click and this read — that is the whole assertion.
-  await expect(savedChip).toContainText("1")
+  // No save happened — and the sheet, not a silent nothing, is what says so.
+  await expect(
+    page.getByText("Sign in to save Demos").first()
+  ).toBeVisible()
+  await expect(savedChip).toContainText("0")
 })

@@ -189,6 +189,29 @@ function publish(next: ReaderSnapshot) {
   listeners.forEach((onChange) => onChange())
 }
 
+/**
+ * Ticket 07 publishes the phase ticket 08 declared but could not reach.
+ *
+ * A failed D1 merge is not a failed link: the Reader is one account again the
+ * moment `linkWithCredential` returns. So this fires only in the post-link
+ * window — while `linkPhase` is still `"linked"` — and a merge failure on an
+ * ordinary sign-in leaves the phase alone (the save hook carries its own
+ * retryable error there). `reportMergeConfirmed` walks it back when a later
+ * merge verifies, which is what makes the account panel's retry converge
+ * rather than stick.
+ */
+export function reportMergeUnconfirmed() {
+  if (snapshot.linkPhase === "linked") {
+    publish({ ...snapshot, linkPhase: "merge-unconfirmed" })
+  }
+}
+
+export function reportMergeConfirmed() {
+  if (snapshot.linkPhase === "merge-unconfirmed") {
+    publish({ ...snapshot, linkPhase: "linked" })
+  }
+}
+
 function subscribe(onChange: () => void) {
   listeners.add(onChange)
   return () => {
@@ -304,11 +327,18 @@ function ensureSubscription(firebaseAuth: Auth) {
     // error. A signed-out answer does not — it also fires on first subscribe,
     // before `getRedirectResult` has answered, and clearing there would wipe
     // the redirect error that arrives after it.
+    //
+    // A signed-out answer also ends any link accounting: ticket 07's
+    // `reportMergeUnconfirmed` fires only while the phase is `"linked"`, and
+    // without this reset a link from a previous session would still be the
+    // phase on the next sign-in, mislabelling an ordinary merge failure as a
+    // post-link one. The cached credential is untouched — this resets what the
+    // Reader is told, not their route back.
     publish({
       ...snapshot,
       ready: true,
       ...fromUser(user),
-      ...(user ? { authError: null } : {}),
+      ...(user ? { authError: null } : { linkPhase: "signed-out" as const }),
     })
 
     // A signed-in Reader plus a cached credential means they have been through
@@ -468,6 +498,8 @@ export function useReader() {
     ready: state.ready,
     authError: state.authError,
     linkAction,
+    /** Ticket 07: the account panel offers a merge retry only in this phase. */
+    linkPhase: state.linkPhase,
     beginSignIn,
     beginJoin,
     endSession,

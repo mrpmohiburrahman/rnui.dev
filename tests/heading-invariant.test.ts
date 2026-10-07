@@ -26,6 +26,9 @@ import { describe, expect, it } from "vitest"
 const ROUTE_HEADINGS: Record<string, string> = {
   "app/page.tsx": "Recent",
   "app/products/page.tsx": "Recent",
+  // Signed out, the saves on /bookmarks really are on this device; signed in
+  // they follow the Reader's account, so the heading is dynamic
+  // (sign-in-to-save ticket 07). The served document is always signed out.
   "app/bookmarks/page.tsx": "Saved on this device",
 }
 
@@ -44,6 +47,15 @@ describe("every catalogue route carries exactly one h1", () => {
   for (const [file, expected] of Object.entries(ROUTE_HEADINGS)) {
     it(`${file} hands the grid a heading of ${JSON.stringify(expected)}`, () => {
       const source = readFileSync(file, "utf8")
+      if (file === "app/bookmarks/page.tsx") {
+        // The heading is dynamic now: signed in it names the account's list,
+        // signed out the device's. Both literals must be present, and the grid
+        // must receive the computed value rather than a hard-coded one.
+        expect(source).toContain("heading={heading}")
+        expect(source).toContain('"Saved Demos"')
+        expect(source).toContain(`"${expected}"`)
+        return
+      }
       expect(
         /heading=\{|heading="/.test(source),
         `${file} no longer passes a heading to CataloguePage, so the grid's ` +
@@ -53,11 +65,7 @@ describe("every catalogue route carries exactly one h1", () => {
       // compute theirs through catalogueHeading, so they are asserted by
       // function name instead of by literal — what matters there is that the
       // heading is *derived* rather than absent.
-      if (file === "app/bookmarks/page.tsx") {
-        expect(source).toContain(`heading="${expected}"`)
-      } else {
-        expect(source).toContain("catalogueHeading(")
-      }
+      expect(source).toContain("catalogueHeading(")
     })
   }
 
