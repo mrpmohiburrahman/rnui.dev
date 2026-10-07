@@ -24,6 +24,8 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react"
 import {
   getRedirectResult,
+  linkWithCredential,
+  OAuthCredential,
   onAuthStateChanged,
   signInWithRedirect,
   signOut,
@@ -32,6 +34,13 @@ import {
 } from "firebase/auth"
 
 import { auth, githubProvider, googleProvider } from "@/lib/firebase"
+import {
+  decideLinkAction,
+  pendingLinkCache,
+  type LinkAction,
+  type LinkPhase,
+  type PendingLink,
+} from "@/lib/reader-link"
 
 /** Which social door the Reader walks through. Both ship (map decision 10). */
 export type ReaderProviderId = "github" | "google"
@@ -59,6 +68,17 @@ export type ReaderSnapshot = {
   email: string | null
   /** The last sign-in failure, in the Reader's words. Cleared on retry. */
   authError: string | null
+  /**
+   * Where a Reader is in the join-a-second-sign-in flow. Ticket 08.
+   *
+   * A separate field rather than a variant of `authError` because the two are not
+   * the same kind of news: an error is something that went wrong, while
+   * `needs-other-door` is Firebase working correctly — it refused to make a second
+   * account for one human, which is the entire point of the setting ticket 08
+   * turned on. Rendering it in the error voice would teach a Reader that the site
+   * is broken at the moment it is behaving best.
+   */
+  linkPhase: LinkPhase
 }
 
 /**
@@ -80,6 +100,95 @@ const INITIAL: ReaderSnapshot = {
   displayName: null,
   email: null,
   authError: null,
+  linkPhase: "signed-out",
+}
+
+/**
+ * The pending credential's cache. One instance for the module, mirroring the
+ * snapshot above: both facts are shared by every `useReader` caller, and two
+ * copies is how the Saved chip drifted once already.
+ *
+ * `sessionStorage`, and therefore per-tab — see `lib/reader-link.ts` for why the
+ * lifetime is deliberately the length of the redirect and not longer.
+ */
+const linkCache = pendingLinkCache()
+
+/**
+ * Firebase's "that email already has an account" error, and the credential it
+ * hands back on the way out.
+ *
+ * `account-exists-with-different-credential` is only thrown once "one account per
+ * email address" is on (ticket 08 turned it on). Firebase attaches the credential
+ * it was about to use, which is what makes the case recoverable rather than a
+ * dead end: it is the thing `linkWithCredential` needs.
+ */
+type PendingCredentialError = Error & {
+  code?: string
+  /**
+   * Typed by what this file actually calls on it — `toJSON()` — rather than by
+   * the whole `OAuthCredential` surface, so the only requirement is the one we
+   * depend on. Typing it as the full class would be a promise about a shape this
+   * code does not use and would break the first time Firebase changed one of the
+   * other eight methods.
+   */
+  credential?: { toJSON?: () => Record<string, unknown> }
+}
+
+/**
+ * Pull a `PendingLink` out of a Firebase error, or null when it carries none.
+ *
+ * The credential is taken through its own `toJSON()` rather than by picking fields
+ * off it. That is the supported round-trip, and it is also the only one that
+ * works: Firebase rebuilds a credential through `_fromParams`, which sets
+ * `pendingToken` only inside its `if (idToken || accessToken)` branch — so a
+ * hand-rolled `{ pendingToken, nonce }` fails at link time with
+ * `auth/argument-error`. See `PendingLink.credentialJson`.
+ */
+function pendingLinkFrom(error: unknown): PendingLink | null {
+  const candidate = error as PendingCredentialError | null
+  if (
+    !candidate ||
+    candidate.code !== "auth/account-exists-with-different-credential"
+  ) {
+    return null
+  }
+  const credential = candidate.credential
+  if (!credential || typeof credential.toJSON !== "function") {
+    // The code without a usable credential is the one unrecoverable case: we know
+    // an account exists but cannot reach it. Say so rather than offering a button
+    // that cannot work.
+    return null
+  }
+
+  const json = credential.toJSON() as Record<string, unknown>
+  if (
+    typeof json.providerId !== "string" ||
+    typeof json.pendingToken !== "string"
+  ) {
+    return null
+  }
+
+  return {
+    providerId: json.providerId,
+    pendingToken: json.pendingToken,
+    nonce: typeof json.nonce === "string" ? json.nonce : null,
+    credentialJson: json,
+  }
+}
+
+/**
+ * Rebuild the credential a `PendingLink` stands for.
+ *
+ * `OAuthCredential.fromJSON` rather than `OAuthProvider.credential`: the latter is
+ * not a static on the modular SDK's `OAuthProvider` (it fails to compile), and the
+ * former is the public inverse of the `toJSON()` the error handed us.
+ */
+function credentialFrom(link: PendingLink): OAuthCredential | null {
+  try {
+    return OAuthCredential.fromJSON(link.credentialJson)
+  } catch {
+    return null
+  }
 }
 
 let snapshot: ReaderSnapshot = INITIAL
@@ -132,6 +241,58 @@ function fromUser(
   return { displayName: user.displayName, email: user.email }
 }
 
+/**
+ * Join the Reader's two accounts, once they have arrived through the other door.
+ *
+ * Called from `onAuthStateChanged` when a signed-in Reader and a cached pending
+ * credential coincide — which is exactly the moment the Reader comes back from
+ * the second provider. `linkWithCredential` then makes both doors one uid, and
+ * their two saved-Demos lists become one Reader's to merge.
+ *
+ * The credential is consumed only on success, and `consume` will not compile
+ * without `linked: true` — so the failure branch below cannot drop the only route
+ * back to the Reader's other Demos.
+ */
+async function linkPendingTo(firebaseAuth: Auth, user: User) {
+  const pending = linkCache.peek()
+  if (!pending) return
+
+  const credential = credentialFrom(pending)
+  if (!credential) {
+    // The cache's validator already guarantees a well-formed blob, so this is
+    // "cannot link" rather than "try later". The credential stays put either way.
+    linkCache.note("refused", "credential-unreadable")
+    publish({
+      ...snapshot,
+      linkPhase: "cancelled",
+      authError:
+        "We couldn't finish joining the two sign-ins. Your account is unchanged — try again whenever you like.",
+    })
+    return
+  }
+
+  publish({ ...snapshot, linkPhase: "linking" })
+
+  try {
+    await linkWithCredential(user, credential)
+    linkCache.consume({ linked: true })
+    publish({ ...snapshot, linkPhase: "linked" })
+  } catch (error: unknown) {
+    // Every branch lands somewhere. The Reader stays signed in on the account they
+    // came through, their Demos are untouched, and the credential survives so the
+    // offer can be made again. This is the failure the ticket called the one
+    // unacceptable outcome, and the reason it does not happen is that it is not a
+    // state the code can reach with their credential discarded.
+    linkCache.note("refused", (error as { code?: string } | null)?.code)
+    publish({
+      ...snapshot,
+      linkPhase: "cancelled",
+      authError:
+        "We couldn't join the two sign-ins yet. Your account is unchanged — try again whenever you like.",
+    })
+  }
+}
+
 let subscribed = false
 
 /**
@@ -159,6 +320,14 @@ function ensureSubscription(firebaseAuth: Auth) {
       ...fromUser(user),
       ...(user ? { authError: null } : {}),
     })
+
+    // A signed-in Reader plus a cached credential means they have been through
+    // the other door, which is the precondition for joining the two. Gated on
+    // both so an ordinary page load does not attempt a link, and so a signed-out
+    // answer never tries.
+    if (user && linkCache.peek()) {
+      void linkPendingTo(firebaseAuth, user)
+    }
   })
 
   getRedirectResult(firebaseAuth)
@@ -171,11 +340,35 @@ function ensureSubscription(firebaseAuth: Auth) {
       }
     })
     .catch((error: unknown) => {
+      // Ticket 08. This rejection is the whole input to the join flow: Firebase
+      // has refused to make a second account for one human, and handed back the
+      // credential it was about to use. Cache it and offer the other door —
+      // instead of the flat error ticket 06 shipped, which pointed at a button
+      // with nothing behind it.
+      const pending = pendingLinkFrom(error)
+      if (pending) {
+        linkCache.put(pending)
+        publish({
+          ...snapshot,
+          ready: true,
+          authError: null,
+          linkPhase: "needs-other-door",
+        })
+        return
+      }
+
       const code =
         typeof error === "object" && error !== null && "code" in error
           ? String(error.code)
           : ""
-      publish({ ...snapshot, ready: true, authError: readerErrorMessage(code) })
+      // The code without a usable credential. Firebase told us an account exists
+      // but gave us no way to reach it, which is the one case the other door
+      // cannot fix — so it stays an error rather than becoming an offer.
+      const message =
+        code === "auth/account-exists-with-different-credential"
+          ? "That address already has an account here, but we couldn't reach it. Try signing in again, or use the other provider."
+          : readerErrorMessage(code)
+      publish({ ...snapshot, ready: true, authError: message })
     })
 }
 
@@ -198,6 +391,44 @@ export function useReader() {
   }, [])
 
   const state = useSyncExternalStore(subscribe, getSnapshot, () => INITIAL)
+
+  /**
+   * Sign in through the door a pending credential did *not* come from.
+   *
+   * This is the second half of ticket 08's flow. Firebase refused the first door,
+   * we cached the credential, the Reader presses the button this returns — and
+   * because a signed-in Reader plus a cached credential is exactly what
+   * `onAuthStateChanged` looks for, coming back through here triggers the link
+   * without any further coordination.
+   *
+   * Takes a provider *id* rather than a `ReaderProviderId`, because the id comes
+   * off a credential Firebase wrote (`"google.com"`), not off our own union.
+   */
+  const beginJoin = useCallback(async (providerId: string) => {
+    publish({ ...snapshot, authError: null, linkPhase: "needs-other-door" })
+    if (!auth) {
+      publish({
+        ...snapshot,
+        authError: "Sign-in is not configured in this build yet.",
+      })
+      return
+    }
+    const provider =
+      providerId === "google.com" ? googleProvider : githubProvider
+    try {
+      await signInWithRedirect(auth, provider)
+    } catch {
+      // Leaving for the provider is the success path; reaching here means the
+      // redirect never started. The credential is untouched, so the offer stands.
+      linkCache.note("cancelled")
+      publish({
+        ...snapshot,
+        linkPhase: "cancelled",
+        authError:
+          "We couldn't reach the provider. Your account is unchanged — try again whenever you like.",
+      })
+    }
+  }, [])
 
   const beginSignIn = useCallback(async (id: ReaderProviderId) => {
     publish({ ...snapshot, authError: null })
@@ -230,6 +461,15 @@ export function useReader() {
     publish({ ...snapshot, authError: null })
   }, [])
 
+  // Ticket 08. `decideLinkAction` is pure and lives in lib/reader-link.ts, so
+  // every string a Reader can read about joining their two sign-ins is testable
+  // without a browser. This hook's job is only to supply the three inputs.
+  const linkAction: LinkAction = decideLinkAction({
+    phase: state.linkPhase,
+    pending: linkCache.peek(),
+    signedIn: state.displayName !== null || state.email !== null,
+  })
+
   return {
     reader:
       state.displayName || state.email
@@ -237,7 +477,9 @@ export function useReader() {
         : null,
     ready: state.ready,
     authError: state.authError,
+    linkAction,
     beginSignIn,
+    beginJoin,
     endSession,
     dismissError,
   }

@@ -33,6 +33,7 @@ import {
   useReader,
   type ReaderProviderId,
 } from "@/hooks/use-reader"
+import type { LinkAction } from "@/lib/reader-link"
 
 function PersonGlyph({ className }: { className?: string }) {
   return (
@@ -95,39 +96,104 @@ const PROVIDER_META: Record<
   google: { label: "Continue with Google", Mark: GoogleMark },
 }
 
+/** Which door a `LinkAction` points at, as our own provider union. */
+const PROVIDER_IDS: Record<string, ReaderProviderId | undefined> = {
+  "github.com": "github",
+  "google.com": "google",
+}
+
+/** And back again, because `onJoin` is handed Firebase's id, not ours. */
+const PROVIDER_IDS_TO_ID: Record<ReaderProviderId, string> = {
+  github: "github.com",
+  google: "google.com",
+}
+
 function ProviderSheet({
   authError,
+  linkAction,
   signingIn,
   onPick,
+  onJoin,
   onDismiss,
 }: {
   authError: string | null
+  linkAction: LinkAction
   signingIn: ReaderProviderId | null
   onPick: (id: ReaderProviderId) => void
+  onJoin: (providerId: string) => void
   onDismiss: () => void
 }) {
+  const joinId = linkAction.providerId
+    ? PROVIDER_IDS[linkAction.providerId]
+    : undefined
+  const joinMeta = joinId ? PROVIDER_META[joinId] : null
+
   return (
     <div className="absolute right-0 top-[calc(100%+8px)] z-[60] w-[248px] rounded-card border border-line bg-header p-[10px] shadow-2xl">
       <div className="px-[6px] pb-[8px] text-[11px] text-t3">
         Sign in to save Demos
       </div>
-      {/* GitHub first: ticket 01's consent-screen finding (see READER_PROVIDERS). */}
-      {READER_PROVIDERS.map((id) => {
-        const { label, Mark } = PROVIDER_META[id]
-        return (
+
+      {/*
+        Ticket 08. This block is the thing ticket 06's copy pointed at and could
+        not reach: Firebase has refused to make a second account for one human
+        and handed back the credential it was about to use. Until it renders
+        here, `auth/account-exists-with-different-credential` was a sentence
+        naming a button that did nothing — the exact dead end the ticket calls
+        the one unacceptable outcome.
+
+        It sits above the ordinary provider list because it is not an ordinary
+        choice: the door below it would fail the same way it just did.
+      */}
+      {linkAction.kind === "offer-other-door" && joinId && joinMeta && (
+        <div className="mb-[8px] rounded-[7px] border border-acc/40 bg-acc-soft/50 p-[9px]">
+          <p className="text-[11.5px] leading-[1.45] text-t2">
+            {linkAction.copy}
+          </p>
           <button
-            key={id}
             type="button"
-            onClick={() => onPick(id)}
+            onClick={() => onJoin(PROVIDER_IDS_TO_ID[joinId])}
             disabled={signingIn !== null}
-            className="mt-[6px] flex w-full items-center gap-[9px] rounded-[7px] border border-line px-[10px] py-[8px] text-[12.5px] text-t1 first:mt-0 hover:bg-field disabled:opacity-60"
+            className="mt-[8px] flex w-full items-center gap-[9px] rounded-[7px] border border-line bg-header px-[10px] py-[8px] text-[12.5px] text-t1 disabled:opacity-60"
           >
-            <Mark className="size-[15px] shrink-0" />
-            {signingIn === id ? "Leaving for the provider…" : label}
+            <joinMeta.Mark className="size-[15px] shrink-0" />
+            {signingIn === joinId ? "Leaving for the provider…" : joinMeta.label}
           </button>
-        )
-      })}
-      {authError && (
+        </div>
+      )}
+
+      {/* GitHub first: ticket 01's consent-screen finding (see READER_PROVIDERS). */}
+      {linkAction.kind === "offer-other-door" ? (
+        // While a join is pending the ordinary list is hidden rather than shown
+        // disabled: pressing either door again fails identically, and a second
+        // dead end is worse than an absent one.
+        <div className="px-[6px] text-[11px] text-t3">
+          Or start again from the top.
+        </div>
+      ) : (
+        READER_PROVIDERS.map((id) => {
+          const { label, Mark } = PROVIDER_META[id]
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onPick(id)}
+              disabled={signingIn !== null}
+              className="mt-[6px] flex w-full items-center gap-[9px] rounded-[7px] border border-line px-[10px] py-[8px] text-[12.5px] text-t1 first:mt-0 hover:bg-field disabled:opacity-60"
+            >
+              <Mark className="size-[15px] shrink-0" />
+              {signingIn === id ? "Leaving for the provider…" : label}
+            </button>
+          )
+        })
+      )}
+
+      {linkAction.kind === "offer-retry" && (
+        <p className="mt-[8px] px-[6px] text-[11.5px] leading-[1.45] text-t2">
+          {linkAction.copy}
+        </p>
+      )}
+      {authError && linkAction.kind !== "offer-retry" && (
         <div role="alert" className="px-[6px] pt-[8px] text-[11.5px] text-t2">
           {authError}
         </div>
@@ -191,8 +257,15 @@ function AccountPanel({
 }
 
 export function SignInControl() {
-  const { reader, authError, beginSignIn, endSession, dismissError } =
-    useReader()
+  const {
+    reader,
+    authError,
+    linkAction,
+    beginSignIn,
+    beginJoin,
+    endSession,
+    dismissError,
+  } = useReader()
   const [open, setOpen] = useState(false)
   const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -282,12 +355,20 @@ export function SignInControl() {
       {open && !signedIn && (
         <ProviderSheet
           authError={authError}
+          linkAction={linkAction}
           signingIn={signingIn}
           onPick={(id) => {
             setSigningIn(id)
             void beginSignIn(id).finally(() => {
               // A redirect leaves the page; reaching here means it did not
               // (an error, already published as `authError`), so re-arm.
+              setSigningIn((current) => (current === id ? null : current))
+            })
+          }}
+          onJoin={(providerId) => {
+            const id = PROVIDER_IDS[providerId] ?? null
+            if (id) setSigningIn(id)
+            void beginJoin(providerId).finally(() => {
               setSigningIn((current) => (current === id ? null : current))
             })
           }}

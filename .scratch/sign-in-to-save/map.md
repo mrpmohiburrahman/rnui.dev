@@ -54,11 +54,23 @@ that follow and are not reopened without a reason.
    declined as glossary bloat.
 10. **Both providers ship, and accounts must link across them.** With Firebase's "one account per
     email address" off by default, one human using Google on one device and GitHub on another gets
-    two saved-Demos lists — which presents to them as silent data loss. Ticket 08 owns the fix. The
-    fallback if that proves too expensive is one provider only, never two without linking.
+    two saved-Demos lists — which presents to them as silent data loss. **Ticket 08 closed this:**
+    the setting is now on (`signIn.allowDuplicateEmails: false`, read back after first proving the
+    API omits a `false`), and the credential Firebase hands back on refusal is cached and linked
+    through the other door. The map's fallback — one provider only — was not needed.
+11. **"Never enable Identity Platform" is now checkable, not just written down.** `subtype` on the
+    config reads `FIREBASE_AUTH`, and it is `readOnly`, so no API call can change it. Ticket 06
+    turned an instruction into a fact a future agent can verify in one request.
+12. **The pending credential is a type, not a rule.** `pendingLinkCache().consume` takes
+    `{ linked: true }`, so the failure path that discards a Reader's only route back to their
+    other Demos is `TS2322` rather than a review question. Do not widen that parameter.
 
 ### Constraints
 
+- **"One account per email address" is ON and stays on.** `signIn.allowDuplicateEmails: false`.
+  It is off by default in Firebase, one toggle in the console turns it off again, and turning it
+  off re-opens the split this map closed: one human, two providers, two uids, two saved-Demos
+  lists, and no way for the site to know. Ticket 08.
 - No email and password sign-in. Not a preference to defer — leave Firebase's email provider off.
 - No Google Cloud project, no OAuth client of ours, no consent screen, no Google verification.
 - Free tier only. Any move past it is a maintainer decision, not an agent's.
@@ -78,17 +90,19 @@ that follow and are not reopened without a reason.
 - [Sign-in UI and pressing Save while signed out](issues/04-sign-in-ui-and-press-save-while-signed-out.md) — a **hybrid** of two prototype variants, and the asymmetry is the point: a "Sign in" chip with a person glyph when signed out, a bare avatar circle with the Reader's initial when signed in. Pressing Save while signed out opens a provider sheet **in place and saves the Demo on return**, rather than losing the click.
 - [Stand up D1, its schema, and the read discipline](issues/05-stand-up-d1-schema-and-read-discipline.md) — **one row per Reader** holding a JSON array, measured: a Reader who saved all 298 Demos costs **1 row read** against 596 for the row-per-save shape. All D1 SQL lives in `lib/saved-demos.ts` with `d1Query` module-private, so the discipline is structural rather than a rule to remember. Two corrections worth carrying: **D1 on the Free plan refuses at the daily cap just as Firestore on Spark does**, so the case for D1 is headroom (100×), not behaviour; and **writes, not reads, are the binding ceiling** at 100,000/day. Deployed: the database is live and its three Vercel variables are set, with a D1-only token minted for it that cannot read R2.
 - [Enable Firebase Auth, the social providers, and the nav button](issues/06-enable-firebase-auth-and-nav-sign-in.md) — Firebase Auth was **never provisioned** before this: the config returned `CONFIGURATION_NOT_FOUND`, so every provider sat at its default and Identity Platform was off by absence rather than by decision. Both social providers are now on and API-verified, Email/Password and Anonymous are absent from `signIn`, all seven authorised domains are set, and the consent screen's public-facing name moved off `project-851418164301` to `rnui.dev`. **The provider toggles are console-only** — the Identity Toolkit v2 API is the Identity Platform surface and refuses them — but the same API is what proves the read-only claims, and `subtype: FIREBASE_AUTH` turns map decision 2 from an instruction into a checkable fact.
+- [Link a Reader's accounts across providers](issues/08-link-reader-accounts-across-providers.md) — **the silent-data-loss defect is closed.** "One account per email address" is on, so Firebase now refuses a second account for one human and hands back the credential it was about to use; that is cached and linked through the other door, which is the path ticket 06's copy pointed at and could not reach. Two findings from reading @firebase/auth's source rather than trusting its docs: `OAuthProvider.credential` does not exist on the modular SDK, and `pendingToken` **alone** cannot rebuild a credential — `fromJSON` only honours it inside an `idToken || accessToken` branch — so the whole serialised credential rides along, opaque to the pure module. The credential can only ever be discarded by handing `consume` a `{ linked: true }`, which is why no failure path in the code can lose a Reader's route back to their Demos.
 
 ## Not yet specified
 
-- Whether the nav button shows an account menu or a plain avatar, and what it looks like
-  signed-out versus signed-in. Blocked on ticket 04's prototype; sharpen once that lands.
+- **Whether the pending-save intent should also survive a *closed* tab.** Ticket 04 chose
+  `sessionStorage` deliberately, so it dies with the tab. Ticket 08 inherits the same choice for
+  the pending credential and now for the same reason — but the Reader who closes the tab mid-join
+  is a real person who will come back and find nothing. Ticket 07 is where this has to be
+  answered, because it is the first ticket that can actually lose a Demo to a closed tab.
 - What a signed-in Reader sees on `/bookmarks` that an anonymous visitor cannot, beyond the list
   itself.
 - Whether sign-in can be triggered from anywhere besides the nav button — for instance by
-  pressing Save itself while signed out. Largely answered by ticket 04's prototype; what remains is
-  whether the pending-save intent should also survive a *closed* tab rather than only the OAuth
-  redirect.
+  pressing Save itself while signed out. Largely answered by ticket 04's prototype.
 - Whether D1 needs a scheduled cleanup for saved ids whose Recording has since left the
   catalogue.
 - What happens to the merge if a Reader signs in on a second device before ever signing in on
