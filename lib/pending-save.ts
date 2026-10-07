@@ -206,13 +206,15 @@ type GateRequest = {
   epoch: number
   /** The Recording the press was on. Empty for a bare "sign in" request. */
   recordingId: string
+  /** That Recording's caption, for the modal's promise. Empty when none. */
+  caption: string
 }
 
-let gate: GateRequest = { epoch: 0, recordingId: "" }
+let gate: GateRequest = { epoch: 0, recordingId: "", caption: "" }
 const gateListeners = new Set<() => void>()
 
 /** The server's answer: no request has ever been published during SSR. */
-const INITIAL_GATE: GateRequest = { epoch: 0, recordingId: "" }
+const INITIAL_GATE: GateRequest = { epoch: 0, recordingId: "", caption: "" }
 
 function publishGate(next: GateRequest) {
   gate = next
@@ -244,7 +246,11 @@ export function requestSaveGate(
   now?: number
 ): void {
   stashPendingSave(intent, storage, now)
-  publishGate({ epoch: gate.epoch + 1, recordingId: intent.recordingId })
+  publishGate({
+    epoch: gate.epoch + 1,
+    recordingId: intent.recordingId,
+    caption: intent.facts.caption,
+  })
 }
 
 /**
@@ -252,5 +258,5 @@ export function requestSaveGate(
  * Opens the same sheet, stashing nothing.
  */
 export function requestSignIn(): void {
-  publishGate({ epoch: gate.epoch + 1, recordingId: "" })
+  publishGate({ epoch: gate.epoch + 1, recordingId: "", caption: "" })
 }

@@ -365,9 +365,16 @@ test("S opens sign-in while signed out; V still drives the vote", async ({
   const before = await save.getAttribute("aria-pressed")
   await page.keyboard.press("s")
   await expect(
-    page.getByText("Sign in to save Demos").first()
-  ).toBeVisible()
+    page.getByRole("dialog", { name: "Sign in to save Demos" })
+  ).toHaveCount(1)
   expect(await save.getAttribute("aria-pressed")).toBe(before)
+  // The gate is a real modal: while open, the overlay behind it is inert by
+  // design (focus trap, aria-hidden), so V cannot reach the panel until the
+  // gate is dismissed — exactly as a Reader experiences it.
+  await page.keyboard.press("Escape")
+  await expect(
+    page.getByRole("dialog", { name: "Sign in to save Demos" })
+  ).toHaveCount(0)
   // V is untouched by the gate: voting stays anonymous and browser-local.
   const votesBefore = await vote.getAttribute("aria-pressed")
   await page.keyboard.press("V")

@@ -110,22 +110,29 @@ test.describe("touch", () => {
   }) => {
     await page.goto("/")
 
-    const bookmark = page.getByRole("button", { name: "Save" }).first()
+    // The heading first: card buttons render after the catalogue fetch, while
+    // the header chip is instant — and an exact "Save" matches only cards.
+    await expect(page.getByRole("heading", { level: 3 }).first()).toBeVisible()
+    const bookmark = page.getByRole("button", { name: "Save", exact: true }).first()
     await expect(bookmark).toBeVisible()
     expect(await bookmark.evaluate((el) => getComputedStyle(el).opacity)).toBe(
       "1"
     )
 
     // sign-in-to-save ticket 07: a signed-out tap gates rather than toggles —
-    // the provider sheet opens in place, nothing saves, and the tap does not
+    // a centered modal opens in place, nothing saves, and the tap does not
     // open the Recording behind the control either.
     await bookmark.tap()
     await expect(
-      page.getByText("Sign in to save Demos").first()
-    ).toBeVisible()
+      page.getByRole("dialog", { name: "Sign in to save Demos" })
+    ).toHaveCount(1)
+    // Nothing saved anywhere the eye can check: the tap gated instead of
+    // toggling, so the header count never moves. (The card's own button is
+    // not assertable here — an open Radix dialog hides the page behind it
+    // with aria-hidden, which role queries cannot see through.)
     await expect(
-      page.getByRole("button", { name: "Save" }).first()
-    ).toBeVisible()
+      page.locator('header a[href="/bookmarks"]').first()
+    ).toContainText("0")
     await expect(page).not.toHaveURL(/\/recording\//)
   })
 })

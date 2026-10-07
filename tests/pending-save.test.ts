@@ -194,6 +194,9 @@ describe("the gate request bus", () => {
 
     expect(getGateRequest().epoch).toBe(before + 1)
     expect(getGateRequest().recordingId).toBe("AAAA")
+    // The modal names the Demo the press was on, from the bus — never by
+    // re-reading storage during render, which would split server from client.
+    expect(getGateRequest().caption).toBe(FACTS.caption)
     expect(seen).toEqual([before + 1])
     stop()
   })
@@ -204,6 +207,7 @@ describe("the gate request bus", () => {
     requestSignIn()
     expect(getGateRequest().epoch).toBe(before + 1)
     expect(getGateRequest().recordingId).toBe("")
+    expect(getGateRequest().caption).toBe("")
     expect(store.snapshot().has(PENDING_SAVE_KEY)).toBe(false)
   })
 

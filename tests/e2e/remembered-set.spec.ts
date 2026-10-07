@@ -58,6 +58,11 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   // pointer travels to it.
   await page.getByRole("heading", { level: 3 }).hover()
   await page.getByRole("button", { name: "Saved" }).click()
+  // The gate is a centered modal, not the nav's dropdown: exactly one dialog,
+  // naming the Demo the press was on. The card stays put — nothing is written
+  // anywhere.
+  const modal = page.getByRole("dialog", { name: "Sign in to save Demos" })
+  await expect(modal).toHaveCount(1)
   await expect(
     page.getByText("Sign in to save Demos").first()
   ).toBeVisible()
@@ -83,11 +88,12 @@ test("saving a tile while signed out opens sign-in and saves nothing", async ({
   await expect(savedChip).toContainText("0")
 
   await page.getByRole("heading", { level: 3 }).first().hover()
-  await page.getByRole("button", { name: "Save" }).first().click()
+  await page.getByRole("button", { name: "Save", exact: true }).first().click()
 
-  // No save happened — and the sheet, not a silent nothing, is what says so.
+  // No save happened — and a centered modal, not a silent nothing and not the
+  // nav's dropdown, is what says so.
   await expect(
-    page.getByText("Sign in to save Demos").first()
-  ).toBeVisible()
+    page.getByRole("dialog", { name: "Sign in to save Demos" })
+  ).toHaveCount(1)
   await expect(savedChip).toContainText("0")
 })

@@ -32,6 +32,7 @@ import {
   useSyncExternalStore,
 } from "react"
 import Link from "next/link"
+import * as Dialog from "@radix-ui/react-dialog"
 
 import { getGateRequest, getGateServerSnapshot, subscribeGateRequest } from "@/lib/pending-save"
 import {
@@ -117,7 +118,13 @@ const PROVIDER_IDS_TO_ID: Record<ReaderProviderId, string> = {
   google: "google.com",
 }
 
-function ProviderSheet({
+/**
+ * The provider choice itself: join offer, both doors, retry copy, error, and
+ * the way out. One body in two shells — the nav's anchored sheet and the
+ * Save gate's centered modal — so the copy and the doors cannot drift between
+ * them.
+ */
+function ProviderActions({
   authError,
   linkAction,
   lastUsed,
@@ -141,11 +148,7 @@ function ProviderSheet({
   const joinMeta = joinId ? PROVIDER_META[joinId] : null
 
   return (
-    <div className="absolute right-0 top-[calc(100%+8px)] z-[60] w-[248px] rounded-card border border-line bg-header p-[10px] shadow-2xl">
-      <div className="px-[6px] pb-[8px] text-[11px] text-t3">
-        Sign in to save Demos
-      </div>
-
+    <>
       {/*
         Ticket 08. This block is the thing ticket 06's copy pointed at and could
         not reach: Firebase has refused to make a second account for one human
@@ -225,7 +228,105 @@ function ProviderSheet({
       >
         Not now
       </button>
+    </>
+  )
+}
+
+/** The nav's anchored sheet: the same choice, hanging off the control. */
+function ProviderSheet(props: {
+  authError: string | null
+  linkAction: LinkAction
+  lastUsed: ReaderProviderId | null
+  signingIn: ReaderProviderId | null
+  onPick: (id: ReaderProviderId) => void
+  onJoin: (providerId: string) => void
+  onDismiss: () => void
+}) {
+  return (
+    <div className="absolute right-0 top-[calc(100%+8px)] z-[60] w-[248px] rounded-card border border-line bg-header p-[10px] shadow-2xl">
+      <div className="px-[6px] pb-[8px] text-[11px] text-t3">
+        Sign in to save Demos
+      </div>
+      <ProviderActions {...props} />
     </div>
+  )
+}
+
+/**
+ * The Save gate's centered modal. A Save press while signed out lands here,
+ * not in the nav's dropdown: the press happened on a card in the middle of
+ * the page, and answering it from the page's middle is what "in place" means.
+ * Same choice as the sheet, one body, no drift — only the shell differs: a
+ * scrim over the whole viewport and a centered panel carrying the press's
+ * Demo by name, so the Reader sees what their sign-in is about to save.
+ */
+function GateModal({
+  open,
+  demoCaption,
+  authError,
+  linkAction,
+  lastUsed,
+  signingIn,
+  onPick,
+  onJoin,
+  onDismiss,
+}: {
+  open: boolean
+  /** The stashed press's caption, or null for a bare sign-in request. */
+  demoCaption: string | null
+  authError: string | null
+  linkAction: LinkAction
+  lastUsed: ReaderProviderId | null
+  signingIn: ReaderProviderId | null
+  onPick: (id: ReaderProviderId) => void
+  onJoin: (providerId: string) => void
+  onDismiss: () => void
+}) {
+  return (
+    <Dialog.Root
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onDismiss()
+      }}
+    >
+      <Dialog.Portal>
+        {/* The scrim: the same canvas tint the Recording overlay dims with. */}
+        <Dialog.Overlay className="fixed inset-0 z-[70] bg-scrim backdrop-blur-[3px]" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          onCloseAutoFocus={(e) => {
+            // Nowhere real to return to: the press was a Save button, and
+            // focus lands back on the nav's sign-in control, which is where a
+            // keyboard visitor reopens this from.
+            e.preventDefault()
+          }}
+          className="fixed left-1/2 top-1/2 z-[71] w-[320px] max-w-[calc(100vw-48px)] -translate-x-1/2 -translate-y-1/2 rounded-card border border-line2 bg-header p-[16px] shadow-2xl focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3"
+        >
+          <Dialog.Title className="m-0 px-[6px] text-[15px] font-medium tracking-[-0.01em] text-t1">
+            Sign in to save Demos
+          </Dialog.Title>
+          <p className="m-0 px-[6px] pb-[10px] pt-[6px] text-[12.5px] leading-[1.5] text-t2">
+            {demoCaption ? (
+              <>
+                “{demoCaption}” will be saved to your account once you sign
+                in.
+              </>
+            ) : (
+              <>Your saved Demos follow your account across devices.</>
+            )}
+          </p>
+          <ProviderActions
+            authError={authError}
+            linkAction={linkAction}
+            lastUsed={lastUsed}
+            signingIn={signingIn}
+            onPick={onPick}
+            onJoin={onJoin}
+            onDismiss={onDismiss}
+          />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
 
@@ -234,6 +335,11 @@ function ProviderSheet({
  * one, the initial-letter glyph otherwise. The photo is presentational —
  * never persisted, never matched on — and `referrerPolicy` keeps the page's
  * address out of the provider's logs. Same circle, same sizes, either way.
+ *
+ * A plain `img`, not `next/image`: provider URLs are third-party strings that
+ * change per Reader, so remotePatterns would allowlist two whole avatar CDNs
+ * and the optimizer would bill every avatar on every page. A 26px circle
+ * needs no optimization.
  */
 function ReaderAvatar({
   photoURL,
@@ -344,6 +450,67 @@ function AccountPanel({
   )
 }
 
+/**
+ * The gate modal's owner. Mounted ONCE — in the root layout, beside the shell
+ * rather than inside either header layout — because the header renders the
+ * sign-in control twice (desktop bar, phone row) and two modals hide each
+ * other with `aria-hidden`: each twin treats the other as background. One
+ * owner also covers routes with no sign-in control at all (the standalone
+ * Recording page), where a gated press would otherwise stash an intent nobody
+ * ever answers. Owns its own flow state; the control keeps only its dropdown.
+ */
+export function SaveGateModal() {
+  const { reader, authError, linkAction, beginSignIn, beginJoin } = useReader()
+  const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
+  const signedIn = reader !== null
+
+  const gateRequest = useSyncExternalStore(
+    subscribeGateRequest,
+    getGateRequest,
+    getGateServerSnapshot
+  )
+  const [seenGateEpoch, setSeenGateEpoch] = useState(0)
+  const gateModalOpen = !signedIn && gateRequest.epoch > seenGateEpoch
+
+  const dismissGate = useCallback(() => {
+    setSeenGateEpoch(getGateRequest().epoch)
+    setSigningIn(null)
+  }, [])
+
+  // One pair of hands, same as the control's: the sheet and the modal offer
+  // the same doors and run the same flow.
+  const handlePick = (id: ReaderProviderId) => {
+    setSigningIn(id)
+    void beginSignIn(id).finally(() => {
+      setSigningIn((current) => (current === id ? null : current))
+    })
+  }
+  const handleJoin = (providerId: string) => {
+    const id = PROVIDER_IDS[providerId] ?? null
+    if (id) setSigningIn(id)
+    void beginJoin(providerId).finally(() => {
+      setSigningIn((current) => (current === id ? null : current))
+    })
+  }
+
+  return (
+    <GateModal
+      open={gateModalOpen}
+      demoCaption={gateRequest.caption || null}
+      authError={authError}
+      linkAction={linkAction}
+      // Read during render, not subscribed: any change that matters (a sign-in)
+      // re-renders this host through `useReader` first, so the badge is fresh
+      // whenever the modal can be open. SSR-safe — no window, no value.
+      lastUsed={lastUsedProvider()}
+      signingIn={signingIn}
+      onPick={handlePick}
+      onJoin={handleJoin}
+      onDismiss={dismissGate}
+    />
+  )
+}
+
 export function SignInControl() {
   const {
     reader,
@@ -368,41 +535,22 @@ export function SignInControl() {
   // instead — so there is no signed-out-to-signed-in transition to chase with
   // an effect, and an effect that closes on `reader` would close the account
   // panel on every render, since `reader` is a fresh literal each time.
-  // `open && !signedIn` is the whole of the close-on-success behaviour: the
-  // sheet is simply gone, because its branch is.
+  // `open` is the dropdown and nothing else now: the Save gate owns a modal
+  // of its own (`SaveGateModal`, mounted once in the root layout), because
+  // this control renders twice per page and two modals hide each other.
   const signedIn = reader !== null
-
-  // Ticket 07's gate: a Save press on a card or in the detail body, while
-  // signed out, publishes a request here and this control opens its provider
-  // sheet — the press's "open the sign-in in place" half. The save itself
-  // resumes once the popup signs in (`hooks/use-saved-demos.ts`), so opening
-  // is all this owns.
-  //
-  // Derived, not effected: the sheet is open when the Reader opened it or an
-  // unseen gate request is pending. Dismissing records the request as seen, so
-  // the same press never reopens it — and a signed-in Reader never sees it at
-  // all. No effect, so no cascading render for the lint to flag.
-  const gateRequest = useSyncExternalStore(
-    subscribeGateRequest,
-    getGateRequest,
-    getGateServerSnapshot
-  )
-  const [seenGateEpoch, setSeenGateEpoch] = useState(0)
-  const gateOpen = !signedIn && gateRequest.epoch > seenGateEpoch
-  const open = manualOpen || gateOpen
+  const open = manualOpen
 
   // Every close path — the chip, outside click, Escape, "Not now" — lands
-  // here: the sheet shuts and the current gate request, if any, counts as
-  // seen. The stashed intent itself is untouched (ticket 04: dismissal is not
-  // an error); its timestamp is what stops it resurrecting later.
+  // here: the dropdown shuts. (The gate modal dismisses itself through
+  // `SaveGateModal`; this control no longer answers gate requests at all.)
   const dismiss = useCallback(() => {
     setManualOpen(false)
-    setSeenGateEpoch(getGateRequest().epoch)
     setSigningIn(null)
     dismissError()
   }, [dismissError])
 
-  // Outside click and Escape close whichever surface is open. Closing clears
+  // Outside click and Escape close the dropdown. Closing clears
   // the error: a failure that reappears on every open is nagging, and the
   // retry is one click away.
   useEffect(() => {
@@ -431,7 +579,7 @@ export function SignInControl() {
       <div ref={rootRef} className="relative">
         <button
           type="button"
-          onClick={() => (open ? dismiss() : setManualOpen(true))}
+          onClick={() => setManualOpen((v) => !v)}
           title={`Signed in as ${label}`}
           aria-label={`Signed in as ${label}. Account menu`}
           aria-expanded={open}
@@ -464,11 +612,31 @@ export function SignInControl() {
     )
   }
 
+  // One pair of hands for both shells: the sheet and the modal offer the same
+  // doors and run the same flow, so their handlers live here rather than one
+  // apiece.
+  const handlePick = (id: ReaderProviderId) => {
+    setSigningIn(id)
+    void beginSignIn(id).finally(() => {
+      // Success flips the branch (see above); reaching here with the
+      // press still pending means it failed — already published as
+      // `authError` — so re-arm.
+      setSigningIn((current) => (current === id ? null : current))
+    })
+  }
+  const handleJoin = (providerId: string) => {
+    const id = PROVIDER_IDS[providerId] ?? null
+    if (id) setSigningIn(id)
+    void beginJoin(providerId).finally(() => {
+      setSigningIn((current) => (current === id ? null : current))
+    })
+  }
+
   return (
     <div ref={rootRef} className="relative">
       <button
         type="button"
-        onClick={() => (open ? dismiss() : setManualOpen(true))}
+        onClick={() => setManualOpen((v) => !v)}
         title="Sign in to save Demos"
         aria-label="Sign in to save Demos"
         aria-expanded={open}
@@ -484,22 +652,8 @@ export function SignInControl() {
           linkAction={linkAction}
           lastUsed={lastUsed}
           signingIn={signingIn}
-          onPick={(id) => {
-            setSigningIn(id)
-            void beginSignIn(id).finally(() => {
-              // Success flips the branch (see above); reaching here with the
-              // press still pending means it failed — already published as
-              // `authError` — so re-arm.
-              setSigningIn((current) => (current === id ? null : current))
-            })
-          }}
-          onJoin={(providerId) => {
-            const id = PROVIDER_IDS[providerId] ?? null
-            if (id) setSigningIn(id)
-            void beginJoin(providerId).finally(() => {
-              setSigningIn((current) => (current === id ? null : current))
-            })
-          }}
+          onPick={handlePick}
+          onJoin={handleJoin}
           onDismiss={() => {
             dismiss()
           }}
