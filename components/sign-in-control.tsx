@@ -525,9 +525,11 @@ export function SignInControl() {
   const { retry: retryMerge } = useSavedDemos()
   const [manualOpen, setManualOpen] = useState(false)
   const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
-  // The familiar door, read once per mount: signing in flips the branch and
-  // unmounts the sheet anyway, so no subscription is needed.
-  const [lastUsed] = useState<ReaderProviderId | null>(() => lastUsedProvider())
+  // Read during render, like `SaveGateModal`: a sign-in writes a new value and
+  // re-renders this control through `useReader` in the same beat, so a
+  // mount-time snapshot would show the previous door after a logout — exactly
+  // the staleness a maintainer caught. SSR-safe: no window, no value.
+  const lastUsed = lastUsedProvider()
   const rootRef = useRef<HTMLDivElement>(null)
 
   // Compared as a boolean for the sheet below: a popup sign-in completes
