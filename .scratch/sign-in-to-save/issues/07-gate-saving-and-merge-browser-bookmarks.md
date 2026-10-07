@@ -167,3 +167,16 @@ the provider sheet in place with no navigation, `sessionStorage['rnui:pending-sa
 id + facts + timestamp, `localStorage['bookmarkedItems']` untouched, "Not now" closes the sheet
 while the intent stays stashed, and the signed-out `/bookmarks` empty panel renders the new
 copy — with no app console errors.
+
+### Popup verification — 2026-10-07 (deployed as `e93f02b`, production READY)
+
+Verified on `https://www.rnui.dev` via `bsk` up to the one click that must be the
+maintainer's: the sheet opens, "Continue with Google" opens a popup tab carrying the
+correct Firebase params (`context_uri=https://www.rnui.dev`, shared-client handler), the
+main page never navigates, and the sheet arms "Waiting for the provider…" disabled. The
+account-chooser click inside the popup tab — the maintainer's own identity — is the only
+step no agent can take; borrowing that tab needs their confirmation. When they click it,
+the loop completes itself: avatar, pending-save resume, first-sign-in merge into D1. (A
+localhost popup from the same session is also still open against the dev server, which is
+left running for it; completing that one additionally proves the merge with a seeded
+browser bookmark — two test saves will land on the account and can be removed after.)
