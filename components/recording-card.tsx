@@ -25,7 +25,7 @@ interface RecordingCardProps {
    * Persist a save or stage its gate. The facts ride along because the
    * `bookmark_added` / `bookmark_removed` events fire only on a confirmed
    * write (sign-in-to-save ticket 07) — the toggle, not the card, decides
-   * when that is, including after a sign-in redirect the card never sees.
+   * when that is, including across the popup sign-in the card never sees.
    */
   toggleBookmark: (id: string, facts: RecordingFacts) => void
   isVoted: boolean

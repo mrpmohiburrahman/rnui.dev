@@ -165,7 +165,7 @@ function ProviderSheet({
             className="mt-[8px] flex w-full items-center gap-[9px] rounded-[7px] border border-line bg-header px-[10px] py-[8px] text-[12.5px] text-t1 disabled:opacity-60"
           >
             <joinMeta.Mark className="size-[15px] shrink-0" />
-            {signingIn === joinId ? "Leaving for the provider…" : joinMeta.label}
+            {signingIn === joinId ? "Waiting for the provider…" : joinMeta.label}
           </button>
         </div>
       )}
@@ -190,7 +190,7 @@ function ProviderSheet({
               className="mt-[6px] flex w-full items-center gap-[9px] rounded-[7px] border border-line px-[10px] py-[8px] text-[12.5px] text-t1 first:mt-0 hover:bg-field disabled:opacity-60"
             >
               <Mark className="size-[15px] shrink-0" />
-              {signingIn === id ? "Leaving for the provider…" : label}
+              {signingIn === id ? "Waiting for the provider…" : label}
             </button>
           )
         })
@@ -308,19 +308,20 @@ export function SignInControl() {
   const [signingIn, setSigningIn] = useState<ReaderProviderId | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
 
-  // Compared as a boolean for the sheet below: a redirect sign-in always
-  // reloads the page, so there is no in-page transition from signed-out to
-  // signed-in to chase with an effect — and an effect that closes on `reader`
-  // would close the account panel on every render, since `reader` is a fresh
-  // literal each time. `open && !signedIn` is the whole of the close-on-return
-  // behaviour: on the fresh load after the redirect the sheet is simply gone.
+  // Compared as a boolean for the sheet below: a popup sign-in completes
+  // in-page, and the moment it does this component renders the account branch
+  // instead — so there is no signed-out-to-signed-in transition to chase with
+  // an effect, and an effect that closes on `reader` would close the account
+  // panel on every render, since `reader` is a fresh literal each time.
+  // `open && !signedIn` is the whole of the close-on-success behaviour: the
+  // sheet is simply gone, because its branch is.
   const signedIn = reader !== null
 
   // Ticket 07's gate: a Save press on a card or in the detail body, while
   // signed out, publishes a request here and this control opens its provider
   // sheet — the press's "open the sign-in in place" half. The save itself
-  // resumes after the redirect (`hooks/use-saved-demos.ts`), so opening is
-  // all this owns.
+  // resumes once the popup signs in (`hooks/use-saved-demos.ts`), so opening
+  // is all this owns.
   //
   // Derived, not effected: the sheet is open when the Reader opened it or an
   // unseen gate request is pending. Dismissing records the request as seen, so
@@ -429,8 +430,9 @@ export function SignInControl() {
           onPick={(id) => {
             setSigningIn(id)
             void beginSignIn(id).finally(() => {
-              // A redirect leaves the page; reaching here means it did not
-              // (an error, already published as `authError`), so re-arm.
+              // Success flips the branch (see above); reaching here with the
+              // press still pending means it failed — already published as
+              // `authError` — so re-arm.
               setSigningIn((current) => (current === id ? null : current))
             })
           }}

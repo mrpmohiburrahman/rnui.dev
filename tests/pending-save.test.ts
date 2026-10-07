@@ -210,7 +210,7 @@ describe("the gate request bus", () => {
   it("accepts a well-formed entry the module itself stashed", () => {
     // The validator rejects entries without facts, because the resumed save
     // reports `bookmark_added` with them — stashing without them would defer
-    // the failure to after the redirect, in front of the Reader.
+    // the failure to after sign-in, in front of the Reader.
     const store = storage()
     const pending = intent()
     stashPendingSave(pending, store, NOW)

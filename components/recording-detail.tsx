@@ -205,7 +205,7 @@ export function RecordingDetail({
   // `bookmark_removed` fire only on a confirmed write (sign-in-to-save ticket
   // 07), and a signed-out press opens the sign-in sheet instead of saving —
   // the toggle owns that gate and the facts it was handed, including across
-  // the redirect the press leads to.
+  // the popup the press leads to.
   const handleSave = useCallback(() => {
     onToggleSave()
   }, [onToggleSave])

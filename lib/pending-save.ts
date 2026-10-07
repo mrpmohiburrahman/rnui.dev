@@ -4,16 +4,18 @@
 //
 // sign-in-to-save tickets 04 and 07. Ticket 04 decided the behaviour: pressing
 // Save while signed out opens the provider sheet in place, and the Demo saves
-// itself once the Reader is back — rather than losing the click. This module is
-// the intent that makes that possible, and the reason it is one small helper
-// rather than each ticket reaching for storage directly.
+// itself once the Reader is signed in — rather than losing the click. This module
+// is the intent that makes that possible, and the reason it is one small helper
+// rather than each ticket reaching for storage directly. Sign-in is a popup now,
+// so the page never unloads; the intent design below is retained unchanged, and
+// now survives trivially instead of critically.
 //
 // THE LIFETIME IS THE FLOW, NOT THE BROWSER
 //
-// `sessionStorage`, deliberately (ticket 04). A redirect sign-in is a
-// five-second round trip, and an intent that outlived it would re-save days
-// later against a Reader who has forgotten why. `localStorage` survives tab
-// close, which is exactly the wrong durability here.
+// `sessionStorage`, deliberately (ticket 04). A sign-in is a five-second
+// round trip, and an intent that outlived it would re-save days later against
+// a Reader who has forgotten why. `localStorage` survives tab close, which is
+// exactly the wrong durability here.
 //
 // That choice answers map.md's open question about the closed tab, and the
 // answer is the gap, not a fix: a Reader who closes the tab mid-flow loses the
@@ -41,7 +43,7 @@
 // and fire only when a save actually happens — the press itself fires nothing,
 // because an abandoned sign-in is not a save. On resume the facts are what the
 // event reports, and they are public catalogue data printed on the card, so
-// nothing visitor-owned crosses the redirect.
+// nothing visitor-owned crosses the popup.
 
 import type { RecordingFacts } from "@/lib/analytics"
 
@@ -128,7 +130,7 @@ export function peekPendingSave(
 }
 
 /**
- * Stash a Save press for after the redirect. Replaces any earlier intent —
+ * Stash a Save press for after sign-in. Replaces any earlier intent —
  * last press wins, by ticket 04's decision, not by accident.
  */
 export function stashPendingSave(

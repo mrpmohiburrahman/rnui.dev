@@ -24,7 +24,7 @@
 //
 // WHY THIS FILE HAS NO FIREBASE IMPORT
 //
-// `linkWithCredential` and `signInWithRedirect` need a browser, so they live in
+// `linkWithCredential` and `signInWithPopup` need a browser, so they live in
 // `hooks/use-reader.ts`. What is here is the part where a mistake costs somebody
 // their Demos: the merge semantics, what the Reader is told, and the pending
 // credential's storage. All three are pure or take an injected storage, so all
@@ -77,7 +77,7 @@ const PENDING_LINK_KEY = "rnui:pending-link"
  * `sessionStorage`, or nothing.
  *
  * `sessionStorage` rather than `localStorage` because the lifetime must match the
- * flow: a redirect sign-in is a five-second round trip, and a credential that
+ * flow: a sign-in is a five-second round trip, and a credential that
  * outlived it would be a credential offered days later against a Reader who has
  * forgotten why they are being asked. `localStorage` survives tab close, which
  * means a half-finished link would still be sitting there tomorrow.

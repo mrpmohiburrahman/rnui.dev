@@ -13,22 +13,30 @@
 // the phone header are two components holding the same fact, and two copies of
 // it is how the Saved chip drifted once already.
 //
-// The flow is redirect, not popup: `signInWithRedirect`, completed by
-// `getRedirectResult` on the next load. Ticket 04's pending-save design and
-// ticket 08's account-linking design both assume redirect mode (the Firebase
-// docs specify `sessionStorage` for the pending credential in redirect mode),
-// so the nav establishes that mode now rather than letting ticket 07 migrate a
-// popup flow onto it.
+// The flow is popup, not redirect: `signInWithPopup`, completed in-page by
+// `onAuthStateChanged`. Redirect was the original mode (tickets 04, 06, 08 all
+// assumed it), and it is broken for every visitor whose browser blocks
+// third-party storage — which is Chrome's default. The evidence, measured in a
+// real browser rather than assumed: the full OAuth round trip completes, the
+// handler stores `firebase:redirectEvent` in its own origin's sessionStorage,
+// the app consumes its `firebase:pendingRedirect` flag — and then nothing.
+// The `signInViaRedirect` event reaches the page only through the gapi iframe,
+// which reads the handler's storage as a third party; blocked, it stays silent
+// forever, `getRedirectResult` never settles, and there is no error to show.
+// Popup keeps the whole exchange first-party (the popup tab posts the result
+// straight back to its opener), so the class of failure is gone rather than
+// handled. Ticket 04's pending-save intent and ticket 08's pending-credential
+// cache keep their sessionStorage design unchanged — with no navigation the
+// page never unloads, so both now survive trivially instead of critically.
 "use client"
 
 import { useCallback, useEffect, useSyncExternalStore } from "react"
 import {
-  getRedirectResult,
   linkWithCredential,
   OAuthCredential,
   OAuthProvider,
   onAuthStateChanged,
-  signInWithRedirect,
+  signInWithPopup,
   signOut,
   type Auth,
   type User,
@@ -110,7 +118,7 @@ const INITIAL: ReaderSnapshot = {
  * copies is how the Saved chip drifted once already.
  *
  * `sessionStorage`, and therefore per-tab — see `lib/reader-link.ts` for why the
- * lifetime is deliberately the length of the redirect and not longer.
+ * lifetime is deliberately the length of the sign-in and not longer.
  */
 const linkCache = pendingLinkCache()
 
@@ -236,11 +244,25 @@ export function readerErrorMessage(code: string): string {
     case "auth/popup-blocked":
     case "auth/cancelled-popup-request":
       return "The sign-in window was blocked. Allow popups for this site and try again."
+    case "auth/popup-closed-by-user":
+      // Closing the popup is a dismissal, not a failure. Handled by
+      // `isSilentSignInDismissal` below rather than rendered as an error.
+      return ""
     case "auth/network-request-failed":
       return "Sign-in could not reach Google. Check the connection and try again."
     default:
       return "Sign-in did not complete. Try again."
   }
+}
+
+/**
+ * Whether a sign-in failure should stay silent. Closing the popup — or a
+ * redirect-era leftover resolving to nothing — is the Reader changing their
+ * mind, and an error toast for that is nagging. Everything else is said aloud
+ * through `readerErrorMessage`.
+ */
+export function isSilentSignInDismissal(code: string): boolean {
+  return code === "auth/popup-closed-by-user"
 }
 
 function providerFor(id: ReaderProviderId) {
@@ -309,14 +331,13 @@ async function linkPendingTo(firebaseAuth: Auth, user: User) {
 let subscribed = false
 
 /**
- * Start the two Firebase listeners, once per page load.
+ * Start the Firebase listener, once per page load.
  *
- * `getRedirectResult` is what completes a redirect sign-in: without it the
- * Reader leaves for Google or GitHub and comes back to a signed-out nav. Its
- * throw is also where `auth/account-exists-with-different-credential` surfaces
- * — ticket 08's whole ticket — so it is kept as message state rather than
- * swallowed: swallowing it would turn a Reader locked out of their saves into a
- * Reader silently signed out.
+ * Popup sign-ins complete in-page: `onAuthStateChanged` below is the whole of
+ * the return leg, for first sign-ins and second-door joins alike. Its throw
+ * has nowhere to surface — Firebase reports popup failures by rejecting the
+ * `signInWithPopup` promise, which `beginSignIn`/`beginJoin` catch into
+ * `handleSignInFailure`, never here.
  */
 function ensureSubscription(firebaseAuth: Auth) {
   if (subscribed) return
@@ -324,9 +345,7 @@ function ensureSubscription(firebaseAuth: Auth) {
 
   onAuthStateChanged(firebaseAuth, (user) => {
     // A signed-in Reader proves the last failure is over, so it clears the
-    // error. A signed-out answer does not — it also fires on first subscribe,
-    // before `getRedirectResult` has answered, and clearing there would wipe
-    // the redirect error that arrives after it.
+    // error.
     //
     // A signed-out answer also ends any link accounting: ticket 07's
     // `reportMergeUnconfirmed` fires only while the phase is `"linked"`, and
@@ -349,47 +368,45 @@ function ensureSubscription(firebaseAuth: Auth) {
       void linkPendingTo(firebaseAuth, user)
     }
   })
+}
 
-  getRedirectResult(firebaseAuth)
-    .then((result) => {
-      // A completed redirect signs in, which `onAuthStateChanged` above
-      // already publishes. Nothing further to do — except not to mistake "no
-      // redirect happened" (the normal load) for a failure.
-      if (result) {
-        publish({ ...snapshot, ready: true, ...fromUser(result.user) })
-      }
+/**
+ * What a failed sign-in means, published once. Ticket 08's whole input lives
+ * here: Firebase has refused to make a second account for one human, and
+ * handed back the credential it was about to use. Cache it and offer the
+ * other door — instead of the flat error ticket 06 shipped, which pointed at
+ * a button with nothing behind it. A silent dismissal publishes nothing at
+ * all: the Reader changed their mind, and an error toast for that is nagging.
+ */
+function handleSignInFailure(error: unknown) {
+  const pending = pendingLinkFrom(error)
+  if (pending) {
+    linkCache.put(pending)
+    publish({
+      ...snapshot,
+      ready: true,
+      authError: null,
+      linkPhase: "needs-other-door",
     })
-    .catch((error: unknown) => {
-      // Ticket 08. This rejection is the whole input to the join flow: Firebase
-      // has refused to make a second account for one human, and handed back the
-      // credential it was about to use. Cache it and offer the other door —
-      // instead of the flat error ticket 06 shipped, which pointed at a button
-      // with nothing behind it.
-      const pending = pendingLinkFrom(error)
-      if (pending) {
-        linkCache.put(pending)
-        publish({
-          ...snapshot,
-          ready: true,
-          authError: null,
-          linkPhase: "needs-other-door",
-        })
-        return
-      }
+    return
+  }
 
-      const code =
-        typeof error === "object" && error !== null && "code" in error
-          ? String(error.code)
-          : ""
-      // The code without a usable credential. Firebase told us an account exists
-      // but gave us no way to reach it, which is the one case the other door
-      // cannot fix — so it stays an error rather than becoming an offer.
-      const message =
-        code === "auth/account-exists-with-different-credential"
-          ? "That address already has an account here, but we couldn't reach it. Try signing in again, or use the other provider."
-          : readerErrorMessage(code)
-      publish({ ...snapshot, ready: true, authError: message })
-    })
+  const code =
+    typeof error === "object" && error !== null && "code" in error
+      ? String(error.code)
+      : ""
+  if (isSilentSignInDismissal(code)) {
+    publish({ ...snapshot, authError: null })
+    return
+  }
+  // The code without a usable credential. Firebase told us an account exists
+  // but gave us no way to reach it, which is the one case the other door
+  // cannot fix — so it stays an error rather than becoming an offer.
+  const message =
+    code === "auth/account-exists-with-different-credential"
+      ? "That address already has an account here, but we couldn't reach it. Try signing in again, or use the other provider."
+      : readerErrorMessage(code)
+  publish({ ...snapshot, ready: true, authError: message })
 }
 
 /**
@@ -418,8 +435,9 @@ export function useReader() {
    * This is the second half of ticket 08's flow. Firebase refused the first door,
    * we cached the credential, the Reader presses the button this returns — and
    * because a signed-in Reader plus a cached credential is exactly what
-   * `onAuthStateChanged` looks for, coming back through here triggers the link
-   * without any further coordination.
+   * `onAuthStateChanged` looks for, signing in through here triggers the link
+   * without any further coordination. Same page throughout: the popup posts
+   * its result straight back, so there is no return trip to coordinate.
    *
    * Takes a provider *id* rather than a `ReaderProviderId`, because the id comes
    * off a credential Firebase wrote (`"google.com"`), not off our own union.
@@ -436,17 +454,24 @@ export function useReader() {
     const provider =
       providerId === "google.com" ? googleProvider : githubProvider
     try {
-      await signInWithRedirect(auth, provider)
-    } catch {
-      // Leaving for the provider is the success path; reaching here means the
-      // redirect never started. The credential is untouched, so the offer stands.
+      const result = await signInWithPopup(auth, provider)
+      // `onAuthStateChanged` publishes this too; saying it here as well answers
+      // the press at once instead of a tick later.
+      publish({ ...snapshot, ready: true, ...fromUser(result.user) })
+    } catch (error: unknown) {
+      // The popup is the whole trip: reaching here means it never completed.
+      // A dismissal stays silent; anything else goes through the shared
+      // failure path, which keeps the cached credential retryable.
+      const code =
+        typeof error === "object" && error !== null && "code" in error
+          ? String(error.code)
+          : ""
+      if (isSilentSignInDismissal(code)) {
+        publish({ ...snapshot, authError: null })
+        return
+      }
       linkCache.note("cancelled")
-      publish({
-        ...snapshot,
-        linkPhase: "cancelled",
-        authError:
-          "We couldn't reach the provider. Your account is unchanged — try again whenever you like.",
-      })
+      handleSignInFailure(error)
     }
   }, [])
 
@@ -460,15 +485,12 @@ export function useReader() {
       return
     }
     try {
-      await signInWithRedirect(auth, providerFor(id))
-      // No publish here: the browser is leaving for the provider, and the
-      // answer arrives via `getRedirectResult` on return.
+      const result = await signInWithPopup(auth, providerFor(id))
+      // `onAuthStateChanged` publishes this too; saying it here as well answers
+      // the press at once instead of a tick later.
+      publish({ ...snapshot, ready: true, ...fromUser(result.user) })
     } catch (error: unknown) {
-      const code =
-        typeof error === "object" && error !== null && "code" in error
-          ? String(error.code)
-          : ""
-      publish({ ...snapshot, authError: readerErrorMessage(code) })
+      handleSignInFailure(error)
     }
   }, [])
 
