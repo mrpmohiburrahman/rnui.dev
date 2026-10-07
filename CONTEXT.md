@@ -36,7 +36,7 @@ _Avoid_: refresh, replace, re-upload, re-capture, update
 
 **Contributor**:
 The person whose work a Recording shows, and the value of a Recording's `contributor` field. Contributors are public catalogue data: their name and their profile links are published, and 23 of them account for all 280 Recordings. A Contributor has no identifier apart from that name — no id and no slug — so the name string *is* the identity, and everything else groups by it.
-_Avoid_: author, creator, owner, submitter, user
+_Avoid_: author, creator, owner, submitter, user, reader
 
 Two spellings that differ only in letter case, in surrounding or repeated spaces, or in how an
 accented character is encoded name the **same** Contributor. Only one of them is ever published: the
@@ -48,6 +48,9 @@ published. A Submission's `contributor` value and profile links use exactly the 
 Recording's do, so the term does not change at publication and the form does not need a second
 word for the person on the other end of it. This is why *submitter* stays avoided: it would name
 a state that does not exist.
+
+A **Reader** is not a Contributor and does not become one by signing in. The same human may be both,
+and the two are unrelated: contributing and saving are separate acts, and neither implies the other.
 
 **Category**:
 The UI kind a Recording belongs to (Buttons, Sliders, Tabbars…). One `data/` file per Category. Its display name is the canonical form — the lowercase spellings that appear in URLs and Asset paths are derived from it, never the other way round.
@@ -90,13 +93,25 @@ in their heading and where their Recordings come from. It never fetches; it is h
 the Recordings it renders.
 _Avoid_: directory, listing, index, feed, results
 
+**Reader**:
+A person who has signed in to the site through a social provider so that they can save
+Demos. A Reader is identified by an id the provider assigns and a display name the provider
+owns; neither belongs to the catalogue, the display name is not stable, and neither is ever
+matched on. A Reader has no catalogue presence — a signed-in Reader is not a Contributor, and
+one human may be both without being one thing.
+_Avoid_: user, member, account, customer, follower
+
 **Remembered set**:
-Recording ids held in one visitor's own browser — the Recordings they bookmarked, or the
-ones they voted on. Two exist, one per stored key. The key is a record in somebody's
-browser rather than an identifier, so it is never renamed: renaming it discards what
-they saved. This survived the rename to Recording — the constants moved, the stored
-strings `"bookmarkedItems"` and `"votedItems"` did not. Nothing on the server can read
-a Remembered set.
+Recording ids held in one visitor's own browser — the ones they voted on. Exactly one exists,
+at the stored key `"votedItems"`. The key is a record in somebody's browser rather than an
+identifier, so it is never renamed: renaming it discards what they voted on. This survived the
+rename to Recording — the constants moved, the stored string did not. Nothing on the server
+can read a Remembered set, and that is still true rather than gone stale.
+
+A Remembered set is *not* where a Reader's saved Demos live. Those sit on the Reader's account,
+so they cross devices and are readable by the server. The stored key `"bookmarkedItems"` is
+kept only so a browser's existing list can be merged once, on first sign-in; it is no longer
+written to and describes nothing that outlives the merge.
 _Avoid_: favourites, likes, saved items, selection, local state
 
 ### Media
