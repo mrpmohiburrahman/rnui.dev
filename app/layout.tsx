@@ -17,6 +17,7 @@ import { PostHogProvider } from "@/lib/posthog-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { NavSidebar } from "@/components/nav/nav-side-bar"
+import { SaveGateModal } from "@/components/sign-in-control"
 import { SiteFooter } from "@/components/site-footer"
 import { ShellChrome } from "@/components/site-shell"
 import { SiteHeader } from "@/components/site-header"
@@ -112,6 +113,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               >
                 {children}
               </ShellChrome>
+              {/* The Save gate's modal, mounted once for the whole app: the
+                  header renders the sign-in control twice and two modals hide
+                  each other, and some routes have no control at all. */}
+              <SaveGateModal />
             </TooltipProvider>
             <Toaster richColors />
           </ThemeProvider>
