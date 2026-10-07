@@ -163,3 +163,15 @@ rather than any provider. Sign-in is `signInWithPopup` now: the popup tab is fir
 it posts its result straight back and the class of failure is gone. Ticket 04's intent and
 ticket 08's credential cache keep their sessionStorage design — with no navigation both now
 survive trivially instead of critically.
+
+### Photo avatar + last-used door, 2026-10-07 (maintainer's change of heart)
+
+The signed-in control shows the session provider's photo (`currentUser.photoURL`), falling
+back to the initial-letter glyph when the provider gives none — so the glyph path stays.
+Presentational only: never persisted, never matched on, `no-referrer`, same 26px/30px
+circles. For a linked Reader (ticket 08) the photo is whichever door they used this
+session, by explicit decision against a fixed priority. The sheet also marks the last-used
+door with LAST USED (`rnui:last-provider` in localStorage, written on every popup success
+and bootstrapped from single-provider accounts): a hint, never a gate — both doors stay
+clickable. Photo rendering is browser-verified only up to sign-in (the click is the
+maintainer's); the badge was verified rendered in-browser against a seeded value.
