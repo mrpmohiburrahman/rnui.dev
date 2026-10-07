@@ -19,7 +19,7 @@ import {
 // where they stand the site lost their data.
 //
 // So the module below carries three things, and all three are pure or take an
-// injected storage. Firebase's own calls — linkWithCredential, signInWithRedirect
+// injected storage. Firebase's own calls — linkWithCredential, signInWithPopup
 // — need a browser and are not here; what is here is the part where being wrong
 // loses somebody their Demos.
 //
@@ -28,7 +28,7 @@ import {
 //   2. `decideLinkAction` — what the Reader is told and what they can do next.
 //      Every branch lands somewhere; a dead end is the regression.
 //   3. `pendingLinkCache` — the pending credential, in sessionStorage because
-//      that is where Firebase's own redirect-mode docs put it.
+//      that is where Firebase's own docs put it.
 //
 // The invariant the whole ticket turns on is the third one: **the pending
 // credential survives every failure.** It is only ever consumed by a call that
@@ -127,10 +127,10 @@ describe("the pending credential cache", () => {
     storage = fakeStorage()
   })
 
-  it("round-trips a credential, because a redirect loses it otherwise", () => {
-    // Redirect mode navigates away and back, so an in-memory variable does not
-    // survive. Firebase's own docs put the pending credential in sessionStorage
-    // for exactly this reason.
+  it("round-trips a credential, because storage is the only thing that survives", () => {
+    // A failed sign-in must not strand the credential in a variable that dies
+    // with the attempt — the cache outlives it, in the tab, so the other door
+    // stays offered. That is where Firebase's own docs put it.
     const cache = pendingLinkCache(storage)
     cache.put(GITHUB_PENDING)
     expect(cache.peek()).toEqual(GITHUB_PENDING)

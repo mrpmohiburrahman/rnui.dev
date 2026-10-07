@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  isSilentSignInDismissal,
   READER_PROVIDERS,
   readerErrorMessage,
   readerInitial,
@@ -70,6 +71,16 @@ describe("the failure copy", () => {
   it("never leaks a Firebase code for an unknown failure", () => {
     expect(readerErrorMessage("auth/internal-error")).not.toMatch(/auth\//)
     expect(readerErrorMessage("")).not.toMatch(/auth\//)
+  })
+
+  it("stays silent when the Reader closes the popup", () => {
+    // A dismissal is not a failure: closing the popup must not render as an
+    // error toast. Every other code speaks through `readerErrorMessage`.
+    expect(isSilentSignInDismissal("auth/popup-closed-by-user")).toBe(true)
+    expect(readerErrorMessage("auth/popup-closed-by-user")).toBe("")
+    expect(isSilentSignInDismissal("auth/popup-blocked")).toBe(false)
+    expect(isSilentSignInDismissal("auth/network-request-failed")).toBe(false)
+    expect(isSilentSignInDismissal("")).toBe(false)
   })
 })
 
