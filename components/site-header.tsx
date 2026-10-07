@@ -13,15 +13,16 @@ import { Suspense, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
-import { cn } from "@/lib/utils"
 import { showStarControl } from "@/lib/star-surface"
+import { cn } from "@/lib/utils"
 import { BOOKMARKS_KEY, useRememberedSet } from "@/hooks/use-remembered-set"
 import { ModeToggle } from "@/app/providers"
 
 import { CatalogueSearch } from "./catalogue-search"
-import { StarControl } from "./star-control"
 import { CHIPS } from "./filter-chips"
 import { facetHref, reportFacetClick } from "./nav/catalogue-nav"
+import { SignInControl } from "./sign-in-control"
+import { StarControl } from "./star-control"
 
 export type SiteHeaderProps = {
   /** allRecordings.length, computed in the root layout — never imported here. */
@@ -155,8 +156,7 @@ function SiteHeaderBar({
                 is the difference between "the name is gone" and "the name is not
                 drawn". */}
             <span aria-hidden="true">
-              <span>◆</span>{" "}
-              <span className="hidden lg:inline">Saved</span>
+              <span>◆</span> <span className="hidden lg:inline">Saved</span>
             </span>
             {/* No width reservation. It used to carry `min-w-[2ch]` so 0 → 3
                 could not shove the mode toggle sideways; the mock reserves
@@ -176,6 +176,13 @@ function SiteHeaderBar({
               The count is inlined from scripts/star-count.json at build time, so
               GitHub is never in a visitor's request path. */}
           {showStars && <StarControl variant="desktop" />}
+
+          {/* sign-in-to-save ticket 06: the Reader's door, between the star and
+              the toggle (ticket 04 variant W). Signed out it is a fourth chip
+              whose word hides below `lg` like Saved's own; signed in it is a
+              26px circle, narrower than the chip it replaces, so neither state
+              is what wraps the cluster at 768–880px. */}
+          <SignInControl />
 
           <ModeToggle />
         </div>
@@ -222,6 +229,13 @@ function SiteHeaderBar({
               what is drawn. `ml-auto` moved onto the Saved chip above, so this
               sits beside it rather than pushing it. */}
           {showStars && <StarControl variant="phone" className="ml-[6px]" />}
+
+          {/* sign-in-to-save ticket 06: the same control as the desktop bar —
+              one component, no phone spelling to drift. Below `md` the word is
+              always hidden by the `lg` breakpoint, so this draws the glyph
+              alone beside the star and fits the 320px row the Saved chip's
+              label comment above is guarding. */}
+          <SignInControl />
 
           <ModeToggle compact />
         </div>

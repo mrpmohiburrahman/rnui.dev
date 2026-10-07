@@ -1,7 +1,7 @@
 # Enable Firebase Auth, the social providers, and the nav sign-in button
 
 Type: task
-Status: open
+Status: resolved
 Blocked by: 01, 03, 04
 
 ## Question
@@ -41,3 +41,111 @@ Do not wire saving here. That is 07.
 
 The environment-variables step is HITL and is the usual reason a ticket of this shape ends
 `ready-for-human` rather than resolved. Name that outcome rather than claiming `resolved` early.
+
+## Answer — resolved 2026-10-06
+
+Both halves are done: the code is built and verified, and the console work is complete and
+API-verified. The `ready-for-human` stage this ticket passed through was real but did not
+outlast the session — one step (GitHub's client secret) needed a sudo re-authentication
+that only the maintainer could perform, and it did.
+
+One thing is verified that was not before: the ticket assumed the environment-variable step
+was the reason a ticket of this shape stalls. It was not. All six `NEXT_PUBLIC_FIREBASE_*`
+and `FIREBASE_PROJECT_ID` were already set on every Vercel environment, and the actual
+blocker was console configuration that no agent had yet touched.
+
+### What was built
+
+| Thing | Where |
+| --- | --- |
+| Single Firebase init + Auth + both providers | `lib/firebase.js` (extended; still the only `initializeApp`) |
+| Reader state, redirect flow, error copy | `hooks/use-reader.ts` (new) |
+| Nav control, both states, provider sheet, account panel | `components/sign-in-control.tsx` (new) |
+| Control mounted in both header layouts | `components/site-header.tsx` (desktop + phone clusters) |
+| The six public keys, targets, and console constraints | `.env.example` (new Firebase Auth section) |
+| Provider order, avatar rule, failure copy, vocabulary | `tests/sign-in-control.test.ts` (9 tests) |
+
+Decisions, all from the tickets this one is blocked by:
+
+- **Variant W** (ticket 04): signed out, a person glyph + "Sign in" chip matching
+  Saved/Star, word hidden below `lg`; signed in, the 26px avatar circle alone.
+  One component for both layouts — the breakpoint does the work, so there is no
+  phone spelling to drift. Wording kept verbatim from the decided prototype,
+  including "Account menu" for the widget (not the person, who is a Reader).
+- **Redirect, not popup** (`signInWithRedirect` + `getRedirectResult`): ticket
+  04's pending-save design and ticket 08's linking design both assume redirect
+  mode, so the nav establishes it now rather than making 07 migrate a popup.
+- **GitHub first** (`READER_PROVIDERS`): ticket 01's finding — Google's consent
+  screen shows the project id until the rename check below passes; GitHub has
+  neither problem. Reordering that one array is the whole fallback.
+- **No `addScope`, no `EmailAuthProvider` reference anywhere**: requesting a
+  sensitive scope would trigger the warning ticket 01 cleared us of.
+- **`auth/account-exists-with-different-credential` is kept as message state**,
+  pointing at the other door. Ticket 08 owns the `linkWithCredential` path;
+  until it lands, a dead end with an error toast would be the regression that
+  ticket exists to prevent.
+- Saving is **not** wired here. `getReaderToken()` exists for ticket 07's
+  routes; nothing calls it yet.
+
+Verified: `tsc`, `eslint`, full suite 36 files / 568 tests green, `next build`
+compiles, and the served HTML carries the signed-out control in both layouts
+(smoke-checked against `pnpm dev`: `aria-label="Sign in to save Demos"` in the
+document, provider buttons absent until opened as designed). The served copy is
+the real button, not a placeholder — the header's "served HTML carries the
+whole control set" rule.
+
+Environment state already confirmed, no action needed:
+
+- All six `NEXT_PUBLIC_FIREBASE_*` are set on Vercel on all environments, and
+  `FIREBASE_PROJECT_ID` (`rnui-pixellog-d1008`) is set — so the usual
+  env-variable reason this ticket shape stalls does not apply. Local `.env`
+  holds the same project's web config.
+
+### Console work: done, 2026-10-06
+
+Project `rnui-pixellog-d1008`. Auth had never been provisioned — the Identity Toolkit
+config returned `CONFIGURATION_NOT_FOUND`, so every provider was at its default and
+Identity Platform was, by that alone, provably off.
+
+**Verified against the API, not the console's own UI:**
+
+| Step | How | Verified state |
+| --- | --- | --- |
+| 1. Google on, Email/Password off | console | `defaultSupportedIdpConfigs/google.com` → `enabled: true`; `signIn.email` **absent** |
+| 2. GitHub on | console | `defaultSupportedIdpConfigs/github.com` → `enabled: true` |
+| 3. Consent-screen branding | console | public-facing name `project-851418164301` → `rnui.dev`; support email set |
+| 4. Authorised domains | API | `localhost`, `rnui.dev`, `www.rnui.dev`, `preview.rnui.dev`, `old.rnui.dev`, both Firebase defaults |
+| 5. Identity Platform off | API | `subtype: FIREBASE_AUTH`, `mfa.state: DISABLED`; OIDC and SAML still Upgrade-gated |
+
+Beyond the checklist, the API confirms **`signIn.phoneNumber` and `signIn.anonymous` are
+also absent** — both off. Anonymous in particular matters: `lib/firebase-token.ts` promises
+no anonymous fallback, and now no anonymous account can be minted to contradict it.
+
+The GitHub OAuth app `rnui.dev` lives on the maintainer's account, callback
+`https://rnui-pixellog-d1008.firebaseapp.com/__/auth/handler`, which Firebase's own form
+independently confirmed as the expected value. Its client secret was entered directly into
+Firebase and **written to no file in this repo**. Minting it needed a sudo re-auth on
+GitHub, which GitHub offers no API for.
+
+### Three corrections to what this ticket assumed
+
+**The provider toggles are not reachable from the CLI.** The Identity Toolkit v2 admin
+API can read and write `authorizedDomains` and `signIn`, but it is the *Identity Platform*
+surface: `defaultSupportedIdpConfigs` rejects a Google entry with no `clientId`, and
+`oauthIdpConfigs` accepts only generic `oidc.*` ids — `github.com` is refused. Both
+toggles therefore had to go through the console. The upside is that the same API is what
+*proves* the read-only claims above, which is better evidence than the console's UI. The
+cost is that a console save and a repainted page disagree: the page still showed the
+GitHub form after a successful save, so the state was confirmed by API read instead.
+
+**Ticket 01's finding was right but understated.** The consent screen showed
+`project-851418164301`, not a Firebase-shaped project id — `project-<projectNumber>`, which
+reads as machine-generated. Setting the public-facing name to `rnui.dev` is the fix the
+ticket prescribed, and it applied without touching a Google Cloud project. What is still
+unobserved is whether `rnui.dev` is what the consent screen now *renders*; the field is
+set, the rendered screen has not been seen.
+
+**Firebase's shared Google client id is derived, not fixed.** It is
+`851418164301-fb2e9073a4nl9oqm17ee7p1m0f5nenci.apps.googleusercontent.com` — the project
+number as prefix. Worth recording because it explains why the API refused to create the
+provider without it, and why guessing one would have been the wrong instinct.
