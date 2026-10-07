@@ -180,8 +180,8 @@ function SiteHeaderBar({
           {/* sign-in-to-save ticket 06: the Reader's door, between the star and
               the toggle (ticket 04 variant W). Signed out it is a fourth chip
               whose word hides below `lg` like Saved's own; signed in it is a
-              26px circle, narrower than the chip it replaces, so neither state
-              is what wraps the cluster at 768–880px. */}
+              26px circle, narrower than the chip it replaces. Neither state
+              moves where this row hands over to the phone row at 768px. */}
           <SignInControl />
 
           <ModeToggle />

@@ -11,10 +11,12 @@
 // and no border — a signed-in Reader recognises their own initial and a chip
 // sized for a word is wasted around it.
 //
-// Deliberately one component for both header layouts: the word hides below
-// `lg` for the same reason the Saved chip hides its own (the cluster wraps at
-// 768–880px), so the phone header — always below `md` — draws the glyph alone
-// with no second spelling to drift.
+// Deliberately one component for both header layouts. The word hides below
+// `lg`, exactly as the Saved chip's own word does, so the phone row — which
+// only ever exists below `md` — draws the glyph alone and no second spelling
+// can drift from this one. The two rows are separate layouts rather than one
+// wrapping cluster: measured, this row holds to 768px and the phone row takes
+// over below it, identically with or without this control.
 //
 // The wording below is ticket 04's decided copy, kept verbatim — including
 // "Account menu", which is the menu widget's name rather than the person (who
