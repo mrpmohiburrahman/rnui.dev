@@ -78,7 +78,7 @@ navigation. Last press wins (ticket 04's decision, kept deliberately: no queue).
 clears on read so a save fires exactly once; dismissal leaves the key in place but the 30-minute
 TTL bounds it, so it cannot resurrect on an unrelated sign-in. Nothing is written anywhere on a
 gated press — local or otherwise — and the analytics events fire only on a confirmed write, never
-on the press: an abandoned sign-in is not a save. On return the merge consumes the intent into
+on the press: an abandoned sign-in is not a save. On sign-in the merge consumes the intent into
 the same POST and fires `bookmark_added` with the stashed facts.
 
 ### Writes and reads through ticket 05's module
@@ -143,6 +143,16 @@ are exercised by nothing here: a node runner cannot sign in, and e2e cannot comp
 OAuth. The first real proof is a Reader signing in after deploy: press Save signed out, sign in,
 see the Demo saved; sign in with a non-empty browser list, see the union. The unit halves on
 both sides of that flow are pinned; the redirect between them is not.
+
+### Auth fix — popup, 2026-10-07
+
+The maintainer reported sign-in "doesn't work at all": redirect out, successful login, site
+unchanged. Reproduced and root-caused in their own browser via `bsk` (see ticket 06's note):
+third-party storage blocking strands the redirect result, so sign-in is popup now. The merge,
+gate, routes, and analytics below are unchanged; only the transport moved. Closing the popup
+stays silent by design (`isSilentSignInDismissal`, tested); every other failure speaks through
+the shared path, which keeps ticket 08's credential retryable. What still needs a human is
+what always did: one real sign-in click-through, now against the popup flow.
 
 ### Deploy — 2026-10-07
 

@@ -154,3 +154,11 @@ Work:
 This ticket exists because the alternative was shipping a known defect. If the linking path proves
 more expensive than expected, the correct fallback is **one provider only** — a single door cannot
 split, so there is no linking code to get wrong. Do not ship two doors without this working.
+
+### Popup, 2026-10-07 (no logic change)
+
+Sign-in moved from redirect to popup (ticket 06's note for why). Nothing in this ticket's logic
+moves with it: the refusal still carries the credential, the cache still holds it, and the join
+still fires when a signed-in Reader coincides with a cached credential — except nothing
+navigates any more, so the "other door" is a second popup on the same page rather than a second
+redirect. Simpler than what this ticket designed for, and every test still passes unchanged.

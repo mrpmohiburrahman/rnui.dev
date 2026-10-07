@@ -149,3 +149,17 @@ set, the rendered screen has not been seen.
 `851418164301-fb2e9073a4nl9oqm17ee7p1m0f5nenci.apps.googleusercontent.com` — the project
 number as prefix. Worth recording because it explains why the API refused to create the
 provider without it, and why guessing one would have been the wrong instinct.
+
+### Redirect → popup, 2026-10-07 (re-decision, measured in the maintainer's own browser)
+
+This ticket chose redirect. Redirect is broken for every visitor whose browser blocks
+third-party storage — Chrome's default: the full OAuth round trip completes, the handler
+stores `firebase:redirectEvent` in its own origin's sessionStorage, the app consumes its
+`firebase:pendingRedirect` flag, and then nothing. The `signInViaRedirect` event reaches the
+page only through the gapi iframe, which reads the handler's storage as a third party;
+blocked, it stays silent forever, `getRedirectResult` never settles, and there is no error
+to show. Both providers failed identically, which is what pointed at the shared return path
+rather than any provider. Sign-in is `signInWithPopup` now: the popup tab is first-party, so
+it posts its result straight back and the class of failure is gone. Ticket 04's intent and
+ticket 08's credential cache keep their sessionStorage design — with no navigation both now
+survive trivially instead of critically.
