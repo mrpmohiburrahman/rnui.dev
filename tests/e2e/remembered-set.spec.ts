@@ -71,6 +71,32 @@ test("a set stored by the previous build still loads after the hook merge", asyn
   await context.close()
 })
 
+  // The badge crowds a narrow sheet: "Continue with Google" wrapped under it.
+  // The sheet widens whenever either door can carry the badge, so both rows
+  // stay single-line — asserted by height, not pixels of width.
+  test("the last-used badge fits without wrapping a provider row", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext()
+    await context.addInitScript(() => {
+      localStorage.setItem("rnui:last-provider", "google")
+    })
+    const page = await context.newPage()
+    await page.route("**/*posthog.com/**", (route) => route.abort())
+    await page.route("**/demo/**", (route) => route.abort())
+    await page.goto("/")
+
+    await page.getByRole("button", { name: "Sign in to save Demos" }).click()
+    await expect(page.getByText("LAST USED")).toBeVisible()
+    for (const label of ["Continue with GitHub", "Continue with Google"]) {
+      const box = await page
+        .getByRole("button", { name: new RegExp(label) })
+        .boundingBox()
+      expect(box?.height, label).toBeLessThan(44)
+    }
+    await context.close()
+  })
+
 // The header is not under the catalogue, so it cannot be handed the set as a
 // prop the way recording-detail.tsx is (recording-detail.tsx:107-111).
 // sign-in-to-save ticket 07: an anonymous press no longer saves anywhere — it
