@@ -143,3 +143,17 @@ are exercised by nothing here: a node runner cannot sign in, and e2e cannot comp
 OAuth. The first real proof is a Reader signing in after deploy: press Save signed out, sign in,
 see the Demo saved; sign in with a non-empty browser list, see the union. The unit halves on
 both sides of that flow are pinned; the redirect between them is not.
+
+### Deploy — 2026-10-07
+
+Committed as `983b9a3` (`feat(saved-demos): gate saving behind sign-in and merge browser
+bookmarks`), merged to `main`, pushed — Vercel built twice (branch preview + production) and
+both are READY. Verified against `https://www.rnui.dev`: `/bookmarks` serves the fallback `h1`,
+`GET /api/saved-demos` answers 401 `{"message":"Sign in to save Demos."}`, the homepage serves
+the sign-in control in both layouts (4 matches = 2 headers × 2 layouts; the double `<header>`
+is pre-existing — the pre-feature deployment serves 2 as well), and a `/recording/<id>` serves
+the new save copy. Browser-verified pre-merge via `bsk` against the dev server: gated Save opens
+the provider sheet in place with no navigation, `sessionStorage['rnui:pending-save']` carries
+id + facts + timestamp, `localStorage['bookmarkedItems']` untouched, "Not now" closes the sheet
+while the intent stays stashed, and the signed-out `/bookmarks` empty panel renders the new
+copy — with no app console errors.
