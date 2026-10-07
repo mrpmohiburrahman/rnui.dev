@@ -197,12 +197,14 @@ function ProviderActions({
               className="mt-[6px] flex w-full items-center gap-[9px] rounded-[7px] border border-line px-[10px] py-[8px] text-[12.5px] text-t1 first:mt-0 hover:bg-field disabled:opacity-60"
             >
               <Mark className="size-[15px] shrink-0" />
-              {signingIn === id ? "Waiting for the provider…" : label}
+              <span className="whitespace-nowrap">
+                {signingIn === id ? "Waiting for the provider…" : label}
+              </span>
               {/* The familiar door, named but never forced: both doors stay
                   clickable, because hiding one is the dead end ticket 08
                   exists to prevent. */}
               {lastUsed === id && signingIn === null && (
-                <span className="ml-auto shrink-0 font-mono text-[9px] tracking-[0.08em] text-t3">
+                <span className="ml-auto shrink-0 pl-[6px] font-mono text-[9px] tracking-[0.08em] text-t3">
                   LAST USED
                 </span>
               )}
@@ -242,8 +244,17 @@ function ProviderSheet(props: {
   onJoin: (providerId: string) => void
   onDismiss: () => void
 }) {
+  // Room for the badge: LAST USED beside a provider label does not fit the
+  // default width — "Continue with Google" wrapped under it. The wide form
+  // applies whenever either door can carry the badge, so the sheet never
+  // reshapes itself between opens.
+  const wide = props.lastUsed !== null
   return (
-    <div className="absolute right-0 top-[calc(100%+8px)] z-[60] w-[248px] rounded-card border border-line bg-header p-[10px] shadow-2xl">
+    <div
+      className={`absolute right-0 top-[calc(100%+8px)] z-[60] rounded-card border border-line bg-header p-[10px] shadow-2xl ${
+        wide ? "w-[284px]" : "w-[248px]"
+      }`}
+    >
       <div className="px-[6px] pb-[8px] text-[11px] text-t3">
         Sign in to save Demos
       </div>
