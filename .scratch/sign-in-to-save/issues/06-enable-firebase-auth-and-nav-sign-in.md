@@ -165,7 +165,6 @@ ticket 08's credential cache keep their sessionStorage design — with no naviga
 survive trivially instead of critically.
 
 ### Photo avatar + last-used door, 2026-10-07 (maintainer's change of heart)
-
 The signed-in control shows the session provider's photo (`currentUser.photoURL`), falling
 back to the initial-letter glyph when the provider gives none — so the glyph path stays.
 Presentational only: never persisted, never matched on, `no-referrer`, same 26px/30px
@@ -175,3 +174,15 @@ door with LAST USED (`rnui:last-provider` in localStorage, written on every popu
 and bootstrapped from single-provider accounts): a hint, never a gate — both doors stay
 clickable. Photo rendering is browser-verified only up to sign-in (the click is the
 maintainer's); the badge was verified rendered in-browser against a seeded value.
+
+### Centered gate modal, fresh badge, wider sheet, 2026-10-07 (maintainer feedback)
+
+Three follow-ups from looking at it in the browser. (1) A Save press opens a centered
+modal with a scrim instead of the nav's dropdown — the press happens mid-page, so the
+answer belongs mid-page; it names the Demo the press was on. One provider-choice body in
+two shells. Mounted once in the root layout: the header renders the control twice and
+two modals hide each other with `aria-hidden` (found by test, fixed by structure). This
+also covers routes with no sign-in control, where a gated press previously stashed an
+intent nobody answered. (2) The badge read once at mount and went stale across a
+login+logout; both surfaces read it fresh on every render now. (3) The sheet widens
+248px → 284px whenever either door can carry LAST USED, and the label holds one line.
