@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 298", () => {
+  it("counts the whole catalogue, per Category, summing to 305", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -28,7 +28,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Headers: 3,
       List: 17,
       Loaders: 10,
-      Misc: 161,
+      Misc: 168,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
@@ -40,13 +40,13 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(298)
+    expect(total).toBe(305)
   })
 })
 
 describe("RECORDINGS_PER_CONTRIBUTOR", () => {
-  it("counts 24 contributors, the whole catalogue again", () => {
-    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(24)
+  it("counts 25 contributors, the whole catalogue again", () => {
+    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(25)
     expect(RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]).toBe(
       138
     )
@@ -78,10 +78,11 @@ describe("contributorsByCount", () => {
       { name: "Konstantinos Efkarpidis", count: 11 },
       { name: "William Candillon", count: 10 },
       // The two 8s are the tie to break: Alireza sorts before Kacper, so the
-      // ranked list is stable when the data changes. The two 7s tie the same way,
-      // and David Mokos sorts before Thomino.
+      // ranked list is stable when the data changes. The three 7s tie the same way —
+      // Blazej, then David, then Thomino — and David Mokos sorts before Thomino.
       { name: "Alireza Hadjar", count: 8 },
       { name: "Kacper Kapuściak", count: 8 },
+      { name: "Blazej Kustra", count: 7 },
       { name: "David Mokos", count: 7 },
       { name: "Thomino", count: 7 },
       { name: "Aashu Dubey", count: 6 },
@@ -100,6 +101,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(298)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(305)
   })
 })
