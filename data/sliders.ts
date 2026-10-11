@@ -332,4 +332,17 @@ export const sliders: Recording[] = [
     category: "Sliders",
     created_at: "2026-10-04T13:29:16.000Z",
   },
+  {
+    id: "01M4NHJ8XFHG2FTB286QTSHAC0",
+    caption: "Slider Playback Control",
+    demoPath: "demo/sliders/slider_playback_control_solarin_johnson.mp4",
+    posterPath: "thumbnails/sliders/slider_playback_control_solarin_johnson.avif",
+    durationMs: 6100,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source: "https://github.com/Solarin-Johnson/my-app",
+    githubId: "Solarin-Johnson",
+    category: "Sliders",
+    created_at: "2026-10-11T13:13:50.255Z",
+  },
 ]
