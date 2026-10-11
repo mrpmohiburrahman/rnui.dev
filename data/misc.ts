@@ -3137,11 +3137,8 @@ caption: "Empty Qr Code",
   {
     id: "01M4MGY1QMNS4QVPX8FSS1K98Y",
     caption: "Metal",
-    demoPath: "demo/misc/metal_blazej_kustra.mp4",
-    posterPath: "thumbnails/misc/metal_blazej_kustra.avif",
-    durationMs: 7020,
-    aspect: 0.46,
-    hue: 24,
+    demoPath: "demo/misc/metal_v2_blazej_kustra.mp4",
+    posterPath: "thumbnails/misc/metal_v2_blazej_kustra.avif",
     contributor: "Blazej Kustra",
     source:
       "https://github.com/blazejkustra/react-native-effects/blob/main/example/src/components/materials/MetalMaterial.tsx",
