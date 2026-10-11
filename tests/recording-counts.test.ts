@@ -18,8 +18,8 @@ describe("RECORDINGS_PER_CATEGORY", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
-      "Bottom Sheets": 6,
-      Buttons: 21,
+      "Bottom Sheets": 7,
+      Buttons: 20,
       Carousels: 10,
       Charts: 9,
       "Circular Progress Bars": 3,

@@ -342,17 +342,4 @@ export const buttons: Recording[] = [
     category: "Buttons",
     created_at: "2025-11-25T19:55:24.000Z",
   },
-  {
-    id: "01M4NK9KWZ1111WVX28P331CPK",
-    caption: "Signature",
-    demoPath: "demo/buttons/signature_solarin_johnson.mp4",
-    posterPath: "thumbnails/buttons/signature_solarin_johnson.avif",
-    durationMs: 8423,
-    aspect: 0.46,
-    contributor: "Solarin Johnson",
-    source: "https://github.com/Solarin-Johnson/my-app",
-    githubId: "Solarin-Johnson",
-    category: "Buttons",
-    created_at: "2026-10-11T13:44:03.744Z",
-  },
 ]
