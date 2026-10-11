@@ -342,4 +342,17 @@ export const buttons: Recording[] = [
     category: "Buttons",
     created_at: "2025-11-25T19:55:24.000Z",
   },
+  {
+    id: "01M4NPZHSSJ4C5EFEARD0V2KHW",
+    caption: "T9 Style Pad",
+    demoPath: "demo/buttons/t9_style_pad_solarin_johnson.mp4",
+    posterPath: "thumbnails/buttons/t9_style_pad_solarin_johnson.avif",
+    durationMs: 12918,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source: "https://github.com/Solarin-Johnson/my-app",
+    githubId: "Solarin-Johnson",
+    category: "Buttons",
+    created_at: "2026-10-11T14:48:28.218Z",
+  },
 ]
