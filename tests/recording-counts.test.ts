@@ -14,21 +14,21 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 331", () => {
+  it("counts the whole catalogue, per Category, summing to 339", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
       "Bottom Sheets": 6,
-      Buttons: 20,
+      Buttons: 21,
       Carousels: 10,
       Charts: 9,
       "Circular Progress Bars": 3,
       "Drop Down": 1,
       "Full Apps": 6,
       Headers: 3,
-      List: 17,
+      List: 18,
       Loaders: 11,
-      Misc: 192,
+      Misc: 198,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(331)
+    expect(total).toBe(339)
   })
 })
 
@@ -77,6 +77,7 @@ describe("contributorsByCount", () => {
       { name: "Daniel Friyia", count: 19 },
       { name: "Arunabh Verma", count: 16 },
       { name: "Konstantinos Efkarpidis", count: 11 },
+      { name: "Solarin Johnson", count: 11 },
       { name: "William Candillon", count: 10 },
       // The two 8s are the tie to break: Alireza sorts before Kacper, so the
       // ranked list is stable when the data changes. The two 7s tie the same
@@ -92,7 +93,6 @@ describe("contributorsByCount", () => {
       { name: "Andreev Danila", count: 3 },
       { name: "Lucas Lima", count: 3 },
       { name: "Pushkar Tandon", count: 3 },
-      { name: "Solarin Johnson", count: 3 },
       { name: "Yassire Mtioui", count: 3 },
       { name: "Arnaud Dellinger (evening kid)", count: 2 },
       { name: "Enes Öztürk", count: 2 },
@@ -102,6 +102,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(331)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(339)
   })
 })
