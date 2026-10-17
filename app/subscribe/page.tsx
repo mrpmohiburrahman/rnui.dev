@@ -68,8 +68,8 @@ function SubscribeForm() {
           and telling them apart would tell a stranger which tokens exist. */}
       {confirmed === "yes" && (
         <p className={`${notice} text-t1`}>
-          Confirmed — you are on the list. The next Digest goes out at the end
-          of the week.
+          Confirmed — you are on the list. The next Digest goes out when there
+          is something new.
         </p>
       )}
       {confirmed === "no" && (
@@ -81,11 +81,10 @@ function SubscribeForm() {
       )}
 
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
-        A weekly Digest of the Recordings added to the catalogue, sent only in a
-        week when there is at least one. Your address is stored in Firestore and
-        sent to Resend, the service that delivers the Digest, and is used for
-        nothing else. There is no account, no sign-in and nothing synced between
-        devices.
+        A Digest of the Recordings added to the catalogue, sent when there is
+        something new. Your address is stored in Firestore and sent to Resend,
+        the service that delivers the Digest, and is used for nothing else.
+        There is no account, no sign-in and nothing synced between devices.
       </p>
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
         Subscribing takes two steps: enter an address, then click the link in

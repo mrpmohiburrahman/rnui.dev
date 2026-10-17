@@ -61,8 +61,17 @@ The screen recording of one component in motion. Every Recording has exactly one
 _Avoid_: video, clip, preview
 
 **Poster**:
-The still frame shown in place of a Demo before it plays. Every Demo has exactly one.
+The still frame shown in place of a Demo before it plays. Every Demo has exactly one. Its format is
+AVIF and always will be — a Poster is one specific encoding of one specific frame, not a family of them.
 _Avoid_: thumbnail, placeholder, cover
+
+**Rendition**:
+A second encoding of a Poster's bytes, produced from the Poster and never authored beside it. It exists
+because a card renderer reads a different format from a browser, so the same frame has to be legible to
+both. A Rendition is derived, not captured: re-recording a Demo yields a new Poster, which yields a new
+Rendition, and the superseded pair stays on the store as orphans. A Rendition is named by its own Asset
+path and is immutable like any other, and no page ever fetches one — only a card does.
+_Avoid_: Poster variant, thumbnail, copy, fallback image
 
 ### The site
 
@@ -100,6 +109,22 @@ owns; neither belongs to the catalogue, the display name is not stable, and neit
 matched on. A Reader has no catalogue presence — a signed-in Reader is not a Contributor, and
 one human may be both without being one thing.
 _Avoid_: user, member, account, customer, follower
+
+**Subscriber**:
+A person who confirmed an email address for the Digest. Confirmation is the whole of it: an address that
+was submitted and never confirmed is not a Subscriber, receives nothing, and is not on the list. A
+Subscriber is not a **Reader** — signing in saves Demos, confirming an address asks for mail, and one
+person may do either or both without being a different thing. Resend holds the address; the site holds
+the consent record beside it.
+_Avoid_: user, lead, contact, member, reader, sign-up
+
+**Digest**:
+The one email the site sends, and the only thing it ever sends. It goes out when at least one new
+**Recording** has landed since the last one — never on a schedule, and never in a week with nothing
+new. There is no per-Recording alert mail, and the promise the site makes is the rule, not a cadence:
+a subscriber can be told the Digest comes "only when there is something new" because that is exactly
+when it comes.
+_Avoid_: newsletter, blast, alert, notification, campaign, mailing
 
 **Remembered set**:
 Recording ids held in one visitor's own browser — the ones they voted on. Exactly one exists,

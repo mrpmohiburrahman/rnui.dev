@@ -54,21 +54,76 @@ export function privacyUrl(origin: string): string {
   return `${origin.replace(/\/$/, "")}${PRIVACY_PATH}`
 }
 
-export const SIGNUP_HEADING = "Get the weekly Digest"
+/**
+ * "Get the Digest", not "Get the weekly Digest". The heading sat above the form
+ * in the footer and on /subscribe, so the weekly promise was made twice: once
+ * here and once in SIGNUP_DISCLOSURE_BODY. Both went in the same edit, because
+ * a heading that promises a schedule the Digest does not keep is the more
+ * visible of the two.
+ */
+export const SIGNUP_HEADING = "Get the Digest"
 
 /**
- * Ticket 04's signup disclosure, verbatim, in the two pieces a form needs: the
- * last sentence has to be a real link, and splitting it here beats a regex at
- * the render site. SIGNUP_DISCLOSURE below joins them back, and that joined
- * string is both what the form shows and what every record stores, so what
- * somebody agreed to is provable from the record alone rather than from a guess
- * about which deploy they saw.
+ * The consent request, as the maintainer chose it on 2026-10-09, in the two
+ * pieces a form needs: the last sentence has to be a real link, and splitting it
+ * here beats a regex at the render site. SIGNUP_DISCLOSURE below joins them
+ * back, and that joined string is both what the form shows and what every record
+ * stores, so what somebody agreed to is provable from the record alone rather
+ * than from a guess about which deploy they saw.
+ *
+ * Six clauses became three, and every removal is recorded here because this
+ * string is the consent evidence: `consentText` on every record is exactly these
+ * words plus SIGNUP_DISCLOSURE_POLICY_SENTENCE
+ * (app/actions/subscribe-email.ts:127).
+ *
+ * 1. "New Recordings added to rnui.dev, once a week." went first, per ticket 01.
+ *    The cadence is undecided, and a fixed-frequency promise is broken by an
+ *    ad-hoc send and by any week with nothing new. The promise line above the
+ *    field carries the frequency instead.
+ * 2. POSTAL_ADDRESS and CONTACT_EMAIL went next, at the maintainer's
+ *    instruction. CASL ECPR s.4(d) wants "the mailing address" in a consent
+ *    request and a link does not satisfy it, so Canadian consent is formally
+ *    defective. Accepted knowingly: CASL only reaches commercial email, and
+ *    there is no sponsor or paid link, so the exposure is low until that
+ *    changes. CAN-SPAM 16 CFR 316.4(c)(1) is unaffected because it binds the
+ *    message, and the address stays in every Digest footer via
+ *    IDENTITY_BLOCK_HTML below.
+ * 3. "link in every email" went with them. CASL s.4(e) wants a statement that
+ *    consent can be withdrawn, which "Unsubscribe any time" is on its own; the
+ *    mechanism is evidenced by the stored record and by the link actually being
+ *    in the sent mail.
+ *
+ * The policy sentence stayed the stock one. A draft ended it "for our postal
+ * address and how we handle your data", on the theory that naming what the
+ * link holds would satisfy s.4(d). It does not, and no page on this site
+ * describes a policy link that way. The policy already prints the address in
+ * full at app/privacypolicy/page.tsx:143, which is the honest place for it.
+ *
+ * "Unsubscribe any time" must survive every future edit. It is the only
+ * withdrawal statement in the string, and tests/subscription-consent.test.ts
+ * pins it for that reason.
  */
 export const SIGNUP_DISCLOSURE_BODY =
-  `New Recordings added to rnui.dev, once a week. Sent by ${SENDER_NAME}, ` +
-  `${POSTAL_ADDRESS}, ${CONTACT_EMAIL}. No sponsor mail, no third-party ` +
-  `marketing, and your address is never shared. Unsubscribe any time, link ` +
-  `in every email.`
+  `Sent by ${SENDER_NAME} from rnui.dev. Unsubscribe any time.`
+
+/**
+ * What a Reader is signing up for, stated in ordinary prose and shown above the
+ * email field on every capture surface.
+ *
+ * It used to live inside SIGNUP_DISCLOSURE_BODY as "New Recordings added to
+ * rnui.dev, once a week", which was the only description the footer form had.
+ * Removing it left the footer promising nothing at all, so it moved here rather
+ * than staying behind. Keeping it in one constant is what stops the three
+ * surfaces (footer, /subscribe, popup) drifting apart again.
+ *
+ * No frequency, per ticket 01: an ad-hoc send and a week with nothing new both
+ * break a weekly promise. No "unsubscribe anytime" either — that belongs to the
+ * disclosure below the field, which is the string stored as consent evidence
+ * and the only copy CASL s.4(e) is satisfied by. Saying it in both places is
+ * what made the popup feel cramped.
+ */
+export const SIGNUP_PROMISE =
+  "New Recordings, only when there is something new. Confirm once."
 
 export const SIGNUP_DISCLOSURE_POLICY_SENTENCE = "See our Privacy Policy."
 
@@ -79,7 +134,7 @@ export const SIGNUP_DISCLOSURE = `${SIGNUP_DISCLOSURE_BODY} ${SIGNUP_DISCLOSURE_
  * itself, which looks redundant and is not: the string proves the words, the
  * version makes two cohorts comparable without diffing prose.
  */
-export const CONSENT_FORM_VERSION = "2026-09-25.1"
+export const CONSENT_FORM_VERSION = "2026-10-09.1"
 
 /**
  * The identity block as HTML, assembled once. Both senders paste it, the
