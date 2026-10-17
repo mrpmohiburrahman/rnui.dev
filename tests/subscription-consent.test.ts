@@ -4,6 +4,7 @@ import {
   privacyUrl,
   SIGNUP_DISCLOSURE,
   SIGNUP_HEADING,
+  SIGNUP_PROMISE,
 } from "../lib/sender-identity"
 import {
   createConfirmSubscription,
@@ -142,21 +143,49 @@ describe("isUndeliverableByDefinition", () => {
 // two ever diverge the stored record stops being evidence of anything, so the
 // pieces the form composes are pinned to the joined string here.
 describe("the signup disclosure", () => {
-  it("carries ECPR s.4's four elements", () => {
+  // The maintainer removed the postal address from this string on 2026-10-09,
+  // so "carries ECPR s.4's four elements" is no longer true and is deliberately
+  // no longer asserted. What s.4 still requires, and what is asserted:
+  //
+  //   s.4(a) name          — present.
+  //   s.4(e) withdrawal    — present, and pinned by exact name below. This is
+  //                          the one clause that must never be edited away.
+  //   s.4(d) contact       — "rnui.dev" plus the privacy-policy link.
+  //   s.4(d) mailing addr  — ABSENT, by the maintainer's decision. A link to
+  //                          the policy does not satisfy it, so Canadian
+  //                          consent is formally defective. Accepted knowingly
+  //                          (CASL only reaches commercial email; there is no
+  //                          sponsor or paid link). CAN-SPAM is unaffected: it
+  //                          binds the sent message, and the address is still
+  //                          in every Digest footer via IDENTITY_BLOCK_HTML.
+  //
+  // If someone ever re-adds the address, restore the assertion here AND bump
+  // CONSENT_FORM_VERSION, or the stored records stop being comparable.
+  it("carries the sender's name", () => {
     expect(SIGNUP_DISCLOSURE).toContain("MD. MOHIBUR RAHMAN")
-    expect(SIGNUP_DISCLOSURE).toContain(
-      "Halima Nagar, Cumilla 3502, Bangladesh"
-    )
-    expect(SIGNUP_DISCLOSURE).toContain("hello@rnui.dev")
+  })
+
+  it("carries s.4(e)'s withdrawal statement, and it is the only one", () => {
     expect(SIGNUP_DISCLOSURE).toContain("Unsubscribe any time")
+    // The promise line above each field must not repeat it. It did once, which
+    // made the popup say the same thing twice ten pixels apart.
+    const occurrences = SIGNUP_DISCLOSURE.match(/nsubscribe/g) ?? []
+    expect(occurrences).toHaveLength(1)
+  })
+
+  it("makes no fixed-frequency promise, since the cadence is undecided", () => {
+    const copy = `${SIGNUP_HEADING} ${SIGNUP_DISCLOSURE}`.toLowerCase()
+    for (const promise of ["once a week", "weekly", "every week"]) {
+      expect(copy).not.toContain(promise)
+    }
   })
 
   it("uses the domain's own vocabulary, not the words CONTEXT.md avoids", () => {
-    const copy = `${SIGNUP_HEADING} ${SIGNUP_DISCLOSURE}`.toLowerCase()
+    const copy = `${SIGNUP_HEADING} ${SIGNUP_DISCLOSURE} ${SIGNUP_PROMISE}`.toLowerCase()
     for (const avoided of ["animation", "newsletter", "entry", "item"]) {
       expect(copy).not.toContain(avoided)
     }
-    expect(SIGNUP_DISCLOSURE).toContain("Recordings")
+    expect(SIGNUP_PROMISE).toContain("Recordings")
   })
 })
 

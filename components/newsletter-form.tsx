@@ -21,6 +21,7 @@ import { useEffect, useState, useTransition } from "react"
 
 import { newsletterSubmitted } from "@/lib/analytics"
 import { SignupDisclosure } from "@/components/signup-disclosure"
+import { SIGNUP_PROMISE } from "@/lib/sender-identity"
 import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const NewsletterForm: React.FC = () => {
@@ -72,6 +73,14 @@ const NewsletterForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* The promise, which the disclosure no longer carries. Before
+          2026-10-09 this form said what you were signing up for only inside
+          SIGNUP_DISCLOSURE_BODY, so dropping the weekly clause from that string
+          left the footer with no description at all. Same constant the popup
+          and /subscribe use, so the three cannot drift. */}
+      <p className="mb-[9px] max-w-[260px] text-[11.5px] leading-[1.5] text-t2">
+        {SIGNUP_PROMISE}
+      </p>
       <div className="flex items-center gap-[9px]">
         <input
           // Not "email": /contactus and /subscribe each carry their own
