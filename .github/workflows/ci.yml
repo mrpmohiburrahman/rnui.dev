@@ -11,12 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No `version:` on purpose. Declaring one while package.json carries
+      # `packageManager` makes pnpm/action-setup fail with "Multiple versions of
+      # pnpm specified" before any job step runs, so it reads package.json.
+      #
+      # `standalone` is not optional. This step runs before setup-node, so pnpm's
+      # own installer would use the runner's default Node, which pnpm 11 refuses:
+      # it needs Node 22.13 or newer and dies on `node:sqlite`. The standalone
+      # build is @pnpm/exe, which carries its own runtime and needs no Node.
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          standalone: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 22, not 20: pnpm 11 requires it, and Node 20 is end-of-life.
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check-types
@@ -45,12 +54,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No `version:` on purpose. Declaring one while package.json carries
+      # `packageManager` makes pnpm/action-setup fail with "Multiple versions of
+      # pnpm specified" before any job step runs, so it reads package.json.
+      #
+      # `standalone` is not optional. This step runs before setup-node, so pnpm's
+      # own installer would use the runner's default Node, which pnpm 11 refuses:
+      # it needs Node 22.13 or newer and dies on `node:sqlite`. The standalone
+      # build is @pnpm/exe, which carries its own runtime and needs no Node.
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          standalone: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 22, not 20: pnpm 11 requires it, and Node 20 is end-of-life.
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
@@ -63,12 +81,21 @@ jobs:
     needs: quality
     steps:
       - uses: actions/checkout@v4
+      # No `version:` on purpose. Declaring one while package.json carries
+      # `packageManager` makes pnpm/action-setup fail with "Multiple versions of
+      # pnpm specified" before any job step runs, so it reads package.json.
+      #
+      # `standalone` is not optional. This step runs before setup-node, so pnpm's
+      # own installer would use the runner's default Node, which pnpm 11 refuses:
+      # it needs Node 22.13 or newer and dies on `node:sqlite`. The standalone
+      # build is @pnpm/exe, which carries its own runtime and needs no Node.
       - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          standalone: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 22, not 20: pnpm 11 requires it, and Node 20 is end-of-life.
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
