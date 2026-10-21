@@ -5,11 +5,20 @@ import {
   type JWK,
   type KeyInput,
 } from "jose"
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest"
 
+import { POST as writePreferences } from "../app/api/reader-prefs/route"
 import { DELETE, GET, POST } from "../app/api/saved-demos/route"
-import { SAVE_FAILED } from "../hooks/use-saved-demos"
 import { allRecordings } from "../data/catalogue"
+import { SAVE_FAILED } from "../hooks/use-saved-demos"
 
 // sign-in-to-save ticket 07.
 //
@@ -116,7 +125,14 @@ type D1Call = { sql: string; params: unknown[] }
  * is behaviour, not a string match. INSERT applies the union the real
  * statement applies; UPDATE removes; SELECT reads one row.
  */
-function stubNetwork(store: Map<string, string[]>, publicJwk: JWK) {
+function stubNetwork(
+  store: Map<string, string[]>,
+  publicJwk: JWK,
+  preferences = new Map<
+    string,
+    { popup_suppressed_reason: string; popup_suppressed_at: string }
+  >()
+) {
   const d1Calls: D1Call[] = []
   vi.stubGlobal(
     "fetch",
@@ -129,6 +145,25 @@ function stubNetwork(store: Map<string, string[]>, publicJwk: JWK) {
       }
       const { sql, params } = JSON.parse(init?.body ?? "{}") as D1Call
       d1Calls.push({ sql, params })
+      if (sql.includes("reader_prefs")) {
+        const [uid, timestamp, reason] = params as string[]
+        const previous = preferences.get(uid)
+        if (sql.startsWith("SELECT")) {
+          return d1Response(previous ? [previous] : [])
+        }
+        if (!previous) {
+          preferences.set(uid, {
+            popup_suppressed_reason: reason,
+            popup_suppressed_at: timestamp,
+          })
+        } else if (
+          previous.popup_suppressed_reason === "dismissed" &&
+          reason === "subscribed"
+        ) {
+          previous.popup_suppressed_reason = reason
+        }
+        return d1Response([])
+      }
       if (sql.startsWith("SELECT")) {
         const ids = store.get(params[0] as string)
         return d1Response(
@@ -190,6 +225,156 @@ function request(
   })
 }
 
+describe("Reader suppression across authenticated requests", () => {
+  it("rejects missing, unknown, forged, expired, and wrong-project tokens before D1", async () => {
+    const { privateKey: attackerKey } = await signer()
+    const tokens = [
+      null,
+      "unknown",
+      await mint(attackerKey, UID_A),
+      await new SignJWT({})
+        .setProtectedHeader({ alg: "RS256", kid: "test-kid-1" })
+        .setIssuer(ISSUER)
+        .setAudience(PROJECT_ID)
+        .setSubject(UID_A)
+        .setIssuedAt(1)
+        .setExpirationTime(2)
+        .sign(privateKey),
+      await new SignJWT({})
+        .setProtectedHeader({ alg: "RS256", kid: "test-kid-1" })
+        .setIssuer(ISSUER)
+        .setAudience("another-project")
+        .setSubject(UID_A)
+        .setIssuedAt()
+        .setExpirationTime("1h")
+        .sign(privateKey),
+    ]
+    const { d1Calls } = stubNetwork(new Map(), publicJwk)
+    for (const token of tokens) {
+      expect((await GET(request(token))).status).toBe(401)
+      expect(
+        (
+          await writePreferences(
+            request(token, {
+              method: "POST",
+              body: { reason: "dismissed" },
+            })
+          )
+        ).status
+      ).toBe(401)
+    }
+    expect(d1Calls).toEqual([])
+  })
+
+  it("rejects another Reader identifier and all bodies except one decision", async () => {
+    const { d1Calls } = stubNetwork(new Map(), publicJwk)
+    const token = await mint(privateKey, UID_A)
+    for (const body of [
+      { reason: "dismissed", uid: UID_B },
+      { reason: "subscribed", reader_uid: UID_B },
+      { reason: "dismissed", email: "reader@example.test" },
+      { reason: "expired" },
+      { reason: null },
+      {},
+      null,
+      [],
+      "dismissed",
+    ]) {
+      const res = await writePreferences(
+        request(token, { method: "POST", body })
+      )
+      expect(res.status).toBe(400)
+    }
+    const malformed = new Request("https://rnui.dev/api/reader-prefs", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: "{",
+    })
+    expect((await writePreferences(malformed)).status).toBe(400)
+    expect(d1Calls).toEqual([])
+  })
+
+  it("does not expose one Reader's suppression to another Reader", async () => {
+    const preferences = new Map([
+      [
+        UID_A,
+        {
+          popup_suppressed_reason: "subscribed",
+          popup_suppressed_at: "2026-10-01T00:00:00.000Z",
+        },
+      ],
+    ])
+    const { d1Calls } = stubNetwork(new Map(), publicJwk, preferences)
+    const res = await GET(request(await mint(privateKey, UID_B)))
+    await expect(res.json()).resolves.toEqual({
+      ids: [],
+      popupSuppressed: null,
+    })
+    expect(d1Calls.every(({ params }) => params[0] === UID_B)).toBe(true)
+  })
+
+  it("reports invalid stored suppression as a read failure", async () => {
+    const preferences = new Map([
+      [
+        UID_A,
+        {
+          popup_suppressed_reason: "invalid",
+          popup_suppressed_at: "2026-10-01T00:00:00.000Z",
+        },
+      ],
+    ])
+    stubNetwork(new Map(), publicJwk, preferences)
+    const logging = vi.spyOn(console, "error").mockImplementation(() => {})
+    try {
+      expect((await GET(request(await mint(privateKey, UID_A)))).status).toBe(
+        500
+      )
+    } finally {
+      logging.mockRestore()
+    }
+  })
+
+  it("remembers only the verified Reader and never downgrades a subscription", async () => {
+    const preferences = new Map([
+      [
+        UID_B,
+        {
+          popup_suppressed_reason: "dismissed",
+          popup_suppressed_at: "2026-10-01T00:00:00.000Z",
+        },
+      ],
+    ])
+    const { d1Calls } = stubNetwork(
+      new Map([[UID_A, [IDA]]]),
+      publicJwk,
+      preferences
+    )
+    const token = await mint(privateKey, UID_A)
+    for (const [reason, expected] of [
+      ["dismissed", "dismissed"],
+      ["subscribed", "subscribed"],
+      ["dismissed", "subscribed"],
+    ]) {
+      const before = d1Calls.length
+      const written = await writePreferences(
+        request(token, { method: "POST", body: { reason } })
+      )
+      expect(written.status).toBe(200)
+      expect(d1Calls.length - before).toBe(1)
+      const read = await GET(request(token))
+      await expect(read.json()).resolves.toEqual({
+        ids: [IDA],
+        popupSuppressed: expected,
+      })
+    }
+    expect(preferences.get(UID_B)).toEqual({
+      popup_suppressed_reason: "dismissed",
+      popup_suppressed_at: "2026-10-01T00:00:00.000Z",
+    })
+    expect(d1Calls.every(({ params }) => params[0] === UID_A)).toBe(true)
+  })
+})
+
 describe("GET /api/saved-demos", () => {
   it("returns a Reader's own list in one primary-key read", async () => {
     const store = new Map([[UID_A, [IDA, IDB]]])
@@ -198,12 +383,21 @@ describe("GET /api/saved-demos", () => {
     const res = await GET(request(await mint(privateKey, UID_A)))
 
     expect(res.status).toBe(200)
-    await expect(res.json()).resolves.toEqual({ ids: [IDA, IDB] })
-    // The read-count discipline, counted: one statement for the whole list,
-    // however many Demos — never one read per Recording.
-    expect(d1Calls).toHaveLength(1)
-    expect(d1Calls[0].sql).toMatch(/^SELECT/)
-    expect(d1Calls[0].params[0]).toBe(UID_A)
+    await expect(res.json()).resolves.toEqual({
+      ids: [IDA, IDB],
+      popupSuppressed: null,
+    })
+    expect(d1Calls).toHaveLength(2)
+    expect(
+      d1Calls.filter(({ sql }) => sql.includes("saved_demos"))
+    ).toHaveLength(1)
+    expect(
+      d1Calls.filter(({ sql }) => sql.includes("reader_prefs"))
+    ).toHaveLength(1)
+    for (const call of d1Calls) {
+      expect(call.sql).toMatch(/^SELECT/)
+      expect(call.params).toEqual([UID_A])
+    }
   })
 
   it("answers an empty list for a Reader who saved nothing", async () => {
@@ -212,7 +406,10 @@ describe("GET /api/saved-demos", () => {
     const res = await GET(request(await mint(privateKey, UID_A)))
 
     expect(res.status).toBe(200)
-    await expect(res.json()).resolves.toEqual({ ids: [] })
+    await expect(res.json()).resolves.toEqual({
+      ids: [],
+      popupSuppressed: null,
+    })
   })
 
   it("refuses an unsigned request without touching D1", async () => {
@@ -355,7 +552,10 @@ describe("POST and GET never touch another account's saved Demos", () => {
     const token = await mint(privateKey, UID_A)
 
     const got = await GET(request(token))
-    await expect(got.json()).resolves.toEqual({ ids: [IDA] })
+    await expect(got.json()).resolves.toEqual({
+      ids: [IDA],
+      popupSuppressed: null,
+    })
 
     const posted = await POST(
       request(token, { method: "POST", body: { ids: [IDD] } })
@@ -377,7 +577,10 @@ describe("POST and GET never touch another account's saved Demos", () => {
 
     const res = await GET(request(await mint(privateKey, UID_B)))
 
-    await expect(res.json()).resolves.toEqual({ ids: [] })
+    await expect(res.json()).resolves.toEqual({
+      ids: [],
+      popupSuppressed: null,
+    })
     expect(store.get(UID_A)).toEqual([IDA, IDB, IDC])
     for (const call of d1Calls) {
       expect(scopedUid(call)).toBe(UID_B)

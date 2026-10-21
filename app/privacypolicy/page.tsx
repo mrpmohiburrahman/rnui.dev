@@ -155,10 +155,10 @@ export default function PrivacyPage() {
           <h2 className={heading}>The Digest, and the address you give us</h2>
           <p className={body}>
             The Digest is one email naming the Recordings added to rnui.dev
-            since the last one. It goes out weekly, and only in a week where at
-            least one new Recording was actually added, a quiet week means no
-            email. It is sent from {FROM}. It carries no sponsor mail, no
-            third-party marketing, and no promotion of other products.
+            since the last one. It goes out when there is something new, so a
+            quiet stretch means no email. It is sent from {FROM}. It carries no
+            sponsor mail, no third-party marketing, and no promotion of other
+            products.
           </p>
           <p className={body}>
             Signing up does not subscribe you. Your address is stored as a

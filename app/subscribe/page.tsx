@@ -21,6 +21,12 @@
 // copy promised "one email when a new recording is added... nothing on a
 // schedule", which is a different promise from the weekly Digest the form now
 // makes and stores, so it says the promise that is actually being kept.
+//
+// subscribe-popup ticket 10: a signed-in Reader's token goes with the address
+// (lib/subscribe-form.ts), the same as the footer, so every capture surface
+// writes the same account memory. The page copy still says there is no account
+// behind the Digest — that is true of the address; the Reader flag only stops
+// the popup asking someone who has already answered.
 
 "use client"
 
@@ -28,7 +34,12 @@ import { Suspense, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { SIGNUP_HEADING } from "@/lib/sender-identity"
+import {
+  SUBMITTED_ADDRESS_KEY,
+  submitSubscription,
+} from "@/lib/subscribe-form"
 import { SignupDisclosure } from "@/components/signup-disclosure"
+import { getReaderToken } from "@/hooks/use-reader"
 import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const notice = "mt-[10px] text-[12px] leading-[1.45]"
@@ -45,11 +56,14 @@ function SubscribeForm() {
     setError(null)
 
     startTransition(async () => {
-      const result = await subscribeEmail(new FormData(e.currentTarget))
+      const result = await submitSubscription(new FormData(e.currentTarget), {
+        getReaderToken,
+        subscribeEmail,
+      })
       if (result.ok) {
         setEmail("")
         setDone(true)
-        localStorage.setItem("newsletterSubscribed", "true")
+        localStorage.setItem(SUBMITTED_ADDRESS_KEY, "true")
       } else {
         setError(result.message)
       }
@@ -68,8 +82,8 @@ function SubscribeForm() {
           and telling them apart would tell a stranger which tokens exist. */}
       {confirmed === "yes" && (
         <p className={`${notice} text-t1`}>
-          Confirmed — you are on the list. The next Digest goes out at the end
-          of the week.
+          Confirmed — you are on the list. The next Digest goes out when there
+          is something new.
         </p>
       )}
       {confirmed === "no" && (
@@ -81,11 +95,10 @@ function SubscribeForm() {
       )}
 
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
-        A weekly Digest of the Recordings added to the catalogue, sent only in a
-        week when there is at least one. Your address is stored in Firestore and
-        sent to Resend, the service that delivers the Digest, and is used for
-        nothing else. There is no account, no sign-in and nothing synced between
-        devices.
+        A Digest of the Recordings added to the catalogue, sent when there is
+        something new. Your address is stored in Firestore and sent to Resend,
+        the service that delivers the Digest, and is used for nothing else.
+        There is no account, no sign-in and nothing synced between devices.
       </p>
       <p className="mt-[9px] max-w-[520px] text-[13px] leading-[1.55] text-t2">
         Subscribing takes two steps: enter an address, then click the link in

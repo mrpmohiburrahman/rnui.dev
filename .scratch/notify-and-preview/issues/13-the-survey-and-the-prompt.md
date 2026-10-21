@@ -231,3 +231,11 @@ Preview back behind a login and no answer can ever arrive (ticket 12 records why
 `NEXT_PUBLIC_POSTHOG_KEY` widened back to All Environments would send these events into 117415,
 where they would mix with deploy A's baseline — the failure ticket 12 called silent, and it is
 silent here too.
+
+**2026-10-21 — the prompt side is closed.** `.scratch/two-designs/issues/05-stop-the-try-the-preview-survey.md`
+stopped survey `01a00821` on 2026-10-02 and re-verified it on 2026-10-21: the id is absent from
+`POST /decide/?v=3` against project 117415, and its internal targeting flag
+`survey-targeting-1eb4100998-custom` is absent from `featureFlags`. The survey remains in the
+project, unarchived, with `end_date: 2026-10-02T01:51:38Z` and a description that records why.
+This file's Acceptance row above still says the prompt is live; that was true on 2026-08-16 and is
+kept as the record of what was built, not as current state.
