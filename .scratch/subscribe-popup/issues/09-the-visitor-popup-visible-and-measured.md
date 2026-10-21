@@ -107,3 +107,10 @@ Review results:
 - Spec review: zero findings. The controlled responses establish client behavior only. Live authentication, storage, and deployment remain outside this check.
 
 All acceptance criteria are complete. Status is `resolved`.
+
+### Production migration — 2026-10-21
+
+- `cf d1 migrations apply c55f79bd-cd22-4a8e-9047-269024722ff7` applied `0002_reader-prefs.sql` to the live `rnui-saved-demos` database at 2026-10-21 07:55:10 UTC.
+- `pnpm saved:d1:migrate` did not run. No shell secret holds `CLOUDFLARE_D1_API_TOKEN`, and D1 refused `CLOUDFLARE_API_TOKEN`. The `cf` OAuth login applied the migration.
+- `d1_migrations` records `0001_saved-demos.sql` and `0002_reader-prefs.sql`. `cf d1 migrations list` reports no unapplied file.
+- `reader_prefs` is `STRICT`. It has `reader_uid` as the primary key, `popup_suppressed_at`, and `popup_suppressed_reason` with the `subscribed` or `dismissed` check. It has 0 rows.
