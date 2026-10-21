@@ -14,25 +14,25 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 298", () => {
+  it("counts the whole catalogue, per Category, summing to 348", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
-      "Bottom Sheets": 6,
-      Buttons: 20,
+      "Bottom Sheets": 7,
+      Buttons: 21,
       Carousels: 10,
       Charts: 9,
       "Circular Progress Bars": 3,
       "Drop Down": 1,
       "Full Apps": 6,
       Headers: 3,
-      List: 17,
-      Loaders: 10,
-      Misc: 161,
+      List: 18,
+      Loaders: 11,
+      Misc: 206,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
-      Sliders: 18,
+      Sliders: 19,
       "Tab bars": 19,
     })
 
@@ -40,13 +40,13 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(298)
+    expect(total).toBe(348)
   })
 })
 
 describe("RECORDINGS_PER_CONTRIBUTOR", () => {
-  it("counts 24 contributors, the whole catalogue again", () => {
-    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(24)
+  it("counts 26 contributors, the whole catalogue again", () => {
+    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(26)
     expect(RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]).toBe(
       138
     )
@@ -73,13 +73,15 @@ describe("contributorsByCount", () => {
     expect(ranked).toEqual([
       { name: "Enzo Manuel Mangano (Reactiive)", count: 138 },
       { name: "Hewad Mubariz", count: 31 },
+      { name: "Blazej Kustra", count: 30 },
+      { name: "Solarin Johnson", count: 20 },
       { name: "Daniel Friyia", count: 19 },
       { name: "Arunabh Verma", count: 16 },
       { name: "Konstantinos Efkarpidis", count: 11 },
       { name: "William Candillon", count: 10 },
       // The two 8s are the tie to break: Alireza sorts before Kacper, so the
-      // ranked list is stable when the data changes. The two 7s tie the same way,
-      // and David Mokos sorts before Thomino.
+      // ranked list is stable when the data changes. The two 7s tie the same
+      // way, and David Mokos sorts before Thomino.
       { name: "Alireza Hadjar", count: 8 },
       { name: "Kacper Kapuściak", count: 8 },
       { name: "David Mokos", count: 7 },
@@ -100,6 +102,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(298)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(348)
   })
 })
