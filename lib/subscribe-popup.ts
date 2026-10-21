@@ -1,9 +1,12 @@
 import type { PopupSuppression } from "@/lib/popup-suppression"
+import {
+  SUBMITTED_ADDRESS_KEY,
+  submitSubscription,
+} from "@/lib/subscribe-form"
 import type { SubscribeResult } from "@/app/actions/subscribe-email"
 
 export const POPUP_DISMISSED_KEY = "rnui:popup-dismissed"
 export const SUBSCRIBE_POPUP_DWELL_MS = 5000
-const SUBMITTED_KEY = "newsletterSubscribed"
 
 type PopupStorage = Pick<Storage, "getItem" | "setItem"> | null
 
@@ -116,7 +119,7 @@ export function createSubscribePopup(adapters: PopupAdapters) {
       const decision = decideSubscribePopup({
         ...input,
         ...snapshot,
-        submitted: !snapshot.submitted && read(SUBMITTED_KEY),
+        submitted: !snapshot.submitted && read(SUBMITTED_ADDRESS_KEY),
         dismissed: read(POPUP_DISMISSED_KEY),
       })
       if (decision === "show") publish({ open: true, shown: false })
@@ -127,13 +130,12 @@ export function createSubscribePopup(adapters: PopupAdapters) {
       if (!snapshot.open || snapshot.pending || snapshot.submitted) return
       publish({ pending: true, error: null })
       try {
-        const token = await adapters.getReaderToken()
-        const result = await adapters.subscribeEmail(form, token)
+        const result = await submitSubscription(form, adapters)
         if (!result.ok) {
           publish({ pending: false, error: result.message })
           return
         }
-        write(SUBMITTED_KEY)
+        write(SUBMITTED_ADDRESS_KEY)
         publish({ pending: false, submitted: true })
         adapters.newsletterSubmitted(route.split("?")[0])
       } catch {

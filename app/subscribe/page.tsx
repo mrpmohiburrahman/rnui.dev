@@ -21,6 +21,12 @@
 // copy promised "one email when a new recording is added... nothing on a
 // schedule", which is a different promise from the weekly Digest the form now
 // makes and stores, so it says the promise that is actually being kept.
+//
+// subscribe-popup ticket 10: a signed-in Reader's token goes with the address
+// (lib/subscribe-form.ts), the same as the footer, so every capture surface
+// writes the same account memory. The page copy still says there is no account
+// behind the Digest — that is true of the address; the Reader flag only stops
+// the popup asking someone who has already answered.
 
 "use client"
 
@@ -28,7 +34,12 @@ import { Suspense, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 
 import { SIGNUP_HEADING } from "@/lib/sender-identity"
+import {
+  SUBMITTED_ADDRESS_KEY,
+  submitSubscription,
+} from "@/lib/subscribe-form"
 import { SignupDisclosure } from "@/components/signup-disclosure"
+import { getReaderToken } from "@/hooks/use-reader"
 import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const notice = "mt-[10px] text-[12px] leading-[1.45]"
@@ -45,11 +56,14 @@ function SubscribeForm() {
     setError(null)
 
     startTransition(async () => {
-      const result = await subscribeEmail(new FormData(e.currentTarget))
+      const result = await submitSubscription(new FormData(e.currentTarget), {
+        getReaderToken,
+        subscribeEmail,
+      })
       if (result.ok) {
         setEmail("")
         setDone(true)
-        localStorage.setItem("newsletterSubscribed", "true")
+        localStorage.setItem(SUBMITTED_ADDRESS_KEY, "true")
       } else {
         setError(result.message)
       }
