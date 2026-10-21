@@ -8,12 +8,12 @@
 //
 // Deliberately NOT SIGNUP_DISCLOSURE, and not a second sentence on it. The two
 // are different requests. A Subscriber hands over an address and is asking to be
-// mailed, so their disclosure is a consent *request* under CASL's ECPR s.4 -
-// name, mailing address, contact method, and the right to withdraw, all four
-// required. A Contributor hands over a Demo and their name and is asking for
-// nothing; the consent here is to **store and publish the work**, and no mail is
-// sent to them at all (map decision 8). One wording covering both purposes would
-// have to be vague enough to be true of each, which is how a disclosure stops
+// mailed; the signup disclosure names the sender and the right to withdraw, and
+// its policy link reaches the postal address and the contact email. A
+// Contributor hands over a Demo and their name and is asking for nothing; the
+// consent here is to **store and publish the work**, and no mail is sent to
+// them at all (map decision 8). One wording covering both purposes would have
+// to be vague enough to be true of each, which is how a disclosure stops
 // meaning anything.
 //
 // Public-submissions ticket 10.
