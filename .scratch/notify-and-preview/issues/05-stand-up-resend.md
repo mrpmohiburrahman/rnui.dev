@@ -471,3 +471,19 @@ delete and re-add `mail.rnui.dev` hoping for the SES 3×CNAME scheme) and **bull
 `google-site-verification` TXT on `mail.rnui.dev`, then Verify in Postmaster Tools). Both are the
 maintainer's, and nothing else in the effort blocks on either.
 
+### 2026-10-22 — maintainer accepts the 1024-bit DKIM key
+
+The maintainer accepted the 1024-bit DKIM key for mail.rnui.dev.
+Ticket 14 measured strict DKIM alignment on a delivered message.
+The key length is a strength margin, not a correctness gap.
+Bullet 1 is met by this decision, and the maintainer supersedes its 2048-bit wording.
+Do not delete and re-add the domain.
+
+Bullet 6 is the only item that remains open.
+The maintainer chose an interactive wizard for the two dashboard steps.
+The script is scripts/wizard-postmaster.sh.
+It opens Cloudflare, gives the exact TXT record, waits for DNS, and opens Postmaster Tools.
+`dig +short TXT mail.rnui.dev @1.1.1.1` returned no record on 2026-10-22, so the record is not yet published.
+This ticket stays ready-for-human until the maintainer runs the wizard and reports Verified.
+The maintainer agreed that this ticket then closes as resolved.
+
