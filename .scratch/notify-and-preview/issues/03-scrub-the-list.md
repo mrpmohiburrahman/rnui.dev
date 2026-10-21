@@ -1,6 +1,6 @@
 # Scrub the 48, and preserve the evidence that they consented
 
-Status: ready-for-human
+Status: resolved
 Type: task
 
 ## Question
@@ -309,3 +309,20 @@ file and would silently clobber the verdicts.
 
 No mail was sent. The sending hold is untouched — a verifier transmits addresses to an API, it does
 not deliver a message to anyone, which is the same footing the ZeroBounce run stood on.
+
+### 2026-10-22 — Verifier disclosure verified in production
+
+The production privacy policy at https://www.rnui.dev/privacypolicy shows version 1.5, effective 25 September 2026.
+The page names both verifiers in its processor list:
+
+- ZeroBounce received five addresses on 15 August 2026.
+- Emailable received twenty-nine addresses on 16 August 2026.
+
+Both entries describe a one-off verification before the first Digest.
+This confirms that the processor disclosure edit is deployed and meets the remaining acceptance requirement.
+The maintainer approved closure after this verification.
+
+The recorded mailable count remains 28.
+Ticket 10 must put rows 11 and 24 in the final tranche, as the maintainer decided on 16 August 2026.
+This closure does not repeat the mailbox verification, change Subscriber records, or send email.
+Tickets 05 and 06 still block ticket 09.
