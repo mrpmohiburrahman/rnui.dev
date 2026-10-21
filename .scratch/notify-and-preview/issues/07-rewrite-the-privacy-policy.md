@@ -1,6 +1,6 @@
 # Rewrite the privacy policy to describe what actually happens
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 04
 
@@ -210,3 +210,17 @@ Typecheck clean, **294/294 vitest passing**. The e2e assertions on this route ar
 Subscribers "will be said plainly in the next Digest rather than published quietly here". A new
 processor that received subscriber addresses is arguably material. That is a judgement, and if it
 is material then **ticket 09 must carry a line about it** in the first Digest.
+
+### 2026-10-22 — Maintainer closes ticket 07
+
+The maintainer transferred the Digest footer link requirement to ticket 09 and approved closure of ticket 07.
+Ticket 06 completed the signup form link.
+The Digest footer link does not exist yet.
+Ticket 09 already requires this link in its acceptance criteria and must use `privacyUrl(origin)` from `lib/sender-identity.ts`.
+
+The maintainer also assigned the verifier disclosure decision to ticket 09.
+Ticket 09 must name the verifier that received Subscriber addresses, or record why this change is not material.
+
+Tickets 03, 05, and 06 still block ticket 09.
+Ticket 08 is resolved.
+This closure does not authorize work on ticket 09.
