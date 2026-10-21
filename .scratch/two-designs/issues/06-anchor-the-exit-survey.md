@@ -1,6 +1,6 @@
 # 06 — Anchor survey `019fbc46` away from the Archive
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 04
 
 ## Problem
@@ -31,3 +31,35 @@ on a site whose search results are stale by definition.
 - The condition does not match `https://old.rnui.dev/products`.
 - The `$pageview` `repeatedActivation: false` trigger and the 45-second delay are unchanged
   — this ticket changes the URL, not the survey.
+
+## Comments
+
+**2026-10-21 — taken against the already-anchored survey, and finished.** The file still said
+`ready-for-agent` after commit `b5ae1dd` closed the effort; PostHog already held the change.
+No second `survey-update` was needed.
+
+- **Condition re-read.** `conditions.url` is `^https://(www\.)?rnui\.dev/products` with
+  `urlMatchType: regex`. `events` is still `$pageview` with `repeatedActivation: false`;
+  `surveyPopupDelaySeconds` is still 45; `seenSurveyWaitPeriodInDays` is still 30. Only the URL
+  moved — Acceptance bullet 3 holds.
+- **Eight-URL regex check re-run** (Python `re.search` against the stored pattern — equivalent
+  for this unanchored-end pattern to the client's `RegExp.test`, not the same engine):
+  match — `www.rnui.dev/products`, with `?category=buttons`, with `#hash`, and apex
+  `rnui.dev/products` (307 → www); no match — `old.rnui.dev/products`, with `?x=1`, the
+  Archive's `vercel.app` host, `preview.rnui.dev/products`, and `www.rnui.dev/contributors`.
+- **`/decide/` re-verified.** `POST /decide/?v=3` against project 117415's public token
+  returns `019fbc46` when `current_url` is `https://www.rnui.dev/products`. That bullet can
+  only fail if the survey is stopped or the project key is wrong — decide returns the payload
+  for every URL and does **not** evaluate `conditions.url`. The client does. So decide proves
+  the survey is live for the live host (Acceptance 1); the stored regex plus the `$host`
+  split below prove the Archive is excluded (Acceptance 2).
+- **Behavioural proof that the Archive never sees it.** `survey shown` since the cut
+  (2026-10-02 → 2026-10-21), broken down on `$host`: **93 from `www.rnui.dev`, 0 from
+  `old.rnui.dev`**. The client-side URL filter is what enforces the anchor, and it is working.
+- **Work step 4 status, updated.** The ticket recorded **14 shown, 0 completed in 9 days** from
+  `notify-and-preview` 13. Lifetime now (survey-stats, 2026-10-21): **113 shown, 63 dismissed,
+  0 sent** (response rate 0%, dismissal rate 55.75%), last shown `2026-10-20T21:03:43Z`. The
+  14 figure is stale and is left above only as the number this ticket was written against.
+  Ticket 05 (`01a00821` stopped) did free the 30-day `$last_seen_survey_date` wait for anyone
+  who had been shown the Preview prompt, so volume after 2026-10-02 is higher than the old
+  reading — expect that; it was already called for here.
