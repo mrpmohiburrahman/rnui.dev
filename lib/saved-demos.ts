@@ -1,39 +1,4 @@
-// lib/saved-demos.ts
-//
-// Every byte of SQL this site sends to Cloudflare D1 lives in this file.
-//
-// That sentence is the ticket. sign-in-to-save map.md carries as a constraint
-// that "a saved-demo read is one document read per visitor, never one per
-// Recording", and calls it the decision that keeps D1 affordable and the one
-// that would be expensive to retrofit. A constraint nobody can violate beats a
-// rule everybody must remember, so the read discipline here is *structural*:
-//
-//   - `d1()` is module-private. Nothing outside this file can construct a query,
-//     so no route can invent one against another Reader's saved Demos.
-//   - Every exported function takes `uid` as its first argument and there is no
-//     "read them all". Forgetting to scope a read is a type error, not someone
-//     else's saved list.
-//   - `readSavedDemos` is the only read, and it is one primary-key point lookup.
-//     There is no function that reads per Recording, and adding one is the moment
-//     the constraint is broken — which is the point of it being conspicuous.
-//
-// The uid is never taken from a request body, query parameter or client header.
-// It comes from the verified `sub` claim of a Firebase ID token and nothing else;
-// see lib/firebase-token.ts for that check and why a failed verification leaves
-// the request unauthenticated rather than anonymous.
-//
-// HOW D1 IS REACHED, AND WHY NOT THROUGH THE WORKERS BINDING
-//
-// wrangler.toml records the D1 binding, and it is what owns the schema and the
-// migrations. The app itself does not use it: the site is Next.js on Vercel, so
-// there is no `env` to read the binding from. It goes to the account's REST
-// /query endpoint with a token scoped Account -> D1 -> Edit, which is the same
-// route `pnpm saved:d1:migrate` uses. One endpoint for the app and the tooling
-// means the schema that runs is the schema that was migrated.
-//
-// Env vars are read per call rather than at import, like CLOUDFLARE_R2_TOKEN in
-// lib/submission-storage.ts, so this module imports in a test without them and a
-// missing value fails at the request that needed it rather than at module load.
+import { d1Query } from "@/lib/d1"
 
 /**
  * A Recording id, as the catalogue actually spells them.
@@ -70,63 +35,6 @@ function checkUid(uid: string): string {
     )
   }
   return uid
-}
-
-type D1Target = { url: string; token: string }
-
-/**
- * Credentials, resolved per call.
- *
- * A separate token from CLOUDFLARE_R2_TOKEN on purpose: that one is scoped to
- * Workers R2 Storage and cannot read D1 at all — measured against the live
- * account on 2026-10-06, `GET /d1/database` with the R2 token returns
- * `10000 Authentication error` while the same call with this token lists the
- * database. Least privilege is cheaper than discovering the overlap later.
- */
-function d1(): D1Target {
-  const account = process.env.CLOUDFLARE_ACCOUNT_ID
-  const database = process.env.CLOUDFLARE_D1_DATABASE_ID
-  const token = process.env.CLOUDFLARE_D1_API_TOKEN
-  if (!account || !database || !token) {
-    throw new Error(
-      "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_D1_DATABASE_ID and " +
-        "CLOUDFLARE_D1_API_TOKEN are not set, see .env.example"
-    )
-  }
-  return {
-    url:
-      `https://api.cloudflare.com/client/v4/accounts/${account}` +
-      `/d1/database/${database}/query`,
-    token,
-  }
-}
-
-type D1Row = Record<string, unknown>
-type D1Result = { success: boolean; results?: D1Row[]; errors?: unknown }
-
-/** One statement, bound parameters only. The only place a SQL string leaves here. */
-async function d1Query(sql: string, params: unknown[]): Promise<D1Row[]> {
-  const { url, token } = d1()
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ sql, params }),
-  })
-  if (!res.ok) {
-    const text = await res.text().catch(() => "")
-    throw new Error(`D1 query: HTTP ${res.status} ${text.slice(0, 200)}`)
-  }
-  // D1 answers 200 with `success: false` for a constraint violation, so `res.ok`
-  // is not enough on its own.
-  const body = (await res.json()) as { result?: D1Result[]; errors?: unknown }
-  const result = body.result?.[0]
-  if (!result?.success) {
-    throw new Error(`D1 query failed: ${JSON.stringify(body.errors ?? result)}`)
-  }
-  return result.results ?? []
 }
 
 /**

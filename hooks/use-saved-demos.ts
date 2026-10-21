@@ -40,12 +40,12 @@
 
 import { useCallback, useEffect, useSyncExternalStore } from "react"
 
-import { auth } from "@/lib/firebase"
 import {
   bookmarkAdded,
   bookmarkRemoved,
   type RecordingFacts,
 } from "@/lib/analytics"
+import { auth } from "@/lib/firebase"
 import {
   consumePendingSave,
   readMergeInput,
@@ -54,6 +54,7 @@ import {
 import {
   forgetSavedDemos,
   loadSavedDemos,
+  peekPopupSuppression,
   peekSavedDemos,
   persistSavedDemos,
   removeSavedDemo,
@@ -116,9 +117,11 @@ export const SAVE_FAILED =
  * The caller decides what a failure means — the link phase or a local error.
  */
 async function loadAndMerge(uid: string): Promise<string[]> {
-  const token = await getReaderToken()
+  const token = await getReaderToken(uid)
   if (!token) throw new Error("signed-out")
   const serverIds = await loadSavedDemos(uid, token)
+  if (auth?.currentUser?.uid !== uid) throw new Error("signed-out")
+  publish({})
   const pending = consumePendingSave()
   const local = snapshot.localIds ?? readMergeInput()
   const upload = [...local]
@@ -134,6 +137,7 @@ async function loadAndMerge(uid: string): Promise<string[]> {
   // else — writes are the binding ceiling (ticket 05).
   const merged = await persistSavedDemos(token, upload)
   replaceSavedDemos(uid, merged)
+  if (auth?.currentUser?.uid !== uid) throw new Error("signed-out")
   publish({ serverIds: merged, error: null })
   if (pending && merged.includes(pending.recordingId)) {
     bookmarkAdded(pending.facts)
@@ -144,6 +148,7 @@ async function loadAndMerge(uid: string): Promise<string[]> {
 export function useSavedDemos() {
   const { reader, ready } = useReader()
   const signedIn = reader !== null
+  const readerUid = ready && signedIn ? (auth?.currentUser?.uid ?? null) : null
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -153,8 +158,7 @@ export function useSavedDemos() {
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    if (!ready || !signedIn) return
-    const uid = auth?.currentUser?.uid
+    const uid = readerUid
     if (!uid || attempted.has(uid)) return
     attempted.add(uid)
 
@@ -184,7 +188,7 @@ export function useSavedDemos() {
       // success or failure, stays settled; `retry` re-arms explicitly.
       if (!completed) attempted.delete(uid)
     }
-  }, [ready, signedIn])
+  }, [readerUid])
 
   const toggleSave = useCallback(
     async (recordingId: string, facts: RecordingFacts) => {
@@ -206,7 +210,7 @@ export function useSavedDemos() {
       // failed write never touched it. The event fires only on confirmation.
       publish({ serverIds: next, error: null })
       try {
-        const token = await getReaderToken()
+        const token = await getReaderToken(uid)
         if (!token) throw new Error("signed-out")
         if (saved) {
           await removeSavedDemo(token, recordingId)
@@ -220,7 +224,10 @@ export function useSavedDemos() {
           if (merged.includes(recordingId)) bookmarkAdded(facts)
         }
       } catch {
-        publish({ serverIds: peekSavedDemos(uid) ?? previous, error: SAVE_FAILED })
+        publish({
+          serverIds: peekSavedDemos(uid) ?? previous,
+          error: SAVE_FAILED,
+        })
       }
     },
     []
@@ -251,5 +258,7 @@ export function useSavedDemos() {
       ? (state.serverIds ?? (state.error ? state.localIds : null))
       : state.localIds
 
-  return { ids, toggleSave, retry, saveError: state.error }
+  const popupSuppressed = readerUid ? peekPopupSuppression(readerUid) : null
+
+  return { ids, toggleSave, retry, saveError: state.error, popupSuppressed }
 }
