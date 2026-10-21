@@ -9,15 +9,15 @@
 - [x] A pure decision seam returns `show`, `stay-hidden`, or `close-and-count-as-shown` from the route, scroll depth, dwell, browser keys, Reader suppression state, and whether the sign-in modal or a Recording is open; exhaustive tests cover each route and each trigger, suppression, dismissal, and stacking input.
 - [x] The popup mounts only on `/` and `/products`, including the catalogue narrowed by category or search. It does not mount on `/subscribe`, a Recording's own page, `/bookmarks`, or another route.
 - [x] The popup never appears until the visitor has both scrolled at least 350px and remained on the route for at least 5 seconds; neither condition alone may fire it.
-- [ ] The centered modal uses the sign-in modal's scrim, layering, radius, border, background, shadow, and focus ring at 400px, with the email field and button stacked and the disclosure readable at 11.5px. It creates no bottom-sheet variant and no new visual tokens.
+- [x] The centered modal uses the sign-in modal's scrim, layering, radius, border, background, shadow, and focus ring at 400px, with the email field and button stacked and the disclosure readable at 11.5px. It creates no bottom-sheet variant and no new visual tokens.
 - [x] The promise line is the shared `SIGNUP_PROMISE` and appears above the field; the shipped disclosure and `Subscribe` button are used, and a successful submission shows the shipped success line telling the visitor to check their inbox and that the Digest starts once they confirm.
 - [x] A signed-out visitor who closes the popup writes only the new dismissal browser key, while an existing submitted-address key continues to suppress the popup and is never renamed, repurposed, or cleared. Clearing browser storage or using a new browser may show the popup again.
 - [x] A Reader whose flag says `subscribed` or `dismissed` never sees the popup. If the flag is unknown, signed out, still resolving, or the read has failed, the popup may appear according to the local rules.
 - [ ] If an open popup later learns that the Reader is suppressed, it closes and counts as shown. A late failure is not treated as a saved-Demos-empty account.
-- [ ] If the trigger would fire while a Recording or the sign-in modal is open, the popup stays away for the rest of the visit instead of queuing behind the more important surface. If the popup is already open when either appears, it closes at once and counts as shown.
-- [ ] Reduced motion fades the popup in and out without translation or scale, using the site's existing reduced-motion handling.
+- [x] If the trigger would fire while a Recording or the sign-in modal is open, the popup stays away for the rest of the visit instead of queuing behind the more important surface. If the popup is already open when either appears, it closes at once and counts as shown.
+- [x] Reduced motion fades the popup in and out without translation or scale, using the site's existing reduced-motion handling.
 - [x] Submission uses the existing double-opt-in subscribe action, sends exactly one analytics event carrying the route and never the address, and sets no cookie.
-- [ ] A visitor can dismiss the prompt with its close control or Escape, and keyboard focus remains visibly identifiable while the modal is open.
+- [x] A visitor can dismiss the prompt with its close control or Escape, and keyboard focus remains visibly identifiable while the modal is open.
 
 ## Comments
 
@@ -56,3 +56,16 @@ Remaining verification, owned by the maintainer:
 - Ticket 10 still owns Reader-token wiring for the other forms.
 
 The unchecked acceptance items require browser verification. This ticket remains `ready-for-human`, not `resolved`.
+
+### 2026-10-21 — Browser check
+
+Checked in one webpack dev server and one browser session. No email was sent.
+
+- The open modal is 400px, centered. Field and button are stacked. Disclosure computes to 11.5px. Scrim is z-70 with a 3px blur. The panel is z-71, `bg-header`, `border-line2`, and `shadow-2xl`. Same computed background, border, shadow, and radius as the sign-in gate. `rounded-card` computes to 0 on both, because that token is not in `tailwind.config.ts`. No bottom sheet.
+- The close control had a 3px accent outline. Escape, the close control, and Not now each dismiss the popup. A signed-out dismiss writes only `rnui:popup-dismissed`.
+- Dwell alone, at scroll 0 for 6 seconds, does not open it. Scroll after that dwell does.
+- With the sign-in gate already open, scroll plus dwell does not open the popup, and it stays away after the gate closes. With the popup already open, opening the gate closes it at once. Neither path writes the dismissal key.
+- With the popup open, a client navigation to a Recording closes it at once and does not write the key. Back on `/`, scrolling again does not reopen it.
+- Reduced motion was forced with a same-origin media override, then removed. Enter and exit kept one transform, `matrix(1, 0, 0, 1, -200, -156)`, and faded opacity only. No scale and no 8px shift.
+
+Still unchecked: a signed-in Reader whose suppression arrives after the popup is open. This session was signed out, so that path was not driven. Status stays `ready-for-human`.
