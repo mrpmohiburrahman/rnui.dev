@@ -11,8 +11,16 @@
 // Nothing here touches `"bookmarkedItems"`. That key is merge input only
 // (lib/pending-save.ts `readMergeInput`) and is never written to again.
 
+import {
+  isPopupSuppression,
+  type PopupSuppression,
+} from "@/lib/popup-suppression"
+
 /** What `GET /api/saved-demos` answers. */
-type SavedDemosList = { ids: string[] }
+type SavedDemosList = {
+  ids: string[]
+  popupSuppressed?: PopupSuppression | null
+}
 
 function isSavedDemosList(value: unknown): value is SavedDemosList {
   return (
@@ -29,7 +37,7 @@ function authed(token: string): HeadersInit {
   return { Authorization: `Bearer ${token}` }
 }
 
-async function readList(res: Response, what: string): Promise<string[]> {
+async function readList(res: Response, what: string): Promise<SavedDemosList> {
   if (res.status === 401) {
     throw new Error("signed-out")
   }
@@ -40,7 +48,14 @@ async function readList(res: Response, what: string): Promise<string[]> {
   if (!isSavedDemosList(body)) {
     throw new Error(`${what} answered without a saved list`)
   }
-  return body.ids
+  if (
+    body.popupSuppressed !== undefined &&
+    body.popupSuppressed !== null &&
+    !isPopupSuppression(body.popupSuppressed)
+  ) {
+    throw new Error("Invalid Reader suppression state")
+  }
+  return body
 }
 
 /**
@@ -52,6 +67,10 @@ async function readList(res: Response, what: string): Promise<string[]> {
  * empty list is what the merge must never mistake a failure for.
  */
 export async function fetchSavedDemos(token: string): Promise<string[]> {
+  return (await fetchSavedState(token)).ids
+}
+
+async function fetchSavedState(token: string): Promise<SavedDemosList> {
   const res = await fetch("/api/saved-demos", { headers: authed(token) })
   return readList(res, "Reading saved Demos")
 }
@@ -71,7 +90,7 @@ export async function persistSavedDemos(
     headers: { ...authed(token), "Content-Type": "application/json" },
     body: JSON.stringify({ ids: [...ids] }),
   })
-  return readList(res, "Saving")
+  return (await readList(res, "Saving")).ids
 }
 
 /** Remove one Demo from a Reader's saved Demos. A no-op server-side when absent. */
@@ -102,11 +121,17 @@ export async function removeSavedDemo(
 
 const inFlight = new Map<string, Promise<string[]>>()
 const settled = new Map<string, string[]>()
+const suppression = new Map<string, PopupSuppression | null>()
+
+export function peekPopupSuppression(uid: string): PopupSuppression | null {
+  return suppression.get(uid) ?? null
+}
 
 /** Forget a Reader's loaded list, so the next load reads again. For retry. */
 export function forgetSavedDemos(uid: string): void {
   inFlight.delete(uid)
   settled.delete(uid)
+  suppression.delete(uid)
 }
 
 export function peekSavedDemos(uid: string): string[] | null {
@@ -123,10 +148,11 @@ export function loadSavedDemos(uid: string, token: string): Promise<string[]> {
   if (done) return Promise.resolve(done)
   const flying = inFlight.get(uid)
   if (flying) return flying
-  const request = fetchSavedDemos(token).then(
-    (ids) => {
+  const request = fetchSavedState(token).then(
+    ({ ids, popupSuppressed }) => {
       inFlight.delete(uid)
       settled.set(uid, ids)
+      suppression.set(uid, popupSuppressed ?? null)
       return ids
     },
     (error: unknown) => {

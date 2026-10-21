@@ -642,8 +642,12 @@ export function useReader() {
  * `null` when nobody is signed in — which the caller treats as unauthenticated,
  * never as anonymous (lib/firebase-token.ts: no anonymous fallback).
  */
-export async function getReaderToken(): Promise<string | null> {
+export async function getReaderToken(
+  expectedUid?: string
+): Promise<string | null> {
   const current = auth?.currentUser ?? null
-  if (!current) return null
-  return current.getIdToken()
+  if (!current || (expectedUid !== undefined && current.uid !== expectedUid))
+    return null
+  const token = await current.getIdToken()
+  return auth?.currentUser === current ? token : null
 }
