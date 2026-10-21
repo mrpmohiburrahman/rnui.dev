@@ -48,8 +48,9 @@ done.
   survey, `019fbc46`, and not `01a00821`. Its internal targeting flag
   `survey-targeting-1eb4100998-custom` is also absent from `featureFlags`, which is the half that
   `notify-and-preview` 13 records as the second switch.
-- **Description updated.** The previous text named the date but said nothing about `old.rnui.dev`;
-  it now records that the previous Design lives there, and that re-verification happened on
+- **Description updated.** The previous text named the date but said nothing about the Archive; it
+  now records that the previous design lives there, at the literal hostname `old.rnui.dev` that
+  the Acceptance bullet asks the description to name, and that re-verification happened on
   2026-10-21. `survey-launch` on the id would still restore it, so the description says that would
   be wrong.
 - **The cross-note exists.** `notify-and-preview` ticket 13's Comments carry the dated pointer to
