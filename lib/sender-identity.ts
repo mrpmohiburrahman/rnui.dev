@@ -6,11 +6,10 @@
 // places for it to drift, and an identity block that differs between them is
 // worse than either spelling of Cumilla.
 //
-// The signup block below is a CONSENT REQUEST, which CASL's ECPR s.4 binds -
-// name, mailing address, contact method, and that consent can be withdrawn, all
-// four present. The Digest footer (ticket 09) is a different block doing a
-// different job: it carries CAN-SPAM's postal address and opt-out, and it is not
-// a consent request and cannot become one. Do not swap them.
+// The signup block requests consent. It names the sender and states the right
+// to withdraw consent. Its policy link provides the postal address and contact
+// email. The Digest footer includes those details directly. The blocks serve
+// different purposes.
 
 export const SENDER_NAME = "MD. MOHIBUR RAHMAN"
 
@@ -80,24 +79,17 @@ export const SIGNUP_HEADING = "Get the Digest"
  *    The cadence is undecided, and a fixed-frequency promise is broken by an
  *    ad-hoc send and by any week with nothing new. The promise line above the
  *    field carries the frequency instead.
- * 2. POSTAL_ADDRESS and CONTACT_EMAIL went next, at the maintainer's
- *    instruction. CASL ECPR s.4(d) wants "the mailing address" in a consent
- *    request and a link does not satisfy it, so Canadian consent is formally
- *    defective. Accepted knowingly: CASL only reaches commercial email, and
- *    there is no sponsor or paid link, so the exposure is low until that
- *    changes. CAN-SPAM 16 CFR 316.4(c)(1) is unaffected because it binds the
- *    message, and the address stays in every Digest footer via
- *    IDENTITY_BLOCK_HTML below.
+ * 2. The maintainer removed POSTAL_ADDRESS and CONTACT_EMAIL from the string.
+ *    The policy link provides both details. Ticket 06 accepts this reading of
+ *    CASL ECPR s.4(d) as defensible, not certain. Every Digest footer still
+ *    includes the address through IDENTITY_BLOCK_HTML.
  * 3. "link in every email" went with them. CASL s.4(e) wants a statement that
  *    consent can be withdrawn, which "Unsubscribe any time" is on its own; the
  *    mechanism is evidenced by the stored record and by the link actually being
  *    in the sent mail.
  *
- * The policy sentence stayed the stock one. A draft ended it "for our postal
- * address and how we handle your data", on the theory that naming what the
- * link holds would satisfy s.4(d). It does not, and no page on this site
- * describes a policy link that way. The policy already prints the address in
- * full at app/privacypolicy/page.tsx:143, which is the honest place for it.
+ * The policy sentence keeps its existing text. The linked policy publishes
+ * the postal address and contact email. Ticket 06 records that decision.
  *
  * "Unsubscribe any time" must survive every future edit. It is the only
  * withdrawal statement in the string, and tests/subscription-consent.test.ts
