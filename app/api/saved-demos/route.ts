@@ -31,12 +31,16 @@ import { NextResponse } from "next/server"
 
 import { verifyReader } from "@/lib/firebase-token"
 import { mergeSavedDemos } from "@/lib/reader-link"
+import { readPopupSuppression } from "@/lib/reader-prefs"
 import { readSavedDemos, saveDemos, unsaveDemo } from "@/lib/saved-demos"
 
 function unauthorized() {
   // Reader-facing words. The cryptographic reason stays in the throw, which
   // saying aloud would turn this endpoint into an oracle for probing tokens.
-  return NextResponse.json({ message: "Sign in to save Demos." }, { status: 401 })
+  return NextResponse.json(
+    { message: "Sign in to save Demos." },
+    { status: 401 }
+  )
 }
 
 async function readerUid(request: Request): Promise<string | null> {
@@ -54,7 +58,8 @@ export async function GET(request: Request) {
   if (!uid) return unauthorized()
   try {
     const ids = await readSavedDemos(uid)
-    return NextResponse.json({ ids })
+    const popupSuppressed = await readPopupSuppression(uid)
+    return NextResponse.json({ ids, popupSuppressed })
   } catch (error) {
     console.error("GET /api/saved-demos failed:", error)
     return NextResponse.json(

@@ -44,6 +44,7 @@ import {
 } from "@/hooks/use-reader"
 import { useSavedDemos } from "@/hooks/use-saved-demos"
 import type { LinkAction, LinkPhase } from "@/lib/reader-link"
+import { SubscribePopup } from "@/components/subscribe-popup"
 
 function PersonGlyph({ className }: { className?: string }) {
   return (
@@ -505,20 +506,23 @@ export function SaveGateModal() {
   }
 
   return (
-    <GateModal
-      open={gateModalOpen}
-      demoCaption={gateRequest.caption || null}
-      authError={authError}
-      linkAction={linkAction}
-      // Read during render, not subscribed: any change that matters (a sign-in)
-      // re-renders this host through `useReader` first, so the badge is fresh
-      // whenever the modal can be open. SSR-safe — no window, no value.
-      lastUsed={lastUsedProvider()}
-      signingIn={signingIn}
-      onPick={handlePick}
-      onJoin={handleJoin}
-      onDismiss={dismissGate}
-    />
+    <>
+      <SubscribePopup signInOpen={gateModalOpen} />
+      <GateModal
+        open={gateModalOpen}
+        demoCaption={gateRequest.caption || null}
+        authError={authError}
+        linkAction={linkAction}
+        // Read during render, not subscribed: any change that matters (a sign-in)
+        // re-renders this host through `useReader` first, so the badge is fresh
+        // whenever the modal can be open. SSR-safe — no window, no value.
+        lastUsed={lastUsedProvider()}
+        signingIn={signingIn}
+        onPick={handlePick}
+        onJoin={handleJoin}
+        onDismiss={dismissGate}
+      />
+    </>
   )
 }
 

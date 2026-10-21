@@ -1,6 +1,6 @@
 # 05 — Stop survey `01a00821`
 
-Status: ready-for-agent
+Status: resolved
 Blocked by: 04
 
 ## Problem
@@ -36,3 +36,25 @@ this one stopped means reading `/decide/`, not the survey record.
 - Its `description` names the date it was stopped and that the previous design is now at
   `old.rnui.dev`.
 - `notify-and-preview` ticket 13's Comments carry a dated note pointing at this ticket.
+
+## Comments
+
+**2026-10-21 — taken against the already-stopped survey, and finished.** The file said
+`ready-for-agent`, but PostHog already held the stop: `end_date` is `2026-10-02T01:51:38Z`, so
+`survey-stop` was a no-op and no second stop was needed. Two things were still missing and are now
+done.
+
+- **`/decide/` re-verified.** `POST /decide/?v=3` against project 117415's public token returned one
+  survey, `019fbc46`, and not `01a00821`. Its internal targeting flag
+  `survey-targeting-1eb4100998-custom` is also absent from `featureFlags`, which is the half that
+  `notify-and-preview` 13 records as the second switch.
+- **Description updated.** The previous text named the date but said nothing about the Archive; it
+  now records that the previous design lives there, at the literal hostname `old.rnui.dev` that
+  the Acceptance bullet asks the description to name, and that re-verification happened on
+  2026-10-21. `survey-launch` on the id would still restore it, so the description says that would
+  be wrong.
+- **The cross-note exists.** `notify-and-preview` ticket 13's Comments carry the dated pointer to
+  this ticket, and name the result of the `/decide/` check.
+
+The survey is left in the project, unarchived. `notify-and-preview` 13 is the closed record that
+describes it.

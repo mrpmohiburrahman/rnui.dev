@@ -14,6 +14,10 @@
 // and sends a confirmation — so the success copy says what actually happened
 // rather than "you are on the list", which was true of the old single opt-in
 // and is not true of this one.
+//
+// subscribe-popup ticket 10: a signed-in Reader's token goes with the address
+// (lib/subscribe-form.ts), so the action records them as `subscribed` and the
+// popup on their other devices already knows. Signed out, nothing changes.
 
 "use client"
 
@@ -21,6 +25,12 @@ import { useEffect, useState, useTransition } from "react"
 
 import { newsletterSubmitted } from "@/lib/analytics"
 import { SignupDisclosure } from "@/components/signup-disclosure"
+import { SIGNUP_PROMISE } from "@/lib/sender-identity"
+import {
+  SUBMITTED_ADDRESS_KEY,
+  submitSubscription,
+} from "@/lib/subscribe-form"
+import { getReaderToken } from "@/hooks/use-reader"
 import { subscribeEmail } from "@/app/actions/subscribe-email"
 
 const NewsletterForm: React.FC = () => {
@@ -35,7 +45,7 @@ const NewsletterForm: React.FC = () => {
   // everyone who has already signed up, which is the same reasoning CONTEXT.md
   // gives for never renaming a Remembered set's key.
   useEffect(() => {
-    const subscribed = localStorage.getItem("newsletterSubscribed")
+    const subscribed = localStorage.getItem(SUBMITTED_ADDRESS_KEY)
     if (subscribed !== "true") return
     // Reading localStorage on mount is the only SSR-safe way to hydrate this —
     // the same reasoning hooks/use-remembered-set.ts:95-100 gives.
@@ -48,11 +58,14 @@ const NewsletterForm: React.FC = () => {
     setError(null)
 
     startTransition(async () => {
-      const result = await subscribeEmail(new FormData(e.currentTarget))
+      const result = await submitSubscription(new FormData(e.currentTarget), {
+        getReaderToken,
+        subscribeEmail,
+      })
       if (result.ok) {
         setEmail("")
         setIsSubscribed(true)
-        localStorage.setItem("newsletterSubscribed", "true")
+        localStorage.setItem(SUBMITTED_ADDRESS_KEY, "true")
         // The NOTIFY signup — ticket 15.1. Route only, no address: the event
         // carries the path it fired from and nothing reconstructing an email.
         newsletterSubmitted(window.location.pathname)
@@ -72,6 +85,14 @@ const NewsletterForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* The promise, which the disclosure no longer carries. Before
+          2026-10-09 this form said what you were signing up for only inside
+          SIGNUP_DISCLOSURE_BODY, so dropping the weekly clause from that string
+          left the footer with no description at all. Same constant the popup
+          and /subscribe use, so the three cannot drift. */}
+      <p className="mb-[9px] max-w-[260px] text-[11.5px] leading-[1.5] text-t2">
+        {SIGNUP_PROMISE}
+      </p>
       <div className="flex items-center gap-[9px]">
         <input
           // Not "email": /contactus and /subscribe each carry their own

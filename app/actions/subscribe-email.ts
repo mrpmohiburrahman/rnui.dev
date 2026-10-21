@@ -19,6 +19,8 @@ import { headers } from "next/headers"
 import { doc, setDoc, Timestamp } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
+import { verifyReader } from "@/lib/firebase-token"
+import { suppressPopup } from "@/lib/reader-prefs"
 import { sendEmail } from "@/lib/resend"
 import {
   CONSENT_FORM_VERSION,
@@ -78,7 +80,8 @@ ${IDENTITY_BLOCK_HTML}`
 }
 
 export async function subscribeEmail(
-  formData: FormData
+  formData: FormData,
+  readerToken?: string | null
 ): Promise<SubscribeResult> {
   const email = String(formData.get("email") ?? "")
     .trim()
@@ -89,6 +92,15 @@ export async function subscribeEmail(
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, message: "Enter a valid email address" }
+  }
+
+  let readerUid: string | null = null
+  if (readerToken !== undefined && readerToken !== null) {
+    try {
+      readerUid = (await verifyReader(`Bearer ${readerToken}`)).uid
+    } catch {
+      return { ok: false, message: "Sign in again, then submit your email." }
+    }
   }
 
   // The document id is 122 bits from the platform CSPRNG; the link additionally
@@ -141,25 +153,36 @@ export async function subscribeEmail(
   // A reserved name cannot receive mail, so there is nobody to confirm and the
   // send would be a hard bounce against a brand-new sending domain. The pending
   // record above still stands; it simply never gets confirmed.
-  if (isUndeliverableByDefinition(email)) {
-    return { ok: true }
+  if (!isUndeliverableByDefinition(email)) {
+    try {
+      const origin = confirmOrigin(h)
+      await sendEmail({
+        to: email,
+        subject: "Confirm your rnui.dev Digest subscription",
+        html: confirmationHtml(origin, issued.token),
+      })
+    } catch (err) {
+      // Deliberately an error rather than a quiet success: "check your inbox" is a
+      // lie if nothing was sent, and the pending row left behind is harmless
+      // because a pending row is never a Subscriber and never reaches the audience.
+      console.error("subscribeEmail: confirmation send failed", err)
+      return {
+        ok: false,
+        message: "We could not send the confirmation email. Please try again.",
+      }
+    }
   }
 
-  try {
-    const origin = confirmOrigin(h)
-    await sendEmail({
-      to: email,
-      subject: "Confirm your rnui.dev Digest subscription",
-      html: confirmationHtml(origin, issued.token),
-    })
-  } catch (err) {
-    // Deliberately an error rather than a quiet success: "check your inbox" is a
-    // lie if nothing was sent, and the pending row left behind is harmless
-    // because a pending row is never a Subscriber and never reaches the audience.
-    console.error("subscribeEmail: confirmation send failed", err)
-    return {
-      ok: false,
-      message: "We could not send the confirmation email. Please try again.",
+  if (readerUid) {
+    try {
+      await suppressPopup(readerUid, "subscribed")
+    } catch {
+      console.error("subscribeEmail: Reader preference write failed")
+      return {
+        ok: false,
+        message:
+          "We received your subscription request. We could not save your preference. Try again.",
+      }
     }
   }
 

@@ -190,11 +190,146 @@ Sell the placement to fund the list, and the list to sell the placements properl
   footer, formerly `awesome-react-native-ui`) are a modest authority signal. Worth
   mentioning; not worth a line in the pitch.
 
+## Update — 2026-10-08 (re-measured, price ladder revised)
+
+Re-measured six days later. Two findings change the ladder above, one of them materially.
+
+### The 30-day visitor count is inflated by a single day
+
+| Window (30d, `www.rnui.dev`, bots excluded) | Visitors | Pageviews |
+|---|---|---|
+| Raw, includes Oct 7–8 | **715** | 4,725 |
+| **Baseline, Oct 7–8 excluded** | **378** | **2,881** |
+| Prior 30 days | 688 | — |
+
+**267 of the 715 visitors arrived on 2026-10-07** (168 direct, 67 Reddit, 24 Google) and
+traffic fell back to 94 the next day. This is one viral day, not a trend: the preceding
+30 days were 688, and the daily baseline across Sept–Oct is 12–20 visitors with a
+September high of 36. **Quote a sponsor 378, never 715.** A sponsor who checks PostHog and
+sees 715 will check again, and the correction costs more credibility than the number bought.
+
+### The detail-page click rate, measured correctly this time
+
+The 2026-10-02 report stated "36 of 66 users click to GitHub" (~50%) by intersecting
+`recording_opened` with `repo_clicked` per session. Measured properly — unique users per
+surface, a user attributed to the surface where the click fired, over the full 30 days:
+
+| Surface | Pageview users | Repo-click users | Click rate |
+|---|---|---|---|
+| **`/recording/*` (library detail)** | 213 | **49** | **23%** |
+| `/` + other | 511 | 9 | 1.8% |
+| `/products` (catalogue) | 246 | 6 | 2.4% |
+| `/submit` | 150 | 0 | 0% |
+
+**23%, not 50%** — and the qualitative conclusion survives intact: the detail page converts
+at **10–13× the catalogue and the homepage**. Lead with the detail-page number; do not quote
+the 50% figure, which came from a session-level join that overstates it.
+
+Baseline engagement excluding the spike: **271 demo-play users, 37 repo-click users**,
+83 recording-opened users, 80 filter-applied, 77 searches.
+
+### Revised price ladder
+
+The $200–300/mo "fair" range above held up, but the reasoning in *The ceiling* needs
+restating at the lower, correct click volume. Baseline is 37 repo-click users/mo (was 40),
+and the detail-page rate is 23% (was ~50%).
+
+| Package | Ask | Accept |
+|---|---|---|
+| Dofollow logo credit, footer | $50/mo | free |
+| **Sponsored listing in `/products`**, permanent, 1 per category | **$200/mo** | $100/mo |
+| **Sponsored ribbon on `/recording/*`** — the decision surface | **$300/mo** | $150/mo |
+| Both (listing + detail-page ribbon) | $500/mo | $300/mo |
+| Founding Sponsor — both + one post + category exclusivity, 12 mo | $1,000/mo | $600/mo |
+
+**Weekly equivalents** (÷ 4.33): **$23 · $46 · $69 · $115 · $139 per week.** Bill quarterly;
+it is the convention on every published dev rate card and it gets you paid up front.
+
+#### Break-even, and why $2,000/mo is out of reach on impressions
+
+At $100 first-year value per acquired dev-tool customer (the assumption *The ceiling* rests
+on, still unverified from a primary source):
+
+| Price | Customers/mo needed | As % of the 37 repo-click users |
+|---|---|---|
+| $200/mo | 2 | 5.4% |
+| $300/mo | 3 | 8.1% |
+| $500/mo | 5 | 13.5% |
+| **$2,000/mo** | **20** | **54%** |
+
+Four models for the visitors needed to justify **$2,000/mo**, and the disagreement between
+them is the real answer:
+
+| Model | Visitors/mo needed | vs. today's 378 |
+|---|---|---|
+| Hand-off, linear from current inventory | **~3,000** | 8× |
+| Qualified-dev at $0.50/dev, 70% dev share | ~5,700 | 15× |
+| Display CPM floor at $30 CPM, 2 impressions/visitor | **~33,000** | 88× |
+| Newsletter at $78.6 sub-CPM, 4 sends/mo, 5% conversion | ~127,000 | 336× |
+
+**~3,000–6,000 monthly visitors is where $2,000 becomes defensible**, and only via the
+hand-off story. Sold as impressions it needs ~33,000. At 2,881 pageviews a $30 CPM network
+buy yields **$86/mo**; Carbon Ads would pay $3–6 for the same traffic. Do not quote
+impressions — quote 37 qualified outbound clicks, 271 demo plays, 100% React Native.
+
+### Rate cards re-verified against source 2026-10-08
+
+Both anchors were fetched live, not carried forward:
+
+- [**This Week In React — sponsor**](https://thisweekinreact.com/sponsor), page states
+  *"Last updated: June 2026"*: **40,297 subs, 56% open, 11% click.** 1st sponsor
+  €1,500 / €2,700 (2) / €5,000 (4, recommended) / €9,600 (8). 2nd sponsor €800 → €4,000.
+  **4× React Native Links €600** (€150/send) against 4× React Links €1,600 — the same
+  publisher charging **8× more for the React audience than the React Native audience**.
+  Past sponsors include **Callstack and Software Mansion**, i.e. the exact rnui.dev targets.
+- [**Native Weekly — sponsor**](https://www.nativeweekly.com/sponsor): **5,000+ subs, 58%
+  open, 18% click**, USA 60% / Germany 15% / India 10%. **$440 per issue, $1,760 for 4.**
+  "400–600 clicks per placement." 2nd placement mid-newsletter at 50% off.
+
+Normalised: **$78.6 subscriber-CPM** at Native Weekly, against Carbon's $6 *advertiser* CPM —
+a 13× uplift, and the reason precision beats list size here.
+
+### Still closed: the newsletter
+
+Resend audience `General` re-checked 2026-10-08: **1 contact**, `has_more: false`. The
+`newsletter_submitted` event has **never fired once** in the project's history — not in the
+taxonomy at all. The newsletter channel remains unsellable, and no rung of the ladder above
+may be justified by email reach.
+
+At a 5% subscribe rate on 378 baseline visitors that is ~19 subscribers/month. The path from
+here to the $1,000/mo rung runs through the list, not through traffic: sell the $200–300
+placement to fund it, then sell the list properly.
+
+### Risk, restated for this specific placement
+
+A paid slot inside a curated catalogue violates the community norm unless it is visually
+labelled **"Sponsored"** and never ranked or interleaved with the free entries. The
+`/products` surface is a discovery surface — mixing paid and unpaid results destroys the
+trust that makes 23% click-through possible in the first place. Sell **one sponsor per
+category** so the slot never competes with a sponsor's own competitor.
+
 ## Sources
 
 Measured from PostHog project **117415**, `$host = 'www.rnui.dev'`, bots excluded, pulled
 2026-10-02 — visitors, sessions, pages, countries, referrers, and the engagement-event and
 surface breakdowns above.
+
+### Update sources (2026-10-08)
+
+- PostHog **117415**, `$host = 'www.rnui.dev'`, window 30 days to 2026-10-08: baseline
+  (Oct 7–8 excluded) 378 visitors / 2,881 pageviews / 271 demo-play users / 37 repo-click
+  users; spike day Oct 7 = 267 visitors; surface click-rate table computed from
+  `$current_url` bucketed by surface, `countIf`/`uniq` over `$pageview` and `repo_clicked`.
+- Resend audiences + contacts API, audience `General`
+  (`958d64ec-630e-40ba-9cc7-3a9a9e64fedb`) — 1 contact, `has_more: false`, re-confirmed.
+- `newsletter_submitted` — the event `components/newsletter-form.tsx:58` captures — is absent
+  from the project's event taxonomy. `SELECT event, count() … WHERE event ILIKE '%subscri%'`
+  returns zero rows across 90 days of data, and PostHog returns a taxonomy warning naming it
+  as not found when queried directly.
+- [This Week In React — sponsor](https://thisweekinreact.com/sponsor) and
+  [Native Weekly — sponsor](https://www.nativeweekly.com/sponsor), both fetched 2026-10-08;
+  subscriber counts, open/click rates and every price quoted above are as published on those
+  pages on that date.
 
 - Subscriber count: Resend audiences/contacts API, audience `General`
   (`958d64ec-630e-40ba-9cc7-3a9a9e64fedb`), 1 contact, `has_more: false`.

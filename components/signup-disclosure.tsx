@@ -1,10 +1,8 @@
 // components/signup-disclosure.tsx
 //
-// Ticket 04's signup disclosure, rendered. Both capture points show it, the
-// footer's NOTIFY form and /subscribe, and CASL's ECPR s.4 binds the consent
-// request itself, so it belongs at each point of capture rather than one link
-// away. Name, mailing address, contact method and the right to withdraw are all
-// in the string; satisfying s.4 here carries GDPR's informed limb with it.
+// Every subscribe form uses this disclosure. It names the sender and states
+// the right to withdraw consent. Its policy link provides the postal address
+// and contact email. The text does not include those contact details.
 //
 // One component rather than two copies of the same paragraph: the exact words
 // are also what app/actions/subscribe-email.ts stores on every record, and a

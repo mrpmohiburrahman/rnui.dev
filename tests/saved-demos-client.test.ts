@@ -4,6 +4,7 @@ import {
   fetchSavedDemos,
   forgetSavedDemos,
   loadSavedDemos,
+  peekPopupSuppression,
   persistSavedDemos,
   removeSavedDemo,
   replaceSavedDemos,
@@ -43,6 +44,53 @@ afterEach(() => {
 })
 
 describe("loadSavedDemos, one GET per Reader per page load", () => {
+  it("shares suppression with the header read without changing the saved-list contract", async () => {
+    const fetching = vi.fn(async () =>
+      Response.json({ ids: ["AAAA"], popupSuppressed: "subscribed" })
+    )
+    vi.stubGlobal("fetch", fetching)
+    const uid = "reader-popup"
+    expect(peekPopupSuppression(uid)).toBeNull()
+    const header = loadSavedDemos(uid, "reader-token")
+    const popup = loadSavedDemos(uid, "reader-token")
+    await expect(header).resolves.toEqual(["AAAA"])
+    await expect(popup).resolves.toEqual(["AAAA"])
+    expect(peekPopupSuppression(uid)).toBe("subscribed")
+    expect(peekPopupSuppression("another-reader")).toBeNull()
+    replaceSavedDemos(uid, ["AAAA", "BBBB"])
+    expect(peekPopupSuppression(uid)).toBe("subscribed")
+    expect(fetching).toHaveBeenCalledTimes(1)
+    forgetSavedDemos(uid)
+    expect(peekPopupSuppression(uid)).toBeNull()
+  })
+
+  it("keeps absence, dismissal, and failed reads scoped to each Reader", async () => {
+    const fetching = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({ ids: [], popupSuppressed: "dismissed" })
+      )
+      .mockResolvedValueOnce(Response.json({ ids: [], popupSuppressed: null }))
+      .mockResolvedValueOnce(
+        Response.json({ ids: [], popupSuppressed: "invalid" })
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 500 }))
+      .mockResolvedValueOnce(
+        Response.json({ ids: [], popupSuppressed: "subscribed" })
+      )
+    vi.stubGlobal("fetch", fetching)
+    await loadSavedDemos("reader-dismissed", "token-a")
+    await loadSavedDemos("reader-absent", "token-b")
+    expect(peekPopupSuppression("reader-dismissed")).toBe("dismissed")
+    expect(peekPopupSuppression("reader-absent")).toBeNull()
+    await expect(loadSavedDemos("reader-invalid", "token-c")).rejects.toThrow()
+    await expect(loadSavedDemos("reader-failure", "token-d")).rejects.toThrow()
+    expect(peekPopupSuppression("reader-invalid")).toBeNull()
+    expect(peekPopupSuppression("reader-failure")).toBeNull()
+    await loadSavedDemos("reader-failure", "token-d")
+    expect(peekPopupSuppression("reader-failure")).toBe("subscribed")
+  })
+
   it("dedupes concurrent and sequential loads into one request", async () => {
     const { calls } = stubApi()
     const uid = "reader-dedupe"
@@ -143,9 +191,9 @@ describe("the writes", () => {
       vi.fn(async () => new Response("{}", { status: 401 }))
     )
     await expect(fetchSavedDemos("stale-token")).rejects.toThrow("signed-out")
-    await expect(
-      persistSavedDemos("stale-token", ["AAAA"])
-    ).rejects.toThrow("signed-out")
+    await expect(persistSavedDemos("stale-token", ["AAAA"])).rejects.toThrow(
+      "signed-out"
+    )
     await expect(removeSavedDemo("stale-token", "AAAA")).rejects.toThrow(
       "signed-out"
     )
@@ -156,6 +204,8 @@ describe("the writes", () => {
       "fetch",
       vi.fn(async () => new Response(JSON.stringify({}), { status: 200 }))
     )
-    await expect(fetchSavedDemos("token-1")).rejects.toThrow(/without a saved list/)
+    await expect(fetchSavedDemos("token-1")).rejects.toThrow(
+      /without a saved list/
+    )
   })
 })
