@@ -88,11 +88,6 @@ describe("countedThisSession", () => {
     expect(countedThisSession("01ABCDEFGHJKMNPQRSTVWXYZ02")).toBe(true)
   })
 
-  it("still answers where there is no sessionStorage at all", () => {
-    // This module is imported by the playback owner, and a throw on this path
-    // would stop playback rather than lose a count. Node has no sessionStorage,
-    // so this test is the case by running at all.
-    expect(typeof globalThis.sessionStorage).toBe("undefined")
-    expect(countedThisSession("01ABCDEFGHJKMNPQRSTVWXYZ03")).toBe(false)
-  })
+  // The absent-sessionStorage case lives in view-signal-no-storage.test.ts: it
+  // needs a fresh module graph, and the test above has already seeded this one.
 })
