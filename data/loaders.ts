@@ -162,4 +162,18 @@ export const loaders: Recording[] = [
     category: "Loaders",
     created_at: "2026-10-04T21:56:01.651Z",
   },
+  {
+    id: "01M4NHJ8XEY8019YDH1V5ZCEWK",
+    caption: "Online Pulse",
+    demoPath: "demo/loaders/online_pulse_solarin_johnson.mp4",
+    posterPath: "thumbnails/loaders/online_pulse_solarin_johnson.avif",
+    durationMs: 11698,
+    aspect: 0.46,
+    hue: 118,
+    contributor: "Solarin Johnson",
+    source: "https://github.com/Solarin-Johnson/my-app",
+    githubId: "Solarin-Johnson",
+    category: "Loaders",
+    created_at: "2026-10-11T13:13:50.255Z",
+  },
 ]

@@ -115,4 +115,17 @@ export const bottomsheets: Recording[] = [
     category: "Bottom Sheets",
     created_at: "2025-11-25T19:55:18.000Z",
   },
+  {
+    id: "01M4NK9KWZ1111WVX28P331CPK",
+    caption: "Signature",
+    demoPath: "demo/bottomsheets/signature_solarin_johnson.mp4",
+    posterPath: "thumbnails/bottomsheets/signature_solarin_johnson.avif",
+    durationMs: 8423,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source: "https://github.com/Solarin-Johnson/my-app",
+    githubId: "Solarin-Johnson",
+    category: "Bottom Sheets",
+    created_at: "2026-10-11T13:44:03.744Z",
+  },
 ]

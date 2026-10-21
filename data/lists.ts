@@ -302,4 +302,18 @@ export const list: Recording[] = [
     category: "List",
     created_at: "2025-11-25T19:55:32.000Z",
   },
+  {
+    id: "01M4NK9KWY4R6TNT7MAJX0RQ3M",
+    caption: "Mood",
+    demoPath: "demo/lists/mood_solarin_johnson.mp4",
+    posterPath: "thumbnails/lists/mood_solarin_johnson.avif",
+    durationMs: 9785,
+    aspect: 0.46,
+    hue: 249,
+    contributor: "Solarin Johnson",
+    source: "https://github.com/Solarin-Johnson/my-app",
+    githubId: "Solarin-Johnson",
+    category: "List",
+    created_at: "2026-10-11T13:44:03.744Z",
+  },
 ]
