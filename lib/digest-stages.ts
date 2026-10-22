@@ -90,19 +90,112 @@ function utcDay(value: Date): string {
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
+function hasCompleteOutcomeCounts(row: Partial<StageOutcome>): boolean {
+  return (
+    typeof row.hardBounces === "number" &&
+    Number.isInteger(row.hardBounces) &&
+    row.hardBounces >= 0 &&
+    typeof row.complaints === "number" &&
+    Number.isInteger(row.complaints) &&
+    row.complaints >= 0 &&
+    typeof row.hardBouncesRemoved === "boolean"
+  )
+}
+
+function isCompleteStageRow(row: unknown): row is StageOutcome & { name?: string } {
+  if (!row || typeof row !== "object") return false
+  const candidate = row as Record<string, unknown>
+  if ("pending" in candidate) return false
+  if (
+    "name" in candidate &&
+    (typeof candidate.name !== "string" || candidate.name.trim().length === 0)
+  ) {
+    return false
+  }
+  if (typeof candidate.sentAt !== "string") return false
+  if (Number.isNaN(new Date(candidate.sentAt).getTime())) return false
+  if (!hasCompleteOutcomeCounts(candidate as Partial<StageOutcome>)) return false
+  if (
+    "lastEvent" in candidate &&
+    (typeof candidate.lastEvent !== "string" ||
+      candidate.lastEvent.trim().length === 0)
+  ) {
+    return false
+  }
+  if (
+    candidate.name === "maintainer" &&
+    "unsubscribeExercised" in candidate &&
+    candidate.unsubscribeExercised !== true
+  ) {
+    return false
+  }
+  return true
+}
+
+/**
+ * A stage whose broadcast went out but whose fan-out counts were never read.
+ *
+ * The script writes this row the moment the send call returns, so a timeout or a
+ * crash while it waits for the fan-out still leaves a record. That record blocks a
+ * second send of the same stage and every later stage, and `--collect` turns it into
+ * a complete row. It carries no counts, because zeros it did not measure would read
+ * as a clean stage.
+ */
+export type PendingStageRow = {
+  name: string
+  sentAt: string
+  broadcastId: string
+  segmentId: string
+  recipients: string[]
+  pending: true
+}
+
+export function isPendingStageRow(row: unknown): row is PendingStageRow {
+  if (!row || typeof row !== "object") return false
+  const candidate = row as Record<string, unknown>
+  return (
+    candidate.pending === true &&
+    Array.isArray(candidate.recipients) &&
+    candidate.recipients.length > 0 &&
+    candidate.recipients.every(
+      (email) => typeof email === "string" && email.includes("@")
+    ) &&
+    typeof candidate.name === "string" &&
+    candidate.name.trim().length > 0 &&
+    typeof candidate.sentAt === "string" &&
+    !Number.isNaN(new Date(candidate.sentAt).getTime()) &&
+    typeof candidate.broadcastId === "string" &&
+    candidate.broadcastId.length > 0 &&
+    typeof candidate.segmentId === "string" &&
+    candidate.segmentId.length > 0
+  )
+}
+
+function collectInstruction(row: PendingStageRow): string {
+  return (
+    `the ${row.name} stage was sent but its counts are not recorded: ` +
+    `run --stage ${row.name} --collect`
+  )
+}
+
+type LoggedStage = (Partial<StageOutcome> & { name?: string }) | PendingStageRow
+
 export function refuseNextStage(
-  previous: StageOutcome | null,
+  previous: LoggedStage | null,
   now: Date
 ): string | null {
   if (previous === null) return null
-  if (previous.complaints > 0) return "a complaint stops the sequence"
+  if (isPendingStageRow(previous)) return collectInstruction(previous)
+  if (typeof previous.complaints === "number" && previous.complaints > 0) {
+    return "a complaint stops the sequence"
+  }
+  if (!isCompleteStageRow(previous)) {
+    return "the previous stage row is incomplete: it needs a send time and bounce and complaint counts"
+  }
   if (previous.hardBounces > 0 && !previous.hardBouncesRemoved) {
     return "hard bounces must be removed before the next stage"
   }
   const sent = new Date(previous.sentAt)
-  if (Number.isNaN(sent.getTime())) {
-    return "the previous stage has no send time"
-  }
   if (utcDay(sent) === utcDay(now) || now.getTime() < sent.getTime() + DAY_MS) {
     return "the next stage waits until the next UTC day"
   }
@@ -143,6 +236,120 @@ export function refuseRepeatStage(
   return null
 }
 
+export function refuseStageOrder(
+  logged: readonly unknown[],
+  planned: readonly string[],
+  stage: string
+): string | null {
+  const expected = planned[logged.length]
+  if (expected === undefined) return "every planned stage is already in the send log"
+  if (stage !== expected) return `the next stage is ${expected}, not ${stage}`
+  return null
+}
+
+export type MeasuredOutcome = {
+  hardBounces: number
+  complaints: number
+  events: Record<string, number>
+  lastEvent: string
+}
+
+/**
+ * Counts one stage's copies by their latest Resend event. Refuses an empty list,
+ * because a stage with no copies has no counts to record.
+ */
+export function stageOutcomeFromEvents(
+  lastEvents: readonly string[]
+): MeasuredOutcome {
+  if (lastEvents.length === 0) {
+    throw new Error("the stage has no copies, so it has no counts")
+  }
+  const events: Record<string, number> = {}
+  for (const event of lastEvents) events[event] = (events[event] ?? 0) + 1
+  const kinds = Object.keys(events)
+  return {
+    hardBounces: events.bounced ?? 0,
+    complaints: events.complained ?? 0,
+    events,
+    lastEvent: kinds.length === 1 ? kinds[0] : "mixed",
+  }
+}
+
+/**
+ * Merges counts read again from Resend into the stored counts. A count never goes
+ * down: `last_event` keeps only the latest event, so a later event can hide a
+ * complaint or a bounce that the stored row already recorded.
+ */
+export function mergeRefreshedOutcome(
+  stored: Pick<StageOutcome, "hardBounces" | "complaints">,
+  measured: Pick<MeasuredOutcome, "hardBounces" | "complaints">
+): Pick<StageOutcome, "hardBounces" | "complaints"> {
+  return {
+    hardBounces: Math.max(stored.hardBounces, measured.hardBounces),
+    complaints: Math.max(stored.complaints, measured.complaints),
+  }
+}
+
+/** A complaint on any stage stops the sequence, not only on the last stage. */
+export function refuseAnyComplaint(
+  stages: readonly unknown[]
+): string | null {
+  for (const row of stages) {
+    if (!isCompleteStageRow(row)) continue
+    if (row.complaints > 0) {
+      return `a complaint on the ${row.name ?? "earlier"} stage stops the sequence`
+    }
+  }
+  return null
+}
+
+/** Resend keeps email data for 30 days, so older counts cannot be read again. */
+export const EMAIL_RETENTION_DAYS = 30
+
+export function countsExpired(sentAt: string, now: Date): boolean {
+  return (
+    now.getTime() - new Date(sentAt).getTime() >
+    EMAIL_RETENTION_DAYS * DAY_MS
+  )
+}
+
+export type PendingDecision =
+  | { action: "drop" }
+  | { action: "collect" }
+  | { action: "refuse"; reason: string }
+
+const SENDING_STATUSES = new Set(["queued", "sending", "sent"])
+
+/**
+ * Decides what a collect does with a pending row. A draft with no sent copy, 10
+ * minutes after the send, is a broadcast that never went out, so its row can go. A draft with a sent copy is a
+ * send that Resend has not finished reporting, so the collect waits for it.
+ */
+export const DRAFT_SETTLE_MS = 10 * 60 * 1000
+
+export function decideUnsentPending(
+  status: string,
+  copiesFound: number,
+  ageMs: number
+): PendingDecision {
+  if (status === "draft") {
+    if (copiesFound > 0) return { action: "collect" }
+    if (ageMs < DRAFT_SETTLE_MS) {
+      return {
+        action: "refuse",
+        reason:
+          "the broadcast still reads as a draft less than 10 minutes after the send, so run --collect again later",
+      }
+    }
+    return { action: "drop" }
+  }
+  if (SENDING_STATUSES.has(status)) return { action: "collect" }
+  return {
+    action: "refuse",
+    reason: `the broadcast status is ${status}, so a person must check it in Resend`,
+  }
+}
+
 export type StageContactRow = {
   docId: string
   email: string
@@ -160,6 +367,8 @@ export type StageContactRow = {
  * key off the previous row. That fail-open cost a real send on 2026-10-22, when the
  * five stage mailed an hour after the maintainer stage because the log it should
  * have gated on was not in the tree the script ran from.
+ *
+ * Only the last row may be a `PendingStageRow`. Any other row without counts throws.
  */
 export function parseSendLog<T>(
   raw: string | null
@@ -177,7 +386,44 @@ export function parseSendLog<T>(
   if (!Array.isArray(stages)) {
     throw new Error("the send log has no stages array, so no stage may send")
   }
+  if (stages.length === 0) {
+    throw new Error(
+      "the send log has no recorded stages, so no stage may send"
+    )
+  }
+  stages.forEach((row, index) => {
+    if (isPendingStageRow(row)) {
+      if (index !== stages.length - 1) {
+        throw new Error(
+          `the send log has a pending ${row.name} row before a later stage, so no stage may send`
+        )
+      }
+      return
+    }
+    if (
+      !isCompleteStageRow(row) ||
+      typeof (row as { name?: unknown }).name !== "string"
+    ) {
+      throw new Error(
+        "the send log has an incomplete stage row without bounce or complaint counts, so no stage may send"
+      )
+    }
+  })
   return { stages: stages as T[], absent: false }
+}
+
+export function refuseCollect(
+  stages: readonly unknown[],
+  name: string
+): string | null {
+  const last = stages.at(-1)
+  if (!isPendingStageRow(last)) {
+    return "the last stage in the send log is not pending, so there is nothing to collect"
+  }
+  if (last.name !== name) {
+    return `the pending stage is ${last.name}, not ${name}`
+  }
+  return null
 }
 
 /**
@@ -190,10 +436,26 @@ export function parseSendLog<T>(
  */
 export function refuseUnloggedStage(
   name: string,
-  absent: boolean
+  absent: boolean,
+  previous?: LoggedStage | null
 ): string | null {
-  if (!absent || name === "maintainer") return null
-  return `no send log exists, so the ${name} stage has no history to gate on`
+  if (isPendingStageRow(previous)) return collectInstruction(previous)
+  if (name === "maintainer") {
+    if (previous !== undefined && previous !== null && !isCompleteStageRow(previous)) {
+      return "the previous stage row in the send log is incomplete"
+    }
+    return null
+  }
+  if (absent) {
+    return `no send log exists, so the ${name} stage has no history to gate on`
+  }
+  if (!previous) {
+    return `the send log has no history for the ${name} stage to gate on`
+  }
+  if (!isCompleteStageRow(previous)) {
+    return `the previous stage row for the ${name} stage is incomplete`
+  }
+  return null
 }
 
 /**

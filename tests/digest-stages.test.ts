@@ -1,15 +1,23 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  countsExpired,
+  decideUnsentPending,
   DIGEST_DAILY_CAP,
   GENERAL_AUDIENCE_ID,
+  isPendingStageRow,
+  mergeRefreshedOutcome,
   planDigestStages,
   parseSendLog,
+  refuseAnyComplaint,
   refuseBroadcastTarget,
+  refuseCollect,
   refuseNextStage,
   refuseRepeatStage,
+  refuseStageOrder,
   refuseUnloggedStage,
   stageContactRows,
+  stageOutcomeFromEvents,
   unsubscribeUrlFromHtml,
 } from "../lib/digest-stages"
 
@@ -146,6 +154,17 @@ describe("refuseNextStage", () => {
       )
     ).toBeNull()
   })
+
+  it("refuses when the previous stage row is missing bounce or complaint counts", () => {
+    expect(
+      refuseNextStage(
+        {
+          sentAt,
+        } as unknown as Parameters<typeof refuseNextStage>[0],
+        nextDay
+      )
+    ).toMatch(/bounce or complaint|incomplete/)
+  })
 })
 
 describe("the send target", () => {
@@ -239,13 +258,23 @@ describe("stageContactRows", () => {
 })
 
 describe("parseSendLog", () => {
+  const completeStage = {
+    name: "maintainer",
+    sentAt: "2026-10-20T12:00:00.000Z",
+    hardBounces: 0,
+    complaints: 0,
+    hardBouncesRemoved: true,
+  }
+
   it("reports an absent log as absent, with no stages", () => {
     expect(parseSendLog(null)).toEqual({ stages: [], absent: true })
   })
 
-  it("reads the stages of a log it can parse", () => {
-    expect(parseSendLog('{"stages":[{"name":"maintainer"}]}')).toEqual({
-      stages: [{ name: "maintainer" }],
+  it("reads the stages of a log with complete stage rows", () => {
+    expect(
+      parseSendLog(JSON.stringify({ stages: [completeStage] }))
+    ).toEqual({
+      stages: [completeStage],
       absent: false,
     })
   })
@@ -257,9 +286,358 @@ describe("parseSendLog", () => {
   it("refuses a log with no stages array instead of reading it as empty", () => {
     expect(() => parseSendLog('{"nope":1}')).toThrow(/no stages array/)
   })
+
+  it("refuses an existing log whose stages array is empty", () => {
+    expect(() => parseSendLog('{"stages":[]}')).toThrow(/empty|no history|no recorded stages/)
+  })
+
+  it("refuses a log row with no bounce or complaint counts", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({
+          stages: [{ name: "maintainer", sentAt: "2026-10-20T12:00:00.000Z" }],
+        })
+      )
+    ).toThrow(/incomplete|bounce|complaint/)
+  })
+})
+
+const realMaintainerRow = {
+  name: "maintainer",
+  sentAt: "2026-10-22T01:54:32.937Z",
+  hardBounces: 0,
+  complaints: 0,
+  hardBouncesRemoved: true,
+  broadcastId: "0ba0dd5c-b85d-44f4-8f54-07e102aee1af",
+  emailId: "email-maintainer",
+  segmentId: "segment-maintainer",
+  lastEvent: "delivered",
+  unsubscribeExercised: true,
+}
+
+const realFiveRow = {
+  name: "five",
+  sentAt: "2026-10-22T02:53:58.525Z",
+  hardBounces: 0,
+  complaints: 0,
+  hardBouncesRemoved: true,
+  broadcastId: "e6b9c9f5-f238-41d4-9ee6-eccec98e797b",
+  emailId: "email-1",
+  segmentId: "1d0fbcbc-89ca-4ea8-90c8-51ccbaca250e",
+  lastEvent: "delivered",
+  unsubscribeExercised: false,
+  emailIds: ["email-1", "email-2", "email-3", "email-4", "email-5"],
+  events: { delivered: 5 },
+}
+
+const pendingTenRow = {
+  name: "ten",
+  sentAt: "2026-10-23T03:00:00.000Z",
+  broadcastId: "broadcast-ten",
+  segmentId: "1d0fbcbc-89ca-4ea8-90c8-51ccbaca250e",
+  recipients: ["one@example.test", "two@example.test"],
+  pending: true,
+}
+
+describe("the real send log shape", () => {
+  it("parses the recorded maintainer and five rows", () => {
+    const log = parseSendLog(
+      JSON.stringify({ stages: [realMaintainerRow, realFiveRow] })
+    )
+    expect(log).toEqual({
+      stages: [realMaintainerRow, realFiveRow],
+      absent: false,
+    })
+  })
+
+  it("allows ten on the next UTC day and refuses it on the same day", () => {
+    const { stages, absent } = parseSendLog<typeof realFiveRow>(
+      JSON.stringify({ stages: [realMaintainerRow, realFiveRow] })
+    )
+    const previous = stages.at(-1) ?? null
+    expect(refuseUnloggedStage("ten", absent, previous)).toBeNull()
+    expect(
+      refuseNextStage(previous, new Date("2026-10-23T03:00:00.000Z"))
+    ).toBeNull()
+    expect(
+      refuseNextStage(previous, new Date("2026-10-22T23:00:00.000Z"))
+    ).toBe("the next stage waits until the next UTC day")
+  })
+})
+
+describe("a stage interrupted after its send", () => {
+  const log = JSON.stringify({
+    stages: [realMaintainerRow, realFiveRow, pendingTenRow],
+  })
+
+  it("parses a pending last row, so the log stays readable", () => {
+    expect(parseSendLog(log).stages.at(-1)).toEqual(pendingTenRow)
+  })
+
+  it("records no counts on the pending row", () => {
+    expect(isPendingStageRow(pendingTenRow)).toBe(true)
+    expect(isPendingStageRow(realFiveRow)).toBe(false)
+    expect("hardBounces" in pendingTenRow).toBe(false)
+  })
+
+  it("refuses a pending row that is not the last row", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({ stages: [realMaintainerRow, pendingTenRow, realFiveRow] })
+      )
+    ).toThrow(/pending/)
+  })
+
+  it("refuses a pending row with no broadcast id", () => {
+    const noBroadcast: Partial<typeof pendingTenRow> = { ...pendingTenRow }
+    delete noBroadcast.broadcastId
+    expect(() =>
+      parseSendLog(JSON.stringify({ stages: [realMaintainerRow, noBroadcast] }))
+    ).toThrow(/incomplete|pending/)
+  })
+
+  it("refuses the next stage and names the collect command", () => {
+    const { stages, absent } = parseSendLog<typeof pendingTenRow>(log)
+    const previous = stages.at(-1) ?? null
+    expect(refuseUnloggedStage("remainder", absent, previous)).toMatch(
+      /--stage ten --collect/
+    )
+    expect(
+      refuseNextStage(previous, new Date("2026-10-25T03:00:00.000Z"))
+    ).toMatch(/--stage ten --collect/)
+  })
+
+  it("refuses a second send of the pending stage", () => {
+    const { stages } = parseSendLog<{ name: string }>(log)
+    expect(refuseRepeatStage(stages, "ten")).toBe("this stage was already sent")
+  })
+})
+
+describe("a malformed pending row", () => {
+  it("refuses a pending row with no recipients", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({
+          stages: [realMaintainerRow, { ...pendingTenRow, recipients: [] }],
+        })
+      )
+    ).toThrow(/incomplete|pending/)
+  })
+
+  it("refuses a row marked pending that also carries counts but no ids", () => {
+    const rogue = {
+      name: "ten",
+      sentAt: "2026-10-23T03:00:00.000Z",
+      hardBounces: 0,
+      complaints: 0,
+      hardBouncesRemoved: true,
+      pending: true,
+    }
+    expect(() =>
+      parseSendLog(JSON.stringify({ stages: [realMaintainerRow, rogue] }))
+    ).toThrow(/incomplete|pending/)
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({ stages: [realMaintainerRow, rogue, realFiveRow] })
+      )
+    ).toThrow(/incomplete|pending/)
+  })
+
+  it("refuses a pending value that is not the boolean true", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({
+          stages: [realMaintainerRow, { ...pendingTenRow, pending: "true" }],
+        })
+      )
+    ).toThrow(/incomplete|pending/)
+  })
+
+  it("refuses two pending rows", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({
+          stages: [realMaintainerRow, pendingTenRow, pendingTenRow],
+        })
+      )
+    ).toThrow(/pending/)
+  })
+
+  it("blocks the maintainer stage and a maintainer collect on its own pending row", () => {
+    const pendingMaintainer = {
+      ...pendingTenRow,
+      name: "maintainer",
+      recipients: ["maintainer@example.test"],
+    }
+    expect(refuseUnloggedStage("maintainer", false, pendingMaintainer)).toMatch(
+      /--stage maintainer --collect/
+    )
+    expect(refuseCollect([pendingMaintainer], "maintainer")).toBeNull()
+  })
+})
+
+describe("refuseStageOrder", () => {
+  const planned = ["maintainer", "five", "ten", "remainder", "yahoo"]
+
+  it("allows only the next planned stage", () => {
+    const logged = [realMaintainerRow, realFiveRow]
+    expect(refuseStageOrder(logged, planned, "ten")).toBeNull()
+    expect(refuseStageOrder(logged, planned, "yahoo")).toBe(
+      "the next stage is ten, not yahoo"
+    )
+    expect(refuseStageOrder(logged, planned, "five")).toBe(
+      "the next stage is ten, not five"
+    )
+  })
+
+  it("starts with the maintainer stage", () => {
+    expect(refuseStageOrder([], planned, "maintainer")).toBeNull()
+    expect(refuseStageOrder([], planned, "five")).toMatch(/maintainer/)
+  })
+
+  it("refuses every stage after the last planned one", () => {
+    expect(refuseStageOrder(planned, planned, "yahoo")).toMatch(/every planned/)
+  })
+})
+
+describe("stageOutcomeFromEvents", () => {
+  it("counts bounces and complaints from the latest events", () => {
+    expect(
+      stageOutcomeFromEvents(["delivered", "bounced", "complained", "delivered"])
+    ).toEqual({
+      hardBounces: 1,
+      complaints: 1,
+      events: { delivered: 2, bounced: 1, complained: 1 },
+      lastEvent: "mixed",
+    })
+  })
+
+  it("names the single event when every copy shares it", () => {
+    expect(stageOutcomeFromEvents(["delivered", "delivered"]).lastEvent).toBe(
+      "delivered"
+    )
+  })
+
+  it("refuses a stage with no copies", () => {
+    expect(() => stageOutcomeFromEvents([])).toThrow(/no copies/)
+  })
+})
+
+describe("counts read again from Resend", () => {
+  it("never lowers a stored complaint or bounce", () => {
+    expect(
+      mergeRefreshedOutcome(
+        { hardBounces: 1, complaints: 1 },
+        { hardBounces: 0, complaints: 0 }
+      )
+    ).toEqual({ hardBounces: 1, complaints: 1 })
+  })
+
+  it("raises the counts when a late complaint or bounce arrives", () => {
+    expect(
+      mergeRefreshedOutcome(
+        { hardBounces: 0, complaints: 0 },
+        { hardBounces: 2, complaints: 1 }
+      )
+    ).toEqual({ hardBounces: 2, complaints: 1 })
+  })
+
+  it("stops the sequence on a complaint on an earlier stage", () => {
+    const complainedFive = { ...realFiveRow, complaints: 1 }
+    const cleanTen = { ...realFiveRow, name: "ten" }
+    expect(
+      refuseAnyComplaint([realMaintainerRow, complainedFive, cleanTen])
+    ).toBe("a complaint on the five stage stops the sequence")
+    expect(refuseAnyComplaint([realMaintainerRow, realFiveRow])).toBeNull()
+  })
+
+  it("treats counts older than the retention window as expired", () => {
+    const sentAt = "2026-10-01T00:00:00.000Z"
+    expect(countsExpired(sentAt, new Date("2026-10-30T00:00:00.000Z"))).toBe(
+      false
+    )
+    expect(countsExpired(sentAt, new Date("2026-11-01T00:00:01.000Z"))).toBe(
+      true
+    )
+  })
+})
+
+describe("decideUnsentPending", () => {
+  const settled = 11 * 60 * 1000
+
+  it("drops a settled draft that has no sent copy", () => {
+    expect(decideUnsentPending("draft", 0, settled)).toEqual({ action: "drop" })
+  })
+
+  it("refuses to drop a draft younger than 10 minutes", () => {
+    expect(decideUnsentPending("draft", 0, 60 * 1000)).toMatchObject({
+      action: "refuse",
+    })
+  })
+
+  it("collects a draft that already has a sent copy", () => {
+    expect(decideUnsentPending("draft", 1, 0)).toEqual({ action: "collect" })
+  })
+
+  it("collects a broadcast that is queued, sending or sent", () => {
+    for (const status of ["queued", "sending", "sent"]) {
+      expect(decideUnsentPending(status, 0, 0)).toEqual({ action: "collect" })
+    }
+  })
+
+  it("refuses any other status", () => {
+    expect(decideUnsentPending("failed", 0, settled)).toEqual({
+      action: "refuse",
+      reason: "the broadcast status is failed, so a person must check it in Resend",
+    })
+  })
+})
+
+describe("refuseCollect", () => {
+  it("allows a collect for the pending last stage", () => {
+    expect(refuseCollect([realFiveRow, pendingTenRow], "ten")).toBeNull()
+  })
+
+  it("refuses a collect when the last stage is complete", () => {
+    expect(refuseCollect([realMaintainerRow, realFiveRow], "five")).toMatch(
+      /not pending/
+    )
+  })
+
+  it("refuses a collect for a stage that is not the pending one", () => {
+    expect(refuseCollect([realFiveRow, pendingTenRow], "remainder")).toMatch(
+      /ten/
+    )
+  })
+
+  it("refuses a collect when the log has no stages", () => {
+    expect(refuseCollect([], "ten")).toMatch(/not pending/)
+  })
+})
+
+describe("the complaint stop", () => {
+  it("names the complaint even when the row has no bounce count", () => {
+    expect(
+      refuseNextStage(
+        {
+          sentAt: "2026-10-20T12:00:00.000Z",
+          complaints: 1,
+        } as unknown as Parameters<typeof refuseNextStage>[0],
+        new Date("2026-10-21T12:00:00.000Z")
+      )
+    ).toBe("a complaint stops the sequence")
+  })
 })
 
 describe("refuseUnloggedStage", () => {
+  const completePrevious = {
+    name: "five",
+    sentAt: "2026-10-20T12:00:00.000Z",
+    hardBounces: 0,
+    complaints: 0,
+    hardBouncesRemoved: true,
+  }
+
   it("lets the maintainer stage bootstrap an absent log", () => {
     expect(refuseUnloggedStage("maintainer", true)).toBeNull()
   })
@@ -268,7 +646,24 @@ describe("refuseUnloggedStage", () => {
     expect(refuseUnloggedStage("five", true)).toMatch(/no history/)
   })
 
-  it("refuses nothing once a log exists", () => {
-    expect(refuseUnloggedStage("five", false)).toBeNull()
+  it("refuses every non-maintainer stage when the previous stage row is missing", () => {
+    for (const stage of ["five", "ten", "remainder", "yahoo"] as const) {
+      expect(refuseUnloggedStage(stage, false, null)).toMatch(/no history|incomplete/)
+    }
+  })
+
+  it("refuses every non-maintainer stage when the previous stage row is incomplete", () => {
+    for (const stage of ["five", "ten", "remainder", "yahoo"] as const) {
+      expect(
+        refuseUnloggedStage(stage, false, {
+          name: "maintainer",
+          sentAt: "2026-10-20T12:00:00.000Z",
+        })
+      ).toMatch(/incomplete|bounce|complaint/)
+    }
+  })
+
+  it("allows a survivor stage when the log exists and the previous stage row is complete", () => {
+    expect(refuseUnloggedStage("ten", false, completePrevious)).toBeNull()
   })
 })
