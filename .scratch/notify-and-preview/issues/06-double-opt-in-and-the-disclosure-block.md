@@ -1,6 +1,6 @@
 # Give the signup form double opt-in and a disclosure block
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 04
 
@@ -304,3 +304,18 @@ So the label is honest rather than a request: **there is no human implementation
 ticket.** The moment Resend flips `mail.rnui.dev` to `verified`, one submit through the form closes
 bullet 2 and this becomes `resolved` with no code change. The only *decision* anywhere near it —
 accept 1024-bit DKIM or re-provision — is ticket 05's, is recorded there, and is unchanged.
+
+## 2026-10-22 — bullet 2 met, ticket resolved
+
+Ticket 05 has the status resolved, and Resend lists mail.rnui.dev as verified.
+With the maintainer's approval, the agent submitted the live form at www.rnui.dev/subscribe once.
+The address was mrpmohiburrahman@gmail.com, the maintainer's own address.
+The form showed its success message, which tells the user to open the inbox.
+The Resend email log shows the message as `delivered` at 2026-10-22 00:31:30 UTC.
+The sender was `digest@mail.rnui.dev`, and the subject was "Confirm your rnui.dev Digest subscription".
+Every acceptance bullet is now met.
+
+The agent did not click the confirm link.
+The address stays a pending record and is not a Subscriber.
+Item 4 of the 2026-08-15 list is still open: the confirm link is a GET that changes state.
+That item is not an acceptance bullet. Decide it before the first Digest send.
