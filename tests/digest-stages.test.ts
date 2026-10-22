@@ -4,9 +4,11 @@ import {
   DIGEST_DAILY_CAP,
   GENERAL_AUDIENCE_ID,
   planDigestStages,
+  parseSendLog,
   refuseBroadcastTarget,
   refuseNextStage,
   refuseRepeatStage,
+  refuseUnloggedStage,
   stageContactRows,
   unsubscribeUrlFromHtml,
 } from "../lib/digest-stages"
@@ -233,5 +235,40 @@ describe("stageContactRows", () => {
     const rows = stageContactRows({ docIds: ["b", "a"], consent, addresses })
 
     expect(rows.map((row) => row.docId)).toEqual(["b", "a"])
+  })
+})
+
+describe("parseSendLog", () => {
+  it("reports an absent log as absent, with no stages", () => {
+    expect(parseSendLog(null)).toEqual({ stages: [], absent: true })
+  })
+
+  it("reads the stages of a log it can parse", () => {
+    expect(parseSendLog('{"stages":[{"name":"maintainer"}]}')).toEqual({
+      stages: [{ name: "maintainer" }],
+      absent: false,
+    })
+  })
+
+  it("refuses a log that is not JSON instead of reading it as empty", () => {
+    expect(() => parseSendLog("{")).toThrow(/not JSON/)
+  })
+
+  it("refuses a log with no stages array instead of reading it as empty", () => {
+    expect(() => parseSendLog('{"nope":1}')).toThrow(/no stages array/)
+  })
+})
+
+describe("refuseUnloggedStage", () => {
+  it("lets the maintainer stage bootstrap an absent log", () => {
+    expect(refuseUnloggedStage("maintainer", true)).toBeNull()
+  })
+
+  it("refuses a survivor stage when no log exists to gate on", () => {
+    expect(refuseUnloggedStage("five", true)).toMatch(/no history/)
+  })
+
+  it("refuses nothing once a log exists", () => {
+    expect(refuseUnloggedStage("five", false)).toBeNull()
   })
 })

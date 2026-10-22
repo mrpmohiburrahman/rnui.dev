@@ -1,6 +1,6 @@
 # Send the first Digest, staged
 
-Status: claimed
+Status: ready-for-human
 Type: task
 Blocked by: 09
 
@@ -99,3 +99,35 @@ Three measurements now shape the code, and each one contradicts an assumption th
 | yahoo | 2 | the next UTC day after remainder |
 
 Yahoo goes last because `email-groups-2026-08-16.md` records both addresses as `risky` `low_deliverability`. The `digest-stage` segment currently holds exactly the five stage-five members, so `--stage five --send` is the next command and it needs no preparation.
+
+**2026-10-22, later. Incident: five stage sent same UTC day as maintainer. Status is ready-for-human.**
+
+The agent ran `--stage five --send` about one hour after the maintainer stage, on the same UTC day. Five real emails went out. The staging discipline was violated: two stages landed on 2026-10-22 instead of one.
+
+Root cause: `readLog()` failed open. When the send log was missing or unparseable it returned `{stages: []}` instead of throwing. An empty stages array disabled `refuseNextStage`, which reads `log.stages.at(-1)` to find the previous send time. With no previous row the gate passed, and the five stage mailed.
+
+Content assessment: the five copies were correct. Each carried its recipient's own `signup_date` from the consent instant, a real unsubscribe link, no fallback text, and no `preview.rnui.dev` URL. The damage is timing only.
+
+Delivery: 5 of 5 `delivered`. 0 hard bounces. 0 complaints.
+
+- Broadcast: `e6b9c9f5-f238-41d4-9ee6-eccec98e797b`
+- Segment: `1d0fbcbc-89ca-4ea8-90c8-51ccbaca250e` (`digest-stage`)
+- Sent at: `2026-10-22T02:53:58.525Z`
+
+Fixes committed:
+
+- `parseSendLog` and `refuseUnloggedStage` added to `lib/digest-stages.ts`. A log that exists but will not parse now throws. A genuinely absent log returns `{stages: [], absent: true}`.
+- `readLog()` in the script rewritten to use `parseSendLog`. ENOENT returns `absent: true`; any other read error throws.
+- `writeLog()` drops the `absent` key so it never reaches the file.
+- `refuseUnloggedStage` wired into both `sendMaintainer` and `sendStage`. The maintainer stage is allowed to bootstrap an absent log; every later stage is refused.
+- `waitForFanOut` matches by recipient set, not subject alone. Every stage shares one subject line, so a subject match absorbed the maintainer's copy and inflated the five stage's tally to six.
+
+Three sends remain. The table above is now stale for five; the corrected schedule is below.
+
+| Stage | Recipients | Earliest send |
+| ----- | ---------- | ------------- |
+| ten | 10 | 2026-10-23T02:54Z |
+| remainder | 11 | the next UTC day after ten |
+| yahoo | 2 | the next UTC day after remainder |
+
+Before each send, re-read the bounce and complaint counts for the stage before it. A person runs `--stage <name> --prepare` then `--stage <name> --send`. The agent does not send.

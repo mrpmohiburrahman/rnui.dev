@@ -17,11 +17,13 @@ import {
 } from "../lib/digest"
 import {
   DROPPED_DOC_IDS,
+  parseSendLog,
   planDigestStages,
   refuseBroadcastTarget,
   refuseNextStage,
   refuseRepeatStage,
   refuseSignupDateProperty,
+  refuseUnloggedStage,
   stageContactRows,
   unsubscribeUrlFromHtml,
   YAHOO_LAST_DOC_IDS,
@@ -76,7 +78,7 @@ type StageLog = StageOutcome & {
   events?: Record<string, number>
 }
 
-type LogFile = { stages: StageLog[] }
+type LogFile = { stages: StageLog[]; absent: boolean }
 
 type ListedContact = {
   id: string
@@ -89,17 +91,32 @@ function arg(flag: string): string | undefined {
   return i >= 0 ? process.argv[i + 1] : undefined
 }
 
+/**
+ * Reads the send log through `parseSendLog`, so a log that exists but will not parse
+ * throws instead of reading as empty. Only a genuinely absent file comes back as
+ * `absent`, and `refuseUnloggedStage` decides what that may and may not do.
+ */
 function readLog(): LogFile {
+  let raw: string | null = null
   try {
-    return JSON.parse(readFileSync(LOG, "utf8")) as LogFile
-  } catch {
-    return { stages: [] }
+    raw = readFileSync(LOG, "utf8")
+  } catch (err) {
+    if ((err as { code?: string }).code !== "ENOENT") {
+      throw new Error(
+        `cannot read the send log at ${LOG}: ${(err as Error).message}`
+      )
+    }
   }
+  return parseSendLog<StageLog>(raw)
 }
 
+/**
+ * Writes the history only. `absent` describes the read that produced this object,
+ * not the record, so it never reaches the file.
+ */
 function writeLog(log: LogFile): void {
   mkdirSync(dirname(LOG), { recursive: true })
-  writeFileSync(LOG, `${JSON.stringify(log, null, 2)}\n`)
+  writeFileSync(LOG, `${JSON.stringify({ stages: log.stages }, null, 2)}\n`)
 }
 
 type ConsentRow = { docId: string; createdAt: string }
@@ -236,6 +253,8 @@ async function sendMaintainer(log: LogFile): Promise<void> {
   if (wait) throw new Error(wait)
   const repeat = refuseRepeatStage(log.stages, "maintainer")
   if (repeat) throw new Error(repeat)
+  const unlogged = refuseUnloggedStage("maintainer", log.absent)
+  if (unlogged) throw new Error(unlogged)
 
   const contact = await findContact(MAINTAINER)
   if (contact.unsubscribed) {
@@ -403,29 +422,37 @@ type FannedEmail = {
 }
 
 /**
- * Waits for a broadcast's whole fan-out, then hands back every copy.
+ * Waits for a broadcast's whole fan-out, then hands back one copy per recipient.
  *
- * The acceptance asks for bounce and complaint counts after each stage, and those
- * counts mean nothing until every recipient's row exists — so this waits for the
- * expected number rather than returning the first hit the way the one-recipient
- * maintainer path can.
+ * Matched on the recipient and not on the subject alone. Every stage shares one
+ * subject line, so a subject match absorbs the earlier stages' copies: measured
+ * 2026-10-22, the five stage tallied six emails because the maintainer's copy of
+ * the same subject was still in the list, and the bounce and complaint counts that
+ * the acceptance asks for were then counts of the wrong set.
  */
 async function waitForFanOut(
   subject: string,
-  expected: number
+  recipients: readonly string[]
 ): Promise<FannedEmail[]> {
+  const wanted = new Set(recipients.map((email) => email.toLowerCase()))
   const deadline = Date.now() + 600_000
-  let hits: FannedEmail[] = []
+  let matched = new Map<string, FannedEmail>()
   while (Date.now() < deadline) {
     const page = await resendRequest<{ data: FannedEmail[] }>(
       "/emails?limit=100"
     )
-    hits = page.data.filter((row) => row.subject === subject)
-    if (hits.length >= expected) return hits
+    matched = new Map()
+    for (const row of page.data) {
+      if (row.subject !== subject) continue
+      // The list is newest first, so the first hit per recipient is the latest one.
+      const to = row.to?.[0]?.toLowerCase()
+      if (to && wanted.has(to) && !matched.has(to)) matched.set(to, row)
+    }
+    if (matched.size >= wanted.size) return [...matched.values()]
     await new Promise((resolve) => setTimeout(resolve, 5000))
   }
   throw new Error(
-    `only ${hits.length} of ${expected} copies of "${subject}" appeared in the sent list`
+    `only ${matched.size} of ${wanted.size} copies of "${subject}" reached this stage's recipients`
   )
 }
 
@@ -452,6 +479,8 @@ async function sendStage(name: string, log: LogFile): Promise<void> {
   if (wait) throw new Error(wait)
   const repeat = refuseRepeatStage(log.stages, name)
   if (repeat) throw new Error(repeat)
+  const unlogged = refuseUnloggedStage(name, log.absent)
+  if (unlogged) throw new Error(unlogged)
 
   const rows = rowsForStage(name)
   const segmentId = await ensureSegment(STAGE_SEGMENT)
@@ -495,7 +524,10 @@ async function sendStage(name: string, log: LogFile): Promise<void> {
     `sent broadcast ${broadcastId} to ${rows.length} on segment ${segmentId}`
   )
 
-  const fanOut = await waitForFanOut(digest.subject, rows.length)
+  const fanOut = await waitForFanOut(
+    digest.subject,
+    rows.map((row) => row.email)
+  )
   const events: Record<string, number> = {}
   for (const email of fanOut) {
     events[email.last_event] = (events[email.last_event] ?? 0) + 1
