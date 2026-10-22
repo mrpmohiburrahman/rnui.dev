@@ -40,6 +40,7 @@
     "rules:deploy": "pnpm rules:verify && firebase deploy --only firestore:rules",
     "broadcast:test": "tsx scripts/resend-broadcast.ts",
     "digest:draft": "tsx scripts/draft-digest.ts",
+    "digest:stage": "tsx scripts/send-digest-stage.ts",
     "prepare": "husky",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"

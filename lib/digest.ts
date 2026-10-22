@@ -45,6 +45,10 @@ export const DIGEST_ITEM_LIMIT = 6
  */
 export const UNSUBSCRIBE_TOKEN = "{{{RESEND_UNSUBSCRIBE_URL}}}"
 
+export const SIGNUP_DATE_FALLBACK = "a date we could not read"
+
+export const SIGNUP_DATE_TOKEN = `{{{contact.signup_date|${SIGNUP_DATE_FALLBACK}}}}`
+
 /** The whole catalogue. Never a Contributor-filtered view. */
 export function catalogueUrl(): string {
   return `${SITE_ORIGIN}/products`
@@ -84,9 +88,11 @@ export function formatDigestDate(value: string | Date): string {
  */
 export function assertNoLeftoverTokens(
   html: string,
-  unsubscribeUrl: string
+  unsubscribeUrl: string,
+  allowed: readonly string[] = []
 ): void {
-  const stripped = html.split(unsubscribeUrl).join("")
+  let stripped = html.split(unsubscribeUrl).join("")
+  for (const token of allowed) stripped = stripped.split(token).join("")
   const leftover = stripped.match(/\{\{[^}]*\}\}/)
   if (leftover) {
     throw new Error(
@@ -184,9 +190,15 @@ export type Digest = {
  * `subject` carries the same total as the body's first paragraph. Nothing here is
  * per-recipient except the signup sentence, which is the point of a per-recipient render.
  */
-export function renderDigest(options: DigestOptions): Digest {
+function renderDigestMessage(
+  options: {
+    recordings?: readonly Recording[]
+    unsubscribeUrl: string
+    opening: string
+    allowedTokens?: readonly string[]
+  }
+): Digest {
   const content = digestContent(options.recordings)
-  const signupDate = formatDigestDate(options.signupDate)
   const window =
     `${formatDigestDate(content.firstAdded)} and ` +
     `${formatDigestDate(content.lastAdded)}`
@@ -201,20 +213,15 @@ export function renderDigest(options: DigestOptions): Digest {
     )
     .join("\n")
 
-  // Only when there is something behind it. A line reading "and 0 more" is the sort of
-  // detail that makes an email look machine-written.
   const more =
     content.more > 0
       ? `<p><a href="${escapeHtml(catalogueUrl())}">and ${content.more} more →</a></p>`
       : ""
 
-  // Escaped even though the caller builds it: an unsubscribe URL with a query string holds
-  // an `&`, and this is the only href in the body not constructed here. Escaping leaves the
-  // `{{{…}}}` token intact, because it touches none of those characters.
   const unsubscribe = escapeHtml(options.unsubscribeUrl)
 
   const html = `<p>Hello,</p>
-<p>You signed up for the rnui.dev Digest at rnui.dev on ${signupDate}. This is the first
+<p>${options.opening} This is the first
 one, so it covers the whole catalogue rather than a week: ${content.total} Recordings
 added between ${window}.</p>
 <p>Newest first:</p>
@@ -236,11 +243,47 @@ third-party marketing, and your address is never shared.
 <a href="${escapeHtml(privacyUrl(SITE_ORIGIN))}">Privacy Policy</a>
 </p>`
 
-  assertNoLeftoverTokens(html, options.unsubscribeUrl)
+  assertNoLeftoverTokens(
+    html,
+    options.unsubscribeUrl,
+    options.allowedTokens ?? []
+  )
 
   return {
     subject: `The first rnui.dev Digest: ${content.total} Recordings`,
     html,
     content,
   }
+}
+
+export function renderDigest(options: DigestOptions): Digest {
+  const signupDate = formatDigestDate(options.signupDate)
+  return renderDigestMessage({
+    recordings: options.recordings,
+    unsubscribeUrl: options.unsubscribeUrl,
+    opening: `You signed up for the rnui.dev Digest at rnui.dev on ${signupDate}.`,
+  })
+}
+
+export function renderBroadcastDigest(options: {
+  recordings?: readonly Recording[]
+  unsubscribeUrl: string
+}): Digest {
+  return renderDigestMessage({
+    recordings: options.recordings,
+    unsubscribeUrl: options.unsubscribeUrl,
+    opening: `You signed up for the rnui.dev Digest at rnui.dev on ${SIGNUP_DATE_TOKEN}.`,
+    allowedTokens: [SIGNUP_DATE_TOKEN],
+  })
+}
+
+export function renderMaintainerDigest(options: {
+  recordings?: readonly Recording[]
+  unsubscribeUrl: string
+}): Digest {
+  return renderDigestMessage({
+    recordings: options.recordings,
+    unsubscribeUrl: options.unsubscribeUrl,
+    opening: "You are receiving this because you run rnui.dev.",
+  })
 }
