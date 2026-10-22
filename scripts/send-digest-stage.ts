@@ -2,11 +2,11 @@
 /**
  * Sends one Digest stage. Run via: pnpm digest:stage -- --stage maintainer --send
  *
- * notify-and-preview ticket 10. Without --send it prints the stage sizes and
- * stops. --send is accepted only for the maintainer stage: the later stages
- * wait for a person, a later UTC day, and the local address join.
+ * notify-and-preview ticket 10. Without a flag it prints the stage sizes and
+ * stops. --prepare builds a stage's segment, --send mails it, and --collect records
+ * the counts of a stage whose send went out but whose fan-out wait did not finish.
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs"
 import { dirname } from "node:path"
 import { pathToFileURL } from "node:url"
 
@@ -16,18 +16,27 @@ import {
   UNSUBSCRIBE_TOKEN,
 } from "../lib/digest"
 import {
+  countsExpired,
+  decideUnsentPending,
   DROPPED_DOC_IDS,
+  isPendingStageRow,
+  mergeRefreshedOutcome,
   parseSendLog,
   planDigestStages,
   refuseBroadcastTarget,
+  refuseCollect,
   refuseNextStage,
+  refuseAnyComplaint,
   refuseRepeatStage,
   refuseSignupDateProperty,
+  refuseStageOrder,
   refuseUnloggedStage,
   stageContactRows,
+  stageOutcomeFromEvents,
   unsubscribeUrlFromHtml,
   YAHOO_LAST_DOC_IDS,
   type DigestStage,
+  type PendingStageRow,
   type StageContactRow,
   type StageOutcome,
 } from "../lib/digest-stages"
@@ -78,7 +87,7 @@ type StageLog = StageOutcome & {
   events?: Record<string, number>
 }
 
-type LogFile = { stages: StageLog[]; absent: boolean }
+type LogFile = { stages: (StageLog | PendingStageRow)[]; absent: boolean }
 
 type ListedContact = {
   id: string
@@ -107,16 +116,19 @@ function readLog(): LogFile {
       )
     }
   }
-  return parseSendLog<StageLog>(raw)
+  return parseSendLog<StageLog | PendingStageRow>(raw)
 }
 
 /**
  * Writes the history only. `absent` describes the read that produced this object,
- * not the record, so it never reaches the file.
+ * not the record, so it never reaches the file. The write goes to a temporary file
+ * and is then renamed, so a crash cannot leave a half-written log behind.
  */
 function writeLog(log: LogFile): void {
   mkdirSync(dirname(LOG), { recursive: true })
-  writeFileSync(LOG, `${JSON.stringify({ stages: log.stages }, null, 2)}\n`)
+  const temporary = `${LOG}.tmp`
+  writeFileSync(temporary, `${JSON.stringify({ stages: log.stages }, null, 2)}\n`)
+  renameSync(temporary, LOG)
 }
 
 type ConsentRow = { docId: string; createdAt: string }
@@ -248,13 +260,7 @@ async function exerciseUnsubscribe(emailId: string): Promise<void> {
 }
 
 async function sendMaintainer(log: LogFile): Promise<void> {
-  const previous = log.stages.at(-1) ?? null
-  const wait = refuseNextStage(previous, new Date())
-  if (wait) throw new Error(wait)
-  const repeat = refuseRepeatStage(log.stages, "maintainer")
-  if (repeat) throw new Error(repeat)
-  const unlogged = refuseUnloggedStage("maintainer", log.absent)
-  if (unlogged) throw new Error(unlogged)
+  await refuseToSend(log, "maintainer")
 
   const contact = await findContact(MAINTAINER)
   if (contact.unsubscribed) {
@@ -285,31 +291,198 @@ async function sendMaintainer(log: LogFile): Promise<void> {
       }),
     })
   ).id
+  recordPending(log, "maintainer", broadcastId, segmentId, [MAINTAINER])
   await resendRequest(`/broadcasts/${broadcastId}/send`, { method: "POST" })
-
-  const row: StageLog = {
-    name: "maintainer",
-    sentAt: new Date().toISOString(),
-    hardBounces: 0,
-    complaints: 0,
-    hardBouncesRemoved: true,
-    broadcastId,
-    emailId: null,
-    segmentId,
-    lastEvent: null,
-    unsubscribeExercised: false,
-  }
-  log.stages.push(row)
-  writeLog(log)
   console.log(`sent broadcast ${broadcastId} on segment ${segmentId}`)
 
-  const email = await waitForEmail(digest.subject, MAINTAINER)
-  row.emailId = email.id
-  row.lastEvent = email.last_event
-  row.hardBounces = email.last_event === "bounced" ? 1 : 0
-  row.complaints = email.last_event === "complained" ? 1 : 0
-  row.hardBouncesRemoved = row.hardBounces === 0
+  await collectMaintainer(log, true)
+}
+
+/**
+ * Runs every gate before a send. Every stage's counts are read again from Resend
+ * first, because a complaint or a bounce can arrive days after a stage was
+ * collected, and a stored count would miss it.
+ */
+async function refuseToSend(log: LogFile, name: string): Promise<void> {
+  await refreshCompleted(log)
+  const previous = log.stages.at(-1) ?? null
+  const refusal =
+    refuseUnloggedStage(name, log.absent, previous) ??
+    refuseAnyComplaint(log.stages) ??
+    refuseNextStage(previous, new Date()) ??
+    refuseRepeatStage(log.stages, name) ??
+    refuseStageOrder(
+      log.stages,
+      plannedStages().map((stage) => stage.name),
+      name
+    )
+  if (refusal) throw new Error(refusal)
+}
+
+/** Paces the reads and waits out a rate limit, so a refresh does not fail on 429. */
+async function readEmail(id: string): Promise<FannedEmail> {
+  for (let attempt = 0; ; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 600))
+    try {
+      return await resendRequest<FannedEmail>(`/emails/${id}`)
+    } catch (err) {
+      if ((err as { status?: number }).status !== 429 || attempt >= 5) throw err
+      await new Promise((resolve) => setTimeout(resolve, 2000 * (attempt + 1)))
+    }
+  }
+}
+
+async function refreshCompleted(log: LogFile): Promise<void> {
+  const now = new Date()
+  let changed = false
+  for (const row of log.stages) {
+    if (isPendingStageRow(row)) continue
+    if (countsExpired(row.sentAt, now)) {
+      console.warn(
+        `${row.name}: older than Resend's retention window, so its stored counts stand`
+      )
+      continue
+    }
+    const ids = row.emailIds ?? (row.emailId ? [row.emailId] : [])
+    if (ids.length === 0) {
+      throw new Error(
+        `the ${row.name} stage has no email ids, so its counts cannot be read again`
+      )
+    }
+    const copies: FannedEmail[] = []
+    for (const id of ids) copies.push(await readEmail(id))
+    const outcome = stageOutcomeFromEvents(copies.map((copy) => copy.last_event))
+    const merged = mergeRefreshedOutcome(row, outcome)
+    const bounced = copies.filter((copy) => copy.last_event === "bounced")
+    const removedNow =
+      bounced.length === 0 ||
+      (await removeHardBounces(bounced)) === bounced.length
+    const removed =
+      merged.hardBounces === 0 ||
+      (removedNow &&
+        (bounced.length >= merged.hardBounces || row.hardBouncesRemoved))
+    if (
+      merged.hardBounces !== row.hardBounces ||
+      merged.complaints !== row.complaints ||
+      removed !== row.hardBouncesRemoved
+    ) {
+      changed = true
+    }
+    row.hardBounces = merged.hardBounces
+    row.complaints = merged.complaints
+    row.hardBouncesRemoved = removed
+    console.log(
+      `${row.name} read again: events ${JSON.stringify(outcome.events)}, ` +
+        `hard_bounces=${row.hardBounces}, complaints=${row.complaints}`
+    )
+  }
+  if (changed) writeLog(log)
+}
+
+/**
+ * Logs a stage after its broadcast exists and before the send call, so a failed
+ * response, a timeout or a crash cannot erase the fact of the send. The row holds no
+ * counts until a collect measures them.
+ */
+function recordPending(
+  log: LogFile,
+  name: string,
+  broadcastId: string,
+  segmentId: string,
+  recipients: string[]
+): void {
+  log.stages.push({
+    name,
+    sentAt: new Date().toISOString(),
+    broadcastId,
+    segmentId,
+    recipients,
+    pending: true,
+  })
   writeLog(log)
+}
+
+/**
+ * Reads the broadcast and decides whether the pending row stands. A draft with no
+ * sent copy never went out: the row goes first and the draft after, so a crash
+ * between the two leaves only a draft that cannot send. Returns true when it removed
+ * the row.
+ */
+async function dropUnsentPending(
+  log: LogFile,
+  pending: PendingStageRow,
+  subject: string
+): Promise<boolean> {
+  const broadcast = await resendRequest<{ status: string }>(
+    `/broadcasts/${pending.broadcastId}`
+  )
+  const copies =
+    broadcast.status === "draft"
+      ? await countSentCopies(subject, pending.recipients)
+      : 0
+  const decision = decideUnsentPending(
+    broadcast.status,
+    copies,
+    Date.now() - new Date(pending.sentAt).getTime()
+  )
+  if (decision.action === "refuse") throw new Error(decision.reason)
+  if (decision.action === "collect") return false
+  log.stages.pop()
+  writeLog(log)
+  try {
+    await resendRequest(`/broadcasts/${pending.broadcastId}`, {
+      method: "DELETE",
+    })
+  } catch (err) {
+    console.warn(`the draft ${pending.broadcastId} stays in Resend: ${(err as Error).message}`)
+  }
+  console.log(
+    `broadcast ${pending.broadcastId} was never sent: the pending ` +
+      `${pending.name} row is removed, so --send may run again`
+  )
+  return true
+}
+
+async function countSentCopies(
+  subject: string,
+  recipients: readonly string[]
+): Promise<number> {
+  const wanted = new Set(recipients.map((email) => email.toLowerCase()))
+  const page = await resendRequest<{ data: FannedEmail[] }>("/emails?limit=100")
+  return page.data.filter(
+    (row) =>
+      row.subject === subject &&
+      row.to.some((addr) => wanted.has(addr.toLowerCase()))
+  ).length
+}
+
+function pendingRow(log: LogFile, name: string): PendingStageRow {
+  const refusal = refuseCollect(log.stages, name)
+  if (refusal) throw new Error(refusal)
+  const last = log.stages.at(-1)
+  if (!isPendingStageRow(last)) throw new Error(`the ${name} stage is not pending`)
+  return last
+}
+
+function completeRow(log: LogFile, row: StageLog): void {
+  log.stages[log.stages.length - 1] = row
+  writeLog(log)
+}
+
+/**
+ * The maintainer row stays pending until the unsubscribe is exercised, because a
+ * maintainer row without that proof is incomplete and would block every later stage.
+ */
+async function collectMaintainer(
+  log: LogFile,
+  justSent = false
+): Promise<void> {
+  const pending = pendingRow(log, "maintainer")
+  const digest = renderMaintainerDigest({ unsubscribeUrl: UNSUBSCRIBE_TOKEN })
+  if (!justSent && (await dropUnsentPending(log, pending, digest.subject))) return
+  const contact = await findContact(MAINTAINER)
+  const email = await waitForEmail(digest.subject, MAINTAINER)
+  const hardBounces = email.last_event === "bounced" ? 1 : 0
 
   await exerciseUnsubscribe(email.id)
   const after = await resendRequest<{ unsubscribed: boolean }>(
@@ -318,8 +491,19 @@ async function sendMaintainer(log: LogFile): Promise<void> {
   if (!after.unsubscribed) {
     throw new Error("the one-click POST did not unsubscribe the contact")
   }
-  row.unsubscribeExercised = true
-  writeLog(log)
+  const row: StageLog = {
+    name: pending.name,
+    sentAt: pending.sentAt,
+    hardBounces,
+    complaints: email.last_event === "complained" ? 1 : 0,
+    hardBouncesRemoved: hardBounces === 0,
+    broadcastId: pending.broadcastId,
+    emailId: email.id,
+    segmentId: pending.segmentId,
+    lastEvent: email.last_event,
+    unsubscribeExercised: true,
+  }
+  completeRow(log, row)
   console.log(
     `unsubscribe exercised; last_event=${row.lastEvent}; hard_bounces=${row.hardBounces}; complaints=${row.complaints}`
   )
@@ -459,28 +643,25 @@ async function waitForFanOut(
 /**
  * Deletes the contacts behind a hard bounce, so the next stage is not refused over
  * a mailbox that no longer exists. Ticket 10: hard bounces removed immediately,
- * permanently, before the next stage.
+ * permanently, before the next stage. A contact that is already gone counts as
+ * removed, so a collect that runs again after a partial removal can finish.
  */
 async function removeHardBounces(bounced: FannedEmail[]): Promise<number> {
   let removed = 0
   for (const email of bounced) {
     for (const addr of email.to) {
       const contact = await getContactByEmail(addr)
-      if (!contact) continue
-      await resendRequest(`/contacts/${contact.id}`, { method: "DELETE" })
-      removed++
+      if (contact) {
+        await resendRequest(`/contacts/${contact.id}`, { method: "DELETE" })
+      }
     }
+    removed++
   }
   return removed
 }
 
 async function sendStage(name: string, log: LogFile): Promise<void> {
-  const wait = refuseNextStage(log.stages.at(-1) ?? null, new Date())
-  if (wait) throw new Error(wait)
-  const repeat = refuseRepeatStage(log.stages, name)
-  if (repeat) throw new Error(repeat)
-  const unlogged = refuseUnloggedStage(name, log.absent)
-  if (unlogged) throw new Error(unlogged)
+  await refuseToSend(log, name)
 
   const rows = rowsForStage(name)
   const segmentId = await ensureSegment(STAGE_SEGMENT)
@@ -504,50 +685,52 @@ async function sendStage(name: string, log: LogFile): Promise<void> {
       }),
     })
   ).id
-  await resendRequest(`/broadcasts/${broadcastId}/send`, { method: "POST" })
-
-  const row: StageLog = {
+  recordPending(
+    log,
     name,
-    sentAt: new Date().toISOString(),
-    hardBounces: 0,
-    complaints: 0,
-    hardBouncesRemoved: true,
     broadcastId,
-    emailId: null,
     segmentId,
-    lastEvent: null,
-    unsubscribeExercised: false,
-  }
-  log.stages.push(row)
-  writeLog(log)
+    rows.map((row) => row.email)
+  )
+  await resendRequest(`/broadcasts/${broadcastId}/send`, { method: "POST" })
   console.log(
     `sent broadcast ${broadcastId} to ${rows.length} on segment ${segmentId}`
   )
 
-  const fanOut = await waitForFanOut(
-    digest.subject,
-    rows.map((row) => row.email)
-  )
-  const events: Record<string, number> = {}
-  for (const email of fanOut) {
-    events[email.last_event] = (events[email.last_event] ?? 0) + 1
-  }
+  await collectStage(name, log, true)
+}
+
+async function collectStage(
+  name: string,
+  log: LogFile,
+  justSent = false
+): Promise<void> {
+  const pending = pendingRow(log, name)
+  const digest = renderBroadcastDigest({ unsubscribeUrl: UNSUBSCRIBE_TOKEN })
+  if (!justSent && (await dropUnsentPending(log, pending, digest.subject))) return
+  const fanOut = await waitForFanOut(digest.subject, pending.recipients)
+  const outcome = stageOutcomeFromEvents(fanOut.map((email) => email.last_event))
   const bounced = fanOut.filter((email) => email.last_event === "bounced")
-  row.emailIds = fanOut.map((email) => email.id)
-  row.emailId = row.emailIds[0] ?? null
-  row.events = events
-  row.hardBounces = bounced.length
-  row.complaints = fanOut.filter(
-    (email) => email.last_event === "complained"
-  ).length
-  row.lastEvent =
-    Object.keys(events).length === 1 ? Object.keys(events)[0] : "mixed"
-  row.hardBouncesRemoved =
-    bounced.length === 0 ||
-    (await removeHardBounces(bounced)) === bounced.length
-  writeLog(log)
+  const emailIds = fanOut.map((email) => email.id)
+  const row: StageLog = {
+    name: pending.name,
+    sentAt: pending.sentAt,
+    hardBounces: outcome.hardBounces,
+    complaints: outcome.complaints,
+    hardBouncesRemoved:
+      bounced.length === 0 ||
+      (await removeHardBounces(bounced)) === bounced.length,
+    broadcastId: pending.broadcastId,
+    emailId: emailIds[0] ?? null,
+    segmentId: pending.segmentId,
+    lastEvent: outcome.lastEvent,
+    unsubscribeExercised: false,
+    emailIds,
+    events: outcome.events,
+  }
+  completeRow(log, row)
   console.log(
-    `${name}: ${fanOut.length} copies, events ${JSON.stringify(events)}, ` +
+    `${name}: ${fanOut.length} copies, events ${JSON.stringify(outcome.events)}, ` +
       `hard_bounces=${row.hardBounces}, complaints=${row.complaints}`
   )
   if (row.complaints > 0) {
@@ -563,16 +746,26 @@ async function main(): Promise<void> {
   const stage = arg("--stage")
   const send = process.argv.includes("--send")
   const prepare = process.argv.includes("--prepare")
+  const collect = process.argv.includes("--collect")
   if (!stage) {
     printPlan()
     console.log(
       "dry run — pass --stage <name> --prepare to build a segment, " +
-        "or --stage <name> --send to mail one"
+        "--stage <name> --send to mail one, " +
+        "or --stage <name> --collect to record a pending stage's counts"
     )
     return
   }
   if (!STAGE_NAMES.includes(stage)) {
     throw new Error(`no stage is named ${stage}`)
+  }
+  if ([prepare, send, collect].filter(Boolean).length > 1) {
+    throw new Error("pass only one of --prepare, --send and --collect")
+  }
+  if (collect) {
+    if (stage === "maintainer") await collectMaintainer(readLog())
+    else await collectStage(stage, readLog())
+    return
   }
   if (!prepare && !send) {
     const count = stage === "maintainer" ? 1 : rowsForStage(stage).length
