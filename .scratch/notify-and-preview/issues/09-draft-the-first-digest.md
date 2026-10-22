@@ -1,6 +1,6 @@
 # Draft the first Digest
 
-Status: ready-for-human
+Status: resolved
 Type: prototype
 Blocked by: 03, 05, 06, 07, 08
 
@@ -186,3 +186,18 @@ section; or relaunch a reachable survey and give this ticket a URL in a follow-u
 The maintainer reads the draft and decides the ask. Nothing else is outstanding: the copy,
 the count, the window, the footer, the token fill and the privacy link are built and pinned,
 and `npx vitest run` is 720/720. Ticket 10 stays blocked until this is closed.
+
+**2026-10-22 — resolved. The maintainer read the draft and kept the reply ask.**
+
+The reading is done and the ask is settled: the draft ships as it stands, with the reply to
+`hello@rnui.dev` in place of the survey link. So the fifth acceptance bullet is met in
+substance and not in letter — the ask is present and after the content, but it points at a
+mailbox rather than at `preview.rnui.dev`, because that host is a 308 redirect and the
+survey behind it ended on 2026-10-02. Recording the substitution here is the point: a future
+reader comparing the bullet to the message should find the reason beside it rather than
+conclude the bullet was skipped.
+
+The other eight bullets are met as the 2026-10-22 comment above sets out. Ticket 10 is
+unblocked and is the next thing, and it is the ticket that picks the send path — which is
+what decides whether a recipient gets a per-recipient signup date or the broadcast's
+unsubscribe token, as recorded above.
