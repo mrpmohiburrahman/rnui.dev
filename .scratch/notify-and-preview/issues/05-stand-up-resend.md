@@ -1,6 +1,6 @@
 # Stand up Resend on mail.rnui.dev
 
-Status: ready-for-human
+Status: resolved
 Type: task
 Blocked by: 04
 
@@ -487,3 +487,15 @@ It opens Cloudflare, gives the exact TXT record, waits for DNS, and opens Postma
 This ticket stays ready-for-human until the maintainer runs the wizard and reports Verified.
 The maintainer agreed that this ticket then closes as resolved.
 
+### 2026-10-22 — bullet 6 met, ticket resolved
+
+The agent examined bullet 6 in a browser session with the maintainer's approval at each step.
+`dig +short TXT mail.rnui.dev` returned the `google-site-verification` record from 1.1.1.1 and 8.8.8.8.
+Postmaster Tools lists mail.rnui.dev as Verified, added Aug 15, 2026.
+The agent did not click Verify, because the domain was already verified.
+The earlier empty `dig` result was a propagation delay, not a missing record.
+
+Postmaster shows one DMARC item as "Needs work". That data is from May 17.
+`_dmarc.rnui.dev` now publishes `p=none`, which meets the Google minimum.
+Postmaster also reports not enough Gmail volume for a deliverability status.
+Neither item is an acceptance bullet. Every bullet is now met.
