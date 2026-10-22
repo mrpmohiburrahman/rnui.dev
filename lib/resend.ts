@@ -131,6 +131,105 @@ export async function subscribeContact(
 }
 
 /**
+ * A contact plus what the account-scoped read returns for it. `properties` carries
+ * Resend's own `{value, type}` shape rather than a bare string — measured
+ * 2026-10-22, `GET /contacts/{email}` answers
+ * `{"signup_date": {"value": "1 January 2025", "type": "string"}}`.
+ */
+export type ContactWithProperties = Contact & {
+  id: string
+  properties?: Record<string, { value: string | null; type: string }>
+}
+
+/** One contact by address, account-scoped, or null when the address is not one. */
+export async function getContactByEmail(
+  email: string
+): Promise<ContactWithProperties | null> {
+  try {
+    // The raw address in the path, not an encoded one: `%40` is unmeasured here
+    // and the literal form is what answered 200 and 404 on 2026-10-22.
+    return await resendRequest<ContactWithProperties>(`/contacts/${email}`)
+  } catch (err) {
+    if ((err as { status?: number }).status === 404) return null
+    throw err
+  }
+}
+
+/**
+ * Sets custom properties on a contact that already exists, and nothing else.
+ *
+ * **This is the only write the Digest may make to an existing contact.** Measured
+ * 2026-10-22 against a contact with `unsubscribed: true`: a PATCH carrying only
+ * `properties` left the flag `true`, while `POST /contacts` is an upsert that
+ * resets it (ticket 08). The body here carries no `unsubscribed` key at all — the
+ * omission is the guarantee, not a value set to false.
+ */
+export async function setContactProperties(
+  email: string,
+  properties: Record<string, string>
+): Promise<void> {
+  await resendRequest(`/contacts/${email}`, {
+    method: "PATCH",
+    body: JSON.stringify({ properties }),
+  })
+}
+
+/**
+ * Creates a contact carrying custom properties.
+ *
+ * Callers must have read the address first. A POST on an address that already
+ * exists answers 201 and writes `unsubscribed: false`, so calling this directly is
+ * how somebody who opted out gets mailed; `ensureContactWithProperties` is the
+ * guard that does the read.
+ */
+export async function createContactWithProperties(input: {
+  email: string
+  properties: Record<string, string>
+}): Promise<string> {
+  const created = await resendRequest<{ id: string }>("/contacts", {
+    method: "POST",
+    body: JSON.stringify({
+      email: input.email,
+      unsubscribed: false,
+      properties: input.properties,
+    }),
+  })
+  return created.id
+}
+
+/**
+ * Puts custom properties on an address and returns its contact id, without ever
+ * resurrecting anybody.
+ *
+ * Reads first, so the three cases stay explicit: absent → create with the
+ * properties; present and unsubscribed → refuse; present and subscribed → PATCH the
+ * properties. The refusal is the whole point. Ticket 08 measured that the POST
+ * answers 201 and clears the flag, so the read is what makes "never resurrect"
+ * structural rather than a rule every caller has to remember. This is the
+ * `ensureContact` discipline with properties, and like `ensureContact` it is not the
+ * path that may clear the flag.
+ *
+ * Segment membership is not set here: PATCH takes no `segments`, so one route
+ * serves both the created and the existing contact.
+ */
+export async function ensureContactWithProperties(input: {
+  email: string
+  properties: Record<string, string>
+}): Promise<{ id: string; created: boolean }> {
+  const existing = await getContactByEmail(input.email)
+  if (existing) {
+    if (existing.unsubscribed) {
+      throw new Error(
+        `${existing.id} unsubscribed, so nothing may re-subscribe it`
+      )
+    }
+    await setContactProperties(input.email, input.properties)
+    return { id: existing.id, created: false }
+  }
+  return { id: await createContactWithProperties(input), created: true }
+}
+
+/**
  * One transactional message to one address — the confirmation email, as opposed
  * to a broadcast, which goes to a whole audience. Ticket 06 is the only caller;
  * the Digest is a broadcast and belongs to ticket 11.
