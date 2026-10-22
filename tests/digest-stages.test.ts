@@ -1,18 +1,23 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  bounceIsRemoved,
+  copiesForStage,
   countsExpired,
   decideUnsentPending,
   DIGEST_DAILY_CAP,
   GENERAL_AUDIENCE_ID,
   isPendingStageRow,
   mergeRefreshedOutcome,
+  missingRecipients,
   planDigestStages,
   parseSendLog,
+  refuseAbsentRecordedHistory,
   refuseAnyComplaint,
   refuseBroadcastTarget,
   refuseCollect,
   refuseNextStage,
+  refuseRecordedSend,
   refuseRepeatStage,
   refuseStageOrder,
   refuseUnloggedStage,
@@ -590,6 +595,103 @@ describe("decideUnsentPending", () => {
       action: "refuse",
       reason: "the broadcast status is failed, so a person must check it in Resend",
     })
+  })
+})
+
+describe("recorded sends", () => {
+  it("refuses a second five send when the log has no five broadcast", () => {
+    expect(refuseRecordedSend([realMaintainerRow], "five")).toMatch(
+      /e6b9c9f5-f238-41d4-9ee6-eccec98e797b/
+    )
+  })
+
+  it("refuses ten when the log has no five broadcast", () => {
+    expect(refuseAbsentRecordedHistory([realMaintainerRow], "ten")).toMatch(
+      /e6b9c9f5-f238-41d4-9ee6-eccec98e797b/
+    )
+  })
+
+  it("allows ten when both recorded broadcasts are in the log", () => {
+    const stages = [realMaintainerRow, realFiveRow]
+    expect(refuseRecordedSend(stages, "ten")).toBeNull()
+    expect(refuseAbsentRecordedHistory(stages, "ten")).toBeNull()
+  })
+
+  it("drops the maintainer copy from a later stage's tally", () => {
+    const copies = [
+      { to: ["one@example.test"], last_event: "delivered" },
+      { to: ["mrpmohiburrahman@gmail.com"], last_event: "delivered" },
+    ]
+    expect(
+      copiesForStage("five", copies, "mrpmohiburrahman@gmail.com")
+    ).toEqual([copies[0]])
+    expect(
+      copiesForStage("maintainer", copies, "mrpmohiburrahman@gmail.com")
+    ).toEqual(copies)
+  })
+
+  it("does not count a missing contact as a removed bounce", () => {
+    expect(
+      bounceIsRemoved({
+        contactFound: false,
+        deleted: false,
+        confirmedAbsent: false,
+      })
+    ).toBe(false)
+    expect(
+      bounceIsRemoved({
+        contactFound: false,
+        deleted: false,
+        confirmedAbsent: true,
+      })
+    ).toBe(true)
+    expect(
+      bounceIsRemoved({
+        contactFound: true,
+        deleted: true,
+        confirmedAbsent: false,
+      })
+    ).toBe(true)
+  })
+
+  it("names the recipients that have no copy", () => {
+    expect(
+      missingRecipients(
+        ["one@example.test", "two@example.test"],
+        ["one@example.test"]
+      )
+    ).toEqual(["two@example.test"])
+  })
+
+  it("names a complaint on an incomplete row", () => {
+    expect(() =>
+      parseSendLog(
+        JSON.stringify({
+          stages: [
+            realMaintainerRow,
+            {
+              name: "five",
+              sentAt: "2026-10-22T02:53:58.525Z",
+              complaints: 1,
+              lastEvent: null,
+            },
+          ],
+        })
+      )
+    ).toThrow("a complaint stops the sequence")
+  })
+
+  it("refuses the next stage while missing copies are not accepted", () => {
+    expect(
+      refuseNextStage(
+        {
+          ...realFiveRow,
+          missing: 1,
+          missingAcknowledged: false,
+        },
+        new Date("2026-10-25T03:00:00.000Z")
+      )
+    ).toMatch(/--accept-missing/)
   })
 })
 
