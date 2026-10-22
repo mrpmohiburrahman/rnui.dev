@@ -5,9 +5,9 @@ import {
   contributorUrl,
   publicationNotice,
   recordingUrl,
-  SITE_ORIGIN,
 } from "../lib/publication-notice"
 import { CONTACT_EMAIL } from "../lib/sender-identity"
+import { SITE_ORIGIN } from "../lib/site-origin"
 
 // submission-receipt ticket 11, whose wording ticket 10 settled. Two things are pinned here
 // that no other message in this pipeline has:
