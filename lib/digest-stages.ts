@@ -150,6 +150,53 @@ export type StageContactRow = {
 }
 
 /**
+ * Reads a send log's text, and refuses to guess when it cannot.
+ *
+ * `null` means the file is not there, and comes back as `absent` rather than as an
+ * empty log — the difference is load-bearing. A log that exists but will not parse
+ * **throws**, because the old behaviour of returning `{stages: []}` reads as
+ * "nothing has ever been sent" and silently disables every gate in
+ * `refuseNextStage`: the 24 hour wait, the repeat refusal and the complaint stop all
+ * key off the previous row. That fail-open cost a real send on 2026-10-22, when the
+ * five stage mailed an hour after the maintainer stage because the log it should
+ * have gated on was not in the tree the script ran from.
+ */
+export function parseSendLog<T>(
+  raw: string | null
+): { stages: T[]; absent: boolean } {
+  if (raw === null) return { stages: [], absent: true }
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(raw)
+  } catch (err) {
+    throw new Error(
+      `the send log is not JSON, so no stage may send: ${(err as Error).message}`
+    )
+  }
+  const stages = (parsed as { stages?: unknown } | null)?.stages
+  if (!Array.isArray(stages)) {
+    throw new Error("the send log has no stages array, so no stage may send")
+  }
+  return { stages: stages as T[], absent: false }
+}
+
+/**
+ * Refuses a survivor stage that has no log to gate on.
+ *
+ * The maintainer stage is the one send that legitimately has no history: it is the
+ * bootstrap, and it goes to one person who runs the project. Every later stage mails
+ * strangers, and its whole safety case is the row before it — so an absent log is a
+ * reason to stop, not a reason to start.
+ */
+export function refuseUnloggedStage(
+  name: string,
+  absent: boolean
+): string | null {
+  if (!absent || name === "maintainer") return null
+  return `no send log exists, so the ${name} stage has no history to gate on`
+}
+
+/**
  * Joins one stage's docIds to an address and a consent date, and formats the date
  * the way the broadcast's merge tag reads it.
  *
