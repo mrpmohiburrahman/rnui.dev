@@ -4,6 +4,87 @@ export const DIGEST_DAILY_CAP = 100
 
 export const GENERAL_AUDIENCE_ID = "958d64ec-630e-40ba-9cc7-3a9a9e64fedb"
 
+export const RECORDED_SENDS = [
+  {
+    name: "maintainer",
+    broadcastId: "0ba0dd5c-b85d-44f4-8f54-07e102aee1af",
+  },
+  {
+    name: "five",
+    broadcastId: "e6b9c9f5-f238-41d4-9ee6-eccec98e797b",
+  },
+] as const
+
+function hasBroadcast(stages: readonly unknown[], broadcastId: string): boolean {
+  return stages.some(
+    (row) =>
+      !!row &&
+      typeof row === "object" &&
+      (row as { broadcastId?: unknown }).broadcastId === broadcastId
+  )
+}
+
+export function refuseRecordedSend(
+  stages: readonly unknown[],
+  name: string
+): string | null {
+  const recorded = RECORDED_SENDS.find((row) => row.name === name)
+  if (!recorded) return null
+  if (hasBroadcast(stages, recorded.broadcastId)) {
+    return "this stage was already sent"
+  }
+  return (
+    `the ${name} stage already has broadcast ${recorded.broadcastId}. ` +
+    `This send log does not record that broadcast, so the ${name} stage cannot send again`
+  )
+}
+
+export function refuseAbsentRecordedHistory(
+  stages: readonly unknown[],
+  name: string
+): string | null {
+  if (name === "maintainer") return null
+  for (const recorded of RECORDED_SENDS) {
+    if (recorded.name === name) continue
+    if (!hasBroadcast(stages, recorded.broadcastId)) {
+      return (
+        `the send log has no row for the ${recorded.name} broadcast ` +
+        `${recorded.broadcastId}, so the ${name} stage cannot send`
+      )
+    }
+  }
+  return null
+}
+
+export function copiesForStage<T extends { to: readonly string[] }>(
+  stageName: string,
+  copies: readonly T[],
+  maintainerEmail: string
+): T[] {
+  if (stageName === "maintainer") return [...copies]
+  const key = maintainerEmail.toLowerCase()
+  return copies.filter(
+    (copy) => !copy.to.some((addr) => addr.toLowerCase() === key)
+  )
+}
+
+export function bounceIsRemoved(input: {
+  contactFound: boolean
+  deleted: boolean
+  confirmedAbsent: boolean
+}): boolean {
+  if (input.contactFound) return input.deleted
+  return input.confirmedAbsent
+}
+
+export function missingRecipients(
+  wanted: readonly string[],
+  found: readonly string[]
+): string[] {
+  const got = new Set(found.map((email) => email.toLowerCase()))
+  return wanted.filter((email) => !got.has(email.toLowerCase()))
+}
+
 export const YAHOO_LAST_DOC_IDS = [
   "duKc4YA4EuS4EGyoAysq",
   "IC7ykrHB9bnXjbZzMzVJ",
@@ -38,6 +119,8 @@ export type StageOutcome = {
   hardBounces: number
   complaints: number
   hardBouncesRemoved: boolean
+  missing?: number
+  missingAcknowledged?: boolean
 }
 
 function unique(ids: readonly string[]): string[] {
@@ -173,7 +256,7 @@ export function isPendingStageRow(row: unknown): row is PendingStageRow {
 
 function collectInstruction(row: PendingStageRow): string {
   return (
-    `the ${row.name} stage was sent but its counts are not recorded: ` +
+    `the ${row.name} stage has no recorded counts: ` +
     `run --stage ${row.name} --collect`
   )
 }
@@ -194,6 +277,20 @@ export function refuseNextStage(
   }
   if (previous.hardBounces > 0 && !previous.hardBouncesRemoved) {
     return "hard bounces must be removed before the next stage"
+  }
+  if (
+    typeof previous.missing === "number" &&
+    previous.missing > 0 &&
+    previous.missingAcknowledged !== true
+  ) {
+    const stageName =
+      "name" in previous && typeof previous.name === "string"
+        ? previous.name
+        : "previous"
+    return (
+      `the ${stageName} stage has ${previous.missing} recipients with no copy. ` +
+      `Run --stage ${stageName} --collect --accept-missing after you check them`
+    )
   }
   const sent = new Date(previous.sentAt)
   if (utcDay(sent) === utcDay(now) || now.getTime() < sent.getTime() + DAY_MS) {
@@ -379,23 +476,23 @@ export function parseSendLog<T>(
     parsed = JSON.parse(raw)
   } catch (err) {
     throw new Error(
-      `the send log is not JSON, so no stage may send: ${(err as Error).message}`
+      `the send log is not JSON, so no stage can send: ${(err as Error).message}`
     )
   }
   const stages = (parsed as { stages?: unknown } | null)?.stages
   if (!Array.isArray(stages)) {
-    throw new Error("the send log has no stages array, so no stage may send")
+    throw new Error("the send log has no stages array, so no stage can send")
   }
   if (stages.length === 0) {
     throw new Error(
-      "the send log has no recorded stages, so no stage may send"
+      "the send log has no recorded stages, so no stage can send"
     )
   }
   stages.forEach((row, index) => {
     if (isPendingStageRow(row)) {
       if (index !== stages.length - 1) {
         throw new Error(
-          `the send log has a pending ${row.name} row before a later stage, so no stage may send`
+          `the send log has a pending ${row.name} row before a later stage, so no stage can send`
         )
       }
       return
@@ -404,8 +501,12 @@ export function parseSendLog<T>(
       !isCompleteStageRow(row) ||
       typeof (row as { name?: unknown }).name !== "string"
     ) {
+      const complaints = (row as { complaints?: unknown } | null)?.complaints
+      if (typeof complaints === "number" && complaints > 0) {
+        throw new Error("a complaint stops the sequence")
+      }
       throw new Error(
-        "the send log has an incomplete stage row without bounce or complaint counts, so no stage may send"
+        "the send log has an incomplete stage row without bounce or complaint counts, so no stage can send"
       )
     }
   })

@@ -16,16 +16,21 @@ import {
   UNSUBSCRIBE_TOKEN,
 } from "../lib/digest"
 import {
+  bounceIsRemoved,
+  copiesForStage,
   countsExpired,
   decideUnsentPending,
   DROPPED_DOC_IDS,
   isPendingStageRow,
   mergeRefreshedOutcome,
+  missingRecipients,
   parseSendLog,
   planDigestStages,
   refuseBroadcastTarget,
   refuseCollect,
   refuseNextStage,
+  refuseRecordedSend,
+  refuseAbsentRecordedHistory,
   refuseAnyComplaint,
   refuseRepeatStage,
   refuseSignupDateProperty,
@@ -304,6 +309,10 @@ async function sendMaintainer(log: LogFile): Promise<void> {
  * collected, and a stored count would miss it.
  */
 async function refuseToSend(log: LogFile, name: string): Promise<void> {
+  const recorded =
+    refuseRecordedSend(log.stages, name) ??
+    refuseAbsentRecordedHistory(log.stages, name)
+  if (recorded) throw new Error(recorded)
   await refreshCompleted(log)
   const previous = log.stages.at(-1) ?? null
   const refusal =
@@ -339,18 +348,28 @@ async function refreshCompleted(log: LogFile): Promise<void> {
     if (isPendingStageRow(row)) continue
     if (countsExpired(row.sentAt, now)) {
       console.warn(
-        `${row.name}: older than Resend's retention window, so its stored counts stand`
+        `${row.name}: older than the 30 day retention window, so the stored counts stay`
       )
       continue
     }
     const ids = row.emailIds ?? (row.emailId ? [row.emailId] : [])
     if (ids.length === 0) {
+      if (row.missingAcknowledged) {
+        console.warn(`${row.name}: no email ids, so the stored counts stay`)
+        continue
+      }
       throw new Error(
         `the ${row.name} stage has no email ids, so its counts cannot be read again`
       )
     }
-    const copies: FannedEmail[] = []
-    for (const id of ids) copies.push(await readEmail(id))
+    const rawCopies: FannedEmail[] = []
+    for (const id of ids) rawCopies.push(await readEmail(id))
+    const copies = copiesForStage(row.name, rawCopies, MAINTAINER)
+    if (copies.length === 0) {
+      throw new Error(
+        `the ${row.name} stage has no copies after the maintainer copy is excluded`
+      )
+    }
     const outcome = stageOutcomeFromEvents(copies.map((copy) => copy.last_event))
     const merged = mergeRefreshedOutcome(row, outcome)
     const bounced = copies.filter((copy) => copy.last_event === "bounced")
@@ -438,7 +457,7 @@ async function dropUnsentPending(
   }
   console.log(
     `broadcast ${pending.broadcastId} was never sent: the pending ` +
-      `${pending.name} row is removed, so --send may run again`
+      `${pending.name} row is deleted, so --send can run again`
   )
   return true
 }
@@ -616,7 +635,8 @@ type FannedEmail = {
  */
 async function waitForFanOut(
   subject: string,
-  recipients: readonly string[]
+  recipients: readonly string[],
+  acceptMissing = false
 ): Promise<FannedEmail[]> {
   const wanted = new Set(recipients.map((email) => email.toLowerCase()))
   const deadline = Date.now() + 600_000
@@ -635,8 +655,12 @@ async function waitForFanOut(
     if (matched.size >= wanted.size) return [...matched.values()]
     await new Promise((resolve) => setTimeout(resolve, 5000))
   }
+  const missing = missingRecipients(recipients, [...matched.keys()])
+  if (acceptMissing) return [...matched.values()]
   throw new Error(
-    `only ${matched.size} of ${wanted.size} copies of "${subject}" reached this stage's recipients`
+    `only ${matched.size} of ${wanted.size} copies reached this stage. ` +
+      `Missing: ${missing.join(", ")}. ` +
+      "Run --collect --accept-missing after you check them"
   )
 }
 
@@ -646,16 +670,45 @@ async function waitForFanOut(
  * permanently, before the next stage. A contact that is already gone counts as
  * removed, so a collect that runs again after a partial removal can finish.
  */
+async function contactConfirmedAbsent(email: string): Promise<boolean> {
+  const page = await resendRequest<{
+    data: { email: string }[]
+    has_more?: boolean
+  }>("/contacts?limit=100")
+  if (page.has_more) {
+    throw new Error(
+      "the contact list is longer than one page, so absence is not confirmed"
+    )
+  }
+  const key = email.trim().toLowerCase()
+  return !page.data.some((contact) => contact.email.toLowerCase() === key)
+}
+
 async function removeHardBounces(bounced: FannedEmail[]): Promise<number> {
   let removed = 0
   for (const email of bounced) {
+    let allRemoved = email.to.length > 0
     for (const addr of email.to) {
       const contact = await getContactByEmail(addr)
+      let deleted = false
       if (contact) {
         await resendRequest(`/contacts/${contact.id}`, { method: "DELETE" })
+        deleted = true
+      }
+      const confirmedAbsent = contact
+        ? false
+        : await contactConfirmedAbsent(addr)
+      if (
+        !bounceIsRemoved({
+          contactFound: !!contact,
+          deleted,
+          confirmedAbsent,
+        })
+      ) {
+        allRemoved = false
       }
     }
-    removed++
+    if (allRemoved) removed++
   }
   return removed
 }
@@ -703,13 +756,25 @@ async function sendStage(name: string, log: LogFile): Promise<void> {
 async function collectStage(
   name: string,
   log: LogFile,
-  justSent = false
+  justSent = false,
+  acceptMissing = false
 ): Promise<void> {
   const pending = pendingRow(log, name)
   const digest = renderBroadcastDigest({ unsubscribeUrl: UNSUBSCRIBE_TOKEN })
   if (!justSent && (await dropUnsentPending(log, pending, digest.subject))) return
-  const fanOut = await waitForFanOut(digest.subject, pending.recipients)
-  const outcome = stageOutcomeFromEvents(fanOut.map((email) => email.last_event))
+  const fanOut = await waitForFanOut(
+    digest.subject,
+    pending.recipients,
+    acceptMissing
+  )
+  const missing = missingRecipients(
+    pending.recipients,
+    fanOut.flatMap((email) => email.to)
+  )
+  const outcome =
+    fanOut.length === 0
+      ? { hardBounces: 0, complaints: 0, events: {}, lastEvent: "none" }
+      : stageOutcomeFromEvents(fanOut.map((email) => email.last_event))
   const bounced = fanOut.filter((email) => email.last_event === "bounced")
   const emailIds = fanOut.map((email) => email.id)
   const row: StageLog = {
@@ -727,6 +792,8 @@ async function collectStage(
     unsubscribeExercised: false,
     emailIds,
     events: outcome.events,
+    missing: missing.length,
+    missingAcknowledged: missing.length === 0 || acceptMissing,
   }
   completeRow(log, row)
   console.log(
@@ -747,12 +814,14 @@ async function main(): Promise<void> {
   const send = process.argv.includes("--send")
   const prepare = process.argv.includes("--prepare")
   const collect = process.argv.includes("--collect")
+  const acceptMissing = process.argv.includes("--accept-missing")
   if (!stage) {
     printPlan()
     console.log(
       "dry run — pass --stage <name> --prepare to build a segment, " +
         "--stage <name> --send to mail one, " +
-        "or --stage <name> --collect to record a pending stage's counts"
+        "or --stage <name> --collect to record a pending stage's counts. " +
+        "--accept-missing is only for --collect, after you check the missing recipients"
     )
     return
   }
@@ -762,9 +831,12 @@ async function main(): Promise<void> {
   if ([prepare, send, collect].filter(Boolean).length > 1) {
     throw new Error("pass only one of --prepare, --send and --collect")
   }
+  if (acceptMissing && !collect) {
+    throw new Error("--accept-missing needs --collect")
+  }
   if (collect) {
     if (stage === "maintainer") await collectMaintainer(readLog())
-    else await collectStage(stage, readLog())
+    else await collectStage(stage, readLog(), false, acceptMissing)
     return
   }
   if (!prepare && !send) {
