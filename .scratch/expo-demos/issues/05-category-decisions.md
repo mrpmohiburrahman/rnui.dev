@@ -1,0 +1,11 @@
+Status: ready-for-agent
+Type: grilling
+Blocked by: 04, 11
+
+## Question
+
+What Category does each new Recording get?
+
+For each new candidate, propose the nearest of the 18 current Categories. Show the Expo tags beside the proposed Category. Mark a repository-only extra as not Expo-listed rather than inventing Expo tags. Use the expanded repository inventory, the duplicate verdicts, and the inactive-example decisions. The maintainer decides each pair. Create no new Category.
+
+This ticket is HITL. Record each decided Category in this ticket.
