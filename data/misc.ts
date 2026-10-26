@@ -3532,4 +3532,18 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-26T11:07:48.289Z",
   },
+  {
+    id: "01M5W1PM4YGN1Q0GZDS2KXCC8N",
+    caption: "WebGPU bank card shimmer",
+    demoPath: "demo/misc/webgpu_bank_card_shimmer_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/webgpu_bank_card_shimmer_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/CardFlipScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-26T12:07:04.697Z",
+  },
 ]
