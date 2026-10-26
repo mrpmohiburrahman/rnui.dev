@@ -70,28 +70,31 @@ test("Load more states what it will load and how much is on screen", async ({
     )
   ).toBeVisible()
 
-  // The last page is short for any catalogue size that is not a multiple of 48,
-  // and decision 2 is that nothing on screen lies.
+  // The page before the last one is where the label stops saying 48, and
+  // decision 2 is that nothing on screen lies. Both the page number and the
+  // number left are derived from the catalogue: page 6 was hardcoded while the
+  // catalogue was 298 Recordings, and at 348 it has 60 left, so the component
+  // correctly says 48 and this asserts a page that no longer exists.
   //
   // The label is `min(PAGE_SIZE, total - shown)`, **not** `total - shown`
   // (components/recording-card-grid.tsx:312) — a page loads at most one page's
-  // worth however much is left. The test used to compute `total - shown`
-  // outright, which only agreed with the component while the catalogue was
-  // small enough that the last page was also the shortest one to load; at 298
-  // Recordings, page 5 has 58 left and the button correctly says 48, so the
-  // assertion was testing arithmetic that had stopped being true. The short-page
-  // case is asserted at the real end of the catalogue instead, where `shown`
-  // is 288 and 10 remain.
-  await page.goto("/?page=6")
-  const remaining = allRecordings.length - PAGE_SIZE * 6
-  expect(remaining).toBeLessThan(PAGE_SIZE) // the premise, asserted not assumed
+  // worth however much is left. `lastPage` is the page whose slice is capped;
+  // it is full when the catalogue is a multiple of 48, in which case the label
+  // is still 48 and the assertion holds either way.
+  const lastPage = Math.ceil(allRecordings.length / PAGE_SIZE)
+  const shortPage = lastPage - 1
+  const remaining = allRecordings.length - PAGE_SIZE * shortPage
+  expect(remaining).toBeGreaterThan(0) // the premise, asserted not assumed
+  expect(remaining).toBeLessThanOrEqual(PAGE_SIZE)
+  await page.goto(`/?page=${shortPage}`)
   await expect(
     page.getByRole("button", { name: `Load ${remaining} more` })
   ).toBeVisible()
 
   // …and a page with more than a page left still loads exactly one page.
-  await page.goto("/?page=5")
-  expect(allRecordings.length - PAGE_SIZE * 5).toBeGreaterThan(PAGE_SIZE)
+  const fullPage = shortPage - 1
+  expect(allRecordings.length - PAGE_SIZE * fullPage).toBeGreaterThan(PAGE_SIZE)
+  await page.goto(`/?page=${fullPage}`)
   await expect(
     page.getByRole("button", { name: `Load ${PAGE_SIZE} more` })
   ).toBeVisible()
@@ -108,10 +111,7 @@ test("the end of the catalogue is a rule, and both links under it work", async (
   ).toBeVisible()
   await expect(
     page.getByRole("link", { name: "Add your own recording on GitHub ↗" })
-  ).toHaveAttribute(
-    "href",
-    "https://github.com/mrpmohiburrahman/rnui.dev"
-  )
+  ).toHaveAttribute("href", "https://github.com/mrpmohiburrahman/rnui.dev")
 
   await page.evaluate(() => window.scrollTo(0, 4_000))
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(1_000)
