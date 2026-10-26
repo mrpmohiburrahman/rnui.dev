@@ -35,6 +35,14 @@ const ALLOWED_SHARED_NAMES = new Set(["repo", "open repo"])
 test.beforeEach(async ({ page }) => {
   await page.route("**/*posthog.com/**", (route) => route.abort())
   await page.route("**/demo/**", (route) => route.abort())
+  // Opening a Recording bills a view through a server action. In the e2e build
+  // that action talks to a dummy Firebase project it cannot reach, and the
+  // request stays open until its retries exhaust — so `waitUntil: "networkidle"`
+  // on the detail route never settles. The write is not what this sweep reads;
+  // abort it so the page can finish its network.
+  await page.route("**/recording/**", (route) =>
+    route.request().method() === "POST" ? route.abort() : route.continue()
+  )
 })
 
 // Step 9 — no two links sharing an accessible name point at different hrefs,

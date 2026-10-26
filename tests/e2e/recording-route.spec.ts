@@ -551,6 +551,13 @@ test.describe("reduced motion", () => {
       if (request.url().includes("/demo/")) demoRequests.push(request.url())
     })
 
+    // Opening a detail bills a view through a server action that cannot reach
+    // Firestore in the e2e build, so it stays open and `networkidle` below
+    // never arrives. This case is about Demos, not views.
+    await page.route("**/recording/**", (route) =>
+      route.request().method() === "POST" ? route.abort() : route.continue()
+    )
+
     await page.goto(`/recording/${known.id}`)
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
     await page.waitForLoadState("networkidle")

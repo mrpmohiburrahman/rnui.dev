@@ -16,10 +16,10 @@ import {
 // was the one view. Both halves of the autoplay rule it now pins are called
 // load-bearing by ADR-0007's own consequences: drop the threshold and this is an
 // impression count, drop the cap and it is a scroll counter.
-test("a page of autoplaying Demos bills each Recording once, and a reload bills none", async ({
+test("a page of autoplaying Demos bills each Recording once, and a reload bills none of them twice", async ({
   browser,
 }) => {
-  let beforeReload = 0
+  let beforeReload: string[] = []
 
   const fired = await recordServerActions(
     browser,
@@ -36,7 +36,7 @@ test("a page of autoplaying Demos bills each Recording once, and a reload bills 
         .toBeGreaterThan(0)
       // Long enough for the rest of the granted five to cross the threshold too.
       await page.waitForTimeout(2_000)
-      beforeReload = sofar.length
+      beforeReload = sofar.map((action) => action.body)
 
       // Same tab, so sessionStorage survives — which is the cap's whole storage.
       await page.reload()
@@ -46,9 +46,12 @@ test("a page of autoplaying Demos bills each Recording once, and a reload bills 
   )
 
   // At most five, because at most five ever played: the cap on concurrent
-  // playback is what bounds the metric (ADR-0007's last line).
-  expect(beforeReload).toBeGreaterThan(0)
-  expect(beforeReload).toBeLessThanOrEqual(5)
+  // playback is what bounds the metric (ADR-0007's last line). The figure is
+  // per page load: a tile that had not crossed the threshold before the reload
+  // is still granted one of the five slots, and billing it afterwards is the
+  // rule working, not a second bill for the same Recording.
+  expect(beforeReload.length).toBeGreaterThan(0)
+  expect(beforeReload.length).toBeLessThanOrEqual(5)
 
   // One per Recording. The body is the only place the id appears — the address is
   // the page's and the Next-Action header is opaque.
@@ -57,8 +60,11 @@ test("a page of autoplaying Demos bills each Recording once, and a reload bills 
   for (const body of recordings) expect(body).toMatch(/^\["[0-9A-Z]{26}"\]$/)
 
   // The reload replayed every one of those Demos past two seconds and billed
-  // nothing, which is the once-per-Recording-per-session cap.
-  expect(fired).toHaveLength(beforeReload)
+  // none of them again, which is the once-per-Recording-per-session cap.
+  const afterReload = fired.slice(beforeReload.length)
+  expect(
+    afterReload.filter((action) => beforeReload.includes(action.body))
+  ).toEqual([])
 })
 
 // The other two signals, and the only two a visitor under prefers-reduced-motion
