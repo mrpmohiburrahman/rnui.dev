@@ -3552,4 +3552,18 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-26T12:07:04.697Z",
   },
+  {
+    id: "01M5W957BEPMJB2BBGJTBJZ1C3",
+    caption: "WebGPU bird flock murmuration",
+    demoPath: "demo/misc/webgpu_bird_flock_murmuration_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/webgpu_bird_flock_murmuration_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/BirdsScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-26T14:17:16.912Z",
+  },
 ]
