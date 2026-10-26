@@ -101,8 +101,11 @@ function SiteHeaderBar({
       {/* Desktop: one 62px row. Below md the phone header below takes over. The
           counter line is `lg` and up only: between md and lg the six control
           groups do not fit side by side, and the counter is the one non-essential
-          piece (its text is still in the served HTML either way). */}
-      <div className="hidden h-[62px] items-center px-[26px] md:flex md:gap-[18px]">
+          piece (its text is still in the served HTML either way). The gutters
+          tighten in that same band: a fixed 424px search plus the right-hand
+          cluster is 782px at the 768px breakpoint with 18px gutters, which made
+          the whole document scroll sideways by 14px. */}
+      <div className="hidden h-[62px] items-center px-[26px] md:flex md:gap-[10px] lg:gap-[18px]">
         {/* Left column: wordmark. flex-1 makes this column share the free space
             equally with the right column, so the center column (search) sits
             at the viewport's midpoint regardless of each side's content width. */}
