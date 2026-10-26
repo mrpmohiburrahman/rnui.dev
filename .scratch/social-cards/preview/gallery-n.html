@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 06 round 4 — site name, then Recording, then Contributor</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 96px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px }
+  h2 { font-size:15px; margin:0 0 2px; color:#6FE3CC }
+  .bet { color:#9aa0aa; font-size:13px; margin:0 0 14px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  .m { color:#6b7078 }
+  section { padding:24px 28px; border-top:1px solid #2a2c33 }
+  .strip { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap }
+  .cell { display:flex; flex-direction:column; gap:6px }
+  .cell img { display:block; border-radius:6px; border:1px solid #2a2c33 }
+  .cell span { color:#8E949F; font-size:11px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:230px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+  .bar .s2 { color:#8E949F; font-size:12px }
+</style>
+<header>
+  <h1>Ticket 06, round 4 — site name first</h1>
+  <div class="sub">No initials disc. <code>rnui.dev</code> is set exactly as <code>components/site-header.tsx</code> sets it — <b>rnui</b> in white, <b>.dev</b> in accent, bold — and leads at <b>48px</b>.</div>
+  <div class="sub">Priority, as asked: <b>site name (48px)</b> → <b>Recording (81px)</b> → <b>Contributor (44px)</b> → <b>Category (30px, demoted)</b>. M1 keeps the Category beside the wordmark at 62% of its size; M2 drops it entirely.</div>
+  <div class="sub">Below each: the same cards at <b>360px (Slack)</b>, <b>300px (iMessage)</b> and <b>504px (X)</b> — the sizes a reader actually gets.</div>
+  <div class="sub">← → flip variants</div>
+</header>
+<div class="grid"><figure data-v="M1">
+  <img src="./out-n/M1-snake.png" width="1200" height="630" alt="M1 snake">
+  <figcaption><b>M1 · With Category</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="M1">
+  <img src="./out-n/M1-fluid.png" width="1200" height="630" alt="M1 fluid">
+  <figcaption><b>M1 · With Category</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="M1">
+  <img src="./out-n/M1-worst.png" width="1200" height="630" alt="M1 worst">
+  <figcaption><b>M1 · With Category</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="M1">
+  <img src="./out-n/M1-noster.png" width="1200" height="630" alt="M1 noster">
+  <figcaption><b>M1 · With Category</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="M1">
+  <img src="./out-n/M1-land.png" width="1200" height="630" alt="M1 land">
+  <figcaption><b>M1 · With Category</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="M1">
+  <img src="./out-n/M1-hangul.png" width="1200" height="630" alt="M1 hangul">
+  <figcaption><b>M1 · With Category</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-snake.png" width="1200" height="630" alt="M2 snake">
+  <figcaption><b>M2 · No Category</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-fluid.png" width="1200" height="630" alt="M2 fluid">
+  <figcaption><b>M2 · No Category</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-worst.png" width="1200" height="630" alt="M2 worst">
+  <figcaption><b>M2 · No Category</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-noster.png" width="1200" height="630" alt="M2 noster">
+  <figcaption><b>M2 · No Category</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-land.png" width="1200" height="630" alt="M2 land">
+  <figcaption><b>M2 · No Category</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="M2">
+  <img src="./out-n/M2-hangul.png" width="1200" height="630" alt="M2 hangul">
+  <figcaption><b>M2 · No Category</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure></div>
+<section data-v="M1">
+  <h2>M1 · With Category</h2>
+  <p class="bet">rnui.dev at 48px beside a 30px Category — 1.6:1</p>
+  <div class="strip"><div class="cell"><img src="./out-n/M1-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-n/M1-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-n/M1-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-n/M1-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-n/M1-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-n/M1-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<section data-v="M2">
+  <h2>M2 · No Category</h2>
+  <p class="bet">Site name, Recording, Contributor. Nothing else</p>
+  <div class="strip"><div class="cell"><img src="./out-n/M2-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-n/M2-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-n/M2-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-n/M2-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-n/M2-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-n/M2-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"M1","name":"With Category","bet":"rnui.dev at 48px beside a 30px Category — 1.6:1"},{"key":"M2","name":"No Category","bet":"Site name, Recording, Contributor. Nothing else"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = f.dataset.v === k.key ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+' · '+k.name+'</i><br><span class="s2">'+k.bet+'</span>';
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

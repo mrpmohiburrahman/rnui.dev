@@ -1,0 +1,182 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 06 — Recording card, five ways</title>
+<!-- PROTOTYPE. Throwaway. The images are real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee;
+         font:14px/1.5 ui-sans-serif,system-ui,-apple-system,sans-serif; padding:0 0 96px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33; display:flex; gap:20px; align-items:baseline; flex-wrap:wrap }
+  h1 { font-size:16px; margin:0; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC; font-weight:600 }
+  .m { color:#6b7078 }
+  /* the switcher */
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%);
+         display:flex; align-items:center; gap:14px; background:#0A0B0D; color:#F1F2F4;
+         border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9;
+         box-shadow:0 18px 40px -12px rgba(0,0,0,.8) }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px;
+                width:30px; height:30px; cursor:pointer; font-size:14px; line-height:1 }
+  .bar button:hover { background:#2e3138 }
+  .bar .now { min-width:210px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+  .bar .sub2 { color:#8E949F; font-size:12px }
+  a.row { color:#6FE3CC }
+</style>
+<header>
+  <h1>Ticket 06 — the Recording card, five ways</h1>
+  <span class="sub">Real <code>ImageResponse</code> output at 1200×630 — what Satori emits, not a browser. Nothing here ships.</span>
+  <span class="sub">← → flip variants · six Recordings per variant</span>
+  <span class="sub"><b>Dark</b>, type scale K=2.8 (bounded by the longest caption), worst measured contrast 8.33:1</span>
+</header>
+<div class="grid">
+<figure data-v="A">
+  <img src="./out/A-snake.png" width="1200" height="630" alt="A snake">
+  <figcaption><b>A · Device</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="A">
+  <img src="./out/A-fluid.png" width="1200" height="630" alt="A fluid">
+  <figcaption><b>A · Device</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="A">
+  <img src="./out/A-ripple.png" width="1200" height="630" alt="A ripple">
+  <figcaption><b>A · Device</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="A">
+  <img src="./out/A-noster.png" width="1200" height="630" alt="A noster">
+  <figcaption><b>A · Device</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="A">
+  <img src="./out/A-worst.png" width="1200" height="630" alt="A worst">
+  <figcaption><b>A · Device</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="A">
+  <img src="./out/A-land.png" width="1200" height="630" alt="A land">
+  <figcaption><b>A · Device</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-snake.png" width="1200" height="630" alt="B snake">
+  <figcaption><b>B · Bleed</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-fluid.png" width="1200" height="630" alt="B fluid">
+  <figcaption><b>B · Bleed</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-ripple.png" width="1200" height="630" alt="B ripple">
+  <figcaption><b>B · Bleed</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-noster.png" width="1200" height="630" alt="B noster">
+  <figcaption><b>B · Bleed</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-worst.png" width="1200" height="630" alt="B worst">
+  <figcaption><b>B · Bleed</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="B">
+  <img src="./out/B-land.png" width="1200" height="630" alt="B land">
+  <figcaption><b>B · Bleed</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-snake.png" width="1200" height="630" alt="C snake">
+  <figcaption><b>C · Stage</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-fluid.png" width="1200" height="630" alt="C fluid">
+  <figcaption><b>C · Stage</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-ripple.png" width="1200" height="630" alt="C ripple">
+  <figcaption><b>C · Stage</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-noster.png" width="1200" height="630" alt="C noster">
+  <figcaption><b>C · Stage</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-worst.png" width="1200" height="630" alt="C worst">
+  <figcaption><b>C · Stage</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="C">
+  <img src="./out/C-land.png" width="1200" height="630" alt="C land">
+  <figcaption><b>C · Stage</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-snake.png" width="1200" height="630" alt="D snake">
+  <figcaption><b>D · Split</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-fluid.png" width="1200" height="630" alt="D fluid">
+  <figcaption><b>D · Split</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-ripple.png" width="1200" height="630" alt="D ripple">
+  <figcaption><b>D · Split</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-noster.png" width="1200" height="630" alt="D noster">
+  <figcaption><b>D · Split</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-worst.png" width="1200" height="630" alt="D worst">
+  <figcaption><b>D · Split</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D">
+  <img src="./out/D-land.png" width="1200" height="630" alt="D land">
+  <figcaption><b>D · Split</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-snake.png" width="1200" height="630" alt="E snake">
+  <figcaption><b>E · Poster-first</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-fluid.png" width="1200" height="630" alt="E fluid">
+  <figcaption><b>E · Poster-first</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-ripple.png" width="1200" height="630" alt="E ripple">
+  <figcaption><b>E · Poster-first</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-noster.png" width="1200" height="630" alt="E noster">
+  <figcaption><b>E · Poster-first</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-worst.png" width="1200" height="630" alt="E worst">
+  <figcaption><b>E · Poster-first</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="E">
+  <img src="./out/E-land.png" width="1200" height="630" alt="E land">
+  <figcaption><b>E · Poster-first</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+</div>
+<div class="bar" id="bar">
+  <button onclick="go(-1)" title="previous (←)">‹</button>
+  <span class="now" id="now"></span>
+  <button onclick="go(1)" title="next (→)">›</button>
+</div>
+<script>
+  const KEYS = [{"key":"A","name":"Device","bet":"The Poster reads as a screen in motion"},{"key":"B","name":"Bleed","bet":"The Poster is the card; text rides on a scrim"},{"key":"C","name":"Stage","bet":"The Poster is a specimen, caption beneath"},{"key":"D","name":"Split","bet":"Caption leads, Poster is evidence, never cropped"},{"key":"E","name":"Poster-first","bet":"One line of type is enough"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('figure').forEach(f => {
+      f.style.display = f.dataset.v === k.key ? '' : 'none';
+    });
+    document.getElementById('now').innerHTML = '<i>'+k.key+' · '+k.name+'</i><br><span class="sub2">'+k.bet+'</span>';
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1);
+    if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

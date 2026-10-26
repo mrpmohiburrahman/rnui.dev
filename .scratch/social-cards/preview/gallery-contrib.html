@@ -1,0 +1,172 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 05 — Plain, no disc: one layout at five text sizes</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 40px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px; max-width:940px }
+  b.n { color:#6FE3CC }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#F4F4F1; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  section { padding:24px 28px; border-top:1px solid #2a2c33 }
+  h2 { font-size:15px; margin:0 0 2px; color:#6FE3CC }
+  .bet { color:#9aa0aa; font-size:13px; margin:0 0 6px }
+  .nums { color:#8E949F; font-size:12px; margin:0 0 14px; font-family:ui-monospace,monospace }
+  .nums b { color:#e9eaee }
+  .strip { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap }
+  .cell { display:flex; flex-direction:column; gap:6px }
+  .cell img { display:block; border-radius:6px; border:1px solid #2a2c33 }
+  .cell span { color:#8E949F; font-size:11px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:340px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+</style>
+<header>
+  <h1>Ticket 05 — Plain, no disc, light: one layout at five text sizes</h1>
+  <div class="sub"><b>The 560px column is the constraint, not Slack&rsquo;s 1068px.</b> Every line of type on this layout lives in that column. Measured by rendering and ink-counting (<code>probe/ticket05/plain-ramp.ts</code>): the name fits on one line only up to <b>36px</b> (556px of 560 &mdash; 4px of margin), the count only up to <b>30px</b>, and the mark has no ceiling at all.</div>
+  <div class="sub"><b>So the current card puts its name at 10.8px and its count at 7.8px on a 360px Slack card.</b> The shelf layout measured 20.4px for the same name &mdash; that <b>1.9&times; gap is the whole difference between the two layouts</b>, and it is why this card reads as small while looking correct at full size.</div>
+  <div class="sub"><b>Wrapping buys the size back, and it is only the type.</b> A name that wraps takes <b>56px</b> in the same 560px column against 36px on one line, because above 36px the limit is the break point rather than the total. At <b>60px it takes three lines</b>, so 56 is the ceiling. The count takes two lines by construction from 38px up. Nothing is re-laid-out: same column, same 3&times;2 grid of 152px tiles, same margins &mdash; except <b>Wide</b>, which drops the grid to 2&times;2 to buy the name one line and is the price of that, shown.</div>
+  <div class="sub"><b>Two break bugs, both found by rendering rather than reasoning.</b> CSS breaks CJK between any two characters, so at 56px <code>Daehyeon Mun (문대현)</code> came out as <code>(문대</code> / <code>현)</code> &mdash; and <code>lib/contributor-match.ts:27-31</code> exists because every slugifier here has already destroyed that name. <code>word-break: keep-all</code> fixes it and Satori honours it. But Satori&rsquo;s break point is <b>not monotonic in the size</b>: 44px breaks <code>Enzo Manuel Mangano (</code> / <code>Reactiive)</code> cleanly and <b>52px orphans the parenthesis again</b>. Binding the parenthetical to its word with a non-breaking space removes the decision. <code>Current</code> keeps the shipped behaviour, defects included, because a control with the bugs fixed is not a control.</div>
+  <div class="sub">Five real Contributors, chosen to span every axis: <b>138</b> Recordings / 11 Categories / the widest name · <b>31</b> / 12 Categories / the broadest spread · <b>문대현</b> · the shortest name · <b>1</b> Recording, the minimum.</div>
+  <div class="sub">← → flip · widths from <code>probe/ticket05/type-ramp.ts</code>, this layout&rsquo;s ceilings from <code>probe/ticket05/plain-ramp.ts</code></div>
+</header>
+<div class="grid"><figure data-v="Current">
+  <img src="./out-contrib/Current--Enzo-Manuel-Mangano-Reactiive--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Current · light</b> — Enzo Manuel Mangano (Reactiive) · <b>138</b> Recordings · 11 Categories</figcaption>
+</figure>
+<figure data-v="Current">
+  <img src="./out-contrib/Current--Hewad-Mubariz--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Current · light</b> — Hewad Mubariz · <b>31</b> Recordings · 12 Categories</figcaption>
+</figure>
+<figure data-v="Current">
+  <img src="./out-contrib/Current--Daehyeon-Mun--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Current · light</b> — Daehyeon Mun (문대현) · <b>4</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Current">
+  <img src="./out-contrib/Current--Aswin-C--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Current · light</b> — Aswin C · <b>5</b> Recordings · 2 Categories</figcaption>
+</figure>
+<figure data-v="Current">
+  <img src="./out-contrib/Current--Hubert-Ryan--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Current · light</b> — Hubert Ryan · <b>1</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Read">
+  <img src="./out-contrib/Read--Enzo-Manuel-Mangano-Reactiive--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Read · light</b> — Enzo Manuel Mangano (Reactiive) · <b>138</b> Recordings · 11 Categories</figcaption>
+</figure>
+<figure data-v="Read">
+  <img src="./out-contrib/Read--Hewad-Mubariz--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Read · light</b> — Hewad Mubariz · <b>31</b> Recordings · 12 Categories</figcaption>
+</figure>
+<figure data-v="Read">
+  <img src="./out-contrib/Read--Daehyeon-Mun--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Read · light</b> — Daehyeon Mun (문대현) · <b>4</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Read">
+  <img src="./out-contrib/Read--Aswin-C--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Read · light</b> — Aswin C · <b>5</b> Recordings · 2 Categories</figcaption>
+</figure>
+<figure data-v="Read">
+  <img src="./out-contrib/Read--Hubert-Ryan--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Read · light</b> — Hubert Ryan · <b>1</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Loud">
+  <img src="./out-contrib/Loud--Enzo-Manuel-Mangano-Reactiive--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Loud · light</b> — Enzo Manuel Mangano (Reactiive) · <b>138</b> Recordings · 11 Categories</figcaption>
+</figure>
+<figure data-v="Loud">
+  <img src="./out-contrib/Loud--Hewad-Mubariz--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Loud · light</b> — Hewad Mubariz · <b>31</b> Recordings · 12 Categories</figcaption>
+</figure>
+<figure data-v="Loud">
+  <img src="./out-contrib/Loud--Daehyeon-Mun--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Loud · light</b> — Daehyeon Mun (문대현) · <b>4</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Loud">
+  <img src="./out-contrib/Loud--Aswin-C--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Loud · light</b> — Aswin C · <b>5</b> Recordings · 2 Categories</figcaption>
+</figure>
+<figure data-v="Loud">
+  <img src="./out-contrib/Loud--Hubert-Ryan--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Loud · light</b> — Hubert Ryan · <b>1</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Max">
+  <img src="./out-contrib/Max--Enzo-Manuel-Mangano-Reactiive--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Max · light</b> — Enzo Manuel Mangano (Reactiive) · <b>138</b> Recordings · 11 Categories</figcaption>
+</figure>
+<figure data-v="Max">
+  <img src="./out-contrib/Max--Hewad-Mubariz--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Max · light</b> — Hewad Mubariz · <b>31</b> Recordings · 12 Categories</figcaption>
+</figure>
+<figure data-v="Max">
+  <img src="./out-contrib/Max--Daehyeon-Mun--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Max · light</b> — Daehyeon Mun (문대현) · <b>4</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Max">
+  <img src="./out-contrib/Max--Aswin-C--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Max · light</b> — Aswin C · <b>5</b> Recordings · 2 Categories</figcaption>
+</figure>
+<figure data-v="Max">
+  <img src="./out-contrib/Max--Hubert-Ryan--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Max · light</b> — Hubert Ryan · <b>1</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Wide">
+  <img src="./out-contrib/Wide--Enzo-Manuel-Mangano-Reactiive--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wide · light</b> — Enzo Manuel Mangano (Reactiive) · <b>138</b> Recordings · 11 Categories</figcaption>
+</figure>
+<figure data-v="Wide">
+  <img src="./out-contrib/Wide--Hewad-Mubariz--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wide · light</b> — Hewad Mubariz · <b>31</b> Recordings · 12 Categories</figcaption>
+</figure>
+<figure data-v="Wide">
+  <img src="./out-contrib/Wide--Daehyeon-Mun--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wide · light</b> — Daehyeon Mun (문대현) · <b>4</b> Recordings · 1 Categories</figcaption>
+</figure>
+<figure data-v="Wide">
+  <img src="./out-contrib/Wide--Aswin-C--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wide · light</b> — Aswin C · <b>5</b> Recordings · 2 Categories</figcaption>
+</figure>
+<figure data-v="Wide">
+  <img src="./out-contrib/Wide--Hubert-Ryan--light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wide · light</b> — Hubert Ryan · <b>1</b> Recordings · 1 Categories</figcaption>
+</figure></div>
+<section data-v="Current"><h2>Current · Current — 34 / 36 / 26</h2><p class="bet">The card exactly as it ships, defects included. Name 10.8px and count 7.8px on a 360px Slack card, and the words are t3 at 4.9:1</p>
+      <p class="nums">mark <b>34</b> · name <b>36</b> (wraps) → <b>10.8px</b> on screen · count <b>26</b> → <b>7.8px</b> · words <b>t3</b> · one line · column <b>560px</b></p>
+      <div class="strip"><div class="cell"><img src="./out-contrib/Current--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:360px" alt=""><span>Slack · 360px · Enzo</span></div><div class="cell"><img src="./out-contrib/Current--Hewad-Mubariz--light.png" style="width:360px" alt=""><span>Slack · 360px · Hewad</span></div><div class="cell"><img src="./out-contrib/Current--Daehyeon-Mun--light.png" style="width:360px" alt=""><span>Slack · 360px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Current--Aswin-C--light.png" style="width:360px" alt=""><span>Slack · 360px · Aswin</span></div><div class="cell"><img src="./out-contrib/Current--Hubert-Ryan--light.png" style="width:360px" alt=""><span>Slack · 360px · Hubert</span></div><div class="cell"><img src="./out-contrib/Current--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:300px" alt=""><span>iMessage · 300px · Enzo</span></div><div class="cell"><img src="./out-contrib/Current--Hewad-Mubariz--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hewad</span></div><div class="cell"><img src="./out-contrib/Current--Daehyeon-Mun--light.png" style="width:300px" alt=""><span>iMessage · 300px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Current--Aswin-C--light.png" style="width:300px" alt=""><span>iMessage · 300px · Aswin</span></div><div class="cell"><img src="./out-contrib/Current--Hubert-Ryan--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hubert</span></div></div></section>
+<section data-v="Read"><h2>Read · Read — 40 / 44 / 38</h2><p class="bet">The first clean, legible step. keep-all on, so the Hangul survives, and 44px is enough for (Reactiive) to stay whole</p>
+      <p class="nums">mark <b>40</b> · name <b>44</b> (wraps) → <b>13.2px</b> on screen · count <b>38</b> → <b>11.4px</b> · words <b>t2</b> · stacked to 2 lines · column <b>560px</b></p>
+      <div class="strip"><div class="cell"><img src="./out-contrib/Read--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:360px" alt=""><span>Slack · 360px · Enzo</span></div><div class="cell"><img src="./out-contrib/Read--Hewad-Mubariz--light.png" style="width:360px" alt=""><span>Slack · 360px · Hewad</span></div><div class="cell"><img src="./out-contrib/Read--Daehyeon-Mun--light.png" style="width:360px" alt=""><span>Slack · 360px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Read--Aswin-C--light.png" style="width:360px" alt=""><span>Slack · 360px · Aswin</span></div><div class="cell"><img src="./out-contrib/Read--Hubert-Ryan--light.png" style="width:360px" alt=""><span>Slack · 360px · Hubert</span></div><div class="cell"><img src="./out-contrib/Read--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:300px" alt=""><span>iMessage · 300px · Enzo</span></div><div class="cell"><img src="./out-contrib/Read--Hewad-Mubariz--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hewad</span></div><div class="cell"><img src="./out-contrib/Read--Daehyeon-Mun--light.png" style="width:300px" alt=""><span>iMessage · 300px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Read--Aswin-C--light.png" style="width:300px" alt=""><span>iMessage · 300px · Aswin</span></div><div class="cell"><img src="./out-contrib/Read--Hubert-Ryan--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hubert</span></div></div></section>
+<section data-v="Loud"><h2>Loud · Loud — 48 / 52 / 44</h2><p class="bet">Name 15.6px on screen. 526px is the widest name line, of 560 — the column is nearly full</p>
+      <p class="nums">mark <b>48</b> · name <b>52</b> (wraps) → <b>15.6px</b> on screen · count <b>44</b> → <b>13.2px</b> · words <b>t2</b> · stacked to 2 lines · column <b>560px</b></p>
+      <div class="strip"><div class="cell"><img src="./out-contrib/Loud--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:360px" alt=""><span>Slack · 360px · Enzo</span></div><div class="cell"><img src="./out-contrib/Loud--Hewad-Mubariz--light.png" style="width:360px" alt=""><span>Slack · 360px · Hewad</span></div><div class="cell"><img src="./out-contrib/Loud--Daehyeon-Mun--light.png" style="width:360px" alt=""><span>Slack · 360px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Loud--Aswin-C--light.png" style="width:360px" alt=""><span>Slack · 360px · Aswin</span></div><div class="cell"><img src="./out-contrib/Loud--Hubert-Ryan--light.png" style="width:360px" alt=""><span>Slack · 360px · Hubert</span></div><div class="cell"><img src="./out-contrib/Loud--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:300px" alt=""><span>iMessage · 300px · Enzo</span></div><div class="cell"><img src="./out-contrib/Loud--Hewad-Mubariz--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hewad</span></div><div class="cell"><img src="./out-contrib/Loud--Daehyeon-Mun--light.png" style="width:300px" alt=""><span>iMessage · 300px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Loud--Aswin-C--light.png" style="width:300px" alt=""><span>iMessage · 300px · Aswin</span></div><div class="cell"><img src="./out-contrib/Loud--Hubert-Ryan--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hubert</span></div></div></section>
+<section data-v="Max"><h2>Max · Max — 52 / 56 / 50</h2><p class="bet">The name's two-line ceiling. 60px takes THREE lines, so 56 is the last size that is still a name</p>
+      <p class="nums">mark <b>52</b> · name <b>56</b> (wraps) → <b>16.8px</b> on screen · count <b>50</b> → <b>15.0px</b> · words <b>t2</b> · stacked to 2 lines · column <b>560px</b></p>
+      <div class="strip"><div class="cell"><img src="./out-contrib/Max--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:360px" alt=""><span>Slack · 360px · Enzo</span></div><div class="cell"><img src="./out-contrib/Max--Hewad-Mubariz--light.png" style="width:360px" alt=""><span>Slack · 360px · Hewad</span></div><div class="cell"><img src="./out-contrib/Max--Daehyeon-Mun--light.png" style="width:360px" alt=""><span>Slack · 360px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Max--Aswin-C--light.png" style="width:360px" alt=""><span>Slack · 360px · Aswin</span></div><div class="cell"><img src="./out-contrib/Max--Hubert-Ryan--light.png" style="width:360px" alt=""><span>Slack · 360px · Hubert</span></div><div class="cell"><img src="./out-contrib/Max--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:300px" alt=""><span>iMessage · 300px · Enzo</span></div><div class="cell"><img src="./out-contrib/Max--Hewad-Mubariz--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hewad</span></div><div class="cell"><img src="./out-contrib/Max--Daehyeon-Mun--light.png" style="width:300px" alt=""><span>iMessage · 300px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Max--Aswin-C--light.png" style="width:300px" alt=""><span>iMessage · 300px · Aswin</span></div><div class="cell"><img src="./out-contrib/Max--Hubert-Ryan--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hubert</span></div></div></section>
+<section data-v="Wide"><h2>Wide · Wide — 52 / 48 / 50, one line</h2><p class="bet">NOT the same layout, and deliberately: the grid drops to 2x2 of 132px to buy the name ONE line. It reaches 48px, not 68px — that is the whole price</p>
+      <p class="nums">mark <b>52</b> · name <b>48</b> (one line) → <b>14.4px</b> on screen · count <b>50</b> → <b>15.0px</b> · words <b>t2</b> · stacked to 2 lines · column <b>760px</b></p>
+      <div class="strip"><div class="cell"><img src="./out-contrib/Wide--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:360px" alt=""><span>Slack · 360px · Enzo</span></div><div class="cell"><img src="./out-contrib/Wide--Hewad-Mubariz--light.png" style="width:360px" alt=""><span>Slack · 360px · Hewad</span></div><div class="cell"><img src="./out-contrib/Wide--Daehyeon-Mun--light.png" style="width:360px" alt=""><span>Slack · 360px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Wide--Aswin-C--light.png" style="width:360px" alt=""><span>Slack · 360px · Aswin</span></div><div class="cell"><img src="./out-contrib/Wide--Hubert-Ryan--light.png" style="width:360px" alt=""><span>Slack · 360px · Hubert</span></div><div class="cell"><img src="./out-contrib/Wide--Enzo-Manuel-Mangano-Reactiive--light.png" style="width:300px" alt=""><span>iMessage · 300px · Enzo</span></div><div class="cell"><img src="./out-contrib/Wide--Hewad-Mubariz--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hewad</span></div><div class="cell"><img src="./out-contrib/Wide--Daehyeon-Mun--light.png" style="width:300px" alt=""><span>iMessage · 300px · Daehyeon</span></div><div class="cell"><img src="./out-contrib/Wide--Aswin-C--light.png" style="width:300px" alt=""><span>iMessage · 300px · Aswin</span></div><div class="cell"><img src="./out-contrib/Wide--Hubert-Ryan--light.png" style="width:300px" alt=""><span>iMessage · 300px · Hubert</span></div></div></section>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"Current","name":"Current — 34 / 36 / 26","bet":"The card exactly as it ships, defects included. Name 10.8px and count 7.8px on a 360px Slack card, and the words are t3 at 4.9:1"},{"key":"Read","name":"Read — 40 / 44 / 38","bet":"The first clean, legible step. keep-all on, so the Hangul survives, and 44px is enough for (Reactiive) to stay whole"},{"key":"Loud","name":"Loud — 48 / 52 / 44","bet":"Name 15.6px on screen. 526px is the widest name line, of 560 — the column is nearly full"},{"key":"Max","name":"Max — 52 / 56 / 50","bet":"The name's two-line ceiling. 60px takes THREE lines, so 56 is the last size that is still a name"},{"key":"Wide","name":"Wide — 52 / 48 / 50, one line","bet":"NOT the same layout, and deliberately: the grid drops to 2x2 of 132px to buy the name ONE line. It reaches 48px, not 68px — that is the whole price"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = f.dataset.v === k.key ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+' · '+k.name+'</i><br>'+k.bet;
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

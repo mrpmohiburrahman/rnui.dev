@@ -1,0 +1,113 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 04 round 4 — six points of view</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 40px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px; max-width:920px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  section { padding:24px 28px; border-top:1px solid #2a2c33 }
+  h2 { font-size:15px; margin:0 0 2px; color:#6FE3CC }
+  .bet { color:#9aa0aa; font-size:13px; margin:0 0 14px }
+  .strip { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap }
+  .cell { display:flex; flex-direction:column; gap:6px }
+  .cell img { display:block; border-radius:6px; border:1px solid #2a2c33 }
+  .cell span { color:#8E949F; font-size:11px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:280px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+</style>
+<header>
+  <h1>Six points of view</h1>
+  <div class="sub">Rounds 1–3 were <b>subtraction</b>, and impeccable's <code>bolder.md</code> says why that was not the answer: <i>"the reflex answer, reaching for more effects, is the opposite of bold"</i>. Round 3 removed the glow and got <i>quieter</i> — which is the same failure from the other side: there was nothing louder to commit to.</div>
+  <div class="sub"><b>The skeleton test.</b> Strip the copy out of rounds 1–3 and all six are the same card: wordmark, claim, counts, tiles on the right. These six have six different skeletons, and each makes <b>one decisive move</b> — stated in the caption under each.</div>
+  <div class="sub"><b>The tiles were decoration.</b> <code>bolder.md</code>: an image must carry <i>a job, an anchor and a piece of evidence</i>. At 92px a Poster proves nothing — you cannot read a single control. So the Posters are now at the size where they are evidence.</div>
+  <div class="sub">Every Poster, caption and Contributor is real, from <code>data/catalogue.ts</code>. The claim is the homepage's own h1.</div>
+  <div class="sub">← → flip</div>
+</header>
+<div class="grid"><figure data-v="Vitrine-dark">
+  <img src="./out-set/Vitrine-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Vitrine · dark</b> — SCALE — one Poster at 700px, uncropped, big enough to actually read the UI</figcaption>
+</figure>
+<figure data-v="Vitrine-light">
+  <img src="./out-set/Vitrine-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Vitrine · light</b> — SCALE — one Poster at 700px, uncropped, big enough to actually read the UI</figcaption>
+</figure>
+<figure data-v="Contact-dark">
+  <img src="./out-set/Contact-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Contact · dark</b> — SUBORDINATION — a 20-frame contact sheet with rnui.dev typeset inside it as one cell</figcaption>
+</figure>
+<figure data-v="Contact-light">
+  <img src="./out-set/Contact-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Contact · light</b> — SUBORDINATION — a 20-frame contact sheet with rnui.dev typeset inside it as one cell</figcaption>
+</figure>
+<figure data-v="Specimen-dark">
+  <img src="./out-set/Specimen-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Specimen · dark</b> — THE CROP — one Poster blown to 1200px and cut to a 3:1 band, on purpose</figcaption>
+</figure>
+<figure data-v="Specimen-light">
+  <img src="./out-set/Specimen-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Specimen · light</b> — THE CROP — one Poster blown to 1200px and cut to a 3:1 band, on purpose</figcaption>
+</figure>
+<figure data-v="Foreshorten-dark">
+  <img src="./out-set/Foreshorten-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Foreshorten · dark</b> — DEPTH — six different Posters receding like a feed</figcaption>
+</figure>
+<figure data-v="Foreshorten-light">
+  <img src="./out-set/Foreshorten-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Foreshorten · light</b> — DEPTH — six different Posters receding like a feed</figcaption>
+</figure>
+<figure data-v="Set-dark">
+  <img src="./out-set/Set-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Set · dark</b> — TYPE AS IMAGE — no grid at all; the claim at 132px carries the card</figcaption>
+</figure>
+<figure data-v="Set-light">
+  <img src="./out-set/Set-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Set · light</b> — TYPE AS IMAGE — no grid at all; the claim at 132px carries the card</figcaption>
+</figure>
+<figure data-v="Field-dark">
+  <img src="./out-set/Field-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Field · dark</b> — COMPLETENESS — the ramp committed: 180px tiles edge to edge, no gaps</figcaption>
+</figure>
+<figure data-v="Field-light">
+  <img src="./out-set/Field-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Field · light</b> — COMPLETENESS — the ramp committed: 180px tiles edge to edge, no gaps</figcaption>
+</figure></div>
+<section data-v="Vitrine"><h2>Vitrine · Vitrine</h2><p class="bet">SCALE — one Poster at 700px, uncropped, big enough to actually read the UI</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Contact"><h2>Contact · Contact</h2><p class="bet">SUBORDINATION — a 20-frame contact sheet with rnui.dev typeset inside it as one cell</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Specimen"><h2>Specimen · Specimen</h2><p class="bet">THE CROP — one Poster blown to 1200px and cut to a 3:1 band, on purpose</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Foreshorten"><h2>Foreshorten · Foreshorten</h2><p class="bet">DEPTH — six different Posters receding like a feed</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Set"><h2>Set · Set</h2><p class="bet">TYPE AS IMAGE — no grid at all; the claim at 132px carries the card</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Field"><h2>Field · Field</h2><p class="bet">COMPLETENESS — the ramp committed: 180px tiles edge to edge, no gaps</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"Vitrine-dark","name":"Vitrine","bet":"SCALE — one Poster at 700px, uncropped, big enough to actually read the UI"},{"key":"Vitrine-light","name":"Vitrine","bet":"SCALE — one Poster at 700px, uncropped, big enough to actually read the UI"},{"key":"Contact-dark","name":"Contact","bet":"SUBORDINATION — a 20-frame contact sheet with rnui.dev typeset inside it as one cell"},{"key":"Contact-light","name":"Contact","bet":"SUBORDINATION — a 20-frame contact sheet with rnui.dev typeset inside it as one cell"},{"key":"Specimen-dark","name":"Specimen","bet":"THE CROP — one Poster blown to 1200px and cut to a 3:1 band, on purpose"},{"key":"Specimen-light","name":"Specimen","bet":"THE CROP — one Poster blown to 1200px and cut to a 3:1 band, on purpose"},{"key":"Foreshorten-dark","name":"Foreshorten","bet":"DEPTH — six different Posters receding like a feed"},{"key":"Foreshorten-light","name":"Foreshorten","bet":"DEPTH — six different Posters receding like a feed"},{"key":"Set-dark","name":"Set","bet":"TYPE AS IMAGE — no grid at all; the claim at 132px carries the card"},{"key":"Set-light","name":"Set","bet":"TYPE AS IMAGE — no grid at all; the claim at 132px carries the card"},{"key":"Field-dark","name":"Field","bet":"COMPLETENESS — the ramp committed: 180px tiles edge to edge, no gaps"},{"key":"Field-light","name":"Field","bet":"COMPLETENESS — the ramp committed: 180px tiles edge to edge, no gaps"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = (f.dataset.v === k.key || f.dataset.v === k.key.split('-')[0]) ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+'</i><br>'+k.bet;
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

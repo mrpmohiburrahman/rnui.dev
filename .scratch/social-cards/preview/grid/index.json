@@ -1,0 +1,66 @@
+[
+ {
+  "key": "ripple_effect_daehyeon_mun",
+  "caption": "Ripple Effect With React Native Skia",
+  "contributor": "Daehyeon Mun (문대현)",
+  "hue": 25,
+  "aspect": 0.605,
+  "path": "public/thumbnails/misc/ripple_effect_daehyeon_mun.avif"
+ },
+ {
+  "key": "loading-button_enzo_manuel_mangano_reactiive",
+  "caption": "Loading Button",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 206,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/buttons/loading-button_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "dynamic-blur-tabs_enzo_manuel_mangano_reactiive",
+  "caption": "Dynamic Blur Tabs",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 114,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "live_voice_david_mokos",
+  "caption": "Live Voice",
+  "contributor": "David Mokos",
+  "hue": 304,
+  "aspect": 0.46,
+  "path": "public/thumbnails/fullapps/live_voice_david_mokos.avif"
+ },
+ {
+  "key": "blurred-scroll_enzo_manuel_mangano_reactiive",
+  "caption": "Blurred Scroll",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 258,
+  "aspect": 0.4667,
+  "path": "public/thumbnails/sliders/blurred-scroll_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "morphingLoader",
+  "caption": "Morphing Loader",
+  "contributor": "Daniel Friyia",
+  "hue": 163,
+  "aspect": 0.4633,
+  "path": "public/thumbnails/loaders/morphingLoader.avif"
+ },
+ {
+  "key": "coinbase_charts_william_candillon",
+  "caption": "Coinbase Charts",
+  "contributor": "William Candillon",
+  "hue": 346,
+  "aspect": 0.4767,
+  "path": "public/thumbnails/charts/coinbase_charts_william_candillon.avif"
+ },
+ {
+  "key": "dynamic_accordion_hewad_mubariz",
+  "caption": "Dynamic Accordion",
+  "contributor": "Hewad Mubariz",
+  "hue": 86,
+  "aspect": 0.5926,
+  "path": "public/thumbnails/accordions/dynamic_accordion_hewad_mubariz.avif"
+ }
+]
