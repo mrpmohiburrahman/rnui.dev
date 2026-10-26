@@ -1,0 +1,168 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 06 round 2 — D improved</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 96px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px }
+  h2 { font-size:15px; margin:0 0 2px; color:#6FE3CC }
+  .bet { color:#9aa0aa; font-size:13px; margin:0 0 14px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  .m { color:#6b7078 }
+  section { padding:24px 28px; border-top:1px solid #2a2c33 }
+  .strip { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap }
+  .cell { display:flex; flex-direction:column; gap:6px }
+  .cell img { display:block; border-radius:6px; border:1px solid #2a2c33 }
+  .cell span { color:#8E949F; font-size:11px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:230px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+  .bar .s2 { color:#8E949F; font-size:12px }
+</style>
+<header>
+  <h1>Ticket 06, round 2 — D (Split) improved</h1>
+  <div class="sub">Four improved versions. Below each: the same cards at <b>360px (Slack)</b>, <b>300px (iMessage)</b> and <b>504px (X)</b> — the sizes a reader actually gets.</div>
+  <div class="sub">← → flip variants</div>
+</header>
+<div class="grid"><figure data-v="D1">
+  <img src="./out-d2/D1-snake.png" width="1200" height="630" alt="D1 snake">
+  <figcaption><b>D1 · Promoted</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="D1">
+  <img src="./out-d2/D1-fluid.png" width="1200" height="630" alt="D1 fluid">
+  <figcaption><b>D1 · Promoted</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="D1">
+  <img src="./out-d2/D1-worst.png" width="1200" height="630" alt="D1 worst">
+  <figcaption><b>D1 · Promoted</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D1">
+  <img src="./out-d2/D1-noster.png" width="1200" height="630" alt="D1 noster">
+  <figcaption><b>D1 · Promoted</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D1">
+  <img src="./out-d2/D1-land.png" width="1200" height="630" alt="D1 land">
+  <figcaption><b>D1 · Promoted</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="D1">
+  <img src="./out-d2/D1-hangul.png" width="1200" height="630" alt="D1 hangul">
+  <figcaption><b>D1 · Promoted</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-snake.png" width="1200" height="630" alt="D2 snake">
+  <figcaption><b>D2 · Promoted + wrap</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-fluid.png" width="1200" height="630" alt="D2 fluid">
+  <figcaption><b>D2 · Promoted + wrap</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-worst.png" width="1200" height="630" alt="D2 worst">
+  <figcaption><b>D2 · Promoted + wrap</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-noster.png" width="1200" height="630" alt="D2 noster">
+  <figcaption><b>D2 · Promoted + wrap</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-land.png" width="1200" height="630" alt="D2 land">
+  <figcaption><b>D2 · Promoted + wrap</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="D2">
+  <img src="./out-d2/D2-hangul.png" width="1200" height="630" alt="D2 hangul">
+  <figcaption><b>D2 · Promoted + wrap</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-snake.png" width="1200" height="630" alt="D3 snake">
+  <figcaption><b>D3 · No disc</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-fluid.png" width="1200" height="630" alt="D3 fluid">
+  <figcaption><b>D3 · No disc</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-worst.png" width="1200" height="630" alt="D3 worst">
+  <figcaption><b>D3 · No disc</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-noster.png" width="1200" height="630" alt="D3 noster">
+  <figcaption><b>D3 · No disc</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-land.png" width="1200" height="630" alt="D3 land">
+  <figcaption><b>D3 · No disc</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="D3">
+  <img src="./out-d2/D3-hangul.png" width="1200" height="630" alt="D3 hangul">
+  <figcaption><b>D3 · No disc</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-snake.png" width="1200" height="630" alt="D4 snake">
+  <figcaption><b>D4 · Crop-safe</b> — Snake <span class="m">(Pushkar Tandon)</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-fluid.png" width="1200" height="630" alt="D4 fluid">
+  <figcaption><b>D4 · Crop-safe</b> — Fluid Carousels <span class="m">(William Candillon)</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-worst.png" width="1200" height="630" alt="D4 worst">
+  <figcaption><b>D4 · Crop-safe</b> — Spread Cards Effect ( Color Swatch ) <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-noster.png" width="1200" height="630" alt="D4 noster">
+  <figcaption><b>D4 · Crop-safe</b> — Toast <span class="m">(Enzo Manuel Mangano (Reactiive))</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-land.png" width="1200" height="630" alt="D4 land">
+  <figcaption><b>D4 · Crop-safe</b> — Reanimated Bottom Sheet <span class="m">(Kacper Kapuściak)</span></figcaption>
+</figure>
+<figure data-v="D4">
+  <img src="./out-d2/D4-hangul.png" width="1200" height="630" alt="D4 hangul">
+  <figcaption><b>D4 · Crop-safe</b> — Ripple Effect With React Native Skia <span class="m">(Daehyeon Mun (문대현))</span></figcaption>
+</figure></div>
+<section data-v="D1">
+  <h2>D1 · Promoted</h2>
+  <p class="bet">Small steps promoted; byline still one line</p>
+  <div class="strip"><div class="cell"><img src="./out-d2/D1-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D1-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D1-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D1-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D1-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-d2/D1-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<section data-v="D2">
+  <h2>D2 · Promoted + wrap</h2>
+  <p class="bet">Readable byline AND every name whole</p>
+  <div class="strip"><div class="cell"><img src="./out-d2/D2-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D2-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D2-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D2-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D2-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-d2/D2-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<section data-v="D3">
+  <h2>D3 · No disc</h2>
+  <p class="bet">Drop initials, promote harder, one line</p>
+  <div class="strip"><div class="cell"><img src="./out-d2/D3-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D3-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D3-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D3-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D3-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-d2/D3-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<section data-v="D4">
+  <h2>D4 · Crop-safe</h2>
+  <p class="bet">D2 inside a 60px inset no crop can take</p>
+  <div class="strip"><div class="cell"><img src="./out-d2/D4-snake.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D4-worst.png" style="width:360px" alt=""><span>Slack · 360px</span></div><div class="cell"><img src="./out-d2/D4-snake.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D4-worst.png" style="width:300px" alt=""><span>iMessage · 300px</span></div><div class="cell"><img src="./out-d2/D4-snake.png" style="width:504px" alt=""><span>X · 504px</span></div><div class="cell"><img src="./out-d2/D4-worst.png" style="width:504px" alt=""><span>X · 504px</span></div></div>
+</section>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"D1","name":"Promoted","bet":"Small steps promoted; byline still one line"},{"key":"D2","name":"Promoted + wrap","bet":"Readable byline AND every name whole"},{"key":"D3","name":"No disc","bet":"Drop initials, promote harder, one line"},{"key":"D4","name":"Crop-safe","bet":"D2 inside a 60px inset no crop can take"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = f.dataset.v === k.key ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+' · '+k.name+'</i><br><span class="s2">'+k.bet+'</span>';
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

@@ -1,0 +1,94 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 04 — the default card, six ways, both modes</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 40px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px; max-width:900px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  .inc { padding:0 28px 4px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:260px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+</style>
+<header>
+  <h1>Ticket 04 — the default card</h1>
+  <div class="sub">Six structurally different answers, each rendered in <b>both</b> modes. The counts are real: <b>298 Recordings, 24 Contributors, 18 Categories</b> — the shipped card claims "343+ animations", which is 45 too many and the wrong noun.</div>
+  <div class="sub">The claim is the homepage's own h1, verbatim (<code>components/hero.tsx:23</code>). The wordmark is set as <code>components/site-header.tsx</code> sets it.</div>
+  <div class="sub">← → flip</div>
+</header>
+<div class="inc"><figure><img src="./out-default/0-incumbent.png" width="1200" height="630" alt=""><figcaption><b>0 · Incumbent</b> — what ships today: slate gradient, system-ui, "343+ animations"</figcaption></figure></div>
+<div class="grid"><figure data-v="Hero-dark">
+  <img src="./out-default/Hero-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Hero · dark</b> — The homepage's own h1 and its own three counts — the site, in its words</figcaption>
+</figure>
+<figure data-v="Hero-light">
+  <img src="./out-default/Hero-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Hero · light</b> — The homepage's own h1 and its own three counts — the site, in its words</figcaption>
+</figure>
+<figure data-v="Mark-dark">
+  <img src="./out-default/Mark-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Mark · dark</b> — The wordmark alone. Says which site, says nothing else</figcaption>
+</figure>
+<figure data-v="Mark-light">
+  <img src="./out-default/Mark-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Mark · light</b> — The wordmark alone. Says which site, says nothing else</figcaption>
+</figure>
+<figure data-v="Scale-dark">
+  <img src="./out-default/Scale-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Scale · dark</b> — 298 / 24 / 18 as the headline. The number is the hook</figcaption>
+</figure>
+<figure data-v="Scale-light">
+  <img src="./out-default/Scale-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Scale · light</b> — 298 / 24 / 18 as the headline. The number is the hook</figcaption>
+</figure>
+<figure data-v="Wall-dark">
+  <img src="./out-default/Wall-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Wall · dark</b> — Eight real Posters, cropped to tiles. What the site is, not what it says</figcaption>
+</figure>
+<figure data-v="Wall-light">
+  <img src="./out-default/Wall-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Wall · light</b> — Eight real Posters, cropped to tiles. What the site is, not what it says</figcaption>
+</figure>
+<figure data-v="Facets-dark">
+  <img src="./out-default/Facets-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Facets · dark</b> — The Category list with counts. An index, shown as an index</figcaption>
+</figure>
+<figure data-v="Facets-light">
+  <img src="./out-default/Facets-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Facets · light</b> — The Category list with counts. An index, shown as an index</figcaption>
+</figure>
+<figure data-v="Facets18-dark">
+  <img src="./out-default/Facets18-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Facets18 · dark</b> — The same list, complete — and unreadable. What the subset costs</figcaption>
+</figure>
+<figure data-v="Facets18-light">
+  <img src="./out-default/Facets18-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Facets18 · light</b> — The same list, complete — and unreadable. What the subset costs</figcaption>
+</figure></div>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"Hero-dark","name":"Hero","mode":"dark","bet":"The homepage's own h1 and its own three counts — the site, in its words"},{"key":"Hero-light","name":"Hero","mode":"light","bet":"The homepage's own h1 and its own three counts — the site, in its words"},{"key":"Mark-dark","name":"Mark","mode":"dark","bet":"The wordmark alone. Says which site, says nothing else"},{"key":"Mark-light","name":"Mark","mode":"light","bet":"The wordmark alone. Says which site, says nothing else"},{"key":"Scale-dark","name":"Scale","mode":"dark","bet":"298 / 24 / 18 as the headline. The number is the hook"},{"key":"Scale-light","name":"Scale","mode":"light","bet":"298 / 24 / 18 as the headline. The number is the hook"},{"key":"Wall-dark","name":"Wall","mode":"dark","bet":"Eight real Posters, cropped to tiles. What the site is, not what it says"},{"key":"Wall-light","name":"Wall","mode":"light","bet":"Eight real Posters, cropped to tiles. What the site is, not what it says"},{"key":"Facets-dark","name":"Facets","mode":"dark","bet":"The Category list with counts. An index, shown as an index"},{"key":"Facets-light","name":"Facets","mode":"light","bet":"The Category list with counts. An index, shown as an index"},{"key":"Facets18-dark","name":"Facets (all 18)","mode":"dark","bet":"The same list, complete — and unreadable. What the subset costs"},{"key":"Facets18-light","name":"Facets (all 18)","mode":"light","bet":"The same list, complete — and unreadable. What the subset costs"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = f.dataset.v === k.key ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+'</i><br>'+k.bet;
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

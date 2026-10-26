@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ticket 04 round 2 — the mark, but not plain</title>
+<!-- PROTOTYPE. Throwaway. Real ImageResponse output. -->
+<style>
+  body { margin:0; background:#17181c; color:#e9eaee; font:14px/1.5 ui-sans-serif,system-ui,sans-serif; padding:0 0 40px }
+  header { padding:20px 28px; border-bottom:1px solid #2a2c33 }
+  h1 { font-size:16px; margin:0 0 4px; font-weight:600 }
+  .sub { color:#9aa0aa; font-size:13px; max-width:920px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:20px; padding:24px 28px }
+  figure { margin:0; background:#0A0B0D; border:1px solid #2a2c33; border-radius:12px; overflow:hidden }
+  figure img { display:block; width:100%; height:auto }
+  figcaption { padding:9px 12px; font-size:12px; color:#9aa0aa; border-top:1px solid #2a2c33 }
+  figcaption b { color:#6FE3CC }
+  section { padding:24px 28px; border-top:1px solid #2a2c33 }
+  h2 { font-size:15px; margin:0 0 2px; color:#6FE3CC }
+  .bet { color:#9aa0aa; font-size:13px; margin:0 0 14px }
+  .strip { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap }
+  .cell { display:flex; flex-direction:column; gap:6px }
+  .cell img { display:block; border-radius:6px; border:1px solid #2a2c33 }
+  .cell span { color:#8E949F; font-size:11px }
+  .bar { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); display:flex; align-items:center; gap:14px;
+         background:#0A0B0D; border:1px solid #3a3d45; border-radius:999px; padding:9px 15px; z-index:9 }
+  .bar button { background:#23252b; color:#F1F2F4; border:1px solid #3a3d45; border-radius:999px; width:30px; height:30px; cursor:pointer }
+  .bar .now { min-width:280px; text-align:center; font-size:13px }
+  .bar .now i { color:#6FE3CC; font-style:normal; font-weight:600 }
+</style>
+<header>
+  <h1>The mark, but not plain</h1>
+  <div class="sub">Round 1's verdict: the wordmark-only card is <b>plain</b>. So the wordmark stays the hero in all six, and each adds a different way of showing what the catalogue <i>is</i>.</div>
+  <div class="sub">Every Poster is real, from <code>data/catalogue.ts</code>, chosen by greedy farthest-point on the hue circle. Every caption is a real Recording caption. Nothing is invented.</div>
+  <div class="sub">New devices, measured not assumed: <b>radial-gradient</b> renders, <b>transform: rotate</b> renders, <b>border-radius: 50%</b> renders. <b>conic-gradient throws</b>, so nothing here uses it.</div>
+  <div class="sub">← → flip</div>
+</header>
+<div class="grid"><figure data-v="Halo-dark">
+  <img src="./out-mark/Halo-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Halo · dark</b> — 21 real Posters in an ellipse around the mark, each lit by its own hue</figcaption>
+</figure>
+<figure data-v="Halo-light">
+  <img src="./out-mark/Halo-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Halo · light</b> — 21 real Posters in an ellipse around the mark, each lit by its own hue</figcaption>
+</figure>
+<figure data-v="Deck-dark">
+  <img src="./out-mark/Deck-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Deck · dark</b> — 5 Posters uncropped in device frames on a shelf, bleeding off the bottom</figcaption>
+</figure>
+<figure data-v="Deck-light">
+  <img src="./out-mark/Deck-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Deck · light</b> — 5 Posters uncropped in device frames on a shelf, bleeding off the bottom</figcaption>
+</figure>
+<figure data-v="Marquee-dark">
+  <img src="./out-mark/Marquee-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Marquee · dark</b> — The mark, the claim, and eleven real captions as a credit roll</figcaption>
+</figure>
+<figure data-v="Marquee-light">
+  <img src="./out-mark/Marquee-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Marquee · light</b> — The mark, the claim, and eleven real captions as a credit roll</figcaption>
+</figure>
+<figure data-v="Ramp-dark">
+  <img src="./out-mark/Ramp-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Ramp · dark</b> — A diagonal cascade of tiles — the card implies motion</figcaption>
+</figure>
+<figure data-v="Ramp-light">
+  <img src="./out-mark/Ramp-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Ramp · light</b> — A diagonal cascade of tiles — the card implies motion</figcaption>
+</figure>
+<figure data-v="Orbit-dark">
+  <img src="./out-mark/Orbit-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Orbit · dark</b> — 16 tiles on a hairline ellipse, the name in the middle of the catalogue</figcaption>
+</figure>
+<figure data-v="Orbit-light">
+  <img src="./out-mark/Orbit-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Orbit · light</b> — 16 tiles on a hairline ellipse, the name in the middle of the catalogue</figcaption>
+</figure>
+<figure data-v="Bloom-dark">
+  <img src="./out-mark/Bloom-dark.png" width="1200" height="630" alt="">
+  <figcaption><b>Bloom · dark</b> — A four-hue radial bloom with three large Posters in front</figcaption>
+</figure>
+<figure data-v="Bloom-light">
+  <img src="./out-mark/Bloom-light.png" width="1200" height="630" alt="">
+  <figcaption><b>Bloom · light</b> — A four-hue radial bloom with three large Posters in front</figcaption>
+</figure></div>
+<section data-v="Halo"><h2>Halo · Halo</h2><p class="bet">21 real Posters in an ellipse around the mark, each lit by its own hue</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Deck"><h2>Deck · Deck</h2><p class="bet">5 Posters uncropped in device frames on a shelf, bleeding off the bottom</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Marquee"><h2>Marquee · Marquee</h2><p class="bet">The mark, the claim, and eleven real captions as a credit roll</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Ramp"><h2>Ramp · Ramp</h2><p class="bet">A diagonal cascade of tiles — the card implies motion</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Orbit"><h2>Orbit · Orbit</h2><p class="bet">16 tiles on a hairline ellipse, the name in the middle of the catalogue</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<section data-v="Bloom"><h2>Bloom · Bloom</h2><p class="bet">A four-hue radial bloom with three large Posters in front</p>
+      <div class="strip">[object Object][object Object][object Object]</div></section>
+<div class="bar"><button onclick="go(-1)">‹</button><span class="now" id="now"></span><button onclick="go(1)">›</button></div>
+<script>
+  const KEYS = [{"key":"Halo-dark","name":"Halo","bet":"21 real Posters in an ellipse around the mark, each lit by its own hue"},{"key":"Halo-light","name":"Halo","bet":"21 real Posters in an ellipse around the mark, each lit by its own hue"},{"key":"Deck-dark","name":"Deck","bet":"5 Posters uncropped in device frames on a shelf, bleeding off the bottom"},{"key":"Deck-light","name":"Deck","bet":"5 Posters uncropped in device frames on a shelf, bleeding off the bottom"},{"key":"Marquee-dark","name":"Marquee","bet":"The mark, the claim, and eleven real captions as a credit roll"},{"key":"Marquee-light","name":"Marquee","bet":"The mark, the claim, and eleven real captions as a credit roll"},{"key":"Ramp-dark","name":"Ramp","bet":"A diagonal cascade of tiles — the card implies motion"},{"key":"Ramp-light","name":"Ramp","bet":"A diagonal cascade of tiles — the card implies motion"},{"key":"Orbit-dark","name":"Orbit","bet":"16 tiles on a hairline ellipse, the name in the middle of the catalogue"},{"key":"Orbit-light","name":"Orbit","bet":"16 tiles on a hairline ellipse, the name in the middle of the catalogue"},{"key":"Bloom-dark","name":"Bloom","bet":"A four-hue radial bloom with three large Posters in front"},{"key":"Bloom-light","name":"Bloom","bet":"A four-hue radial bloom with three large Posters in front"}];
+  let i = Math.max(0, KEYS.findIndex(k => k.key === new URLSearchParams(location.search).get('variant')));
+  function go(d){ i = (i + d + KEYS.length) % KEYS.length; set(); }
+  function set(){
+    const k = KEYS[i];
+    const u = new URL(location.href); u.searchParams.set('variant', k.key);
+    history.replaceState(null,'',u);
+    document.querySelectorAll('[data-v]').forEach(f => { f.style.display = (f.dataset.v === k.key || f.dataset.v === k.key.split('-')[0]) ? '' : 'none'; });
+    document.getElementById('now').innerHTML = '<i>'+k.key+'</i><br>'+k.bet;
+  }
+  addEventListener('keydown', e => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') go(1); if (e.key === 'ArrowLeft') go(-1);
+  });
+  set();
+</script>

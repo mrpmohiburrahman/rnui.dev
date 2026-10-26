@@ -1,0 +1,178 @@
+[
+ {
+  "key": "ripple_effect_daehyeon_mun",
+  "caption": "Ripple Effect With React Native Skia",
+  "contributor": "Daehyeon Mun (문대현)",
+  "hue": 25,
+  "aspect": 0.605,
+  "path": "public/thumbnails/misc/ripple_effect_daehyeon_mun.avif"
+ },
+ {
+  "key": "animated_letter_text_aswin_c",
+  "caption": "Animated Letter Text",
+  "contributor": "Aswin C",
+  "hue": 207,
+  "aspect": 0.753,
+  "path": "public/thumbnails/misc/animated_letter_text_aswin_c.avif"
+ },
+ {
+  "key": "bending_circle_david_friyia",
+  "caption": "Bending Circle",
+  "contributor": "Daniel Friyia",
+  "hue": 298,
+  "aspect": 0.6745,
+  "path": "public/thumbnails/misc/bending_circle_david_friyia.avif"
+ },
+ {
+  "key": "dynamic-blur-tabs_enzo_manuel_mangano_reactiive",
+  "caption": "Dynamic Blur Tabs",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 114,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/tabbars/dynamic-blur-tabs_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "audio-player_enzo_manuel_mangano_reactiive",
+  "caption": "Audio Player",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 252,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/misc/audio-player_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "morphingLoader",
+  "caption": "Morphing Loader",
+  "contributor": "Daniel Friyia",
+  "hue": 163,
+  "aspect": 0.4633,
+  "path": "public/thumbnails/loaders/morphingLoader.avif"
+ },
+ {
+  "key": "chart_counter_thomino",
+  "caption": "Chart Counter",
+  "contributor": "Thomino",
+  "hue": 341,
+  "aspect": 0.4781,
+  "path": "public/thumbnails/charts/chart_counter_thomino.avif"
+ },
+ {
+  "key": "coons_patch_aswin_c",
+  "caption": "Coons patch",
+  "contributor": "Aswin C",
+  "hue": 65,
+  "aspect": 0.4767,
+  "path": "public/thumbnails/misc/coons_patch_aswin_c.avif"
+ },
+ {
+  "key": "dynamic_accordion_hewad_mubariz",
+  "caption": "Dynamic Accordion",
+  "contributor": "Hewad Mubariz",
+  "hue": 86,
+  "aspect": 0.5926,
+  "path": "public/thumbnails/accordions/dynamic_accordion_hewad_mubariz.avif"
+ },
+ {
+  "key": "magic_curtain_effect_kacper_kapusciak",
+  "caption": "Magic Curtain Effect",
+  "contributor": "Kacper Kapuściak",
+  "hue": 5,
+  "aspect": 0.5634,
+  "path": "public/thumbnails/misc/magic_curtain_effect_kacper_kapusciak.avif"
+ },
+ {
+  "key": "spotify_tab_alireza_hadjar",
+  "caption": "Spotify Tab",
+  "contributor": "Alireza Hadjar",
+  "hue": 137,
+  "aspect": 0.4638,
+  "path": "public/thumbnails/tabbars/spotify_tab_alireza_hadjar.avif"
+ },
+ {
+  "key": "animated_gauge_hewad_mubariz",
+  "caption": "Animated Gauge",
+  "contributor": "Hewad Mubariz",
+  "hue": 44,
+  "aspect": 0.7524,
+  "path": "public/thumbnails/arcsliders/animated_gauge_hewad_mubariz.avif"
+ },
+ {
+  "key": "radar-chart_enzo_manuel_mangano_reactiive",
+  "caption": "Radar Chart",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 182,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/charts/radar-chart_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "scrollable-bottom-sheet_enzo_manuel_mangano_reactiive",
+  "caption": "Scrollable Bottom Sheet",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 226,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/sliders/scrollable-bottom-sheet_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "google_gemini_hubert_ryan",
+  "caption": "Google Gemini Clone",
+  "contributor": "Hubert Ryan",
+  "hue": 175,
+  "aspect": 0.5625,
+  "path": "public/thumbnails/fullapps/google_gemini_hubert_ryan.avif"
+ },
+ {
+  "key": "micro_swipe_actions_hewad_mubariz",
+  "caption": "Micro Swipe Actions",
+  "contributor": "Hewad Mubariz",
+  "hue": 191,
+  "aspect": 0.603,
+  "path": "public/thumbnails/misc/micro_swipe_actions_hewad_mubariz.avif"
+ },
+ {
+  "key": "alert-drawer_enzo_manuel_mangano_reactiive",
+  "caption": "Alert Drawer",
+  "contributor": "Enzo Manuel Mangano (Reactiive)",
+  "hue": 353,
+  "aspect": 0.4611,
+  "path": "public/thumbnails/bottomsheets/alert-drawer_enzo_manuel_mangano_reactiive.avif"
+ },
+ {
+  "key": "react-native-snow-bg-epicode",
+  "caption": "react-native-snow-bg",
+  "contributor": "Epicode | 0xV",
+  "hue": 216,
+  "aspect": 0.5639,
+  "path": "public/thumbnails/misc/react-native-snow-bg-epicode.avif"
+ },
+ {
+  "key": "sensor_based_slider_kacper_kapusciak",
+  "caption": "Sensor Based Slider",
+  "contributor": "Kacper Kapuściak",
+  "hue": 16,
+  "aspect": 0.5634,
+  "path": "public/thumbnails/sliders/sensor_based_slider_kacper_kapusciak.avif"
+ },
+ {
+  "key": "ripple_effect_daehyeon_mun",
+  "caption": "Ripple Effect With React Native Skia",
+  "contributor": "Daehyeon Mun (문대현)",
+  "hue": 25,
+  "aspect": 0.605,
+  "path": "public/thumbnails/misc/ripple_effect_daehyeon_mun.avif"
+ },
+ {
+  "key": "arc_slider_david_friyia",
+  "caption": "Arc Slider",
+  "contributor": "Daniel Friyia",
+  "hue": 37,
+  "aspect": 0.6727,
+  "path": "public/thumbnails/arcsliders/arc_slider_david_friyia.avif"
+ },
+ {
+  "key": "parallax_carousel_arunabh_verma",
+  "caption": "Parallax Carousel",
+  "contributor": "Arunabh Verma",
+  "hue": 95,
+  "aspect": 0.4662,
+  "path": "public/thumbnails/parallaxes/parallax_carousel_arunabh_verma.avif"
+ }
+]
