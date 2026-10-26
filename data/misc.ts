@@ -3518,4 +3518,18 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-11T14:48:28.218Z",
   },
+  {
+    id: "01M5VYA960RD9FFGB03VRXFSR2",
+    caption: "WebGPU 3D model product viewer",
+    demoPath: "demo/misc/webgpu_3d_model_product_viewer_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/webgpu_3d_model_product_viewer_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/FurnitureShowcaseScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-26T11:07:48.289Z",
+  },
 ]
