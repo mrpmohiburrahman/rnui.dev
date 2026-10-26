@@ -8,6 +8,10 @@
 /public/demo/
 /public/thumbnails/
 
+# Raw simulator captures. The compressed Demo is the Published Asset, and a raw clip can pass
+# GitHub's 100 MB file limit.
+/.argent/
+
 # dependencies
 /node_modules
 /.pnp
