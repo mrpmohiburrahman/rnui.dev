@@ -3622,4 +3622,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T08:08:25.511Z",
   },
+  {
+    id: "01M5YBQKC59KXBND7P3KSV2J0P",
+    caption: "WebGPU pixel explosion / Tiger reform",
+    demoPath:
+      "demo/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.mp4",
+    posterPath:
+      "thumbnails/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/PixelExplosionScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-27T09:40:45.061Z",
+  },
 ]
