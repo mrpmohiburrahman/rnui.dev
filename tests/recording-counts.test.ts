@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 356", () => {
+  it("counts the whole catalogue, per Category, summing to 357", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -28,7 +28,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Headers: 3,
       List: 18,
       Loaders: 11,
-      Misc: 214,
+      Misc: 215,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(356)
+    expect(total).toBe(357)
   })
 })
 
@@ -48,7 +48,7 @@ describe("RECORDINGS_PER_CONTRIBUTOR", () => {
   it("counts 26 contributors, the whole catalogue again", () => {
     expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(26)
     expect(RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]).toBe(
-      138
+      139
     )
     expect(RECORDINGS_PER_CONTRIBUTOR["Hewad Mubariz"]).toBe(39)
 
@@ -71,7 +71,7 @@ describe("contributorsByCount", () => {
     const ranked = contributorsByCount()
 
     expect(ranked).toEqual([
-      { name: "Enzo Manuel Mangano (Reactiive)", count: 138 },
+      { name: "Enzo Manuel Mangano (Reactiive)", count: 139 },
       { name: "Hewad Mubariz", count: 39 },
       { name: "Blazej Kustra", count: 30 },
       { name: "Solarin Johnson", count: 20 },
@@ -102,6 +102,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(356)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(357)
   })
 })
