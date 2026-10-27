@@ -17,3 +17,4 @@ This ticket is HITL. Record each decided Category in this ticket.
 - 2026-10-27: The maintainer selected Misc for Custom back-history menu. The candidate is not Expo-listed. Recording `01M5YZ0P52Y07KKY7215ZV6GAR`.
 - 2026-10-27: The maintainer selected Misc for Emoji pop. The candidate is not Expo-listed. Recording `01M5ZPEPBEQJAKGKHCGVMT706Y`.
 - 2026-10-27: The maintainer selected Misc for Gesture speed and lock control. The candidate is not Expo-listed. Recording `01M5ZR2DC9FQ8KKPK6GF5WKBPJ`.
+- 2026-10-27: The maintainer selected Misc for Grok sidebar. The candidate is not Expo-listed. Recording `01M5ZV4C5M3VFHXXNXYBJGE514`.

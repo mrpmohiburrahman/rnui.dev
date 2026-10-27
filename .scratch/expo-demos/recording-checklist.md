@@ -308,11 +308,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M5ZR2DC9FQ8KKPK6GF5WKBPJ
   - deploy: production alias `https://www.rnui.dev` from commit `3191498`. Home shows `Search 361 recordings`.
 
-- [ ] **Grok sidebar**
+- [x] **Grok sidebar**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/grok-sidebar
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M5ZV4C5M3VFHXXNXYBJGE514`
+  - category: `Misc`
+  - demoPath: `demo/misc/grok_sidebar_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/grok_sidebar_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-27.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793143614012.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 19.800 seconds, no touch markers
+  - staging Demo: two segments joined. The first keeps 1.70 through 6.30 seconds. The second keeps 15.40 through 18.30 seconds. Both convert full range to standard-range yuv420p with the sRGB transfer function and P3 primaries.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 225 frames, 7.500000 seconds, 250,515 bytes
+  - content: the hamburger opens the full-width drawer. A vertical swipe scrolls the list to Grok sidebar. A tap on that row closes the drawer without navigation. A close-by-swipe aborts the app, so the Demo uses the row tap.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 21,714 bytes. The frame shows the open drawer with the Grok sidebar row focused.
+  - measure: `durationMs` 7500 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (250,515 bytes) and the Poster (21,714 bytes).
+  - live: https://www.rnui.dev/recording/01M5ZV4C5M3VFHXXNXYBJGE514
+  - deploy: production alias `https://www.rnui.dev` from commit `ccab130`. Home shows `Search 362 recordings`.
 
 - [ ] **Custom status bar and drawing canvas**
 
