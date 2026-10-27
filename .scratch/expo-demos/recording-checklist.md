@@ -287,11 +287,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M5ZPEPBEQJAKGKHCGVMT706Y
   - deploy: production alias `https://www.rnui.dev` from commit `47df41d`. Home shows `Search 360 recordings`.
 
-- [ ] **Gesture speed and lock control**
+- [x] **Gesture speed and lock control**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/gesture-speed
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M5ZR2DC9FQ8KKPK6GF5WKBPJ`
+  - category: `Misc`
+  - demoPath: `demo/misc/gesture_speed_and_lock_control_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/gesture_speed_and_lock_control_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-27.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793140371129.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 11.100 seconds, no touch markers
+  - staging Demo: one encode from the take. It keeps 5.00 seconds through 10.80 seconds and converts full range to standard-range yuv420p. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 174 frames, 5.800000 seconds, 58,689 bytes
+  - content: a 300 ms hold makes the speed pill appear. A sideways drag sets 3.0x. A downward drag locks it and the helper reads "Now release". A release springs the locked pill to the top.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 5,258 bytes. The frame shows the locked pill at 3.0x.
+  - measure: `durationMs` 5800 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (58,689 bytes) and the Poster (5,258 bytes).
+  - live: https://www.rnui.dev/recording/01M5ZR2DC9FQ8KKPK6GF5WKBPJ
+  - deploy: production alias `https://www.rnui.dev` from commit `3191498`. Home shows `Search 361 recordings`.
 
 - [ ] **Grok sidebar**
 
