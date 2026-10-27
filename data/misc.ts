@@ -3660,4 +3660,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T10:45:20.335Z",
   },
+  {
+    id: "01M5YRWEWS4V101MS7JERYDRMY",
+    caption: "Sculptures in Words",
+    demoPath:
+      "demo/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.mp4",
+    posterPath:
+      "thumbnails/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.avif",
+    contributor: "Enzo Manuel Mangano (Reactiive)",
+    source:
+      "https://github.com/enzomanuelmangano/demos/tree/884c9f8f969fd3fd24319da9ffcd9e54c0735445/src/animations/sculptures-in-words",
+    twitterId: "reactiive_",
+    linkedInId: "enzomanuelmangano",
+    githubId: "enzomanuelmangano",
+    category: "Misc",
+    created_at: "2026-10-27T13:30:35.000Z",
+  },
 ]
