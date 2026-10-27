@@ -3667,6 +3667,8 @@ caption: "Empty Qr Code",
       "demo/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.avif",
+    durationMs: 27200,
+    aspect: 0.46,
     contributor: "Enzo Manuel Mangano (Reactiive)",
     source:
       "https://github.com/enzomanuelmangano/demos/tree/884c9f8f969fd3fd24319da9ffcd9e54c0735445/src/animations/sculptures-in-words",
