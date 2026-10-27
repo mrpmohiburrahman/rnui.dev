@@ -64,3 +64,6 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-27: The maintainer approved capture, catalogue addition, R2 upload and deployment for the Emoji pop Recording (`01M5ZPEPBEQJAKGKHCGVMT706Y`). This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
 - 2026-10-27: Catalogue commit `47df41d` added the Recording and set `durationMs` to 6000 and `aspect` to 0.46. The neutral Poster has no dominant hue.
 - 2026-10-27: The CDN Demo is 75,602 bytes. The CDN Poster is 8,602 bytes. The live page returns 200. The Demo is a single encode of the take, so it has 180 frames.
+- 2026-10-27: The maintainer approved capture, catalogue addition, R2 upload and deployment for the Gesture speed and lock control Recording (`01M5ZR2DC9FQ8KKPK6GF5WKBPJ`). This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
+- 2026-10-27: Catalogue commit `3191498` added the Recording and set `durationMs` to 5800 and `aspect` to 0.46. The neutral Poster has no dominant hue.
+- 2026-10-27: The CDN Demo is 58,689 bytes. The CDN Poster is 5,258 bytes. The live page returns 200. The Demo is a single encode of the take, so it has 174 frames.
