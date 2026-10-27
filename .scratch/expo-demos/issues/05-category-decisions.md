@@ -15,3 +15,4 @@ This ticket is HITL. Record each decided Category in this ticket.
 - 2026-10-27: The maintainer selected Misc for Sculptures in Words. The candidate is not Expo-listed. Recording `01M5YRWEWS4V101MS7JERYDRMY`.
 - 2026-10-27: The maintainer selected Misc for 3D card scrolling. The candidate is not Expo-listed. Recording `01M5YX7TZPYTFVM4MGKD6WS1K8`.
 - 2026-10-27: The maintainer selected Misc for Custom back-history menu. The candidate is not Expo-listed. Recording `01M5YZ0P52Y07KKY7215ZV6GAR`.
+- 2026-10-27: The maintainer selected Misc for Emoji pop. The candidate is not Expo-listed. Recording `01M5ZPEPBEQJAKGKHCGVMT706Y`.
