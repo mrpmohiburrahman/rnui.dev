@@ -33,3 +33,7 @@ A report alone does not clear unresolved publication permission.
 - Identify attribution obligations and any existing permission records.
 - Separate clear terms from unresolved permission questions.
 - Preserve unresolved questions for a maintainer decision before public publication.
+
+## Comments
+
+- 2026-10-27: The maintainer approved publication of the Football stadium seat selection Recording (`01M5Y6EHJSAHAR22WK2HC03W6W`), R2 upload included. This is a maintainer decision for one clip. It does not resolve this ticket. `research/capture-permissions.md` does not exist yet. The status stays as it is.
