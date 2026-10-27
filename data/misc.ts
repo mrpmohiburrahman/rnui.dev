@@ -3629,6 +3629,9 @@ caption: "Empty Qr Code",
       "demo/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.mp4",
     posterPath:
       "thumbnails/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.avif",
+    durationMs: 26000,
+    aspect: 0.46,
+    hue: 25,
     contributor: "Hewad Mubariz",
     source:
       "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/PixelExplosionScreen.tsx",
