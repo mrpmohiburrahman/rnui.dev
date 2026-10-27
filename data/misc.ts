@@ -3683,6 +3683,8 @@ caption: "Empty Qr Code",
     caption: "3D card scrolling",
     demoPath: "demo/misc/3d_card_scrolling_solarin_johnson.mp4",
     posterPath: "thumbnails/misc/3d_card_scrolling_solarin_johnson.avif",
+    durationMs: 11500,
+    aspect: 0.46,
     contributor: "Solarin Johnson",
     source:
       "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/3d-card-scrolling",
