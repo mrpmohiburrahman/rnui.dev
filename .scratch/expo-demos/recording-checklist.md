@@ -1,6 +1,6 @@
 # Demo recording checklist
 
-Last updated: 2026-10-26
+Last updated: 2026-10-27
 Demo list: `app/preview-new-demos/candidates.ts`
 Local preview: `http://localhost:63038/preview-new-demos`
 Recording standard: `.claude/skills/add-recording/SKILL.md`
@@ -85,11 +85,21 @@ Ticket 12 (`.scratch/expo-demos/issues/12-capture-and-publication-permissions.md
   - frame check: device screen only. No bezel, title bar or touch markers. First motion before 1 second.
   - content: free flock on the Dusk sky, then two taps that scatter it. Heart, star and moon formations follow. The sky changes to Mist, Day and Lake. The clip ends on a heart over the Lake sky.
 
-- [ ] **Art gallery corridor**
+- [x] **Art gallery corridor**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/GalleryScreen.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5XM7QMSMRZJMMAAMNEA2PC7`
+  - commit: `ce79b5f`
+  - measure commit: `352ace0`
+  - asset publish: done on 2026-10-27. The CDN serves the Demo and the Poster.
+  - live: https://www.rnui.dev/recording/01M5XM7QMSMRZJMMAAMNEA2PC7
+  - recording: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793069166018.mp4`
+  - verified: H.264, 1206 by 2622 pixels, yuvj420p, 30 fps, 45.000000 seconds, 1350 frames
+  - frame check: device screen only. No bezel, title bar or touch markers. First motion before 1 second.
+  - content: held presses walk the corridor, side swipes turn the view to both walls. 80 Artic artworks hang in gold frames. The clip ends on the left wall.
+  - note: the artworks come from a local mirror of the Artic API and IIIF images, because artic.edu answers 403 to this machine's TLS fingerprint. The screen output is the app's own render.
 
 - [ ] **Salon / cinema seat selection**
 
