@@ -3738,4 +3738,18 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T22:35:36.714Z",
   },
+  {
+    id: "01M5ZV4C5M3VFHXXNXYBJGE514",
+    caption: "Grok sidebar",
+    demoPath: "demo/misc/grok_sidebar_solarin_johnson.mp4",
+    posterPath: "thumbnails/misc/grok_sidebar_solarin_johnson.avif",
+    durationMs: 7500,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/grok-sidebar",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-27T23:29:06.741Z",
+  },
 ]
