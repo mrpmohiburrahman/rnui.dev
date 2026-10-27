@@ -266,11 +266,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M5YZ0P52Y07KKY7215ZV6GAR
   - deploy: production alias `https://www.rnui.dev` from commit `5e33fbe`. Home shows `Search 359 recordings`.
 
-- [ ] **Emoji pop**
+- [x] **Emoji pop**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/emoji-pop
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M5ZPEPBEQJAKGKHCGVMT706Y`
+  - category: `Misc`
+  - demoPath: `demo/misc/emoji_pop_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/emoji_pop_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-27.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793138570469.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 7.700 seconds, no touch markers
+  - staging Demo: one encode from the take. It keeps 1.70 seconds through 7.70 seconds and converts full range to standard-range yuv420p. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 180 frames, 6.000000 seconds, 75,602 bytes
+  - content: a tap sends a small emoji bubble. A long press grows the current bubble until it bursts. The composer stays visible at the bottom.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 8,602 bytes. The frame shows one large bubble and one small bubble above the composer.
+  - measure: `durationMs` 6000 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (75,602 bytes) and the Poster (8,602 bytes).
+  - live: https://www.rnui.dev/recording/01M5ZPEPBEQJAKGKHCGVMT706Y
+  - deploy: production alias `https://www.rnui.dev` from commit `47df41d`. Home shows `Search 360 recordings`.
 
 - [ ] **Gesture speed and lock control**
 
