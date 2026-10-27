@@ -3678,4 +3678,16 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T13:30:35.000Z",
   },
+  {
+    id: "01M5YX7TZPYTFVM4MGKD6WS1K8",
+    caption: "3D card scrolling",
+    demoPath: "demo/misc/3d_card_scrolling_solarin_johnson.mp4",
+    posterPath: "thumbnails/misc/3d_card_scrolling_solarin_johnson.avif",
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/3d-card-scrolling",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-27T14:46:42.935Z",
+  },
 ]
