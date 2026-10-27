@@ -3692,4 +3692,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T14:46:42.935Z",
   },
+  {
+    id: "01M5YZ0P52Y07KKY7215ZV6GAR",
+    caption: "Custom back-history menu",
+    demoPath:
+      "demo/misc/custom_back_history_menu_solarin_johnson.mp4",
+    posterPath:
+      "thumbnails/misc/custom_back_history_menu_solarin_johnson.avif",
+    durationMs: 11400,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/custom-back",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-27T15:17:45.763Z",
+  },
 ]
