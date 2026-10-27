@@ -3569,4 +3569,18 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-26T14:17:16.912Z",
   },
+  {
+    id: "01M5XM7QMSMRZJMMAAMNEA2PC7",
+    caption: "WebGPU art gallery corridor",
+    demoPath: "demo/misc/webgpu_art_gallery_corridor_hewad_mubariz.mp4",
+    posterPath: "thumbnails/misc/webgpu_art_gallery_corridor_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/GalleryScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-27T02:50:07.905Z",
+  },
 ]
