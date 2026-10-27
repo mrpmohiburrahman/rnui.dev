@@ -244,11 +244,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M5YX7TZPYTFVM4MGKD6WS1K8
   - deploy: production alias `https://www.rnui.dev` from commit `3bc6c48`. Home shows `Search 358 recordings`.
 
-- [ ] **Custom back-history menu**
+- [x] **Custom back-history menu**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/custom-back
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M5YZ0P52Y07KKY7215ZV6GAR`
+  - category: `Misc`
+  - demoPath: `demo/misc/custom_back_history_menu_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/custom_back_history_menu_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-27.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793114128226.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 14.292 seconds, no touch markers
+  - trimmed take: `/Users/mrp/.cache/rnui-tmp/backtake2/final_intermediate.mp4`. The trim keeps 1.60 seconds through 13.00 seconds and converts full range to standard-range yuv420p.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 342 frames, 11.400000 seconds, 201,609 bytes
+  - lineage: the staging Demo comes from the trimmed take. Both files have 342 frames.
+  - content: the app opens a nested page. Four forward taps deepen the stack. A long-press on the back button opens the back-history list. Tapping a history row returns to an earlier page.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 9,447 bytes. The frame shows the back-history list with its page rows.
+  - measure: `durationMs` 11400 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (201,609 bytes) and the Poster (9,447 bytes). The first measurement run returned 404 for both, because the CDN needed time to serve the new keys.
+  - live: https://www.rnui.dev/recording/01M5YZ0P52Y07KKY7215ZV6GAR
+  - deploy: production alias `https://www.rnui.dev` from commit `5e33fbe`. Home shows `Search 359 recordings`.
 
 - [ ] **Emoji pop**
 
