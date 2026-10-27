@@ -58,3 +58,6 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-27: The maintainer approved each step for the 3D card scrolling Recording (`01M5YX7TZPYTFVM4MGKD6WS1K8`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
 - 2026-10-27: Catalogue commit `ac87f39` added the Recording. Measure commit `3bc6c48` set `durationMs` to 11500 and `aspect` to 0.46. The neutral Poster has no dominant hue.
 - 2026-10-27: The CDN Demo is 964,802 bytes. The CDN Poster is 11,103 bytes. The live page returns 200. The staging Demo comes from the trimmed take, and both have 345 frames.
+- 2026-10-27: The maintainer approved each step for the Custom back-history menu Recording (`01M5YZ0P52Y07KKY7215ZV6GAR`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
+- 2026-10-27: Catalogue commit `5e33fbe` added the Recording and set `durationMs` to 11400 and `aspect` to 0.46. The neutral Poster has no dominant hue.
+- 2026-10-27: The CDN Demo is 201,609 bytes. The CDN Poster is 9,447 bytes. The live page returns 200. The staging Demo comes from the trimmed take, and both have 342 frames.
