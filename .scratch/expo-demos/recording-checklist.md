@@ -22,6 +22,10 @@ Ticket 12 (`.scratch/expo-demos/issues/12-capture-and-publication-permissions.md
 
 Gate decision, 2026-10-27: the maintainer approved publication of the Football stadium seat selection clip, R2 upload included. Ticket 12 stays open, and `research/capture-permissions.md` still does not exist. The Birds, Art gallery and Salon Recordings went out the same way.
 
+Gate decision, 2026-10-27: the maintainer approved publication of the Pixel explosion / Tiger reform clip, R2 upload included. Ticket 12 stays open. The live page is https://www.rnui.dev/recording/01M5YBQKC59KXBND7P3KSV2J0P.
+
+Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart / Voxel city morph clip, R2 upload included. Ticket 12 stays open. The live page is https://www.rnui.dev/recording/01M5YFDVTEAMF4SN2TYRPKMHCN.
+
 ## The seven steps for each demo
 
 1. **Build the app.** Clone the source link at the pinned commit. Install its dependencies. Start it on the iOS simulator.
@@ -130,17 +134,41 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Football s
   - content: pan, pinch zoom in and out, section tap and seat fly-in, two seats selected, deselection, payment button, clear, pinch out to the bowl and a pan across the upper deck.
   - earlier take: `.argent/recordings/football-stadium-1793088060275.mp4` was rejected as too sparse. It is not published.
 
-- [ ] **Pixel explosion / Tiger reform**
+- [x] **Pixel explosion / Tiger reform**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/PixelExplosionScreen.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5YBQKC59KXBND7P3KSV2J0P`
+  - commit: `2fcea38`
+  - measure commit: `6dfa0eb`
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (28,468,511 bytes) and the Poster (332,035 bytes).
+  - live: https://www.rnui.dev/recording/01M5YBQKC59KXBND7P3KSV2J0P
+  - approval: the maintainer approved this clip and its publication on 2026-10-27, R2 upload included. Ticket 12 stays open.
+  - local take: `.argent/recordings/pixel-explosion-1793089832529.mp4`
+  - local probe: H.264, 1206 by 2622 pixels, yuv420p, 17.966667 seconds, 48,601,546 bytes
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 25 fps, 650 frames, 26.000000 seconds, 28,468,511 bytes
+  - lineage: the local take and the staging Demo do not match. A frame at 2 seconds has a different MD5. `scripts/compress-demo.sh` uses `-fps_mode passthrough`. Do not treat the 18-second file as the source of the published bytes.
+  - deploy: production alias `https://www.rnui.dev` from commit `6dfa0eb`. Home shows `Search 355 recordings` and `Hewad Mubariz`.
 
-- [ ] **Bar chart / Voxel city morph**
+- [x] **Bar chart / Voxel city morph**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/charts/BarChartScreen.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5YFDVTEAMF4SN2TYRPKMHCN`
+  - commit: `916aa88`
+  - measure commit: `884ee80`
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (2,104,449 bytes) and the Poster (20,990 bytes).
+  - live: https://www.rnui.dev/recording/01M5YFDVTEAMF4SN2TYRPKMHCN
+  - approval: the maintainer approved this clip and its publication on 2026-10-27, R2 upload included. Ticket 12 stays open.
+  - local take: `.argent/recordings/bar-chart-1793097314000.mp4`, 37.35 seconds, 23,711,497 bytes
+  - trimmed take: `.argent/recordings/bar-chart-1793097314000-trim.mp4`, 2.2 seconds cut from the head, H.264, 1206 by 2622 pixels, yuv420p, 1329 frames, 34.850639 seconds
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 1329 frames, 34.824416 seconds, 2,104,449 bytes
+  - lineage: the staging Demo comes from the trimmed take. The two files have the same frame count.
+  - content: Volume and Digital tabs, Wait, Build the city, the Permits and Tax office detail cards, night mode, day mode and Flatten. The last frame matches the first frame.
+  - poster: Volume tab frame, AVIF, 1206 by 2622 pixels
+  - deploy: production alias `https://www.rnui.dev` from commit `884ee80`. Home shows `Search 356 recordings`.
 
 ## Enzo Manuel Mangano
 
@@ -148,21 +176,73 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Football s
 
   - source: https://github.com/enzomanuelmangano/demos/tree/884c9f8f969fd3fd24319da9ffcd9e54c0735445/src/animations/linear-sensors
   - video: published
-  - status: not-started
+  - status: built
+  - authorization: the maintainer accepted the pinned custom license on 2026-10-27. The maintainer authorized the build, local capture, publication and deployment.
+  - source verification: HEAD matches the pinned commit. The tracked source, package manifest and lockfile have no changes.
+  - checks: the frozen dependency install and TypeScript check passed. ESLint passed with 26 upstream warnings.
+  - native setup: Expo prebuild passed. CocoaPods installed 141 pods from 134 dependencies.
+  - initial failure: `RNIMenuActionItem.swift:186` uses `UIAction.subtitle` with an iOS 15.1 target. The API requires iOS 16.0.
+  - build authorization: after that failure, the maintainer authorized all necessary build work without further questions.
+  - build: passed with `IPHONEOS_DEPLOYMENT_TARGET=16.4`, Debug, arm64 simulator, Xcode 27.0, two parallel jobs.
+  - native lifecycle: iOS 27 rejected the generated legacy app lifecycle. The generated AppDelegate now uses Expo's existing `ExpoReactNativeFactoryProvider` and `EXExpoAppSceneDelegate`.
+  - change scope: only gitignored native files changed. The Demo source and its sensor inputs have no changes.
+  - runtime: version 0.3.1, bundle `com.reactiive.app`, opened `/animations/linear-sensors` on the iPhone 18 Pro simulator, iOS 27.0.
+  - capture blocker: live React hook inspection reports `isAvailable: false` for both ROTATION and GRAVITY. All sensor values stay zero.
+  - visual test: portrait and landscape screenshots have 0% pixel difference. Landscape-left, landscape-right and upside-down orientation controls produce no sensor motion.
+  - rejected take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793104755841.mp4`. This diagnostic take shows no sensor motion. It is not a publishable Demo.
+  - diagnostic probe: H.264, 1206 by 2622 pixels, yuvj420p, 18 frames, 0.600000 seconds, 38,599 bytes.
+  - site checks: TypeScript and all 798 tests passed. ESLint reports the existing `no-require-imports` error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+  - capture requirement: a genuine motion capture needs a physical iPhone and an exception to the simulator-only capture rule.
+  - maintainer decision: on 2026-10-27, the maintainer selected "Keep this blocked". The simulator-only capture rule stays unchanged. Linear Sensors stays blocked and unpublished.
+  - publication: no catalogue addition, Asset upload or deployment followed. The agent did not substitute the Expo Demo or fabricate sensor inputs.
 
-- [ ] **Sculptures in Words**
+- [x] **Sculptures in Words**
 
   - source: https://github.com/enzomanuelmangano/demos/tree/884c9f8f969fd3fd24319da9ffcd9e54c0735445/src/animations/sculptures-in-words
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5YRWEWS4V101MS7JERYDRMY`
+  - commit: `263e4cf`
+  - measure commit: `b22f8bf`
+  - category: Misc. The maintainer selected it on 2026-10-27.
+  - contributor: the existing spelling `Enzo Manuel Mangano (Reactiive)`, with the existing handles.
+  - approval: the maintainer approved each step on 2026-10-27, R2 upload and deployment included. Ticket 12 stays open.
+  - environment: the earlier clone was gone. The agent cloned the pinned commit again to `~/.cache/rnui-tmp/enzo-demos` and ran a frozen install. The installed 0.3.1 app loaded the new bundle with no native rebuild.
+  - runtime: Skia Graphite and WebGPU render on the iPhone 18 Pro simulator, iOS 27.0.
+  - local take: `.argent/recordings/sculptures-in-words-1793107102553.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 32.433333 seconds, no touch markers
+  - trimmed take: `.argent/recordings/sculptures-in-words-1793107102553-trim.mp4`. The trim cuts 1.6 seconds from the head, a 1.7-second still text hold and the 1.9-second tail. It converts full range to standard-range yuv420p.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 816 frames, 27.200000 seconds, 30,322,719 bytes
+  - lineage: the staging Demo comes from the trimmed take. The two files have the same frame count.
+  - content: an article scroll and the morph from text to the Venus de Milo. Swipes then show the Victory of Samothrace and the Thinker. The take ends with the morph back to text and a last scroll.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 179,858 bytes. The frame shows the article text.
+  - measure: `durationMs` 27200 and `aspect` 0.46. The grayscale Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (30,322,719 bytes) and the Poster (179,858 bytes).
+  - live: https://www.rnui.dev/recording/01M5YRWEWS4V101MS7JERYDRMY
+  - deploy: production alias `https://www.rnui.dev` from commit `b22f8bf`. Home shows `Search 357 recordings`.
 
 ## Solarin Johnson
 
-- [ ] **3D card scrolling**
+- [x] **3D card scrolling**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/3d-card-scrolling
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M5YX7TZPYTFVM4MGKD6WS1K8`
+  - category: `Misc`
+  - demoPath: `demo/misc/3d_card_scrolling_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/3d_card_scrolling_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-27.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793112209656.mp4`, H.264, 1206 by 2622 pixels, full-range yuvj420p, 12.766667 seconds, no touch markers
+  - trimmed take: `/Users/mrp/.cache/rnui-tmp/3d_card_scrolling_clean.mp4`. The trim keeps the first 11.5 seconds and converts full range to standard-range yuv420p.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 345 frames, 11.500000 seconds, 964,802 bytes
+  - lineage: the staging Demo comes from the trimmed take. Both files have 345 frames.
+  - content: the stack of five cards scrolls down and up with rubber-band overscroll. Each card tilts from -80 degrees to -60 degrees around the X axis.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 11,103 bytes. The frame shows the tilted glass card stack.
+  - measure: `durationMs` 11500 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (964,802 bytes) and the Poster (11,103 bytes).
+  - live: https://www.rnui.dev/recording/01M5YX7TZPYTFVM4MGKD6WS1K8
+  - deploy: production alias `https://www.rnui.dev` from commit `3bc6c48`. Home shows `Search 358 recordings`.
 
 - [ ] **Custom back-history menu**
 
@@ -385,3 +465,22 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Football s
 - 2026-10-26: `vercel --prod` deployed commit `8f1e137` from a clean `git archive` export.
 - 2026-10-26: `www.rnui.dev` serves `Search 351 recordings`.
 - 2026-10-26: The live bird flock Recording page answers 200 and shows the correct caption.
+- 2026-10-27: Catalogue commit `2fcea38` added the Pixel explosion / Tiger reform Recording.
+- 2026-10-27: Measure commit `6dfa0eb` wrote `durationMs` 26000, `aspect` 0.46 and `hue` 25.
+- 2026-10-27: `pnpm assets:publish` uploaded the Demo (28,468,511 bytes) and the Poster (332,035 bytes).
+- 2026-10-27: Both CDN URLs answer 200 on `https://cdn.rnui.dev`.
+- 2026-10-27: `vercel --prod` deployed commit `6dfa0eb`. `www.rnui.dev` serves `Search 355 recordings`.
+- 2026-10-27: The live Pixel explosion page answers 200 and shows the caption.
+- 2026-10-27: The local take is 17.966667 seconds. The staging Demo is 26.000000 seconds. The two files do not match.
+- 2026-10-27: Catalogue commit `916aa88` added the Bar chart / Voxel city morph Recording.
+- 2026-10-27: Measure commit `884ee80` wrote `durationMs` 34824, `aspect` 0.46 and `hue` 334.
+- 2026-10-27: `pnpm assets:publish` uploaded the Demo (2,104,449 bytes) and the Poster (20,990 bytes).
+- 2026-10-27: Both CDN URLs answer 200 on `https://cdn.rnui.dev`.
+- 2026-10-27: `vercel --prod` deployed commit `884ee80`. `www.rnui.dev` serves `Search 356 recordings`.
+- 2026-10-27: The live Bar chart page answers 200 and shows the caption.
+- 2026-10-27: Catalogue commit `263e4cf` added the Sculptures in Words Recording.
+- 2026-10-27: Measure commit `b22f8bf` wrote `durationMs` 27200 and `aspect` 0.46.
+- 2026-10-27: `pnpm assets:publish` uploaded the Demo (30,322,719 bytes) and the Poster (179,858 bytes).
+- 2026-10-27: Both CDN URLs answer 200 on `https://cdn.rnui.dev`.
+- 2026-10-27: `vercel --prod` deployed commit `b22f8bf`. `www.rnui.dev` serves `Search 357 recordings`.
+- 2026-10-27: The live Sculptures in Words page answers 200 and shows the caption.
