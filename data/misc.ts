@@ -3722,4 +3722,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T22:07:21.967Z",
   },
+  {
+    id: "01M5ZR2DC9FQ8KKPK6GF5WKBPJ",
+    caption: "Gesture speed and lock control",
+    demoPath:
+      "demo/misc/gesture_speed_and_lock_control_solarin_johnson.mp4",
+    posterPath:
+      "thumbnails/misc/gesture_speed_and_lock_control_solarin_johnson.avif",
+    durationMs: 5800,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/gesture-speed",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-27T22:35:36.714Z",
+  },
 ]
