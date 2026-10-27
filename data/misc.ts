@@ -3641,4 +3641,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T09:40:45.061Z",
   },
+  {
+    id: "01M5YFDVTEAMF4SN2TYRPKMHCN",
+    caption: "WebGPU bar chart / Voxel city morph",
+    demoPath:
+      "demo/misc/webgpu_bar_chart_voxel_city_morph_hewad_mubariz.mp4",
+    posterPath:
+      "thumbnails/misc/webgpu_bar_chart_voxel_city_morph_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/charts/BarChartScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-27T10:45:20.335Z",
+  },
 ]
