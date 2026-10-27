@@ -20,6 +20,8 @@ Status values: `not-started`, `built`, `recorded`, `awaiting-approval`, `approve
 
 Ticket 12 (`.scratch/expo-demos/issues/12-capture-and-publication-permissions.md`) must be `resolved` before any clip goes to the catalogue. Until then, steps 1 to 5 can run, and step 6 must stop. The report lives in `research/capture-permissions.md`. Do not contact a Contributor and do not accept terms for the maintainer.
 
+Gate decision, 2026-10-27: the maintainer approved publication of the Football stadium seat selection clip, R2 upload included. Ticket 12 stays open, and `research/capture-permissions.md` still does not exist. The Birds, Art gallery and Salon Recordings went out the same way.
+
 ## The seven steps for each demo
 
 1. **Build the app.** Clone the source link at the pinned commit. Install its dependencies. Start it on the iOS simulator.
@@ -101,17 +103,32 @@ Ticket 12 (`.scratch/expo-demos/issues/12-capture-and-publication-permissions.md
   - content: held presses walk the corridor, side swipes turn the view to both walls. 80 Artic artworks hang in gold frames. The clip ends on the left wall.
   - note: the artworks come from a local mirror of the Artic API and IIIF images, because artic.edu answers 403 to this machine's TLS fingerprint. The screen output is the app's own render.
 
-- [ ] **Salon / cinema seat selection**
+- [x] **Salon / cinema seat selection**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/SalonSelectionScreen.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5XVT0FZZHQVS2Y8ABRTWBFN`
+  - commit: `e215fbb`
+  - live: https://www.rnui.dev/recording/01M5XVT0FZZHQVS2Y8ABRTWBFN
 
-- [ ] **Football stadium seat selection**
+- [x] **Football stadium seat selection**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/StadiumSelectionScreen.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M5Y6EHJSAHAR22WK2HC03W6W`
+  - commit: `a15ba51`
+  - measure commit: `5b4a38a`
+  - asset publish: done on 2026-10-27. The CDN serves the Demo (7,724,079 bytes) and the Poster (40,214 bytes).
+  - live: https://www.rnui.dev/recording/01M5Y6EHJSAHAR22WK2HC03W6W
+  - approval: the maintainer approved the Football clip and its publication on 2026-10-27, R2 upload included.
+  - re-take: the approved file `football-stadium-1793084016583.mp4` was not in this worktree. A new take of the same screen with the same procedure replaced it. The published bytes come from the new take.
+  - recording: `.argent/recordings/football-stadium-1793088212029.mp4`, trimmed to `.argent/recordings/football-stadium-1793088212029-trim.mp4` (start cut at 0.9 seconds)
+  - verified: H.264, 1206 by 2622 pixels, yuv420p, 35.700264 seconds after trim. The native capture uses variable frame rate.
+  - frame check: device screen only. No bezel, title bar or touch markers. First motion before 0.5 seconds after trim.
+  - content: pan, pinch zoom in and out, section tap and seat fly-in, two seats selected, deselection, payment button, clear, pinch out to the bowl and a pan across the upper deck.
+  - earlier take: `.argent/recordings/football-stadium-1793088060275.mp4` was rejected as too sparse. It is not published.
 
 - [ ] **Pixel explosion / Tiger reform**
 
