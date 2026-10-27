@@ -3603,4 +3603,20 @@ caption: "Empty Qr Code",
     category: "Misc",
     created_at: "2026-10-27T05:02:26.816Z",
   },
+  {
+    id: "01M5Y6EHJSAHAR22WK2HC03W6W",
+    caption: "WebGPU football stadium seat selection",
+    demoPath:
+      "demo/misc/webgpu_football_stadium_seat_selection_hewad_mubariz.mp4",
+    posterPath:
+      "thumbnails/misc/webgpu_football_stadium_seat_selection_hewad_mubariz.avif",
+    contributor: "Hewad Mubariz",
+    source:
+      "https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/StadiumSelectionScreen.tsx",
+    twitterId: "hewad_mubariz",
+    linkedInId: "hewad-mubariz",
+    githubId: "hewad-mubariz",
+    category: "Misc",
+    created_at: "2026-10-27T08:08:25.511Z",
+  },
 ]
