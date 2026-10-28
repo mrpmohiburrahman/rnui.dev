@@ -489,10 +489,30 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Nathan Schroeder
 
-- [ ] **Linear Tab Bar**
+- [x] **Linear Tab Bar**
+
   - source: https://github.com/SchroederNathan/linear-tab-bar/blob/829f2778ee8a10b1076951edf5c2d7c7796de41a/src/components/TabBar/index.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - id: `01M614A7CFPS03R17ZTH7GC4E3`
+  - category: `Tab bars`
+  - demoPath: `demo/tabbars/linear_tab_bar_nathan_schroeder.mp4`
+  - posterPath: `thumbnails/tabbars/linear_tab_bar_nathan_schroeder.avif`
+  - permission: The maintainer approved this Recording on 2026-10-28. The approval covers capture, catalogue addition, R2 upload and production deployment. This exception covers only Linear Tab Bar. Ticket 12 stays open.
+  - environment: Bundle id `com.schroedernathan.linear-tab-bar` ran on the iPhone Simulator with the 27.0 SDK. This record does not name a device model.
+  - build notes: The first Release build failed because `RNSVG-RNSVGFilters` targeted iOS 12.4. The successful build used `IPHONEOS_DEPLOYMENT_TARGET=16.4` and the iPhone Simulator 27.0 SDK. The log `linear-tab-bar-xcodebuild-4.log` shows `BUILD SUCCEEDED`. This record does not claim a scene-delegate change.
+  - local take: `linear-tab-bar-take1.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, yuv420p, 392 frames, 13.545000 seconds, 2,662,312 bytes. The raw take has 189 backward PTS packets. `r_frame_rate` is 600/1.
+  - staging Demo: one hardware H.264 encode from the take, with `h264_videotoolbox`. The encode keeps all 392 frames and removes audio. PTS and DTS in the file are monotonic. A null-muxer DTS warning is not a file defect.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 392 frames, 13.562865 seconds, 2,898,250 bytes. Color space is bt709. Transfer is iec61966-2-1. Primaries are smpte432.
+  - content: The inspected Poster shows Discover and a clean 9:41 status bar. The inspected playback frame shows Favorites and the glass tab bar. The player shows 0:02 / 0:13 and no audio track.
+  - poster: the 2-second frame, AVIF, 1206 by 2622 pixels, 8,474 bytes. The Poster is mostly black, so measure omits `hue`.
+  - measure: `durationMs` 13563 and `aspect` 0.46. The script omits `hue`. Measure stamp is 2026-10-28T11:32:56.712Z. The CDN measurement processed this Recording only, skipped 369 complete records and reported no failures.
+  - asset publish: done on 2026-10-28. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. The local codec script passed for this Asset name. Both CDN objects answer 200 and have immutable one-year cache headers. The Demo type is video/mp4. The Poster type is image/avif.
+  - live: https://www.rnui.dev/recording/01M614A7CFPS03R17ZTH7GC4E3
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `a1ccb55` to `rnui-dev`. Project id is `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`. Deployment URL: `https://rnui-3z0e2zfvd-mrpmohiburrahmans-projects.vercel.app`. Inspect URL: `https://vercel.com/mrpmohiburrahmans-projects/rnui-dev/22GtAm7XL2sLUpqnxG7Q2Cj1SzTy`. The production alias is `https://www.rnui.dev`.
+  - live checks: the detail page returns 200 and shows the caption, Contributor and pinned source link. The pinned source link contains commit `829f2778`. Chrome loads the 1206 by 2622 Poster. After hydration, Play advances this Recording from 2.0069 to 2.7066 seconds. Duration is 13.562865 seconds. Playback is not paused, readyState is 4, and the media error is null. Chrome reports no page errors during this playback check. A Play click before hydration does not start playback.
+  - catalogue checks: Home shows `Search 370 recordings`. The desktop nav shows `Tab bars 22`. The detail header shows `TAB BARS · 22 RECORDINGS`. The phone sheet shows `Show 22 recordings` for Tab bars and `Show 1 recording` for Nathan Schroeder. The sheet header shows `CONTRIBUTOR · 28`. The Contributor page shows `1 of the 370 recordings here is theirs.` Both filters include Linear Tab Bar. Role queries for grid headings return empty while the filter dialog is open.
+  - evidence: temporary capture and browser evidence sits under `/var/folders/qx/f6l08vfx2xl5lbv23r5mjm380000gn/T/opencode/arena/ses_e7e2a6b6afferc8epXCHs4DcIk`. Inspected images include `live-poster.png`, `live-playback.png`, `sheet-tab-bars.png` and `sheet-nathan.png`. The passing Chrome script is `node_modules/.cache/ltb-live-check2.mjs`.
 
 ## Paul Nguyen
 
@@ -669,3 +689,10 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `2ddd27b`. `www.rnui.dev` serves `Search 369 recordings`.
 - 2026-10-28: Live Chrome checks passed for the Native paste inputs Poster, pinned source link and 15.103333-second Demo playback. Misc and Contributor filters both include the Recording. Their counts are 223 and 17.
 - 2026-10-28: All 799 tests passed across 49 files. TypeScript and changed-file format checks passed. Full lint still reports 167 warnings and the existing `no-require-imports` error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-28: Catalogue commit `469b7a5` added Linear Tab Bar (`01M614A7CFPS03R17ZTH7GC4E3`).
+- 2026-10-28: Measure commit `a1ccb55` wrote `durationMs` 13563 and `aspect` 0.46. The script omits `hue` because the Poster is mostly black.
+- 2026-10-28: `pnpm assets:publish` uploaded the Demo (2,898,250 bytes) and the Poster (8,474 bytes) without overwrites.
+- 2026-10-28: Both CDN URLs answer 200. The cache header is public, max-age 31536000, immutable.
+- 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `a1ccb55`. `www.rnui.dev` serves `Search 370 recordings`.
+- 2026-10-28: Live Chrome checks passed for the Linear Tab Bar Poster, pinned source link and 13.562865-second Demo playback. Tab bars shows 22 Recordings. The Contributor filter shows 1 Recording.
+- 2026-10-28: All 800 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
