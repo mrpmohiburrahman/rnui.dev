@@ -372,4 +372,18 @@ export const tabbars: Recording[] = [
     category: "Tab bars",
     created_at: "2026-10-28T04:24:24.712Z",
   },
+  {
+    id: "01M614A7CFPS03R17ZTH7GC4E3",
+    caption: "Linear Tab Bar",
+    demoPath: "demo/tabbars/linear_tab_bar_nathan_schroeder.mp4",
+    posterPath: "thumbnails/tabbars/linear_tab_bar_nathan_schroeder.avif",
+    contributor: "Nathan Schroeder",
+    source:
+      "https://github.com/SchroederNathan/linear-tab-bar/blob/829f2778ee8a10b1076951edf5c2d7c7796de41a/src/components/TabBar/index.tsx",
+    twitterId: "nater02",
+    linkedInId: "nathan-schroeder-a40aa2210",
+    githubId: "SchroederNathan",
+    category: "Tab bars",
+    created_at: "2026-10-28T11:28:50.064Z",
+  },
 ]
