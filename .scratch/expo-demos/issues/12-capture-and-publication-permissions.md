@@ -76,3 +76,6 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-28: The maintainer approved publication of the Twitter-style collapsing profile Recording (`01M6040R6SB6FD9SZVC7MYTMJJ`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. `research/capture-permissions.md` does not exist yet. The status stays `ready-for-agent`.
 - 2026-10-28: Catalogue commit `30227b3` added the Recording with `durationMs` 12900 and `aspect` 0.46. The neutral Poster has no dominant hue.
 - 2026-10-28: The CDN Demo is 211,325 bytes. The CDN Poster is 17,678 bytes. The live page returns 200.
+- 2026-10-28: The maintainer approved publication of the iOS liquid-glass curved bottom tabs Recording (`01M609NKWW217NVTKT796M12Z2`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
+- 2026-10-28: Catalogue commit `23fc0b2` added the Recording. Measure commit `2155d20` set `durationMs` to 10667, `aspect` to 0.46 and `hue` to 36.
+- 2026-10-28: The CDN Demo is 1,488,552 bytes. The CDN Poster is 105,719 bytes. The live page returns 200. The staging Demo comes from the trimmed take and has 320 frames.

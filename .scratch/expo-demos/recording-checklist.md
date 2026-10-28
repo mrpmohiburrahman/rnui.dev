@@ -1,6 +1,6 @@
 # Demo recording checklist
 
-Last updated: 2026-10-27
+Last updated: 2026-10-28
 Demo list: `app/preview-new-demos/candidates.ts`
 Local preview: `http://localhost:63038/preview-new-demos`
 Recording standard: `.claude/skills/add-recording/SKILL.md`
@@ -374,11 +374,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Rit3zh
 
-- [ ] **iOS liquid-glass curved bottom tabs**
+- [x] **iOS liquid-glass curved bottom tabs**
 
   - source: https://github.com/rit3zh/expo-curved-bottom-tabs/blob/62654b86b27601af2a67506b5b5df179ca508f36/src/components/curved-tabs.tsx
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M609NKWW217NVTKT796M12Z2`
+  - category: `Tab bars`
+  - demoPath: `demo/tabbars/curved_bottom_tabs_rit3zh.mp4`
+  - posterPath: `thumbnails/tabbars/curved_bottom_tabs_rit3zh.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-28. Ticket 12 stays open.
+  - environment: `com.mrpmohibur.expo-curved-bottom-tabs` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `62654b86b27601af2a67506b5b5df179ca508f36`.
+  - local take: `take1.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 518 frames, 11.146667 seconds, no touch markers.
+  - staging Demo: one H.264 encode from the take at 30 fps, trimmed to 0 to 10.6 seconds. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 320 frames, 10.666667 seconds, 1,488,552 bytes
+  - content: taps on the glass bar move the white pill between Home, Explore, Shots, Library and Profile. Each tab opens its own screen. The bar keeps its curve and glass blur over the photos.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 105,719 bytes. The frame shows the Home feed and the glass bar.
+  - measure: `durationMs` 10667, `aspect` 0.46 and `hue` 36.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (1,488,552 bytes) and the Poster (105,719 bytes).
+  - live: https://www.rnui.dev/recording/01M609NKWW217NVTKT796M12Z2
+  - deploy: production alias `https://www.rnui.dev` from commit `2155d20`. Home shows `Search 365 recordings`. The Tab bars filter lists 20 Recordings.
 
 - [ ] **iOS motion bottom tabs popovers**
 
