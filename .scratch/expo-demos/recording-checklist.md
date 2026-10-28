@@ -462,10 +462,30 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Arunabh Verma
 
-- [ ] **Native paste inputs**
+- [x] **Native paste inputs**
+
   - source: https://github.com/arunabhverma/expo-paste-input/blob/1f3e3b34ea99250c68e483c71f1217307874f12a/example/App.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - id: `01M60PCYPCKE04WSJR8TZHW6N6`
+  - category: `Misc`
+  - demoPath: `demo/misc/native_paste_inputs_arunabh_verma.mp4`
+  - posterPath: `thumbnails/misc/native_paste_inputs_arunabh_verma.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment for this Recording on 2026-10-28. This exception covers only Native paste inputs. Ticket 12 stays open.
+  - environment: `expo.modules.pasteinput.example` ran on the iPhone 18 Pro simulator, iOS 27.0, in light appearance. The source commit is `1f3e3b34ea99250c68e483c71f1217307874f12a`. The example uses Expo 54 and React Native 0.81.5. Its native module requires a custom build, not Expo Go.
+  - build notes: the first Release build failed because `SDWebImage-SDWebImage` targeted iOS 9.0. The agent stopped, and the maintainer approved the target change. The retry used `xcodebuild` with `IPHONEOS_DEPLOYMENT_TARGET=15.1` and `CODE_SIGNING_ALLOWED=NO`. iOS 27 required a scene delegate and `UIApplicationSceneManifest` in generated, gitignored native files. The Contributor's component and native module have no changes.
+  - local take: `native-paste-take3.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, yuv420p, 888 frames, 15.091667 seconds, 7,199,867 bytes. The take contains only the device screen, without touch markers. Take 1 contains a Safari return label. Take 2 contains mostly idle frames. Neither rejected take supplied the published Demo.
+  - staging Demo: one hardware H.264 encode from take 3, with `h264_videotoolbox`, `-allow_sw 0`, `-b:v 6M` and `-fps_mode passthrough`. The encode preserves all 888 frames and removes audio. `scripts/compress-demo.sh` has no changes.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 888 frames, 15.103333 seconds, 7,663,410 bytes. Full decoding passed with `-fps_mode passthrough -enc_time_base demux`.
+  - content: native Paste inserts three original landscape images from Photos. Close controls remove the middle, first and last attachments. A second Paste restores the three images. The Demo then shows text input, keyboard dismissal and composer focus. The send button has no handler, so the Demo makes no send claim.
+  - poster: the 2-second frame, AVIF, 1206 by 2622 pixels, 19,535 bytes. The frame shows all three images above the keyboard. `~/.local/bin/ffmpeg` encoded it with `libaom-av1` because no installed hardware AV1 encoder exists. Software decoding with `libdav1d` and the live Chrome image both passed.
+  - measure: `durationMs` 15103, `aspect` 0.46 and `hue` 26. The CDN measurement processed this Recording only, skipped 368 complete records and reported no failures.
+  - asset publish: done on 2026-10-28. The dry run found two new Assets. Publication uploaded the Demo and Poster without overwrites or failures. Production codec checks passed. Both CDN objects have immutable one-year cache headers.
+  - live: https://www.rnui.dev/recording/01M60PCYPCKE04WSJR8TZHW6N6
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `2ddd27b` to `rnui-dev`. Deployment URL: `https://rnui-86qd6bbov-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - live checks: the detail page returns 200 and shows the caption, Contributor and pinned source link. Chrome loads the 1206 by 2622 Poster. The Play button starts this Recording's CDN Demo. Playback advances from 1.0057 to 3.0068 seconds, with duration 15.103333 seconds and no media error. Chrome reports no page errors during this playback check.
+  - catalogue checks: Home shows `Search 369 recordings`. Misc shows 223 Recordings, and the Contributor filter shows 17 of 17. Both filters include Native paste inputs.
+  - evidence: temporary capture and browser evidence sits under `/var/folders/qx/f6l08vfx2xl5lbv23r5mjm380000gn/T/opencode/arena/ses_e7ecb2742ffeWk7DGYxxYkqmFX`. Inspected images include `native-paste-sheet3.png`, `native-paste-poster-verified.png`, `native-paste-live-poster.png` and `native-paste-live-playback.png`.
 
 ## Nathan Schroeder
 
@@ -643,3 +663,9 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-28: `pnpm assets:publish` uploaded the Demo (944,298 bytes) and the Poster (48,545 bytes). Both CDN URLs answer 200.
 - 2026-10-28: `vercel --prod` deployed commit `f915213`. `www.rnui.dev` serves `Search 368 recordings`.
 - 2026-10-28: The live Recording page answers 200 and shows the caption.
+- 2026-10-28: Catalogue commit `a7ce625` added Native paste inputs (`01M60PCYPCKE04WSJR8TZHW6N6`).
+- 2026-10-28: R2 publication uploaded the Demo (7,663,410 bytes) and the Poster (19,535 bytes) without overwrites. Production codec and cache-header checks passed.
+- 2026-10-28: Measure commit `2ddd27b` wrote `durationMs` 15103, `aspect` 0.46 and `hue` 26.
+- 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `2ddd27b`. `www.rnui.dev` serves `Search 369 recordings`.
+- 2026-10-28: Live Chrome checks passed for the Native paste inputs Poster, pinned source link and 15.103333-second Demo playback. Misc and Contributor filters both include the Recording. Their counts are 223 and 17.
+- 2026-10-28: All 799 tests passed across 49 files. TypeScript and changed-file format checks passed. Full lint still reports 167 warnings and the existing `no-require-imports` error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
