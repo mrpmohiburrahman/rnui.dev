@@ -128,4 +128,18 @@ export const bottomsheets: Recording[] = [
     category: "Bottom Sheets",
     created_at: "2026-10-11T13:44:03.744Z",
   },
+  {
+    id: "01M60F37CY3FZNWHXDSXR76AA9",
+    caption: "Stacked bottom sheets",
+    demoPath: "demo/bottomsheets/stacked_bottom_sheets_rit3zh.mp4",
+    posterPath:
+      "thumbnails/bottomsheets/stacked_bottom_sheets_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-stack-bottom-sheet/blob/9e2cc750f809ae5bd7eba986ed529adae3e4a581/components/BottomSheet.tsx",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Bottom Sheets",
+    created_at: "2026-10-28T05:18:00.609Z",
+  },
 ]
