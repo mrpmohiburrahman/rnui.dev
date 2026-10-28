@@ -345,6 +345,9 @@ export const tabbars: Recording[] = [
     caption: "Curved Bottom Tabs",
     demoPath: "demo/tabbars/curved_bottom_tabs_rit3zh.mp4",
     posterPath: "thumbnails/tabbars/curved_bottom_tabs_rit3zh.avif",
+    durationMs: 10667,
+    aspect: 0.46,
+    hue: 36,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-curved-bottom-tabs/blob/62654b86b27601af2a67506b5b5df179ca508f36/src/components/curved-tabs.tsx",
