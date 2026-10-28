@@ -73,3 +73,6 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-28: The maintainer approved publication of the Custom status bar and drawing canvas Recording (`01M600HA5TXV1QMN3M9WH4ZBR9`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. `research/capture-permissions.md` does not exist yet. The status stays `ready-for-agent`.
 - 2026-10-28: Catalogue commit `d2868fd` added the Recording with `durationMs` 9867 and `aspect` 0.46. The neutral Poster has no dominant hue.
 - 2026-10-28: The CDN Demo is 94,239 bytes. The CDN Poster is 8,358 bytes. The live page returns 200.
+- 2026-10-28: The maintainer approved publication of the Twitter-style collapsing profile Recording (`01M6040R6SB6FD9SZVC7MYTMJJ`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. `research/capture-permissions.md` does not exist yet. The status stays `ready-for-agent`.
+- 2026-10-28: Catalogue commit `30227b3` added the Recording with `durationMs` 12900 and `aspect` 0.46. The neutral Poster has no dominant hue.
+- 2026-10-28: The CDN Demo is 211,325 bytes. The CDN Poster is 17,678 bytes. The live page returns 200.
