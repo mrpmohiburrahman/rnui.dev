@@ -340,4 +340,17 @@ export const tabbars: Recording[] = [
     category: "Tab bars",
     created_at: "2025-11-25T19:55:41.000Z",
   },
+  {
+    id: "01M609NKWW217NVTKT796M12Z2",
+    caption: "Curved Bottom Tabs",
+    demoPath: "demo/tabbars/curved_bottom_tabs_rit3zh.mp4",
+    posterPath: "thumbnails/tabbars/curved_bottom_tabs_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-curved-bottom-tabs/blob/62654b86b27601af2a67506b5b5df179ca508f36/src/components/curved-tabs.tsx",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Tab bars",
+    created_at: "2026-10-28T03:43:17.189Z",
+  },
 ]
