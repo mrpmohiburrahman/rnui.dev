@@ -350,11 +350,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M600HA5TXV1QMN3M9WH4ZBR9
   - deploy: production alias `https://www.rnui.dev` from commit `d2868fd`. Home shows `Search 363 recordings`.
 
-- [ ] **Twitter-style collapsing profile**
+- [x] **Twitter-style collapsing profile**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/twitter-profile
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M6040R6SB6FD9SZVC7MYTMJJ`
+  - category: `Misc`
+  - demoPath: `demo/misc/twitter_style_collapsing_profile_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/twitter_style_collapsing_profile_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-28. Ticket 12 stays open.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: take 2 from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 421 frames, 19.716667 seconds, no touch markers. Take 1 used drags that were too large and held blank collapsed frames.
+  - staging Demo: one H.264 encode from the take at 30 fps, trimmed to 1.0-13.8 seconds. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 387 frames, 12.9 seconds, 211,325 bytes
+  - content: small drags collapse the header and shrink the avatar from full size to 0.6 scale. Reverse drags expand the header back to the top. A final pull shows the overscroll state.
+  - upstream defect: the source cover image URL returns 404 at every size, so the cover area renders white. The recording shows the source as-is. The avatar image loads.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 17,678 bytes. The frame shows the shrunken avatar and the profile text.
+  - measure: `durationMs` 12900 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (211,325 bytes) and the Poster (17,678 bytes).
+  - live: https://www.rnui.dev/recording/01M6040R6SB6FD9SZVC7MYTMJJ
+  - deploy: production alias `https://www.rnui.dev` from commit `30227b3`. Home shows `Search 364 recordings`.
 
 ## Rit3zh
 
