@@ -70,3 +70,6 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-27: The maintainer approved capture, catalogue addition, R2 upload and deployment for the Grok sidebar Recording (`01M5ZV4C5M3VFHXXNXYBJGE514`). This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
 - 2026-10-27: Catalogue commit `ccab130` added the Recording and set `durationMs` to 7500 and `aspect` to 0.46. The neutral Poster has no dominant hue.
 - 2026-10-27: The CDN Demo is 250,515 bytes. The CDN Poster is 21,714 bytes. The live page returns 200. The Demo joins two segments of the take and has 225 frames.
+- 2026-10-28: The maintainer approved publication of the Custom status bar and drawing canvas Recording (`01M600HA5TXV1QMN3M9WH4ZBR9`), R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. `research/capture-permissions.md` does not exist yet. The status stays `ready-for-agent`.
+- 2026-10-28: Catalogue commit `d2868fd` added the Recording with `durationMs` 9867 and `aspect` 0.46. The neutral Poster has no dominant hue.
+- 2026-10-28: The CDN Demo is 94,239 bytes. The CDN Poster is 8,358 bytes. The live page returns 200.
