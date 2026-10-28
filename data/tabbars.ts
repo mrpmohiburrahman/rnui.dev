@@ -361,6 +361,9 @@ export const tabbars: Recording[] = [
     caption: "Motion Bottom Tabs Popovers",
     demoPath: "demo/tabbars/motion_bottom_tabs_popovers_rit3zh.mp4",
     posterPath: "thumbnails/tabbars/motion_bottom_tabs_popovers_rit3zh.avif",
+    durationMs: 12300,
+    aspect: 0.46,
+    hue: 51,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-motion-tabs/blob/9a95ea9fa9839c6627bf15860797a208663369b4/src/motion-tabs/animated-tab-bar.tsx",
