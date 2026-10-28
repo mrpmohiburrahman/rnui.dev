@@ -83,3 +83,7 @@ A report alone does not clear unresolved publication permission.
 - 2026-10-28: The maintainer directed the completion of the Stacked bottom sheets Recording (`01M60F37CY3FZNWHXDSXR76AA9`), capture, R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
 - 2026-10-28: Catalogue commit `34dcbc8` added the Recording. Measure commit `6a0affb` set `durationMs` to 7700 and `aspect` to 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
 - 2026-10-28: The CDN Demo is 616,551 bytes. The CDN Poster is 20,179 bytes. The live page returns 200. Deploy commit `6a0affb` serves `Search 367 recordings` and the Bottom Sheets filter lists 8 Recordings.
+- 2026-10-28: The maintainer directed the completion of the Telegram-style avatar dynamic island scroll-collapse Recording (`01M60JFGAYN5V538REEJHM1DQ7`), capture, R2 upload and deployment included. This decision covers one clip. It does not resolve this ticket. The status stays `ready-for-agent`.
+- 2026-10-28: Catalogue commit `4be100f` added the Recording. Measure commit `f915213` set `durationMs` to 9401, `aspect` to 0.46 and `hue` to 218.
+- 2026-10-28: The CDN Demo is 944,298 bytes. The CDN Poster is 48,545 bytes. The live page returns 200. The staging Demo has 382 frames, the same count as the local take.
+- 2026-10-28: Deploy commit `f915213` serves `Search 368 recordings` and the Headers filter lists 4 Recordings.
