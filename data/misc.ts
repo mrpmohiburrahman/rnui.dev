@@ -3791,6 +3791,9 @@ export const misc: Recording[] = [
     caption: "Native paste inputs",
     demoPath: "demo/misc/native_paste_inputs_arunabh_verma.mp4",
     posterPath: "thumbnails/misc/native_paste_inputs_arunabh_verma.avif",
+    durationMs: 15103,
+    aspect: 0.46,
+    hue: 26,
     contributor: "Arunabh Verma",
     source:
       "https://github.com/arunabhverma/expo-paste-input/blob/1f3e3b34ea99250c68e483c71f1217307874f12a/example/App.tsx",
