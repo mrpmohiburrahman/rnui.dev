@@ -51,4 +51,18 @@ export const headers: Recording[] = [
     category: "Headers",
     created_at: "2024-12-23T06:01:08.844Z",
   },
+  {
+    id: "01M60JFGAYN5V538REEJHM1DQ7",
+    caption: "Telegram-style avatar dynamic island scroll-collapse",
+    demoPath: "demo/headers/telegram_avatar_dynamic_island_rit3zh.mp4",
+    posterPath:
+      "thumbnails/headers/telegram_avatar_dynamic_island_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-meatball-animation/blob/11fefeb91964d548081bf24d49a5c3d6e205cbac/app/profile.tsx",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Headers",
+    created_at: "2026-10-28T06:17:08.702Z",
+  },
 ]
