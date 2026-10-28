@@ -3786,4 +3786,18 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-28T02:04:25.178Z",
   },
+  {
+    id: "01M60PCYPCKE04WSJR8TZHW6N6",
+    caption: "Native paste inputs",
+    demoPath: "demo/misc/native_paste_inputs_arunabh_verma.mp4",
+    posterPath: "thumbnails/misc/native_paste_inputs_arunabh_verma.avif",
+    contributor: "Arunabh Verma",
+    source:
+      "https://github.com/arunabhverma/expo-paste-input/blob/1f3e3b34ea99250c68e483c71f1217307874f12a/example/App.tsx",
+    twitterId: "iamarunabh",
+    linkedInId: "arunabhv",
+    githubId: "arunabhverma",
+    category: "Misc",
+    created_at: "2026-10-28T07:25:39.404Z",
+  },
 ]
