@@ -21,3 +21,4 @@ This ticket is HITL. Record each decided Category in this ticket.
 - 2026-10-28: The maintainer selected Misc for Custom status bar and drawing canvas. The candidate is not Expo-listed. Recording `01M600HA5TXV1QMN3M9WH4ZBR9`.
 - 2026-10-28: The maintainer selected Misc for Twitter-style collapsing profile. The candidate is not Expo-listed. Recording `01M6040R6SB6FD9SZVC7MYTMJJ`.
 - 2026-10-28: The maintainer selected Tab bars for iOS liquid-glass curved bottom tabs. The Expo tags are `glass`, `tabs` and `navigation`. Recording `01M609NKWW217NVTKT796M12Z2`.
+- 2026-10-28: The maintainer selected Tab bars for iOS motion bottom tabs popovers. The Expo tags are `tabs`, `navigation`, `popover` and `menu`. Recording `01M60C12W8NNN1J5CYRB5CD10W`.

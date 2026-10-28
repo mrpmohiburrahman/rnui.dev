@@ -395,11 +395,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M609NKWW217NVTKT796M12Z2
   - deploy: production alias `https://www.rnui.dev` from commit `2155d20`. Home shows `Search 365 recordings`. The Tab bars filter lists 20 Recordings.
 
-- [ ] **iOS motion bottom tabs popovers**
+- [x] **iOS motion bottom tabs popovers**
 
   - source: https://github.com/rit3zh/expo-motion-tabs/blob/9a95ea9fa9839c6627bf15860797a208663369b4/src/motion-tabs/animated-tab-bar.tsx
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M60C12W8NNN1J5CYRB5CD10W`
+  - category: `Tab bars`
+  - demoPath: `demo/tabbars/motion_bottom_tabs_popovers_rit3zh.mp4`
+  - posterPath: `thumbnails/tabbars/motion_bottom_tabs_popovers_rit3zh.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-28. Ticket 12 stays open.
+  - environment: `com.mrpmohibur.expo-motion-tabs` ran on the iPhone 18 Pro simulator, iOS 27.0, in dark appearance. The release bundle contains the strings that commit `83bf634` added. Later commits change only the README, so the build is equal to the pinned source.
+  - local take: `take1.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 419 frames, 13.256667 seconds, no touch markers.
+  - staging Demo: one H.264 encode from the take at 30 fps, trimmed to 0.7 to 13.0 seconds after the fps filter. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 369 frames, 12.300000 seconds, 978,603 bytes
+  - content: a tap on each tab opens its popover above the bar. Home shows Continue Listening and a menu. Search and Profile show their own popovers. A tap outside closes the popover. The last tap opens and closes Home.
+  - poster: the 2-second frame from `scripts/generate-posters.ts`, AVIF, 1206 by 2622 pixels, 51,772 bytes. The frame shows the Home popover. The Homebrew ffmpeg has no AV1 encoder, so run the script with `~/.local/bin/ffmpeg` first on the PATH.
+  - measure: `durationMs` 12300, `aspect` 0.46 and `hue` 51.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (978,603 bytes) and the Poster (51,772 bytes).
+  - live: https://www.rnui.dev/recording/01M60C12W8NNN1J5CYRB5CD10W
+  - deploy: production alias `https://www.rnui.dev` from commit `d2da675`. Home shows `Search 366 recordings`. The Tab bars filter lists 21 Recordings.
 
 - [ ] **Stacked bottom sheets**
 
