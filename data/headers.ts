@@ -57,6 +57,9 @@ export const headers: Recording[] = [
     demoPath: "demo/headers/telegram_avatar_dynamic_island_rit3zh.mp4",
     posterPath:
       "thumbnails/headers/telegram_avatar_dynamic_island_rit3zh.avif",
+    durationMs: 9401,
+    aspect: 0.46,
+    hue: 218,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-meatball-animation/blob/11fefeb91964d548081bf24d49a5c3d6e205cbac/app/profile.tsx",
