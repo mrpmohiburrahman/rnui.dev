@@ -377,6 +377,8 @@ export const tabbars: Recording[] = [
     caption: "Linear Tab Bar",
     demoPath: "demo/tabbars/linear_tab_bar_nathan_schroeder.mp4",
     posterPath: "thumbnails/tabbars/linear_tab_bar_nathan_schroeder.avif",
+    durationMs: 13563,
+    aspect: 0.46,
     contributor: "Nathan Schroeder",
     source:
       "https://github.com/SchroederNathan/linear-tab-bar/blob/829f2778ee8a10b1076951edf5c2d7c7796de41a/src/components/TabBar/index.tsx",
