@@ -329,11 +329,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M5ZV4C5M3VFHXXNXYBJGE514
   - deploy: production alias `https://www.rnui.dev` from commit `ccab130`. Home shows `Search 362 recordings`.
 
-- [ ] **Custom status bar and drawing canvas**
+- [x] **Custom status bar and drawing canvas**
 
   - source: https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/status-bar
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M600HA5TXV1QMN3M9WH4ZBR9`
+  - category: `Misc`
+  - demoPath: `demo/misc/custom_status_bar_and_drawing_canvas_solarin_johnson.mp4`
+  - posterPath: `thumbnails/misc/custom_status_bar_and_drawing_canvas_solarin_johnson.avif`
+  - permission: the maintainer approved capture, catalogue addition, R2 upload and production deployment on 2026-10-28. Ticket 12 stays open.
+  - environment: `com.solarin.myapp.dev` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `7ebfc82c7cc8dad634f28b9f005ca6b800580c71`.
+  - local take: `final_take.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 353 frames, 12.178333 seconds, no touch markers.
+  - staging Demo: one H.264 encode from the take at 30 fps. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 296 frames, 9.866667 seconds, 94,239 bytes
+  - content: three drags draw a wave, a spiral and a zigzag on the dotted grid. A tap on the clock changes 06:45 to 6:45. A tap on the battery fills the outline.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 8,358 bytes. The frame shows the wave stroke and the clock readout.
+  - measure: `durationMs` 9867 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (94,239 bytes) and the Poster (8,358 bytes).
+  - live: https://www.rnui.dev/recording/01M600HA5TXV1QMN3M9WH4ZBR9
+  - deploy: production alias `https://www.rnui.dev` from commit `d2868fd`. Home shows `Search 363 recordings`.
 
 - [ ] **Twitter-style collapsing profile**
 
