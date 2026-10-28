@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 363", () => {
+  it("counts the whole catalogue, per Category, summing to 364", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -28,7 +28,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Headers: 3,
       List: 18,
       Loaders: 11,
-      Misc: 221,
+      Misc: 222,
       Onboarding: 6,
       Parallaxes: 4,
       Pickers: 1,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(363)
+    expect(total).toBe(364)
   })
 })
 
@@ -74,7 +74,7 @@ describe("contributorsByCount", () => {
       { name: "Enzo Manuel Mangano (Reactiive)", count: 139 },
       { name: "Hewad Mubariz", count: 39 },
       { name: "Blazej Kustra", count: 30 },
-      { name: "Solarin Johnson", count: 26 },
+      { name: "Solarin Johnson", count: 27 },
       { name: "Daniel Friyia", count: 19 },
       { name: "Arunabh Verma", count: 16 },
       { name: "Konstantinos Efkarpidis", count: 11 },
@@ -102,6 +102,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(363)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(364)
   })
 })

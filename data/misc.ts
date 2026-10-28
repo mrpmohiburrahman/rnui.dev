@@ -3771,4 +3771,19 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-28T01:03:33.563Z",
   },
+  {
+    id: "01M6040R6SB6FD9SZVC7MYTMJJ",
+    caption: "Twitter-style collapsing profile",
+    demoPath: "demo/misc/twitter_style_collapsing_profile_solarin_johnson.mp4",
+    posterPath:
+      "thumbnails/misc/twitter_style_collapsing_profile_solarin_johnson.avif",
+    durationMs: 12900,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/twitter-profile",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-28T02:04:25.178Z",
+  },
 ]
