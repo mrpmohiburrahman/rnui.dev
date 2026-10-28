@@ -3808,6 +3808,9 @@ export const misc: Recording[] = [
     caption: "Folio pop-up storybook",
     demoPath: "demo/misc/folio_pop_up_storybook_paul_nguyen.mp4",
     posterPath: "thumbnails/misc/folio_pop_up_storybook_paul_nguyen.avif",
+    durationMs: 59897,
+    aspect: 0.46,
+    hue: 335,
     contributor: "Paul Nguyen",
     source:
       "https://github.com/giaBaoJS/folio-popup-book/blob/f69ed6a949abd5048c5126b1bf39fd495b6da1bf/src/ui/Stage.tsx",
