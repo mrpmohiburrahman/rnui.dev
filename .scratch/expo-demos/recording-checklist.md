@@ -438,11 +438,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M60F37CY3FZNWHXDSXR76AA9
   - deploy: production alias `https://www.rnui.dev` from commit `6a0affb`. Home shows `Search 367 recordings`. The Bottom Sheets filter lists 8 Recordings.
 
-- [ ] **Telegram-style avatar dynamic island scroll-collapse**
+- [x] **Telegram-style avatar dynamic island scroll-collapse**
 
   - source: https://github.com/rit3zh/expo-meatball-animation/blob/11fefeb91964d548081bf24d49a5c3d6e205cbac/app/profile.tsx
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M60JFGAYN5V538REEJHM1DQ7`
+  - category: `Headers`
+  - demoPath: `demo/headers/telegram_avatar_dynamic_island_rit3zh.mp4`
+  - posterPath: `thumbnails/headers/telegram_avatar_dynamic_island_rit3zh.avif`
+  - permission: the maintainer directed the completion of this Recording on 2026-10-28, capture, catalogue addition, R2 upload and production deployment included. Ticket 12 stays open.
+  - environment: `com.mrpmohibur.expo-telegram-scroll-animation` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `11fefeb91964d548081bf24d49a5c3d6e205cbac`. The route forces light mode, so the screen is light.
+  - build notes: `expo run:ios` failed. `xcodebuild` built the app with a Podfile deployment target of 15.1. `fmt` needed `FMT_CONSTEVAL_DISABLED=1`. iOS 27 needed a scene delegate and `UIApplicationSceneManifest` in the gitignored native files. The tracked source has no change.
+  - local take: `take4.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, yuv420p, 382 frames, 9.376667 seconds, no touch markers.
+  - staging Demo: one H.264 encode from the take, 382 frames, 9.401213 seconds. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 382 frames, 9.401213 seconds, 944,298 bytes
+  - content: a tap on "Navigate to the profile screen" opens the profile. An upward swipe collapses the avatar into a small header island and shows Chrisanne and Software Developer. A downward swipe restores the large avatar. A second upward swipe collapses it again.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 48,545 bytes. The frame shows the large avatar above the Account list. The Homebrew ffmpeg has no AV1 encoder, so run the script with `~/.local/bin/ffmpeg` first on the PATH.
+  - measure: `durationMs` 9401, `aspect` 0.46 and `hue` 218.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (944,298 bytes) and the Poster (48,545 bytes).
+  - live: https://www.rnui.dev/recording/01M60JFGAYN5V538REEJHM1DQ7
+  - deploy: production alias `https://www.rnui.dev` from commit `f915213`. Home shows `Search 368 recordings`. The Headers filter lists 4 Recordings.
 
 ## Arunabh Verma
 
@@ -622,3 +638,8 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-27: Both CDN URLs answer 200 on `https://cdn.rnui.dev`.
 - 2026-10-27: `vercel --prod` deployed commit `b22f8bf`. `www.rnui.dev` serves `Search 357 recordings`.
 - 2026-10-27: The live Sculptures in Words page answers 200 and shows the caption.
+- 2026-10-28: Catalogue commit `4be100f` added the Telegram-style avatar header Recording `01M60JFGAYN5V538REEJHM1DQ7`.
+- 2026-10-28: Measure commit `f915213` wrote `durationMs` 9401, `aspect` 0.46 and `hue` 218.
+- 2026-10-28: `pnpm assets:publish` uploaded the Demo (944,298 bytes) and the Poster (48,545 bytes). Both CDN URLs answer 200.
+- 2026-10-28: `vercel --prod` deployed commit `f915213`. `www.rnui.dev` serves `Search 368 recordings`.
+- 2026-10-28: The live Recording page answers 200 and shows the caption.
