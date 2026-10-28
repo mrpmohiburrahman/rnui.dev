@@ -134,6 +134,8 @@ export const bottomsheets: Recording[] = [
     demoPath: "demo/bottomsheets/stacked_bottom_sheets_rit3zh.mp4",
     posterPath:
       "thumbnails/bottomsheets/stacked_bottom_sheets_rit3zh.avif",
+    durationMs: 7700,
+    aspect: 0.46,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-stack-bottom-sheet/blob/9e2cc750f809ae5bd7eba986ed529adae3e4a581/components/BottomSheet.tsx",
