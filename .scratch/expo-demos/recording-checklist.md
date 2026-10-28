@@ -516,10 +516,25 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Paul Nguyen
 
-- [ ] **Folio pop-up storybook**
+- [x] **Folio pop-up storybook**
   - source: https://github.com/giaBaoJS/folio-popup-book/blob/f69ed6a949abd5048c5126b1bf39fd495b6da1bf/src/ui/Stage.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M61BC8B5ZKNR0M4XFMGZJ14C`
+  - commit: `786406d`
+  - measure commit: `e009994`
+  - asset publish: done on 2026-10-28. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. The local codec script passed for this Asset name. Both CDN objects answer 200 and have immutable one-year cache headers. The Demo type is video/mp4. The Poster type is image/avif.
+  - live: https://www.rnui.dev/recording/01M61BC8B5ZKNR0M4XFMGZJ14C
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `e009994` to `rnui-dev`. Project id is `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`. Inspect URL: `https://vercel.com/mrpmohiburrahmans-projects/rnui-dev/5GLDQcTKaq4GQq5vzZTwx7sxYHYF`. The production alias is `https://www.rnui.dev`.
+  - approval: the maintainer approved the full workflow for this Recording on 2026-10-28, including capture, R2 upload and production deployment. Ticket 12 stays open.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/folio-raw.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 60.771667 seconds, 165,304,542 bytes.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 6532 frames, 59.896667 seconds, 17,113,374 bytes.
+  - frame check: device screen only. No bezel or touch markers. Splash, open book, Woods, Attic, Lantern and return to cover all appear.
+  - hinge note: iOS 27.0 lacks `UIHinge`. The local FolioHingeModule reports `isSupported` false. The showreel tap fallback covers capture.
+  - poster: t6 open-book frame. AVIF, 1206 by 2622 pixels, 56,888 bytes. Mean luminance 85.1.
+  - live checks: the detail page returns 200 and shows the caption, Contributor and pinned source link. The pinned source link contains commit `f69ed6a9`. Chrome loads the 1206 by 2622 Poster. After hydration, Play advances this Recording from 0.0911 to 0.9978 seconds. Duration is 59.896667 seconds. Playback is not paused, readyState is 4, and the media error is null. Chrome reports no page errors.
+  - catalogue checks: Home shows `Search 371 recordings`. The desktop nav shows `Misc 224`. The detail header shows `MISC · 224 RECORDINGS`. The detail page shows `1 of the 371 recordings here is theirs.` The phone sheet shows `CONTRIBUTOR · 29` and `Show 1 recording` for Paul Nguyen. The contributors index shows `29 CONTRIBUTORS · 371 RECORDINGS`. The Paul Nguyen filter page heading is Paul Nguyen with one active facet and the Folio card. Both Misc and Paul Nguyen filters include Folio. Role queries for grid headings return empty while the filter dialog is open.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/folio`. Inspected images include `live-poster.png`, `live-playback.png`, `sheet-home.png` and `sheet-misc.png`. The passing Chrome script is `node_modules/.cache/folio-live-check.mjs`.
 
 ## Pablo Giraud-Carrier
 
@@ -696,3 +711,10 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `a1ccb55`. `www.rnui.dev` serves `Search 370 recordings`.
 - 2026-10-28: Live Chrome checks passed for the Linear Tab Bar Poster, pinned source link and 13.562865-second Demo playback. Tab bars shows 22 Recordings. The Contributor filter shows 1 Recording.
 - 2026-10-28: All 800 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-28: Catalogue commit `786406d` added Folio pop-up storybook (`01M61BC8B5ZKNR0M4XFMGZJ14C`).
+- 2026-10-28: Measure commit `e009994` wrote `durationMs` 59897, `aspect` 0.46 and `hue` 335.
+- 2026-10-28: `pnpm assets:publish` uploaded the Demo (17,113,374 bytes) and the Poster (56,888 bytes) without overwrites.
+- 2026-10-28: Both CDN URLs answer 200. The cache header is public, max-age 31536000, immutable.
+- 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `e009994`. `www.rnui.dev` serves `Search 371 recordings`.
+- 2026-10-28: Live Chrome checks passed for the Folio poster, pinned source link and 59.896667-second Demo playback. Misc shows 224 Recordings. The Contributor filter shows 1 Recording for Paul Nguyen. The sheet header shows `CONTRIBUTOR · 29`.
+- 2026-10-28: All 801 tests passed across 119 files. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
