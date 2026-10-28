@@ -356,4 +356,17 @@ export const tabbars: Recording[] = [
     category: "Tab bars",
     created_at: "2026-10-28T03:43:17.189Z",
   },
+  {
+    id: "01M60C12W8NNN1J5CYRB5CD10W",
+    caption: "Motion Bottom Tabs Popovers",
+    demoPath: "demo/tabbars/motion_bottom_tabs_popovers_rit3zh.mp4",
+    posterPath: "thumbnails/tabbars/motion_bottom_tabs_popovers_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-motion-tabs/blob/9a95ea9fa9839c6627bf15860797a208663369b4/src/motion-tabs/animated-tab-bar.tsx",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Tab bars",
+    created_at: "2026-10-28T04:24:24.712Z",
+  },
 ]

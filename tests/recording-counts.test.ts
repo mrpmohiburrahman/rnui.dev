@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 365", () => {
+  it("counts the whole catalogue, per Category, summing to 366", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -33,14 +33,14 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Parallaxes: 4,
       Pickers: 1,
       Sliders: 19,
-      "Tab bars": 20,
+      "Tab bars": 21,
     })
 
     const total = Object.values(RECORDINGS_PER_CATEGORY).reduce(
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(365)
+    expect(total).toBe(366)
   })
 })
 
@@ -97,12 +97,12 @@ describe("contributorsByCount", () => {
       { name: "Arnaud Dellinger (evening kid)", count: 2 },
       { name: "Enes Öztürk", count: 2 },
       { name: "Epicode | 0xV", count: 2 },
+      { name: "Ritesh", count: 2 },
       { name: "Zakaria Kerkeb", count: 2 },
       { name: "Hubert Ryan", count: 1 },
-      { name: "Ritesh", count: 1 },
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(365)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(366)
   })
 })
