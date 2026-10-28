@@ -3803,4 +3803,17 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-28T07:25:39.404Z",
   },
+  {
+    id: "01M61BC8B5ZKNR0M4XFMGZJ14C",
+    caption: "Folio pop-up storybook",
+    demoPath: "demo/misc/folio_pop_up_storybook_paul_nguyen.mp4",
+    posterPath: "thumbnails/misc/folio_pop_up_storybook_paul_nguyen.avif",
+    contributor: "Paul Nguyen",
+    source:
+      "https://github.com/giaBaoJS/folio-popup-book/blob/f69ed6a949abd5048c5126b1bf39fd495b6da1bf/src/ui/Stage.tsx",
+    twitterId: "BNguyen86186",
+    githubId: "giaBaoJS",
+    category: "Misc",
+    created_at: "2026-10-28T13:31:32.000Z",
+  },
 ]
