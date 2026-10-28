@@ -416,11 +416,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - live: https://www.rnui.dev/recording/01M60C12W8NNN1J5CYRB5CD10W
   - deploy: production alias `https://www.rnui.dev` from commit `d2da675`. Home shows `Search 366 recordings`. The Tab bars filter lists 21 Recordings.
 
-- [ ] **Stacked bottom sheets**
+- [x] **Stacked bottom sheets**
 
   - source: https://github.com/rit3zh/expo-stack-bottom-sheet/blob/9e2cc750f809ae5bd7eba986ed529adae3e4a581/components/BottomSheet.tsx
   - video: published
-  - status: not-started
+  - status: recorded
+  - id: `01M60F37CY3FZNWHXDSXR76AA9`
+  - category: `Bottom Sheets`
+  - demoPath: `demo/bottomsheets/stacked_bottom_sheets_rit3zh.mp4`
+  - posterPath: `thumbnails/bottomsheets/stacked_bottom_sheets_rit3zh.avif`
+  - permission: the maintainer directed the completion of this Recording on 2026-10-28, capture, catalogue addition, R2 upload and production deployment included. Ticket 12 stays open.
+  - environment: `com.mrpmohibur.expo-stack-bottom-sheet` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `9e2cc750f809ae5bd7eba986ed529adae3e4a581`. The route forces dark mode, so the screen is dark.
+  - build notes: `expo run:ios` failed. `xcodebuild` built the app with a Podfile deployment target of 15.1. `fmt` needed `FMT_CONSTEVAL=0`. iOS 27 needed a scene delegate and `UIApplicationSceneManifest` in the gitignored native files. The tracked source has no change.
+  - local take: `take4.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 299 frames, 8.600000 seconds, no touch markers.
+  - staging Demo: one H.264 encode from the take at 30 fps, trimmed to 0.9 to 8.6 seconds after the fps filter. It sets the sRGB transfer function and the P3 primaries, which matches the published Demos.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 231 frames, 7.700000 seconds, 616,551 bytes
+  - content: a tap on Task opens a sheet over the dashboard. A tap on Options opens a second sheet above the first. A tap on Notifications opens a third sheet. A tap on its close button closes that sheet. Swipes down close the Options sheet and then the Task sheet.
+  - poster: the 2-second frame from `pnpm posters:generate`, AVIF, 1206 by 2622 pixels, 20,179 bytes. The frame shows the Task sheet under the Options sheet. The Homebrew ffmpeg has no AV1 encoder, so run the script with `~/.local/bin/ffmpeg` first on the PATH.
+  - measure: `durationMs` 7700 and `aspect` 0.46. The neutral Poster has no dominant hue, so the script omits `hue`.
+  - asset publish: done on 2026-10-28. The CDN serves the Demo (616,551 bytes) and the Poster (20,179 bytes).
+  - live: https://www.rnui.dev/recording/01M60F37CY3FZNWHXDSXR76AA9
+  - deploy: production alias `https://www.rnui.dev` from commit `6a0affb`. Home shows `Search 367 recordings`. The Bottom Sheets filter lists 8 Recordings.
 
 - [ ] **Telegram-style avatar dynamic island scroll-collapse**
 
