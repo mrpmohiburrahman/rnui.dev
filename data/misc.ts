@@ -1792,7 +1792,7 @@ export const misc: Recording[] = [
 
   {
     id: "01KAY9AT32JJ2S1FXB1D8EGGH5",
-caption: "Empty Qr Code",
+    caption: "Empty Qr Code",
     demoPath: "demo/misc/empty_qr_code_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/empty_qr_code_v2_enzo_manuel_mangano_reactiive.avif",
@@ -2224,7 +2224,8 @@ caption: "Empty Qr Code",
   {
     id: "01KAY9AY42DFE1M9NFCHKXEGC0",
     caption: "Qr Code Generator",
-    demoPath: "demo/misc/qr_code_generator_v2_enzo_manuel_mangano_reactiive.mp4",
+    demoPath:
+      "demo/misc/qr_code_generator_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/qr_code_generator_v2_enzo_manuel_mangano_reactiive.avif",
     durationMs: 13175,
@@ -2594,7 +2595,8 @@ caption: "Empty Qr Code",
   {
     id: "01M33JV1VXFNRVXFWSH6K9X7XA",
     caption: "Scrollable Shapes",
-    demoPath: "demo/misc/scrollable_shapes_v2_enzo_manuel_mangano_reactiive.mp4",
+    demoPath:
+      "demo/misc/scrollable_shapes_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/scrollable_shapes_v2_enzo_manuel_mangano_reactiive.avif",
     durationMs: 12383,
@@ -2612,7 +2614,8 @@ caption: "Empty Qr Code",
   {
     id: "01M33JV1VXECCZ92P3AQZQA2WY",
     caption: "Cherry Blossom QR",
-    demoPath: "demo/misc/cherry_blossom_qr_v2_enzo_manuel_mangano_reactiive.mp4",
+    demoPath:
+      "demo/misc/cherry_blossom_qr_v2_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/cherry_blossom_qr_v2_enzo_manuel_mangano_reactiive.avif",
     durationMs: 14139,
@@ -3426,8 +3429,10 @@ caption: "Empty Qr Code",
   {
     id: "01M4NPZHSSTNAX40DTRH9GRQY4",
     caption: "Chrome Like Pull To Refresh Create Tab Dismiss",
-    demoPath: "demo/misc/chrome_like_pull_to_refresh_create_tab_dismiss_solarin_johnson.mp4",
-    posterPath: "thumbnails/misc/chrome_like_pull_to_refresh_create_tab_dismiss_solarin_johnson.avif",
+    demoPath:
+      "demo/misc/chrome_like_pull_to_refresh_create_tab_dismiss_solarin_johnson.mp4",
+    posterPath:
+      "thumbnails/misc/chrome_like_pull_to_refresh_create_tab_dismiss_solarin_johnson.avif",
     durationMs: 5426,
     aspect: 0.46,
     contributor: "Solarin Johnson",
@@ -3522,7 +3527,8 @@ caption: "Empty Qr Code",
     id: "01M5VYA960RD9FFGB03VRXFSR2",
     caption: "WebGPU 3D model product viewer",
     demoPath: "demo/misc/webgpu_3d_model_product_viewer_hewad_mubariz.mp4",
-    posterPath: "thumbnails/misc/webgpu_3d_model_product_viewer_hewad_mubariz.avif",
+    posterPath:
+      "thumbnails/misc/webgpu_3d_model_product_viewer_hewad_mubariz.avif",
     durationMs: 26900,
     aspect: 0.46,
     hue: 27,
@@ -3556,7 +3562,8 @@ caption: "Empty Qr Code",
     id: "01M5W957BEPMJB2BBGJTBJZ1C3",
     caption: "WebGPU bird flock murmuration",
     demoPath: "demo/misc/webgpu_bird_flock_murmuration_hewad_mubariz.mp4",
-    posterPath: "thumbnails/misc/webgpu_bird_flock_murmuration_hewad_mubariz.avif",
+    posterPath:
+      "thumbnails/misc/webgpu_bird_flock_murmuration_hewad_mubariz.avif",
     durationMs: 40033,
     aspect: 0.46,
     hue: 16,
@@ -3573,7 +3580,8 @@ caption: "Empty Qr Code",
     id: "01M5XM7QMSMRZJMMAAMNEA2PC7",
     caption: "WebGPU art gallery corridor",
     demoPath: "demo/misc/webgpu_art_gallery_corridor_hewad_mubariz.mp4",
-    posterPath: "thumbnails/misc/webgpu_art_gallery_corridor_hewad_mubariz.avif",
+    posterPath:
+      "thumbnails/misc/webgpu_art_gallery_corridor_hewad_mubariz.avif",
     durationMs: 45000,
     aspect: 0.46,
     hue: 24,
@@ -3590,7 +3598,8 @@ caption: "Empty Qr Code",
     id: "01M5XVT0FZZHQVS2Y8ABRTWBFN",
     caption: "WebGPU salon seat selection",
     demoPath: "demo/misc/webgpu_salon_seat_selection_hewad_mubariz.mp4",
-    posterPath: "thumbnails/misc/webgpu_salon_seat_selection_hewad_mubariz.avif",
+    posterPath:
+      "thumbnails/misc/webgpu_salon_seat_selection_hewad_mubariz.avif",
     durationMs: 16433,
     aspect: 0.46,
     hue: 43,
@@ -3625,8 +3634,7 @@ caption: "Empty Qr Code",
   {
     id: "01M5YBQKC59KXBND7P3KSV2J0P",
     caption: "WebGPU pixel explosion / Tiger reform",
-    demoPath:
-      "demo/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.mp4",
+    demoPath: "demo/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.mp4",
     posterPath:
       "thumbnails/misc/webgpu_pixel_explosion_tiger_reform_hewad_mubariz.avif",
     durationMs: 26000,
@@ -3644,8 +3652,7 @@ caption: "Empty Qr Code",
   {
     id: "01M5YFDVTEAMF4SN2TYRPKMHCN",
     caption: "WebGPU bar chart / Voxel city morph",
-    demoPath:
-      "demo/misc/webgpu_bar_chart_voxel_city_morph_hewad_mubariz.mp4",
+    demoPath: "demo/misc/webgpu_bar_chart_voxel_city_morph_hewad_mubariz.mp4",
     posterPath:
       "thumbnails/misc/webgpu_bar_chart_voxel_city_morph_hewad_mubariz.avif",
     durationMs: 34824,
@@ -3663,8 +3670,7 @@ caption: "Empty Qr Code",
   {
     id: "01M5YRWEWS4V101MS7JERYDRMY",
     caption: "Sculptures in Words",
-    demoPath:
-      "demo/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.mp4",
+    demoPath: "demo/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.mp4",
     posterPath:
       "thumbnails/misc/sculptures_in_words_enzo_manuel_mangano_reactiive.avif",
     durationMs: 27200,
@@ -3695,10 +3701,8 @@ caption: "Empty Qr Code",
   {
     id: "01M5YZ0P52Y07KKY7215ZV6GAR",
     caption: "Custom back-history menu",
-    demoPath:
-      "demo/misc/custom_back_history_menu_solarin_johnson.mp4",
-    posterPath:
-      "thumbnails/misc/custom_back_history_menu_solarin_johnson.avif",
+    demoPath: "demo/misc/custom_back_history_menu_solarin_johnson.mp4",
+    posterPath: "thumbnails/misc/custom_back_history_menu_solarin_johnson.avif",
     durationMs: 11400,
     aspect: 0.46,
     contributor: "Solarin Johnson",
@@ -3725,8 +3729,7 @@ caption: "Empty Qr Code",
   {
     id: "01M5ZR2DC9FQ8KKPK6GF5WKBPJ",
     caption: "Gesture speed and lock control",
-    demoPath:
-      "demo/misc/gesture_speed_and_lock_control_solarin_johnson.mp4",
+    demoPath: "demo/misc/gesture_speed_and_lock_control_solarin_johnson.mp4",
     posterPath:
       "thumbnails/misc/gesture_speed_and_lock_control_solarin_johnson.avif",
     durationMs: 5800,
@@ -3751,5 +3754,21 @@ caption: "Empty Qr Code",
     githubId: "Solarin-Johnson",
     category: "Misc",
     created_at: "2026-10-27T23:29:06.741Z",
+  },
+  {
+    id: "01M600HA5TXV1QMN3M9WH4ZBR9",
+    caption: "Custom status bar and drawing canvas",
+    demoPath:
+      "demo/misc/custom_status_bar_and_drawing_canvas_solarin_johnson.mp4",
+    posterPath:
+      "thumbnails/misc/custom_status_bar_and_drawing_canvas_solarin_johnson.avif",
+    durationMs: 9867,
+    aspect: 0.46,
+    contributor: "Solarin Johnson",
+    source:
+      "https://github.com/Solarin-Johnson/my-app/tree/7ebfc82c7cc8dad634f28b9f005ca6b800580c71/app/status-bar",
+    githubId: "Solarin-Johnson",
+    category: "Misc",
+    created_at: "2026-10-28T01:03:33.563Z",
   },
 ]
