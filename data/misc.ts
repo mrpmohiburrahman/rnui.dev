@@ -3869,4 +3869,17 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-29T06:00:15.993Z",
   },
+  {
+    id: "01M63D201GJGJNH4BXPTCHDM4R",
+    caption: "Sharing Intent",
+    demoPath: "demo/misc/sharing_intent_phil_pluckthun.mp4",
+    posterPath: "thumbnails/misc/sharing_intent_phil_pluckthun.avif",
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/sharing-intent/src/app/+native-intent.ts",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-10-29T08:40:06.449Z",
+  },
 ]
