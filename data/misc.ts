@@ -3853,4 +3853,17 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-29T02:59:24.106Z",
   },
+  {
+    id: "01M638Y0VQGV6DT5YGPTV4Z175",
+    caption: "iOS Live Activity",
+    demoPath: "demo/misc/ios_live_activity_phil_pluckthun.mp4",
+    posterPath: "thumbnails/misc/ios_live_activity_phil_pluckthun.avif",
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/live-activity/src/live-activity.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-10-29T07:28:01.912Z",
+  },
 ]
