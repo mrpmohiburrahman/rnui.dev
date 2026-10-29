@@ -3819,4 +3819,18 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-28T13:31:32.000Z",
   },
+  {
+    id: "01M62JHEXF0B2C7J6KP5FK7FN2",
+    caption: "Daily Crumple: swipe fold, edge stretch and corner tear",
+    demoPath:
+      "demo/misc/daily_crumple_swipe_fold_edge_stretch_and_corner_tear_pablo_giraud_carrier.mp4",
+    posterPath:
+      "thumbnails/misc/daily_crumple_swipe_fold_edge_stretch_and_corner_tear_pablo_giraud_carrier.avif",
+    contributor: "Pablo Giraud-Carrier",
+    source:
+      "https://github.com/pablogdcr/daily-crumple/blob/1df1560f88c09aeb1fe3ec84794183ff1db70337/src/effects/CrinkleOverlay.tsx",
+    githubId: "pablogdcr",
+    category: "Misc",
+    created_at: "2026-10-29T00:56:41.649Z",
+  },
 ]
