@@ -388,4 +388,17 @@ export const tabbars: Recording[] = [
     category: "Tab bars",
     created_at: "2026-10-28T11:28:50.064Z",
   },
+  {
+    id: "01M62ZJNKBJE5SJNA7ZMNBHS4P",
+    caption: "Bottom Tab Accessory",
+    demoPath: "demo/tabbars/bottom_tab_accessory_phil_pluckthun.mp4",
+    posterPath: "thumbnails/tabbars/bottom_tab_accessory_phil_pluckthun.avif",
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/bottom-accessory/src/app/(tabs)/_layout.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Tab bars",
+    created_at: "2026-10-29T04:44:32.749Z",
+  },
 ]

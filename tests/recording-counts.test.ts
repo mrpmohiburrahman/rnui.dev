@@ -14,7 +14,7 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 373", () => {
+  it("counts the whole catalogue, per Category, summing to 374", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
@@ -33,20 +33,20 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       Parallaxes: 4,
       Pickers: 1,
       Sliders: 19,
-      "Tab bars": 22,
+      "Tab bars": 23,
     })
 
     const total = Object.values(RECORDINGS_PER_CATEGORY).reduce(
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(373)
+    expect(total).toBe(374)
   })
 })
 
 describe("RECORDINGS_PER_CONTRIBUTOR", () => {
-  it("counts 31 contributors, the whole catalogue again", () => {
-    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(31)
+  it("counts 32 contributors, the whole catalogue again", () => {
+    expect(Object.keys(RECORDINGS_PER_CONTRIBUTOR)).toHaveLength(32)
     expect(RECORDINGS_PER_CONTRIBUTOR["Enzo Manuel Mangano (Reactiive)"]).toBe(
       139
     )
@@ -103,10 +103,11 @@ describe("contributorsByCount", () => {
       { name: "Nathan Schroeder", count: 1 },
       { name: "Pablo Giraud-Carrier", count: 1 },
       { name: "Paul Nguyen", count: 1 },
+      { name: "Phil Pluckthun", count: 1 },
       { name: "Tomek Czajecki", count: 1 },
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(373)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(374)
   })
 })
