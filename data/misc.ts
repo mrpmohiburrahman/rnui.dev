@@ -3826,6 +3826,9 @@ export const misc: Recording[] = [
       "demo/misc/daily_crumple_swipe_fold_edge_stretch_and_corner_tear_pablo_giraud_carrier.mp4",
     posterPath:
       "thumbnails/misc/daily_crumple_swipe_fold_edge_stretch_and_corner_tear_pablo_giraud_carrier.avif",
+    durationMs: 35127,
+    aspect: 0.46,
+    hue: 43,
     contributor: "Pablo Giraud-Carrier",
     source:
       "https://github.com/pablogdcr/daily-crumple/blob/1df1560f88c09aeb1fe3ec84794183ff1db70337/src/effects/CrinkleOverlay.tsx",
