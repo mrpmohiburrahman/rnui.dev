@@ -562,11 +562,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Tomek Czajecki
 
-- [ ] **iOS in Expo: full app walkthrough (one animation)**
+- [x] **iOS in Expo: full app walkthrough (one animation)**
   - source: https://github.com/tchayen/ios-in-expo/tree/8e0991d15647f98dce2f781547b952ce03d006e2/src/app
   - screens: settings, personal hotspot, health summary, TestFlight onboarding, new event, sign in, view options
   - video: published (seven clips joined into one walkthrough)
-  - status: not-started
+  - status: published
+  - catalogue: `01M62SJ4T9Z7QQK43ZP14ECR8H`
+  - commit: `d8dd20f`
+  - measure commit: `787bff0`
+  - asset publish: done on 2026-10-29. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. The local codec script passed for this Asset name. Both CDN objects answer 200. The Demo type is video/mp4. The Poster type is image/avif.
+  - live: https://www.rnui.dev/recording/01M62SJ4T9Z7QQK43ZP14ECR8H
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `787bff0` to `rnui-dev`. Project id is `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`. Deployment URL is `https://rnui-fyop7natb-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - approval: the maintainer approved the full workflow for this Recording on 2026-10-29. The approval covers capture, catalogue addition, R2 upload and production deployment. The maintainer selected Misc for the single Recording. Ticket 12 stays open.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/iie-raw.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 1965 frames, 68.158333 seconds, 25,420,029 bytes.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 1965 frames, 67.957977 seconds, 2,601,880 bytes.
+  - frame check: device screen only. No bezel or touch markers. The seven screens all appear. Settings shows the Airplane Mode toggle. Personal Hotspot shows its two toggles. Health shows the Summary, Sharing and Search tabs. TestFlight shows its sheet. New Event shows the All-day toggle. Sign In shows a typed email and the software keyboard. View Options shows the Sort By menu and the Filename Extensions toggle. The take ends on the home list.
+  - build note: the clone is a pnpm project on Expo 56. Two throwaway patches made the Release build pass. One patch splits a ternary in `expo-modules-jsi` `JavaScriptRuntime.swift`, because Swift refuses a C function pointer from that expression. The other is the iOS 27 scene lifecycle change in `AppDelegate.swift` and `Info.plist`. Neither patch is upstream. The log `iie-build2.log` shows BUILD SUCCEEDED.
+  - poster: the 23.5-second frame from the staging Demo, the Health Summary screen. AVIF, 1206 by 2622 pixels, 32,039 bytes.
+  - live checks: the detail page returns 200 and shows the caption, Contributor and pinned source link. The pinned source link contains commit `8e0991d1`. Chrome loads the 1206 by 2622 Poster. After hydration, Play reaches 2.369 seconds. Duration is 67.957977 seconds. Playback is not paused, readyState is 4, and the media error is null. Chrome reports no page errors.
+  - catalogue checks: the Home search placeholder shows `Search 373 recordings`. The desktop nav shows Misc 226. The detail header shows `MISC · 226 RECORDINGS`. The phone sheet shows `CONTRIBUTOR · 31` and `Show 1 recording` for Tomek Czajecki. The contributors index shows `31 CONTRIBUTORS · 373 RECORDINGS`. Both Misc and Tomek Czajecki filters include iOS in Expo. The Tomek Czajecki filter shows one active facet and `END OF RESULTS · 1 OF 1`.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/iie`. Inspected images include `live-poster.png`, `live-playback.png`, `sheet-home.png` and `sheet-tomek.png`. The passing Chrome scripts are `/Users/mrp/.cache/rnui-tmp/capture/iie-live-check.mjs` and `/Users/mrp/.cache/rnui-tmp/capture/iie-sheet-check.mjs`.
 
 ## Phil Pluckthun
 
@@ -740,3 +755,10 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `9aaece5`. `www.rnui.dev` serves `Search 372 recordings`.
 - 2026-10-29: Live Chrome checks passed for the Daily Crumple Poster, pinned source link and 35.126667-second Demo playback. Misc shows 225 Recordings. The Contributor filter shows 1 Recording for Pablo Giraud-Carrier. The sheet header shows `CONTRIBUTOR · 30`.
 - 2026-10-29: All 802 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-29: Catalogue commit `d8dd20f` added iOS in Expo: full app walkthrough (`01M62SJ4T9Z7QQK43ZP14ECR8H`).
+- 2026-10-29: Measure commit `787bff0` wrote `durationMs` 67958, `aspect` 0.46 and `hue` 5.
+- 2026-10-29: `pnpm assets:publish ios_in_expo` uploaded the Demo (2,601,880 bytes) and the Poster (32,039 bytes) without overwrites.
+- 2026-10-29: Both CDN URLs answer 200. The cache header is public, max-age 31536000, immutable.
+- 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `787bff0`. `www.rnui.dev` serves `Search 373 recordings`.
+- 2026-10-29: Live Chrome checks passed for the iOS in Expo Poster, pinned source link and 67.957977-second Demo playback. Misc shows 226 Recordings. The Contributor filter shows 1 Recording for Tomek Czajecki. The sheet header shows `CONTRIBUTOR · 31`.
+- 2026-10-29: All 803 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
