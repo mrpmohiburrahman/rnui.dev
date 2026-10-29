@@ -538,12 +538,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Pablo Giraud-Carrier
 
-- [ ] **Daily Crumple: swipe fold, edge stretch and corner tear (one animation)**
+- [x] **Daily Crumple: swipe fold, edge stretch and corner tear (one animation)**
   - source: https://github.com/pablogdcr/daily-crumple/blob/1df1560f88c09aeb1fe3ec84794183ff1db70337/src/effects/CrinkleOverlay.tsx
   - source: https://github.com/pablogdcr/daily-crumple/blob/1df1560f88c09aeb1fe3ec84794183ff1db70337/src/effects/OverscrollOverlay.tsx
   - source: https://github.com/pablogdcr/daily-crumple/blob/1df1560f88c09aeb1fe3ec84794183ff1db70337/src/effects/CrumpleOverlay.tsx
   - video: published (three clips joined into one flow)
-  - status: not-started
+  - status: published
+  - catalogue: `01M62JHEXF0B2C7J6KP5FK7FN2`
+  - commit: `f209e22`
+  - measure commit: `9aaece5`
+  - asset publish: done on 2026-10-29. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. The local codec script passed for this Asset name. Both CDN objects answer 200. The Demo type is video/mp4. The Poster type is image/avif.
+  - live: https://www.rnui.dev/recording/01M62JHEXF0B2C7J6KP5FK7FN2
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `9aaece5` to `rnui-dev`. Project id is `prj_oJwJTNITIGO5i4MqVVGqjLaPIOfc`. Deployment URL is `https://rnui-kl5auga67-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - approval: the maintainer approved the full workflow for this Recording on 2026-10-29. The approval covers capture, catalogue addition, R2 upload and production deployment. Ticket 12 stays open.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/daily-raw.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 35.126667 seconds, 85,251,855 bytes.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 1526 frames, 35.126667 seconds, 9,316,488 bytes.
+  - frame check: device screen only. No bezel or touch markers. The swipe fold, edge stretch warp, corner tear, paper ball, bin and next article all appear.
+  - build note: iOS 27 needs the scene lifecycle change in the local clone. The log `daily-build2.log` shows BUILD SUCCEEDED.
+  - poster: the 2-second frame from the staging Demo. AVIF, 1206 by 2622 pixels, 120,195 bytes.
+  - live checks: the detail page returns 200 and shows the caption, Contributor and pinned source link. The pinned source link contains commit `1df1560f`. Chrome loads the 1206 by 2622 Poster. After hydration, Play reaches 2.385 seconds. Duration is 35.126667 seconds. Playback is not paused, readyState is 4, and the media error is null. Chrome reports no page errors.
+  - catalogue checks: the Home search placeholder shows `Search 372 recordings`. The desktop nav shows Misc 225. The detail header shows `MISC · 225 RECORDINGS`. The detail page shows `1 of the 372 recordings here is theirs.` The phone sheet shows `CONTRIBUTOR · 30` and `Show 1 recording` for Pablo Giraud-Carrier. The contributors index shows `30 CONTRIBUTORS · 372 RECORDINGS`. Both Misc and Pablo Giraud-Carrier filters include Daily Crumple. The Pablo Giraud-Carrier filter shows one active facet and `END OF RESULTS · 1 OF 1`.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/daily`. Inspected images include `live-poster.png`, `live-playback.png`, `sheet-home.png` and `sheet-pablo.png`. The passing Chrome scripts are `/Users/mrp/.cache/rnui-tmp/capture/daily-live-check.mjs` and `/Users/mrp/.cache/rnui-tmp/capture/daily-sheet-check.mjs`.
 
 ## Tomek Czajecki
 
@@ -718,3 +733,10 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-28: `vercel --prod --yes` deployed a clean export of commit `e009994`. `www.rnui.dev` serves `Search 371 recordings`.
 - 2026-10-28: Live Chrome checks passed for the Folio poster, pinned source link and 59.896667-second Demo playback. Misc shows 224 Recordings. The Contributor filter shows 1 Recording for Paul Nguyen. The sheet header shows `CONTRIBUTOR · 29`.
 - 2026-10-28: All 801 tests passed across 119 files. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-29: Catalogue commit `f209e22` added Daily Crumple (`01M62JHEXF0B2C7J6KP5FK7FN2`).
+- 2026-10-29: Measure commit `9aaece5` wrote `durationMs` 35127, `aspect` 0.46 and `hue` 43.
+- 2026-10-29: `pnpm assets:publish daily_crumple` uploaded the Demo (9,316,488 bytes) and the Poster (120,195 bytes) without overwrites.
+- 2026-10-29: Both CDN URLs answer 200.
+- 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `9aaece5`. `www.rnui.dev` serves `Search 372 recordings`.
+- 2026-10-29: Live Chrome checks passed for the Daily Crumple Poster, pinned source link and 35.126667-second Demo playback. Misc shows 225 Recordings. The Contributor filter shows 1 Recording for Pablo Giraud-Carrier. The sheet header shows `CONTRIBUTOR · 30`.
+- 2026-10-29: All 802 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
