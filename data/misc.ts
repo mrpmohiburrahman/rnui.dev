@@ -3890,6 +3890,9 @@ export const misc: Recording[] = [
     caption: "SwiftUI settings page",
     demoPath: "demo/misc/swiftui_settings_page_phil_pluckthun.mp4",
     posterPath: "thumbnails/misc/swiftui_settings_page_phil_pluckthun.avif",
+    durationMs: 17600,
+    aspect: 0.46,
+    hue: 207,
     contributor: "Phil Pluckthun",
     source:
       "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/swift-ui/src/app/index.tsx",
