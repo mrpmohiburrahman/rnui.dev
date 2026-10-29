@@ -3836,4 +3836,18 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-29T00:56:41.649Z",
   },
+  {
+    id: "01M62SJ4T9Z7QQK43ZP14ECR8H",
+    caption: "iOS in Expo: full app walkthrough",
+    demoPath: "demo/misc/ios_in_expo_full_app_walkthrough_tomek_czajecki.mp4",
+    posterPath:
+      "thumbnails/misc/ios_in_expo_full_app_walkthrough_tomek_czajecki.avif",
+    contributor: "Tomek Czajecki",
+    source:
+      "https://github.com/tchayen/ios-in-expo/tree/8e0991d15647f98dce2f781547b952ce03d006e2/src/app",
+    twitterId: "tchayen",
+    githubId: "tchayen",
+    category: "Misc",
+    created_at: "2026-10-29T02:59:24.106Z",
+  },
 ]
