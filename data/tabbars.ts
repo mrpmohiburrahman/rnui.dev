@@ -393,6 +393,9 @@ export const tabbars: Recording[] = [
     caption: "Bottom Tab Accessory",
     demoPath: "demo/tabbars/bottom_tab_accessory_phil_pluckthun.mp4",
     posterPath: "thumbnails/tabbars/bottom_tab_accessory_phil_pluckthun.avif",
+    durationMs: 22983,
+    aspect: 0.46,
+    hue: 26,
     contributor: "Phil Pluckthun",
     source:
       "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/bottom-accessory/src/app/(tabs)/_layout.tsx",
