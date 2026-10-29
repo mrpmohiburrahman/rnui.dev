@@ -675,11 +675,26 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - video: published
   - status: not-started
 
-- [ ] **SwiftUI settings page**
+- [x] **SwiftUI settings page**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/swift-ui/src/app/index.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M63P1STGRN65DDG0X051VC73`
+  - commit: `e7d2c61`
+  - measure commit: `28ea9a5`
+  - asset publish: done on 2026-10-29 at `demo/misc/swiftui_settings_page_phil_pluckthun.mp4` and `thumbnails/misc/swiftui_settings_page_phil_pluckthun.avif`. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. Both CDN objects answer 200 and match the Staging bytes.
+  - live: https://www.rnui.dev/recording/01M63P1STGRN65DDG0X051VC73
+  - deploy: the first `vercel --prod --yes` after the measure commit served a stale build, so the tile drew its fallback hue and carried no duration. `vercel --prod --force --yes` rebuilt and served the measured data. Deployment URL is `https://rnui-mvz3vkn8h-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`. The live tile now draws hue 207.
+  - category: Misc. The maintainer selected it on 2026-10-29.
+  - permission: the maintainer approved the full workflow on 2026-10-29 without a stop at step 5: build, capture, catalogue addition, R2 upload and production deployment. The maintainer also approved throwaway build patches. Ticket 12 stays open.
+  - environment: `com.kitten.expo-55-swift-ui` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702a3c5397df02f0aad9f01e6808a0d3418`.
+  - build note: Release build with `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal` and `SWIFT_APPROACHABLE_CONCURRENCY=NO` as xcodebuild CLI overrides, and the iOS 27 scene lifecycle change in `AppDelegate.swift`. No patch is upstream.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/su-raw6.mp4`. Variable frame rate, H.264, 1206 by 2622 pixels, yuv420p, 21.4 seconds. No touch markers.
+  - trimmed take: `/Users/mrp/.cache/rnui-tmp/capture/su-take-final.mp4`. Constant 30 fps, kept 1.4 to 19.0 seconds. H.264, 1206 by 2622 pixels, yuv420p, 528 frames, 17.600000 seconds, 912,474 bytes. The trim places `-i` before `-ss`. An input-side seek on the variable frame rate take dropped frames and produced 15.433 seconds.
+  - frame check: device screen only. No bezel, title bar or touch markers. The page settles at the first frame. The first change is the Automatic switch, which is off by 2.5 seconds.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 528 frames, 17.600000 seconds, 440,583 bytes. The Poster is 38,665 bytes.
+  - content: the take opens on the `Display & Brightness` page in Light appearance. It turns Automatic off and back on. It drags the brightness slider left. It turns Bold Text on. It scrolls down past Night Shift to Auto-Lock, Raise to Wake and `Always On Display`. It ends on the scrolled page.
 
 - [ ] **Android Material tabs and colors**
 
