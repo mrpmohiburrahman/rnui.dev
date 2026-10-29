@@ -36,3 +36,5 @@ This ticket is HITL. Record each decided Category in this ticket.
 - 2026-10-29: Bottom Tab Accessory: catalogue commit `33a6799` and measure commit `e93aa1f` are live. Tab bars shows 23 Recordings on the desktop nav and the detail header.
 - 2026-10-29: iOS Live Activity (`01M633XABR9YS0XZ2Z3Q4F6WYH`) uses Misc. The maintainer selected Misc for this Recording. This record does not resolve the remaining Category decisions.
 - 2026-10-29: iOS Live Activity: commit `08a7abd` and measure commit `4ce8844` are live with take 5. Misc shows 227 Recordings on the desktop nav and the detail header.
+- 2026-10-29: Sharing Intent (`01M63D201GJGJNH4BXPTCHDM4R`) uses Misc. The maintainer selected Misc for this Recording. This record does not resolve the remaining Category decisions.
+- 2026-10-29: Sharing Intent: catalogue commit `a02a480` and measure commit `208dbbd` are live. Misc shows 228 Recordings on the desktop nav and the detail header.
