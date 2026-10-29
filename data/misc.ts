@@ -3874,6 +3874,9 @@ export const misc: Recording[] = [
     caption: "Sharing Intent",
     demoPath: "demo/misc/sharing_intent_phil_pluckthun.mp4",
     posterPath: "thumbnails/misc/sharing_intent_phil_pluckthun.avif",
+    durationMs: 11500,
+    aspect: 0.46,
+    hue: 234,
     contributor: "Phil Pluckthun",
     source:
       "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/sharing-intent/src/app/+native-intent.ts",
