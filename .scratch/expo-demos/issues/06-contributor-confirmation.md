@@ -14,3 +14,5 @@ This ticket is HITL. Record each approved set in this ticket.
 
 - 2026-10-28: The maintainer approved the set for Folio pop-up storybook: Contributor name `Paul Nguyen`, GitHub `giaBaoJS`, X `BNguyen86186`, no LinkedIn. The Expo listing is `https://expo.dev/demos/paul-nguyen`. This record covers one new Contributor.
 - 2026-10-28: Paul Nguyen is live as the 29th Contributor. Home shows `Search 371 recordings`. The sheet header shows `CONTRIBUTOR · 29`. The Contributor filter shows 1 Recording.
+- 2026-10-29: The maintainer approved the set for Daily Crumple: Contributor name `Pablo Giraud-Carrier`, GitHub `pablogdcr`, no X, no LinkedIn. The Expo listing is `https://expo.dev/demos/pablo-giraud-carrier`. This record covers one new Contributor.
+- 2026-10-29: Pablo Giraud-Carrier is live as the 30th Contributor. The Home search placeholder shows `Search 372 recordings`. The sheet header shows `CONTRIBUTOR · 30`. The Contributor filter shows 1 Recording.
