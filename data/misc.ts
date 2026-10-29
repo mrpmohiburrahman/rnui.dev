@@ -3842,6 +3842,9 @@ export const misc: Recording[] = [
     demoPath: "demo/misc/ios_in_expo_full_app_walkthrough_tomek_czajecki.mp4",
     posterPath:
       "thumbnails/misc/ios_in_expo_full_app_walkthrough_tomek_czajecki.avif",
+    durationMs: 67958,
+    aspect: 0.46,
+    hue: 5,
     contributor: "Tomek Czajecki",
     source:
       "https://github.com/tchayen/ios-in-expo/tree/8e0991d15647f98dce2f781547b952ce03d006e2/src/app",
