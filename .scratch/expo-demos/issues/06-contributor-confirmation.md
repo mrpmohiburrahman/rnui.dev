@@ -20,3 +20,4 @@ This ticket is HITL. Record each approved set in this ticket.
 - 2026-10-29: Tomek Czajecki is live as the 31st Contributor. The Home search placeholder shows `Search 373 recordings`. The sheet header shows `CONTRIBUTOR · 31`. The Contributor filter shows 1 Recording.
 - 2026-10-29: The maintainer approved the set for Bottom Tab Accessory: Contributor name `Phil Pluckthun`, GitHub `kitten`, X `_philpl`, no LinkedIn. The Expo listing is `https://expo.dev/demos/phil-pluckthun`. This record covers one new Contributor.
 - 2026-10-29: Phil Pluckthun is live as the 32nd Contributor. The Home search placeholder shows `Search 374 recordings`. The sheet header shows `CONTRIBUTOR · 32`. The Contributor filter shows 1 Recording. The contributors index shows `32 CONTRIBUTORS · 374 RECORDINGS`.
+- 2026-10-29: iOS Live Activity reuses the approved set for Phil Pluckthun. The Contributor filter shows 2 Recordings. The contributors index shows `32 CONTRIBUTORS · 375 RECORDINGS`.

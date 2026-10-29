@@ -1,6 +1,6 @@
 # Demo recording checklist
 
-Last updated: 2026-10-28
+Last updated: 2026-10-29
 Demo list: `app/preview-new-demos/candidates.ts`
 Local preview: `http://localhost:63038/preview-new-demos`
 Recording standard: `.claude/skills/add-recording/SKILL.md`
@@ -45,7 +45,7 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Hewad Mubariz
 
-- [ ] **WebGPU 3D model product viewer**
+- [x] **WebGPU 3D model product viewer**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/FurnitureShowcaseScreen.tsx
   - video: published
@@ -61,7 +61,7 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - frame check: device screen only, no watermark, no touch markers, first motion before 1 second
   - content: all 5 furniture items, rotate and pinch on each, Next between items, ends on Accent Chair
 
-- [ ] **WebGPU bank card shimmer**
+- [x] **WebGPU bank card shimmer**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/tree/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/CardFlipScreen
   - video: published
@@ -76,7 +76,7 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - frame check: device screen only, no watermark, no touch markers, first motion before 1 second (shimmer frames at 0.2 s and 0.7 s differ)
   - content: front face with idle shimmer, drag tilts the card, tap flips to the back face, second tap returns to the front
 
-- [ ] **WebGPU bird flock murmuration**
+- [x] **WebGPU bird flock murmuration**
 
   - source: https://github.com/hewad-mubariz/react-native-motion-lab/blob/ba9b8e4872dfef26c2b34902f966e9c3e4511a00/src/screens/BirdsScreen.tsx
   - video: published
@@ -610,18 +610,42 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/compose-colors/src/app/index.tsx
   - video: published
   - status: not-started
+  - skipped: on 2026-10-29 the maintainer chose to skip this Android-only Demo. No Android emulator is installed, and the capture standard is the iPhone 18 Pro simulator.
 
 - [ ] **Android form sheet footer**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/formsheet-footer/src/app/_layout.tsx
   - video: published
   - status: not-started
+  - skipped: on 2026-10-29 the maintainer chose to skip this Android-only Demo. No Android emulator is installed, and the capture standard is the iPhone 18 Pro simulator.
 
-- [ ] **iOS Live Activity**
+- [x] **iOS Live Activity**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/live-activity/src/live-activity.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M633XABR9YS0XZ2Z3Q4F6WYH`
+  - commit: `5d28195` from another session added this ID with an 8.8-second take and deployed it. This branch added the Recording in `c7bcc3a`. Commit `08a7abd` then took the live ID and moved the entry to the take 5 Asset paths.
+  - measure commit: `4ce8844`
+  - asset publish: done on 2026-10-29 at `demo/misc/ios_live_activity_v2_phil_pluckthun.mp4` and `thumbnails/misc/ios_live_activity_v2_phil_pluckthun.avif`. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. Both CDN objects answer 200 and match the Staging bytes.
+  - superseded Assets: the other session published its 8.8-second take at `demo/misc/ios_live_activity_phil_pluckthun.mp4` with its Poster at 06:02 UTC. They stay in R2 as orphans (ADR-0003).
+  - live: https://www.rnui.dev/recording/01M633XABR9YS0XZ2Z3Q4F6WYH
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `4ce8844` to `rnui-dev`. Deployment URL is `https://rnui-lpojrv1nc-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - category: Misc. The maintainer selected it on 2026-10-29.
+  - permission: on 2026-10-29 the maintainer approved the full workflow: build, capture, catalogue addition, R2 upload and production deployment. The maintainer asked for a stop at step 5 for clip approval. Throwaway build patches are approved. Ticket 12 stays open.
+  - environment: `com.kitten.expo-55-live-activity` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702a3c5397df02f0aad9f01e6808a0d3418`.
+  - build note: Release build with `IPHONEOS_DEPLOYMENT_TARGET=16.2` and `SWIFT_VERSION=5.0` as xcodebuild CLI overrides, and the iOS 27 scene lifecycle change in `AppDelegate.swift`. No patch is upstream. The log `/Users/mrp/.cache/rnui-tmp/la-build3.log` shows 0 errors.
+  - permission prompts: iOS asks two times before it shows Live Activities. A setup pass answered Allow, then Always Allow, before the take. Takes 1 and 2 show these prompts and are rejected.
+  - simulator limit: the simulator does not draw the Dynamic Island compact content. The take shows the Live Activity on the cover sheet.
+  - rejected take 3: `/Users/mrp/.cache/rnui-tmp/capture/la-take3-trim.mp4`. The maintainer rejected it on 2026-10-29 because the first movement came at 1 second. The first movement must come before 1 second.
+  - rejected take 4: `/Users/mrp/.cache/rnui-tmp/capture/la-raw-4.mp4`. ActivityKit created the activity, but SpringBoard did not draw the banner. The script relaunched the app before this take. Take 5 keeps the app alive.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/la-raw-5.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 17.721667 seconds. No touch markers.
+  - trimmed take: `/Users/mrp/.cache/rnui-tmp/capture/la-take5-trim.mp4`. Constant 30 fps, kept 2.1 to 15.6 seconds. H.264, 1206 by 2622 pixels, yuv420p, 405 frames, 13.500000 seconds, 8,964,855 bytes.
+  - frame check: device screen only. No bezel, title bar or touch markers. The first movement, the button press, starts at 0.4 seconds.
+  - approval: the maintainer approved take 5 on 2026-10-29. The maintainer then chose to replace the live 8.8-second take with take 5 and keep the live ID.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 405 frames, 13.500000 seconds, 788,775 bytes. The Poster is 42,774 bytes.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/la`. Inspected images include `live-playback.png`. The passing Chrome script is `/Users/mrp/.cache/rnui-tmp/capture/la-live-check.mjs`.
+  - content: a tap on the binoculars button starts the Live Activity. A pull-down shows the SFO to JFK banner on the cover sheet. A swipe returns to the app. A second tap ends the activity. A second pull-down shows the empty cover sheet, and the take returns to the app.
 
 - [ ] **Sharing Intent**
 
@@ -646,6 +670,7 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/tabs-colors/src/app/_layout.tsx
   - video: published
   - status: not-started
+  - skipped: on 2026-10-29 the maintainer chose to skip this Android-only Demo. No Android emulator is installed, and the capture standard is the iPhone 18 Pro simulator.
 
 - [ ] **Expo Router 55 Toolbar APIs**
 
@@ -783,3 +808,9 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `e93aa1f`. `www.rnui.dev` serves `Search 374 recordings`.
 - 2026-10-29: Live Chrome checks passed for the Bottom Tab Accessory Poster, pinned source link and 22.983333-second Demo playback. Tab bars shows 23 Recordings. The Contributor filter shows 1 Recording for Phil Pluckthun. The sheet header shows `CONTRIBUTOR · 32`. The contributors index shows `32 CONTRIBUTORS · 374 RECORDINGS`.
 - 2026-10-29: All 804 tests passed across 49 files. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-29: The maintainer approved take 5 of iOS Live Activity. Production already served `01M633XABR9YS0XZ2Z3Q4F6WYH` with an 8.8-second take from another session. The maintainer chose to keep that ID and replace the take.
+- 2026-10-29: Commit `08a7abd` moved `01M633XABR9YS0XZ2Z3Q4F6WYH` to the `ios_live_activity_v2_phil_pluckthun` Asset paths. Measure commit `4ce8844` wrote `durationMs` 13500, `aspect` 0.46 and `hue` 205.
+- 2026-10-29: `pnpm assets:publish ios_live_activity_v2` uploaded the Demo (788,775 bytes) and the Poster (42,774 bytes) without overwrites. Both CDN URLs answer 200 with immutable cache headers, and the bytes match Staging.
+- 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `4ce8844`. `www.rnui.dev` serves `Search 375 recordings`.
+- 2026-10-29: Live Chrome checks passed for the iOS Live Activity Poster, pinned source link and 13.5-second Demo playback from the v2 path. Misc shows 227 Recordings. The Contributor filter shows 2 Recordings for Phil Pluckthun. The contributors index shows `32 CONTRIBUTORS · 375 RECORDINGS`.
+- 2026-10-29: All 804 tests passed across 49 files. TypeScript, ESLint and Prettier checks passed on the changed files.
