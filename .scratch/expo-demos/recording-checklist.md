@@ -647,11 +647,27 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
   - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/la`. Inspected images include `live-playback.png`. The passing Chrome script is `/Users/mrp/.cache/rnui-tmp/capture/la-live-check.mjs`.
   - content: a tap on the binoculars button starts the Live Activity. A pull-down shows the SFO to JFK banner on the cover sheet. A swipe returns to the app. A second tap ends the activity. A second pull-down shows the empty cover sheet, and the take returns to the app.
 
-- [ ] **Sharing Intent**
+- [x] **Sharing Intent**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/sharing-intent/src/app/+native-intent.ts
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M63D201GJGJNH4BXPTCHDM4R`
+  - commit: `a02a480`
+  - measure commit: `208dbbd`
+  - asset publish: done on 2026-10-29 at `demo/misc/sharing_intent_phil_pluckthun.mp4` and `thumbnails/misc/sharing_intent_phil_pluckthun.avif`. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. Both CDN objects answer 200 and match the Staging bytes.
+  - live: https://www.rnui.dev/recording/01M63D201GJGJNH4BXPTCHDM4R
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `208dbbd` to `rnui-dev`. Deployment URL is `https://rnui-qqw7uknxr-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - category: Misc. The maintainer selected it on 2026-10-29.
+  - permission: on 2026-10-29 the maintainer approved the full workflow without a stop at step 5: build, capture, catalogue addition, R2 upload and production deployment. The maintainer also approved throwaway build patches. Ticket 12 stays open.
+  - environment: `com.kitten.expo-55-sharing-intent` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702a3c5397df02f0aad9f01e6808a0d3418`.
+  - build note: Release build with `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal` and `SWIFT_APPROACHABLE_CONCURRENCY=NO` as xcodebuild CLI overrides, and the iOS 27 scene lifecycle change in `AppDelegate.swift`. In `AppDelegate.swift`, `SceneDelegate` forwards `openURLContexts` to `RCTLinkingManager.application` so the scene receives the `expo55sharingintent://` URL from the share extension. No patch is upstream.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/si-raw2.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 12.330000 seconds. No touch markers.
+  - trimmed take: `/Users/mrp/.cache/rnui-tmp/capture/si-trim.mp4`. Constant 30 fps, kept 0.6 to 12.1 seconds. H.264, 1206 by 2622 pixels, yuv420p, 345 frames, 11.500000 seconds, 14,516,450 bytes.
+  - frame check: device screen only. No bezel, title bar or touch markers. The first movement starts at 0.65 seconds.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 345 frames, 11.500000 seconds, 2,356,431 bytes. The Poster is 59,277 bytes.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/si`. Inspected images include `live-poster.jpg`, `live-playback.jpg` and `live-filtered.jpg`. The passing Chrome script is `/Users/mrp/.cache/rnui-tmp/capture/si-live-check.mjs`.
+  - content: the take starts on the empty Share screen and goes to the Home screen. It opens the waterfall photo in Photos and taps Share. It selects `expo-55-sharing-intent` in the iOS Share sheet and opens `New Post` with the shared photo. It scrolls the post options and taps Share to return to the empty Share screen.
 
 - [ ] **Expo Router 55 Stack API**
 
@@ -813,4 +829,9 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-29: `pnpm assets:publish ios_live_activity_v2` uploaded the Demo (788,775 bytes) and the Poster (42,774 bytes) without overwrites. Both CDN URLs answer 200 with immutable cache headers, and the bytes match Staging.
 - 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `4ce8844`. `www.rnui.dev` serves `Search 375 recordings`.
 - 2026-10-29: Live Chrome checks passed for the iOS Live Activity Poster, pinned source link and 13.5-second Demo playback from the v2 path. Misc shows 227 Recordings. The Contributor filter shows 2 Recordings for Phil Pluckthun. The contributors index shows `32 CONTRIBUTORS · 375 RECORDINGS`.
+- 2026-10-29: All 804 tests passed across 49 files. TypeScript, ESLint and Prettier checks passed on the changed files.
+- 2026-10-29: Catalogue commit `a02a480` added Sharing Intent (`01M63D201GJGJNH4BXPTCHDM4R`). Measure commit `208dbbd` wrote `durationMs` 11500, `aspect` 0.46 and `hue` 234.
+- 2026-10-29: `pnpm assets:publish sharing_intent` uploaded the Demo (2,356,431 bytes) and the Poster (59,277 bytes) without overwrites. Both CDN URLs answer 200 with immutable cache headers.
+- 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `208dbbd`. `www.rnui.dev` serves `Search 376 recordings`.
+- 2026-10-29: Live Chrome checks passed for the Sharing Intent Poster, pinned source link and 11.5-second Demo playback. Misc shows 228 Recordings. The Contributor filter shows 3 Recordings for Phil Pluckthun. The contributors index shows `32 CONTRIBUTORS · 376 RECORDINGS`.
 - 2026-10-29: All 804 tests passed across 49 files. TypeScript, ESLint and Prettier checks passed on the changed files.
