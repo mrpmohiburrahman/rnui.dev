@@ -16,3 +16,5 @@ This ticket is HITL. Record each approved set in this ticket.
 - 2026-10-28: Paul Nguyen is live as the 29th Contributor. Home shows `Search 371 recordings`. The sheet header shows `CONTRIBUTOR · 29`. The Contributor filter shows 1 Recording.
 - 2026-10-29: The maintainer approved the set for Daily Crumple: Contributor name `Pablo Giraud-Carrier`, GitHub `pablogdcr`, no X, no LinkedIn. The Expo listing is `https://expo.dev/demos/pablo-giraud-carrier`. This record covers one new Contributor.
 - 2026-10-29: Pablo Giraud-Carrier is live as the 30th Contributor. The Home search placeholder shows `Search 372 recordings`. The sheet header shows `CONTRIBUTOR · 30`. The Contributor filter shows 1 Recording.
+- 2026-10-29: The maintainer approved the set for iOS in Expo: full app walkthrough: Contributor name `Tomek Czajecki`, GitHub `tchayen`, X `tchayen`, no LinkedIn. The Expo listing is `https://expo.dev/demos/tomek-czajecki`. This record covers one new Contributor.
+- 2026-10-29: Tomek Czajecki is live as the 31st Contributor. The Home search placeholder shows `Search 373 recordings`. The sheet header shows `CONTRIBUTOR · 31`. The Contributor filter shows 1 Recording.
