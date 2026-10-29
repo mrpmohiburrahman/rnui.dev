@@ -585,11 +585,25 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
 ## Phil Pluckthun
 
-- [ ] **Bottom Tab Accessory**
+- [x] **Bottom Tab Accessory**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/bottom-accessory/src/app/(tabs)/_layout.tsx
+  - screens: home with floating mini-player, browse, radio, library, search with inline accessory, now playing sheet
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M62ZJNKBJE5SJNA7ZMNBHS4P`
+  - commit: `33a6799`
+  - measure commit: `e93aa1f`
+  - asset publish: done on 2026-10-29. Publication uploaded 2 new Assets. Already published count is 0. Failed count is 0. The local codec script passed for this Asset name. Both CDN objects answer 200. The Demo type is video/mp4. The Poster type is image/avif.
+  - live: https://www.rnui.dev/recording/01M62ZJNKBJE5SJNA7ZMNBHS4P
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `e93aa1f` to `rnui-dev`. Deployment URL is `https://rnui-hs8axgjij-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - approval: the maintainer approved the full workflow for this Recording on 2026-10-29. The approval covers capture, catalogue addition, R2 upload and production deployment. The maintainer selected Tab bars for the Category. The maintainer approved publication from the license-free repo and the throwaway build patches without further questions. Ticket 12 stays open.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/bta-raw.mp4`. H.264, 1206 by 2622 pixels, yuv420p, 586 frames, 23.311667 seconds, 13,783,244 bytes.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 586 frames, 22.983333 seconds, 1,077,661 bytes.
+  - frame check: device screen only. No bezel or touch markers. The take holds Home with the floating mini-player above the tab bar. It then visits Browse, Radio and Library. Search shows the inline accessory. The take returns to Home and ends with the Now Playing sheet open. The verified beat sheet is `bta-sheet4.png`.
+  - build note: the demo lives in the `expo-55-demos` pnpm monorepo at commit `af5bf702`. The Release build needed four xcodebuild CLI overrides: `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal` and `SWIFT_APPROACHABLE_CONCURRENCY=NO`. It also needed the iOS 27 scene lifecycle change in `AppDelegate.swift` and `Info.plist`. No patch is upstream. The log `bta-build6.log` shows BUILD SUCCEEDED. The clone keeps the patches at `/Users/mrp/.cache/rnui-tmp/expo-55-demos`.
+  - capture note: dismissing the Now Playing sheet kills `simctl recordVideo`, so the take ends with the sheet open.
+  - evidence: browser evidence sits under `/Users/mrp/.cache/rnui-tmp/evidence/bta`. Inspected images include `live-poster.png`, `live-playback.png` and `live-filtered.png`. The passing Chrome script is `/Users/mrp/.cache/rnui-tmp/capture/bta-live-check.mjs`.
 
 - [ ] **Material colors and Jetpack Compose UI**
 
@@ -762,3 +776,10 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 - 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `787bff0`. `www.rnui.dev` serves `Search 373 recordings`.
 - 2026-10-29: Live Chrome checks passed for the iOS in Expo Poster, pinned source link and 67.957977-second Demo playback. Misc shows 226 Recordings. The Contributor filter shows 1 Recording for Tomek Czajecki. The sheet header shows `CONTRIBUTOR · 31`.
 - 2026-10-29: All 803 tests passed. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
+- 2026-10-29: Catalogue commit `33a6799` added Bottom Tab Accessory (`01M62ZJNKBJE5SJNA7ZMNBHS4P`).
+- 2026-10-29: Measure commit `e93aa1f` wrote `durationMs` 22983, `aspect` 0.46 and `hue` 26.
+- 2026-10-29: `pnpm assets:publish bottom_tab_accessory` uploaded the Demo (1,077,661 bytes) and the Poster (97,982 bytes) without overwrites.
+- 2026-10-29: Both CDN URLs answer 200. The cache header is public, max-age 31536000, immutable.
+- 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `e93aa1f`. `www.rnui.dev` serves `Search 374 recordings`.
+- 2026-10-29: Live Chrome checks passed for the Bottom Tab Accessory Poster, pinned source link and 22.983333-second Demo playback. Tab bars shows 23 Recordings. The Contributor filter shows 1 Recording for Phil Pluckthun. The sheet header shows `CONTRIBUTOR · 32`. The contributors index shows `32 CONTRIBUTORS · 374 RECORDINGS`.
+- 2026-10-29: All 804 tests passed across 49 files. TypeScript and changed-file format checks passed. Full lint still reports the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`.
