@@ -790,6 +790,10 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - final checks: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. `bash scripts/check-video-codecs.sh expo_router_55_ios_zoom_transitions` passed. `pnpm lint` reported the accepted existing error and 167 warnings.
   - resource checks: the user waived the guardrail for this step. Swap use stayed between 6574 MB and 6710 MB, above the 6 GB limit. CPU use peaked at 61.0%.
   - next: the maintainer runs `pnpm assets:publish expo_router_55_ios_zoom_transitions`, then `pnpm assets:measure`, then commits. No upload, deployment or commit occurred in this step.
+  - catalogue commit: `2cebac9` added the Recording, the count expectations and `lastCommitDate`.
+  - asset publish: `pnpm assets:publish expo_router_55_ios_zoom_transitions` reported `2 published (4.3 MB), 0 already published, 0 failed`.
+  - production assets: both CDN URLs return HTTP 200 with `cache-control: public, max-age=31536000, immutable`. Downloaded bytes match the two SHA-256 values above.
+  - measure: `pnpm assets:measure` reported `1 measured, 379 already recorded, 0 failed`. It wrote `durationMs: 16466` and `aspect: 0.46`. `hue` stays absent because the dark wolf Poster has no dominant glow colour. That is the designed fallback in `scripts/measure-demos.ts`.
 
 - [ ] **Age-range request**
 
