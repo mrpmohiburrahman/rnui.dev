@@ -3932,4 +3932,21 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-30T04:44:03.010Z",
   },
+  {
+    id: "01M664FVD8PZYTZHWB41M4N9MH",
+    caption: "Expo Router 55 iOS Zoom Transitions",
+    demoPath:
+      "demo/misc/expo_router_55_ios_zoom_transitions_phil_pluckthun.mp4",
+    posterPath:
+      "thumbnails/misc/expo_router_55_ios_zoom_transitions_phil_pluckthun.avif",
+    durationMs: 16466,
+    aspect: 0.46,
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/zoom-transitions/src/components/photo-cell.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-10-30T10:08:06.569Z",
+  },
 ]

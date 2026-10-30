@@ -677,7 +677,7 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/stack-api/src/app/index.tsx
   - video: published
-  - status: not-started
+  - status: recorded
 
 - [x] **SwiftUI settings page**
 
@@ -742,7 +742,12 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - category: Misc.
   - contributor: Phil Pluckthun (`_philpl`, GitHub `kitten`).
   - permission: the maintainer approved this take, catalogue addition, R2 publication and two scoped commits. Ticket 12 stays open.
-  - deploy: not deployed. Deployment is not approved.
+  - live: https://www.rnui.dev/recording/01M65HYFJ2SMEAXNRDVFM0GJN2
+  - deploy: the maintainer approved production deployment on 2026-10-30. `npx vercel@65.8.0 --prod --yes` deployed a clean `git archive` export of commit `53e9e08d` to `rnui-dev`. Deployment id is `dpl_C9FQz59JxUQi46qFeESR7mpnk5zr`. Deployment URL is `https://rnui-42covrsg2-mrpmohiburrahmans-projects.vercel.app`. Inspect URL is `https://vercel.com/mrpmohiburrahmans-projects/rnui-dev/C9FQz59JxUQi46qFeESR7mpnk5zr`. Vercel reports Ready and aliases `https://www.rnui.dev`.
+  - production verification: the Recording route and all three catalogue views return HTTP 200. The page shows the correct caption, Contributor, Category, source, and measured fields. Home shows 379 Recordings. Misc shows 231. The Phil Pluckthun filter shows 6 of 6.
+  - production assets: direct downloads of both Published Assets return HTTP 200 and match the approved SHA-256 values. The Demo is H.264, 1206 by 2622 pixels, constant 30 fps, 78 frames, and 2.6 seconds. The Poster is AVIF.
+  - production playback: Chrome advanced the Demo past 2 seconds without media or page errors. The test blocked analytics and server-action writes. The inspected `production-widget-lockscreen.png` and `production-widget-delivery.png` show both states without clipping.
+  - production resources: deployment peaked at 76.11% CPU and 4,616.44 MiB swap. The successful browser run peaked at 62.84% CPU and 4,560.44 MiB swap. The monitor stopped an earlier browser attempt at 82.41% CPU.
   - local take: `/Users/mrp/.argent/recordings/rnui-ios-lockscreen-widget.mp4`. The approved trim keeps source seconds 1.0 to 3.58 and removes the trailing scroll.
   - content: the bright lock screen shows rectangular and circular widgets. The rectangular widget expands into the Delivery page. The take ends without scrolling.
   - staging probe: H.264, yuv420p, limited range, 1206 by 2622 pixels, constant 30 fps, 78 frames, 2.600000 seconds, 263,123 bytes.
@@ -763,13 +768,28 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - verification limits: Turbopack attempts exceeded the resource limits or timed out. Webpack completed the local check without a project configuration change. The assigned preview proxy still returned HTTP 404. This check covers the direct local route, not the proxy or a deployment. The test server stopped after verification.
   - final checks: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. `bash scripts/check-video-codecs.sh ios_lockscreen_widget` passed. `pnpm lint` reported the accepted existing error and 167 warnings.
   - resource checks: the successful browser run peaked at 79.78% CPU and 4,992.44 MiB swap. The final test run peaked at 52.25% CPU and 4,968.44 MiB swap. Both stayed below the limits. Earlier interrupted runs did not count as passes.
-  - completion: this commit records the measured fields and completes the approved local work. No push or deployment.
+  - completion: production deployment and verification passed. No new commit, push, or Contributor notice. Ticket 12 stays open.
 
-- [ ] **Expo Router 55 iOS Zoom Transitions**
+- [x] **Expo Router 55 iOS Zoom Transitions**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/zoom-transitions/src/components/photo-cell.tsx
   - video: published
-  - status: not-started
+  - path: /Users/mrp/.cache/rnui-tmp/zoom-transitions.mp4
+  - status: staged
+  - recording: `.argent/recordings/screen-recording-94273D2F-EA9C-4833-8437-107B507EDE71-1793351324615.mp4`
+  - re-record: the first clip had no zoom screen. The first scene change was at 34.7 seconds. The new clip replaces that clip.
+  - verified: H.264, 1206 by 2622 pixels, yuv420p, 30 fps, 16.466667 seconds, 494 frames
+  - frame check: device screen only, no touch markers, first scene change at 0.7 seconds
+  - content: Photos grid, tap opens the wolf detail screen, edge swipe returns to the grid. A long press shows the link menu. The grid scrolls down and up at the end.
+  - Recording id: `01M664FVD8PZYTZHWB41M4N9MH`, `created_at: 2026-10-30T10:08:06.569Z`, in `data/misc.ts`.
+  - Asset paths: `demo/misc/expo_router_55_ios_zoom_transitions_phil_pluckthun.mp4` and `thumbnails/misc/expo_router_55_ios_zoom_transitions_phil_pluckthun.avif`.
+  - Staging Demo: `compress-demo.sh` wrote 4,237,109 bytes, H.264, 1206 by 2622 pixels, yuv420p, 494 frames. SHA-256: `6e7d13543afa8444dad7c8cb56841ee317046acfc72b638a61e087e5c611a7c0`.
+  - Staging Poster: `pnpm posters:generate` wrote 50 KB AV1 AVIF, 1206 by 2622 pixels. SHA-256: `895818c4ef5d5dcb2d9ea2a8b75bf1ba0a4675460439e54762f8833f812939ed`. The same run also rewrote the missing Staging Poster for `toolbars_phil_pluckthun`.
+  - measured fields: `durationMs`, `aspect` and `hue` stay absent until `pnpm assets:measure` runs after publication.
+  - counts: `tests/recording-counts.test.ts` now expects 380 Recordings, Misc 232, Phil Pluckthun 7.
+  - final checks: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. `bash scripts/check-video-codecs.sh expo_router_55_ios_zoom_transitions` passed. `pnpm lint` reported the accepted existing error and 167 warnings.
+  - resource checks: the user waived the guardrail for this step. Swap use stayed between 6574 MB and 6710 MB, above the 6 GB limit. CPU use peaked at 61.0%.
+  - next: the maintainer runs `pnpm assets:publish expo_router_55_ios_zoom_transitions`, then `pnpm assets:measure`, then commits. No upload, deployment or commit occurred in this step.
 
 - [ ] **Age-range request**
 
