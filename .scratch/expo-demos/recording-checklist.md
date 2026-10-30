@@ -730,12 +730,14 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - frame check: device screen only. No bezel, title bar or touch markers. The first change is the Done toolbar morph at 0.7 seconds. The pencil restores the compose toolbar. The ellipsis opens the palette menu. The take ends with the menu open.
   - content: the take opens on the compose page. Done swaps the bottom toolbar. The pencil restores it. The ellipsis opens the palette menu. The take ends with that menu open.
 
-- [ ] **iOS Lockscreen Widget**
+- [x] **iOS Lockscreen Widget**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/widget/src/delivery-widget.tsx
   - video: published
   - status: published
   - catalogue: `01M65HYFJ2SMEAXNRDVFM0GJN2`
+  - commit: `50a05949`.
+  - measure commit: this commit.
   - caption: `iOS Lockscreen Widget`.
   - category: Misc.
   - contributor: Phil Pluckthun (`_philpl`, GitHub `kitten`).
@@ -761,7 +763,7 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - verification limits: Turbopack attempts exceeded the resource limits or timed out. Webpack completed the local check without a project configuration change. The assigned preview proxy still returned HTTP 404. This check covers the direct local route, not the proxy or a deployment. The test server stopped after verification.
   - final checks: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. `bash scripts/check-video-codecs.sh ios_lockscreen_widget` passed. `pnpm lint` reported the accepted existing error and 167 warnings.
   - resource checks: the successful browser run peaked at 79.78% CPU and 4,992.44 MiB swap. The final test run peaked at 52.25% CPU and 4,968.44 MiB swap. Both stayed below the limits. Earlier interrupted runs did not count as passes.
-  - remaining: two scoped commits. The measured fields belong in the second commit.
+  - completion: this commit records the measured fields and completes the approved local work. No push or deployment.
 
 - [ ] **Expo Router 55 iOS Zoom Transitions**
 
