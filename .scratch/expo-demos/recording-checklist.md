@@ -734,7 +734,34 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/widget/src/delivery-widget.tsx
   - video: published
-  - status: not-started
+  - status: published
+  - catalogue: `01M65HYFJ2SMEAXNRDVFM0GJN2`
+  - caption: `iOS Lockscreen Widget`.
+  - category: Misc.
+  - contributor: Phil Pluckthun (`_philpl`, GitHub `kitten`).
+  - permission: the maintainer approved this take, catalogue addition, R2 publication and two scoped commits. Ticket 12 stays open.
+  - deploy: not deployed. Deployment is not approved.
+  - local take: `/Users/mrp/.argent/recordings/rnui-ios-lockscreen-widget.mp4`. The approved trim keeps source seconds 1.0 to 3.58 and removes the trailing scroll.
+  - content: the bright lock screen shows rectangular and circular widgets. The rectangular widget expands into the Delivery page. The take ends without scrolling.
+  - staging probe: H.264, yuv420p, limited range, 1206 by 2622 pixels, constant 30 fps, 78 frames, 2.600000 seconds, 263,123 bytes.
+  - Poster: AVIF, 1206 by 2622 pixels, 36,817 bytes, from second 2.
+  - asset publish: `pnpm assets:publish ios_lockscreen_widget_phil_pluckthun` reported `2 published (0.3 MB), 0 already published, 0 failed`.
+  - Demo: `demo/misc/ios_lockscreen_widget_phil_pluckthun.mp4`.
+  - Poster path: `thumbnails/misc/ios_lockscreen_widget_phil_pluckthun.avif`.
+  - CDN verification: both objects return HTTP 200. Both `cmp` comparisons match the Staging copies.
+  - Demo SHA-256: `97ed7763193ec4d2b11ae5dce9aa90852c37cd8fb8dab9d0546f1d0f5f10af2f`.
+  - Poster SHA-256: `85fa72085a59b6e5165c7f687cd2a06d88f2512c0f2052b63cc77af0b34f082a`.
+  - measure: `pnpm assets:measure` reported `1 measured, 378 already recorded, 0 failed`. Values: `durationMs: 2600`, `aspect: 0.46`, `hue: 35`.
+  - counts: 379 Recordings, Misc 231, Phil Pluckthun 6, 32 Contributors.
+  - lint exception: the maintainer accepted the existing error at `.scratch/social-cards/probe/avif-datauri.tsx:35`. ESLint reports `A \`require()\` style import is forbidden.` The file stays unchanged.
+  - commit method: the maintainer approved direct Git after the commit harness could not find this session log. Hooks stay active.
+  - local verification: passed with `pnpm exec next dev --webpack --hostname 127.0.0.1 --port 21430`. The route returned HTTP 200. Chrome showed the correct caption, Contributor and source link.
+  - browser assets: the CDN Demo decoded at 1206 by 2622 pixels for 2.6 seconds. The CDN Poster returned HTTP 200. The browser reported no page errors. The test blocked server-action writes and PostHog requests.
+  - visual verification: inspected `lockscreen-published-start.png` and `lockscreen-published-end.png` in the session temporary directory. They show the lock screen and Delivery page without clipping. The page shows 379 Recordings, Misc 231 and 6 Recordings for Phil Pluckthun.
+  - verification limits: Turbopack attempts exceeded the resource limits or timed out. Webpack completed the local check without a project configuration change. The assigned preview proxy still returned HTTP 404. This check covers the direct local route, not the proxy or a deployment. The test server stopped after verification.
+  - final checks: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. `bash scripts/check-video-codecs.sh ios_lockscreen_widget` passed. `pnpm lint` reported the accepted existing error and 167 warnings.
+  - resource checks: the successful browser run peaked at 79.78% CPU and 4,992.44 MiB swap. The final test run peaked at 52.25% CPU and 4,968.44 MiB swap. Both stayed below the limits. Earlier interrupted runs did not count as passes.
+  - remaining: two scoped commits. The measured fields belong in the second commit.
 
 - [ ] **Expo Router 55 iOS Zoom Transitions**
 
