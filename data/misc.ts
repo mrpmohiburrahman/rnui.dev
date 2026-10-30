@@ -3901,4 +3901,19 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-29T11:18:18.446Z",
   },
+  {
+    id: "01M655J3CVBMJ42HGZSZGNR2JC",
+    caption: "Expo Router 55 Toolbar APIs",
+    demoPath: "demo/misc/toolbars_phil_pluckthun.mp4",
+    posterPath: "thumbnails/misc/toolbars_phil_pluckthun.avif",
+    durationMs: 5367,
+    aspect: 0.46,
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/toolbars/src/app/index.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-10-30T01:07:34.430Z",
+  },
 ]

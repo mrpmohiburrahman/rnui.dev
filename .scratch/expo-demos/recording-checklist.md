@@ -26,6 +26,8 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Pixel expl
 
 Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart / Voxel city morph clip, R2 upload included. Ticket 12 stays open. The live page is https://www.rnui.dev/recording/01M5YFDVTEAMF4SN2TYRPKMHCN.
 
+Gate decision, 2026-10-30: the maintainer approved the Expo Router 55 Toolbar APIs clip for catalogue addition, R2 upload and commit. Deployment is not approved. The preview must run on localhost first. Ticket 12 stays open.
+
 ## The seven steps for each demo
 
 1. **Build the app.** Clone the source link at the pinned commit. Install its dependencies. Start it on the iOS simulator.
@@ -707,7 +709,22 @@ Gate decision, 2026-10-27: the maintainer approved publication of the Bar chart 
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/toolbars/src/app/index.tsx
   - video: published
-  - status: not-started
+  - status: awaiting-approval
+  - catalogue: `01M655J3CVBMJ42HGZSZGNR2JC`
+  - caption: `Expo Router 55 Toolbar APIs`. The maintainer selected it on 2026-10-30.
+  - category: Misc.
+  - permission: the maintainer approved catalogue addition, R2 upload and commit on 2026-10-30. Deployment waits for a separate approval after the localhost preview. Ticket 12 stays open.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 161 frames, 5.366667 seconds, 123,261 bytes. The Poster is 7,706 bytes.
+  - asset publish: `pnpm assets:publish toolbars_phil_pluckthun` on 2026-10-30 reported 0 published, 2 already published, 0 failed. Both CDN objects answer 200, carry `Last-Modified: Thu, 29 Oct 2026 14:11:08 GMT`, and match the Staging bytes (`cmp` identical, 123,261 and 7,706 bytes).
+  - measure: `durationMs: 5367`, `aspect: 0.46`. No `hue`: the Poster has no dominant colour, so the script omits the field and the tile uses the fallback hue.
+  - site checks: `tsc --noEmit` passed. `pnpm test` passed 804 tests with the pins at 378, Misc 230 and Phil Pluckthun 5. `scripts/check-video-codecs.sh toolbars_phil_pluckthun` passed. `pnpm lint` reports one pre-existing error in `.scratch/social-cards/probe/avif-datauri.tsx` from commit `1711dd2`, untouched here.
+  - deploy: not run.
+  - environment: `com.kitten.expo-55-toolbars` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702a3c5397df02f0aad9f01e6808a0d3418`.
+  - build: passed. Release, arm64 simulator, Xcode 27.0 (27A266a), two parallel jobs. CLI overrides are `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal` and `SWIFT_APPROACHABLE_CONCURRENCY=NO`. The log `/Users/mrp/.cache/rnui-tmp/capture/tb-build.log` shows `** BUILD SUCCEEDED **`. The iOS 27 scene lifecycle change is in gitignored native files. No patch is upstream.
+  - checks: H.264, 1206 by 2622 pixels, yuv420p, constant 30 fps (`r_frame_rate=30/1`, `avg_frame_rate=30/1`), 161 frames, 5.366667 seconds, 913,540 bytes. The ratio is 0.459954.
+  - local take: `/Users/mrp/.cache/rnui-tmp/capture/tb-take.mp4`. Opened in the default app. The raw variable-frame-rate file is `/Users/mrp/.cache/rnui-tmp/capture/tb-take-raw.mp4`. VideoToolbox re-encoded it to constant 30 fps.
+  - frame check: device screen only. No bezel, title bar or touch markers. The first change is the Done toolbar morph at 0.7 seconds. The pencil restores the compose toolbar. The ellipsis opens the palette menu. The take ends with the menu open.
+  - content: the take opens on the compose page. Done swaps the bottom toolbar. The pencil restores it. The ellipsis opens the palette menu. The take ends with that menu open.
 
 - [ ] **iOS Lockscreen Widget**
 
