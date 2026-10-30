@@ -794,6 +794,15 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - asset publish: `pnpm assets:publish expo_router_55_ios_zoom_transitions` reported `2 published (4.3 MB), 0 already published, 0 failed`.
   - production assets: both CDN URLs return HTTP 200 with `cache-control: public, max-age=31536000, immutable`. Downloaded bytes match the two SHA-256 values above.
   - measure: `pnpm assets:measure` reported `1 measured, 379 already recorded, 0 failed`. It wrote `durationMs: 16466` and `aspect: 0.46`. `hue` stays absent because the dark wolf Poster has no dominant glow colour. That is the designed fallback in `scripts/measure-demos.ts`.
+  - measure commit: `f2962a6`.
+  - deploy: `npx vercel@65.8.0 --prod --yes` deployed a clean `git archive` export of commit `f2962a6` to `rnui-dev`. Deployment id is `dpl_CZ7ghLUjatkP7D5u95cw2hpVd9Ze`. Deployment URL is `https://rnui-q7hhyet9m-mrpmohiburrahmans-projects.vercel.app`. Vercel reports Ready and aliases `https://www.rnui.dev`. An earlier deploy attempt from a directory named `deploy-zoom` created a separate project by mistake and did not affect production.
+  - production verification: the Recording route returns HTTP 200 with the correct caption, Contributor, Category and source. Home shows `Search 380 recordings`. Misc shows 232. The Phil Pluckthun filter shows 7. The contributors index shows `32 CONTRIBUTORS · 380 RECORDINGS`.
+  - production playback: Chrome clicked Play on the Recording route and the Demo advanced to 12.8747 seconds of 16.466016 seconds with no page errors. Screenshot at `$TMPDIR/zoom-verify/production-zoom.png`.
+  - production codec check: `pnpm check:videos:production` reported `All 380 Demos decode as H.264 and all 380 Posters are reachable, every object immutable for a year.` covering 760 Published Assets.
+  - final checks after measure: `pnpm check-types` passed. `pnpm test --maxWorkers=1 --no-file-parallelism --reporter=dot` passed 804 tests in 49 files. Prettier clean on `data/misc.ts` and `tests/recording-counts.test.ts`.
+  - staging regeneration: the Staging Demo and Poster went missing between sessions. `compress-demo.sh` and `posters:generate` regenerated both from the verified source MP4. SHA-256 values match the approved hashes exactly.
+  - resource checks: the user waived the guardrail. Swap use ranged 6588 MB to 7999 MB, above the 6 GB limit. CPU use peaked at 61.0%.
+  - completion: published, measured, committed and deployed. No push, no Contributor notice. Ticket 12 stays open.
 
 - [ ] **Age-range request**
 
