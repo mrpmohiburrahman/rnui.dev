@@ -3916,4 +3916,17 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-30T01:07:34.430Z",
   },
+  {
+    id: "01M65HYFJ2SMEAXNRDVFM0GJN2",
+    caption: "iOS Lockscreen Widget",
+    demoPath: "demo/misc/ios_lockscreen_widget_phil_pluckthun.mp4",
+    posterPath: "thumbnails/misc/ios_lockscreen_widget_phil_pluckthun.avif",
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/widget/src/delivery-widget.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-10-30T04:44:03.010Z",
+  },
 ]
