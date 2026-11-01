@@ -35,9 +35,13 @@ pnpm dev
 
 Open http://localhost:3000.
 
-## Contribute
+## Submit an animation
 
-The fastest path: open an issue using the [Animation Submission template](./.github/ISSUE_TEMPLATE/animation-submission.yml) with the source URL. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full flow.
+Found a React Native UI animation worth featuring? Submit it at **[rnui.dev/submit](https://www.rnui.dev/submit)** with its source link (GitHub repo, Expo Snack, or gist). A maintainer reviews each submission before it is published. Do not open an issue to submit an animation.
+
+## Contribute to the site code
+
+Code contributions are welcome — bug fixes, new features, and documentation changes to the site itself. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the setup and PR flow.
 
 ## License
 
