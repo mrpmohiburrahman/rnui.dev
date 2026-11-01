@@ -2,19 +2,20 @@
 
 Thanks for helping the React Native UI ecosystem stay discoverable.
 
-## Two ways to contribute
+## Submit an animation
 
-### 1. Suggest an entry (easiest)
+Go to **[rnui.dev/submit](https://www.rnui.dev/submit)** and send the animation with its source link: a GitHub repo, an Expo Snack, or a gist. Attach the demo and describe what it shows. A maintainer reviews each submission before it is published. Do not open an issue to submit an animation.
 
-Open an issue using the **Animation Submission** template. Provide the GitHub repo URL, Expo Snack, or gist. A maintainer will turn it into a PR.
+## Contribute to the site code
 
-### 2. Manual entry
+Bug fixes, new features, and documentation changes to the site itself are welcome.
 
 1. Fork and branch.
-2. Add your entry to the correct file in `data/` — one file per UI category (`buttons.ts`, `carousels.ts`, `sliders.ts`, etc.).
-3. Required fields: `id` (unique kebab-case slug), `title`, `author`, `repoUrl`, `category`, `description`.
-4. Run `pnpm check-types` and `pnpm lint`.
-5. Open a PR.
+2. Make your change.
+3. Run `pnpm check-types`, `pnpm lint`, and `pnpm test`.
+4. Open a PR.
+
+A maintainer adds a published animation to the catalogue in `data/` — one file per UI category (`buttons.ts`, `carousels.ts`, `sliders.ts`, etc.). Required fields: `id` (unique kebab-case slug), `title`, `author`, `repoUrl`, `category`, `description`.
 
 ## Never commit binary Assets
 
