@@ -3949,4 +3949,18 @@ export const misc: Recording[] = [
     category: "Misc",
     created_at: "2026-10-30T10:08:06.569Z",
   },
+  {
+    id: "01M6GAT4E225RYZG4PHJ374B2N",
+    caption: "Bonjour handwriting and shimmer",
+    demoPath: "demo/misc/bonjour_handwriting_and_shimmer_phil_pluckthun.mp4",
+    posterPath:
+      "thumbnails/misc/bonjour_handwriting_and_shimmer_phil_pluckthun.avif",
+    contributor: "Phil Pluckthun",
+    source:
+      "https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/bonjour/src/app/index.tsx",
+    twitterId: "_philpl",
+    githubId: "kitten",
+    category: "Misc",
+    created_at: "2026-11-03T09:11:30.000Z",
+  },
 ]
