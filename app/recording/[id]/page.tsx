@@ -18,11 +18,11 @@ import { RECORDINGS_PER_CONTRIBUTOR } from "@/data/recording"
 
 import { getCdnUrl } from "@/lib/cdn"
 
-import { getRecordings, getTopViewCount } from "../../actions/get-recordings"
+import {
+  getStaticRecordings,
+  getStaticTopViewCount,
+} from "../../actions/get-recordings"
 import { RecordingBody } from "./recording-body"
-
-// The page's counts refresh on the same clock as the grid's.
-export const revalidate = 300
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -69,8 +69,8 @@ export default async function RecordingPage(props: Params) {
   // comment above claims and, calling getRecordingsWithCounts() directly, did
   // not do.
   const [withCounts, topViewCount] = await Promise.all([
-    getRecordings(),
-    getTopViewCount(),
+    getStaticRecordings(),
+    getStaticTopViewCount(),
   ])
   const current = withCounts.find((r) => r.id === recording.id) ?? {
     ...recording,

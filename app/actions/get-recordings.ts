@@ -24,8 +24,32 @@ const readRecordingsWithCounts = unstable_cache(
   getRecordingsWithCounts,
   ["recordings-with-counts"],
   {
-    revalidate: 300,
+    revalidate: 3600,
   }
+)
+
+const readStaticRecordingsWithCounts = unstable_cache(
+  getRecordingsWithCounts,
+  ["recordings-with-counts-static"],
+  {
+    revalidate: false,
+  }
+)
+
+export const getStaticRecordings = cache(async (): Promise<Recording[]> => {
+  try {
+    return await readStaticRecordingsWithCounts()
+  } catch (error) {
+    console.error("Error reading static Recordings:", error)
+    return []
+  }
+})
+
+export const getStaticTopViewCount = cache(async (): Promise<number> =>
+  Math.max(
+    0,
+    ...(await getStaticRecordings()).map((r) => r.view_count ?? 0)
+  )
 )
 
 export const getRecordings = cache(

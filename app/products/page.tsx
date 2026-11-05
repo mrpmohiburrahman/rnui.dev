@@ -116,8 +116,10 @@ const RecordingsPage = async ({
   }
 
   const { search, category, contributor } = params
-  const data = await getRecordings(search, category, contributor)
-  const topViewCount = await getTopViewCount()
+  const [data, topViewCount] = await Promise.all([
+    getRecordings(search, category, contributor),
+    getTopViewCount(),
+  ])
 
   const stats = {
     recordings: allRecordings.length,
