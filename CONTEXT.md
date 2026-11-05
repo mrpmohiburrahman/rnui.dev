@@ -102,6 +102,18 @@ in their heading and where their Recordings come from. It never fetches; it is h
 the Recordings it renders.
 _Avoid_: directory, listing, index, feed, results
 
+**Blog**:
+The dated writing the site publishes beside the catalogue. A Blog holds **Notes**. It shares the site's Design and navigation but not its data. A Note is never a **Recording**.
+_Avoid_: articles, posts, journal, feed, writing section
+
+**Note**:
+One dated piece of writing in the **Blog**, with a title, a topic and a byline. A Note belongs to the **Maintainer**. It has no Contributor, Category, Demo or Poster. It is not a **Recording**.
+_Avoid_: post, article, entry, item, story
+
+**Maintainer**:
+The person who keeps the catalogue and writes the **Blog**. A Note names the Maintainer. The Maintainer decides which **Submissions** become Recordings. The Maintainer is not a **Contributor**.
+_Avoid_: admin, owner, author, editor
+
 **Reader**:
 A person who has signed in to the site through a social provider so that they can save
 Demos. A Reader is identified by an id the provider assigns and a display name the provider

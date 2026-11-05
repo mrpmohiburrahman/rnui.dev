@@ -2,6 +2,8 @@ import { readFileSync } from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
 
+import { NOTES } from "@/data/notes"
+
 // public-submissions ticket 11, the half the config comment cannot enforce.
 //
 // The decision was to keep `/submit` in the sitemap. next-sitemap includes every
@@ -32,6 +34,18 @@ describe("the committed sitemap", () => {
     for (const loc of locs) {
       expect(loc.startsWith("https://www.rnui.dev/")).toBe(true)
     }
+  })
+
+  it("lists the Blog and every Note, which ship indexable", () => {
+    expect(locs).toContain("https://www.rnui.dev/blog")
+    // The Note URLs match the published list exactly: no Note is missing, and
+    // no route that no longer exists stays behind. An empty Blog is valid.
+    const blogLocs = locs.filter((loc) =>
+      loc.startsWith("https://www.rnui.dev/blog/")
+    )
+    expect(blogLocs.sort()).toEqual(
+      NOTES.map((note) => `https://www.rnui.dev/blog/${note.id}`).sort()
+    )
   })
 
   it("still leaves the request-scoped routes out", () => {

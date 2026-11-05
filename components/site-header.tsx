@@ -21,6 +21,7 @@ import { ModeToggle } from "@/app/providers"
 import { CatalogueSearch } from "./catalogue-search"
 import { CHIPS } from "./filter-chips"
 import { facetHref, reportFacetClick } from "./nav/catalogue-nav"
+import { SectionLinks, type SectionName } from "./nav/section-links"
 import { SignInControl } from "./sign-in-control"
 import { StarControl } from "./star-control"
 
@@ -58,6 +59,18 @@ function SiteHeaderBar({
 
   const savedCount = bookmarks?.length ?? 0
   const onBookmarks = pathname === "/bookmarks"
+  const onCatalogue =
+    pathname === "/" ||
+    pathname === "/products" ||
+    pathname === "/bookmarks" ||
+    pathname === "/contributors" ||
+    pathname.startsWith("/recording/")
+  const onBlog = pathname === "/blog" || pathname.startsWith("/blog/")
+  const activeSection: SectionName | null = onBlog
+    ? "blog"
+    : onCatalogue
+      ? "catalogue"
+      : null
   // github-star-button ticket 04: the live site only. Read **once, here**, and
   // handed to both layouts below — the desktop bar and the phone header are
   // separate components that have already drifted once (`Saved` has two
@@ -109,12 +122,16 @@ function SiteHeaderBar({
         {/* Left column: wordmark. flex-1 makes this column share the free space
             equally with the right column, so the center column (search) sits
             at the viewport's midpoint regardless of each side's content width. */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 items-center">
           <Link href="/" className="flex items-baseline gap-[9px]">
             <span className="text-[16px] font-bold tracking-[-0.02em] text-t1">
               rnui<span className="text-acc">.dev</span>
             </span>
           </Link>
+          <SectionLinks
+            active={activeSection}
+            className="ml-[18px] hidden lg:flex"
+          />
         </div>
 
         {/* Center column: search bar at fixed width. The two equal flex-1
@@ -194,6 +211,10 @@ function SiteHeaderBar({
         </div>
       </div>
 
+      <div className="hidden border-t border-line px-[26px] py-[8px] md:block lg:hidden">
+        <SectionLinks active={activeSection} />
+      </div>
+
       {/* Phone: three rows, 36px controls (CatalogueMobile.dc.html:12-23). The
           filter surface itself — the dock and the bottom sheet — is the filter
           dock's (components/filter-dock.tsx), rendered by the Catalogue page
@@ -244,6 +265,10 @@ function SiteHeaderBar({
           <SignInControl />
 
           <ModeToggle compact />
+        </div>
+
+        <div className="border-t border-line px-[14px] py-[8px]">
+          <SectionLinks active={activeSection} />
         </div>
 
         {/* Search on its own row below; no / chip and no sort control on a phone
