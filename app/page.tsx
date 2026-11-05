@@ -31,8 +31,10 @@ async function Page({
     contributors: getUniqueContributors().length,
     categories: getUniqueCategories().length,
   }
-  const data = await getRecordings(params.search)
-  const topViewCount = await getTopViewCount()
+  const [data, topViewCount] = await Promise.all([
+    getRecordings(params.search),
+    getTopViewCount(),
+  ])
 
   // The phone filter sheet's two facet lists, count-bearing, the same two the
   // rail's layout hands NavSidebar — computed here so this server component
