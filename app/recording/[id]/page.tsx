@@ -18,6 +18,8 @@ import { RECORDINGS_PER_CONTRIBUTOR } from "@/data/recording"
 
 import { getCdnUrl } from "@/lib/cdn"
 
+import { SectionLinks } from "@/components/nav/section-links"
+
 import {
   getStaticRecordings,
   getStaticTopViewCount,
@@ -115,6 +117,11 @@ export default async function RecordingPage(props: Params) {
         >
           rnui<span className="text-acc">.dev</span>
         </Link>
+        <SectionLinks
+          active="catalogue"
+          as="div"
+          catalogueClassName="hidden md:inline-block"
+        />
         <Link
           href="/"
           className="whitespace-nowrap text-[12.5px] text-acc underline underline-offset-3"
