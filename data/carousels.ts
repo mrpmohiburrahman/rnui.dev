@@ -186,11 +186,8 @@ export const carousels: Recording[] = [
   {
     id: "01M6QG07NKEJ2RQVQT101RWAY3",
     caption: "Glass Carousel",
-    demoPath: "demo/carousels/glass_carousel_rit3zh.mp4",
-    posterPath: "thumbnails/carousels/glass_carousel_rit3zh.avif",
-    durationMs: 8747,
-    aspect: 0.46,
-    hue: 45,
+    demoPath: "demo/carousels/glass_carousel_v2_rit3zh.mp4",
+    posterPath: "thumbnails/carousels/glass_carousel_v2_rit3zh.avif",
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-glass-carousel/tree/e4ebe28f25bf99b9f1dcf9c2c3305175ee720f69/src/components/glass-carousel",
