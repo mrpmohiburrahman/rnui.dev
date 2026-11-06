@@ -6,6 +6,9 @@ export const misc: Recording[] = [
     caption: "Expo Dynamic Notifications",
     demoPath: "demo/misc/expo_dynamic_notifications_rit3zh.mp4",
     posterPath: "thumbnails/misc/expo_dynamic_notifications_rit3zh.avif",
+    durationMs: 14200,
+    aspect: 0.46,
+    hue: 174,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-dynamic-notifications/tree/5de059a5cbefbe28c14efbe785166665a7c70bc5",
