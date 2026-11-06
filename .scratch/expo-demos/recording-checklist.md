@@ -464,6 +464,31 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - live: https://www.rnui.dev/recording/01M60JFGAYN5V538REEJHM1DQ7
   - deploy: production alias `https://www.rnui.dev` from commit `f915213`. Home shows `Search 368 recordings`. The Headers filter lists 4 Recordings.
 
+- [x] **Glass Carousel**
+
+  - source: https://github.com/rit3zh/expo-glass-carousel/tree/e4ebe28f25bf99b9f1dcf9c2c3305175ee720f69/src/components/glass-carousel
+  - video: published
+  - status: published
+  - id: `01M6QG07NKEJ2RQVQT101RWAY3`
+  - category: `Carousels`
+  - demoPath: `demo/carousels/glass_carousel_rit3zh.mp4`
+  - posterPath: `thumbnails/carousels/glass_carousel_rit3zh.avif`
+  - permission: the maintainer approved each stage on 2026-11-06. The approval covers capture, catalogue addition, R2 upload and production deployment. Ticket 12 stays open.
+  - image change: the maintainer asked for nature photos with no people. Three Unsplash landscapes replace the stock card images, and a fourth replaces the avatar. The card titles are now Above the Clouds, Forest Trail and Ocean Shore. The carousel component has no change.
+  - environment: `com.anonymous.expo-glass-carousel` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `e4ebe28f`. Expo SDK 58, React Native 0.88.1.
+  - build notes: `bun install` (the lockfile is too new for `--frozen-lockfile`), `expo prebuild --platform ios`, `pod install`, then a Debug `xcodebuild` with `-jobs 4`. `BUILD SUCCEEDED`. No scene-delegate patch was necessary.
+  - local take: `.argent/recordings/expo-glass-carousel-take1.mp4` from `xcrun simctl io recordVideo`, H.264, 1206 by 2622 pixels, 448 frames, 8.746667 seconds, no touch markers. Argent `gesture-swipe` made the swipes. A 350 ms swipe did not move the carousel, and 700 ms swipes did.
+  - frame check: the first motion starts at 0.29 seconds (`freezedetect`). The contact sheet shows four swipes and a correct screen in each frame.
+  - content: Above the Clouds, then Forest Trail, then Ocean Shore. Two swipes back return to Above the Clouds.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 448 frames, 8.746667 seconds, 2,155,499 bytes.
+  - poster: the 2-second frame, AVIF, 1206 by 2622 pixels, 83,804 bytes. The frame shows Forest Trail.
+  - measure: `durationMs` 8747, `aspect` 0.46 and `hue` 45.
+  - asset publish: done on 2026-11-06. `pnpm assets:publish glass_carousel_rit3zh` reported `2 published (2.2 MB), 0 already published, 0 failed`. Both CDN objects answer 200 with immutable one-year cache headers and match Staging bytes (`cmp`).
+  - live: https://www.rnui.dev/recording/01M6QG07NKEJ2RQVQT101RWAY3
+  - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `98637ac` to `rnui-dev`. Deployment URL: `https://rnui-5sg34dm0v-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
+  - live checks: the detail page returns 200. It contains the caption, Ritesh, the pinned source commit `e4ebe28f`, the Poster path and the Demo path. Home shows `Search 382 recordings`. The detail header shows Carousels with 11 Recordings. No browser click-play run. A full decode of the CDN Demo is the playback evidence.
+  - resource checks: swap peaked at 6865 MB after the simulator boot, above the 6 GB limit. The maintainer chose to stop the simulator and Metro after the take. CPU went above 80% for about 60 seconds at the end of the Xcode build.
+
 ## Arunabh Verma
 
 - [x] **Native paste inputs**
@@ -933,3 +958,5 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
 - 2026-10-29: `vercel --prod --yes` deployed a clean export of commit `208dbbd`. `www.rnui.dev` serves `Search 376 recordings`.
 - 2026-10-29: Live Chrome checks passed for the Sharing Intent Poster, pinned source link and 11.5-second Demo playback. Misc shows 228 Recordings. The Contributor filter shows 3 Recordings for Phil Pluckthun. The contributors index shows `32 CONTRIBUTORS · 376 RECORDINGS`.
 - 2026-10-29: All 804 tests passed across 49 files. TypeScript, ESLint and Prettier checks passed on the changed files.
+- 2026-11-06: Catalogue commit `794ff43` added Glass Carousel (`01M6QG07NKEJ2RQVQT101RWAY3`). Measure commit `98637ac` wrote `durationMs` 8747, `aspect` 0.46 and `hue` 45.
+- 2026-11-06: `pnpm assets:publish glass_carousel_rit3zh` uploaded the Demo (2,155,499 bytes) and the Poster (83,804 bytes) without overwrites. `vercel --prod --yes` deployed a clean export of commit `98637ac`. `www.rnui.dev` serves `Search 382 recordings`.
