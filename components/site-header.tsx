@@ -44,6 +44,34 @@ function ActiveSiteHeader(props: SiteHeaderProps) {
   return <SiteHeaderBar {...props} searchParams={searchParams} />
 }
 
+function SectionNav({ pathname }: { pathname: string }) {
+  const onBlog = pathname === "/blog" || pathname.startsWith("/blog/")
+  const onCatalogue = pathname === "/" || pathname === "/products" || pathname === "/bookmarks"
+  const item = (active: boolean) =>
+    cn(
+      "py-2 text-[12.5px] hover:text-t1 focus-visible:rounded-[3px] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-acc focus-visible:outline-offset-3",
+      active ? "border-b-2 border-acc font-medium text-acc" : "text-t2"
+    )
+  return (
+    <nav aria-label="Site" className="flex items-center gap-5">
+      <Link
+        href="/"
+        aria-current={onCatalogue ? "page" : undefined}
+        className={item(onCatalogue)}
+      >
+        Catalogue
+      </Link>
+      <Link
+        href="/blog"
+        aria-current={onBlog ? "page" : undefined}
+        className={item(onBlog)}
+      >
+        Blog
+      </Link>
+    </nav>
+  )
+}
+
 function SiteHeaderBar({
   recordingCount,
   // Absent means "the URL has not been read yet"; every `.get` below returns
@@ -109,12 +137,13 @@ function SiteHeaderBar({
         {/* Left column: wordmark. flex-1 makes this column share the free space
             equally with the right column, so the center column (search) sits
             at the viewport's midpoint regardless of each side's content width. */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 items-center gap-[18px]">
           <Link href="/" className="flex items-baseline gap-[9px]">
             <span className="text-[16px] font-bold tracking-[-0.02em] text-t1">
               rnui<span className="text-acc">.dev</span>
             </span>
           </Link>
+          <SectionNav pathname={pathname} />
         </div>
 
         {/* Center column: search bar at fixed width. The two equal flex-1
@@ -244,6 +273,9 @@ function SiteHeaderBar({
           <SignInControl />
 
           <ModeToggle compact />
+        </div>
+        <div className="px-[14px] pb-[8px]">
+          <SectionNav pathname={pathname} />
         </div>
 
         {/* Search on its own row below; no / chip and no sort control on a phone

@@ -10,11 +10,7 @@ export const metadata: Metadata = {
 export default function BlogIndexPage() {
   return (
     <div className="mx-auto max-w-[720px] pb-28">
-      <p className="font-mono text-label text-acc">BLOG</p>
-      <h1 className="mt-4 text-hero text-t1">Writing</h1>
-      <p className="mt-4 max-w-[560px] text-sm leading-6 text-t2">
-        Notes on the stack and the choices behind the catalogue.
-      </p>
+      <h1 className="text-hero text-t1">Blog</h1>
       <article className="mt-10 border-t border-line pt-6">
         <p className="font-mono text-[11px] text-t3">2026-11-06</p>
         <h2 className="mt-3 text-section text-t1">

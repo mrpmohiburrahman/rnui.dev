@@ -58,6 +58,17 @@ export function ShellChrome({
     return <div className="flex w-full flex-1 flex-col">{children}</div>
   }
 
+  if (segment === "blog") {
+    return (
+      <>
+        {header}
+        <main className="w-full min-w-0 flex-1 px-[14px] pb-[34px] pt-[22px] md:px-[26px]">
+          {children}
+        </main>
+      </>
+    )
+  }
+
   return (
     <>
       {header}
