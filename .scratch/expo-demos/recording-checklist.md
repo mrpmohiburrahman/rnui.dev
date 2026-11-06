@@ -471,8 +471,8 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - status: published
   - id: `01M6QG07NKEJ2RQVQT101RWAY3`
   - category: `Carousels`
-  - demoPath: `demo/carousels/glass_carousel_rit3zh.mp4`
-  - posterPath: `thumbnails/carousels/glass_carousel_rit3zh.avif`
+  - demoPath: `demo/carousels/glass_carousel_v2_rit3zh.mp4`
+  - posterPath: `thumbnails/carousels/glass_carousel_v2_rit3zh.avif`
   - permission: the maintainer approved each stage on 2026-11-06. The approval covers capture, catalogue addition, R2 upload and production deployment. Ticket 12 stays open.
   - image change: the maintainer asked for nature photos with no people. Three Unsplash landscapes replace the stock card images, and a fourth replaces the avatar. The card titles are now Above the Clouds, Forest Trail and Ocean Shore. The carousel component has no change.
   - environment: `com.anonymous.expo-glass-carousel` ran on the iPhone 18 Pro simulator, iOS 27.0, from commit `e4ebe28f`. Expo SDK 58, React Native 0.88.1.
@@ -488,6 +488,17 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - deploy: `vercel --prod --yes` deployed a clean `git archive` export of commit `98637ac` to `rnui-dev`. Deployment URL: `https://rnui-5sg34dm0v-mrpmohiburrahmans-projects.vercel.app`. The production alias is `https://www.rnui.dev`.
   - live checks: the detail page returns 200. It contains the caption, Ritesh, the pinned source commit `e4ebe28f`, the Poster path and the Demo path. Home shows `Search 382 recordings`. The detail header shows Carousels with 11 Recordings. No browser click-play run. A full decode of the CDN Demo is the playback evidence.
   - resource checks: swap peaked at 6865 MB after the simulator boot, above the 6 GB limit. The maintainer chose to stop the simulator and Metro after the take. CPU went above 80% for about 60 seconds at the end of the Xcode build.
+  - re-record: done on 2026-11-06. The maintainer said the first Demo was not smooth and asked for 60 fps. The first Demo stalled for about 200 to 300 ms in each transition. The maintainer then asked for the full flow from capture to deploy with no more questions.
+  - stall cause: the demo app's background photo, an `expo-image` with `transform: [{ scale: 1.3 }]` in `invites-background-layer.tsx`. Tests in a Release build removed one factor at a time. The blur, the photo size, opacity 0, an opaque Skia fill and the Reanimated flag `IOS_SYNCHRONOUSLY_UPDATE_UI_PROPS` did not change the stalls. With the transform removed, the stalls stopped.
+  - fix: layout insets of `-15%` on each side replace the transform. The photo has the same size and position. This is the only code change in the demo app apart from the photos. The carousel component has no change. The Reanimated flag was removed again.
+  - v2 local take: `.argent/recordings/expo-glass-carousel-v2-take1.mp4`, Release build, H.264, 1206 by 2622 pixels, 797 frames, 8.66 seconds. The motion starts at frame 0. No frame gap during motion is above 23 ms. The median is 12 ms.
+  - v2 content: Above the Clouds, Forest Trail, Ocean Shore, then two swipes back to Above the Clouds.
+  - v2 staging probe: the take was converted to constant 60 fps (`-fps_mode cfr -r 60`, ProRes intermediate), then `scripts/compress-demo.sh`. H.264, 1206 by 2622 pixels, yuv420p, 60 fps, 522 frames, 8.7 seconds, 2,477,598 bytes.
+  - v2 poster: the 2-second frame, AVIF, 79,618 bytes.
+  - v2 measure: `durationMs` 8700, `aspect` 0.46 and `hue` 45.
+  - v2 asset publish: `pnpm assets:publish glass_carousel_v2_rit3zh` reported `2 published (2.6 MB), 0 already published, 0 failed`. Both CDN objects answer 200 with immutable cache headers and match Staging bytes (`cmp`). The first Assets stay on R2 as orphans.
+  - v2 deploy: commits `570ea39` (Re-record) and `157a2a5` (measure). `vercel --prod --yes` deployed a clean export of `157a2a5`. Deployment URL: `https://rnui-nkmyeb6s7-mrpmohiburrahmans-projects.vercel.app`. The detail page returns 200 and serves the v2 Demo and Poster. Home shows `Search 382 recordings`.
+  - v2 resource checks: swap stayed below 1.9 GB. CPU went above 80% for about 9 minutes in the first Release build, and for shorter periods in two native rebuilds of about 7 minutes each.
 
 ## Arunabh Verma
 
@@ -960,3 +971,4 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
 - 2026-10-29: All 804 tests passed across 49 files. TypeScript, ESLint and Prettier checks passed on the changed files.
 - 2026-11-06: Catalogue commit `794ff43` added Glass Carousel (`01M6QG07NKEJ2RQVQT101RWAY3`). Measure commit `98637ac` wrote `durationMs` 8747, `aspect` 0.46 and `hue` 45.
 - 2026-11-06: `pnpm assets:publish glass_carousel_rit3zh` uploaded the Demo (2,155,499 bytes) and the Poster (83,804 bytes) without overwrites. `vercel --prod --yes` deployed a clean export of commit `98637ac`. `www.rnui.dev` serves `Search 382 recordings`.
+- 2026-11-06: Re-record of Glass Carousel. Commit `570ea39` moved the Asset paths to `glass_carousel_v2_rit3zh`. Commit `157a2a5` wrote `durationMs` 8700, `aspect` 0.46 and `hue` 45. `pnpm assets:publish glass_carousel_v2_rit3zh` uploaded the Demo (2,477,598 bytes) and the Poster (79,618 bytes). `vercel --prod --yes` deployed `157a2a5`.
