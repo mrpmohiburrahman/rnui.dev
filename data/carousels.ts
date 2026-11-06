@@ -182,4 +182,18 @@ export const carousels: Recording[] = [
     category: "Carousels",
     created_at: "2025-11-25T19:55:26.000Z",
   },
+
+  {
+    id: "01M6QG07NKEJ2RQVQT101RWAY3",
+    caption: "Glass Carousel",
+    demoPath: "demo/carousels/glass_carousel_rit3zh.mp4",
+    posterPath: "thumbnails/carousels/glass_carousel_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-glass-carousel/tree/e4ebe28f25bf99b9f1dcf9c2c3305175ee720f69/src/components/glass-carousel",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Carousels",
+    created_at: "2026-11-06T03:56:23.092Z",
+  },
 ]

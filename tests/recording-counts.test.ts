@@ -14,13 +14,13 @@ import {
 // localeCompare tie-break, so the four the rail shows stay the four with the most.
 
 describe("RECORDINGS_PER_CATEGORY", () => {
-  it("counts the whole catalogue, per Category, summing to 381", () => {
+  it("counts the whole catalogue, per Category, summing to 382", () => {
     expect(RECORDINGS_PER_CATEGORY).toEqual({
       Accordions: 2,
       "Arc Sliders": 2,
       "Bottom Sheets": 8,
       Buttons: 21,
-      Carousels: 10,
+      Carousels: 11,
       Charts: 9,
       "Circular Progress Bars": 3,
       "Drop Down": 1,
@@ -40,7 +40,7 @@ describe("RECORDINGS_PER_CATEGORY", () => {
       (sum, count) => sum + count,
       0
     )
-    expect(total).toBe(381)
+    expect(total).toBe(382)
   })
 })
 
@@ -90,8 +90,8 @@ describe("contributorsByCount", () => {
       { name: "Aashu Dubey", count: 6 },
       { name: "Alek Mikucki", count: 6 },
       { name: "Aswin C", count: 5 },
+      { name: "Ritesh", count: 5 },
       { name: "Daehyeon Mun (문대현)", count: 4 },
-      { name: "Ritesh", count: 4 },
       { name: "Andreev Danila", count: 3 },
       { name: "Lucas Lima", count: 3 },
       { name: "Pushkar Tandon", count: 3 },
@@ -108,6 +108,6 @@ describe("contributorsByCount", () => {
       { name: "Wahab Balogun", count: 1 },
     ])
 
-    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(381)
+    expect(ranked.reduce((sum, c) => sum + c.count, 0)).toBe(382)
   })
 })
