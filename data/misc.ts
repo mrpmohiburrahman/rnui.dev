@@ -2,6 +2,19 @@ import type { Recording } from "./recording"
 
 export const misc: Recording[] = [
   {
+    id: "01M6R6YA2XQE7MQNCHKHM2PXWD",
+    caption: "Expo Dynamic Notifications",
+    demoPath: "demo/misc/expo_dynamic_notifications_rit3zh.mp4",
+    posterPath: "thumbnails/misc/expo_dynamic_notifications_rit3zh.avif",
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-dynamic-notifications/tree/5de059a5cbefbe28c14efbe785166665a7c70bc5",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Misc",
+    created_at: "2026-11-06T10:37:17.279Z",
+  },
+  {
     id: "01M6QY4ME0MW52RB171SKQSB99",
     caption: "Animated Streaming Text",
     demoPath: "demo/misc/animated_streaming_text_rit3zh.mp4",
