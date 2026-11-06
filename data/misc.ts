@@ -6,6 +6,8 @@ export const misc: Recording[] = [
     caption: "Animated Streaming Text",
     demoPath: "demo/misc/animated_streaming_text_rit3zh.mp4",
     posterPath: "thumbnails/misc/animated_streaming_text_rit3zh.avif",
+    durationMs: 12117,
+    aspect: 0.46,
     contributor: "Ritesh",
     source:
       "https://github.com/rit3zh/expo-animated-streaming-text/tree/7868f96a47212a17fca4492070d989033c594787/src/components/streaming-text",
