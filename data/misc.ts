@@ -2,6 +2,21 @@ import type { Recording } from "./recording"
 
 export const misc: Recording[] = [
   {
+    id: "01M6QY4ME0MW52RB171SKQSB99",
+    caption: "Animated Streaming Text",
+    demoPath: "demo/misc/animated_streaming_text_rit3zh.mp4",
+    posterPath: "thumbnails/misc/animated_streaming_text_rit3zh.avif",
+    durationMs: 12117,
+    aspect: 0.46,
+    contributor: "Ritesh",
+    source:
+      "https://github.com/rit3zh/expo-animated-streaming-text/tree/7868f96a47212a17fca4492070d989033c594787/src/components/streaming-text",
+    twitterId: "rit3zh",
+    githubId: "rit3zh",
+    category: "Misc",
+    created_at: "2026-11-06T08:03:27.297Z",
+  },
+  {
     id: "01JXYAFB21MCEYBNSEGN4GB68A",
     caption: "Masonry Grid",
     demoPath: "demo/misc/masonry_grid_thomino.mp4",

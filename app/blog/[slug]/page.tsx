@@ -31,6 +31,11 @@ export default async function NotePage({ params }: Params) {
 
   const next = nextNote(note.id)
 
+  // nextNote wraps to the first Note after the last, so a Blog with a single
+  // Note hands back that same Note. A card that reads "Next note" and links to
+  // the page already on screen is a defect, not a navigation aid.
+  const nextOther = next && next.id !== note.id ? next : undefined
+
   return (
     <main className="mx-auto w-full max-w-[760px] px-[22px] pb-[120px] pt-[28px]">
       <Link
@@ -42,7 +47,9 @@ export default async function NotePage({ params }: Params) {
       <div className="mt-[18px]">
         <NoteArticle
           note={note}
-          next={next ? { id: next.id, title: next.title } : undefined}
+          next={
+            nextOther ? { id: nextOther.id, title: nextOther.title } : undefined
+          }
         />
       </div>
     </main>

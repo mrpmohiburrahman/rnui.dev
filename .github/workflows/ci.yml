@@ -55,7 +55,10 @@ jobs:
           NEXT_PUBLIC_CDN_URL: https://cdn.rnui.dev
 
   e2e:
-    runs-on: ubuntu-latest
+    # Pinned: `ubuntu-latest` is 26.04, and Playwright 1.60 has no dependency
+    # list for ubuntu-26.04-x64, so `npx playwright install --with-deps` fails
+    # before a single test runs. Move up once Playwright ships 26.04 support.
+    runs-on: ubuntu-24.04
     needs: quality
     steps:
       - uses: actions/checkout@v4
