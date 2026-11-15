@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test"
 
 import { allRecordings } from "../../data/catalogue"
+import { NOTES } from "../../data/notes"
 
 const first = allRecordings[0]
 
@@ -10,7 +11,10 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe("the Blog index", () => {
-  test("serves the heading, the maintainer line, and the empty state", async ({
+  // The Blog shipped with no Notes and an empty state. It has Notes now, so
+  // these read the list rather than pinning one size: adding a Note must not
+  // need an edit here, and the empty state is no longer what a visitor sees.
+  test("serves the heading, the maintainer line, and every Note row", async ({
     request,
   }) => {
     const html = await (await request.get("/blog")).text()
@@ -18,12 +22,15 @@ test.describe("the Blog index", () => {
     expect(html).toContain(">Blog<")
     expect(html).toContain(">Notes<")
     expect(html).toContain("Notes from the maintainer")
-    expect(html).toContain("No notes yet.")
-    expect(html).toContain('href="/subscribe"')
+    expect(NOTES.length).toBeGreaterThan(0)
+    for (const note of NOTES) {
+      expect(html).toContain(note.title)
+      expect(html).toContain(`href="/blog/${note.id}"`)
+    }
     expect(html).toContain('href="/blog"')
   })
 
-  test("has one h1, the nav, and no Note rows", async ({ page }) => {
+  test("has one h1, the nav, and one row per Note", async ({ page }) => {
     await page.goto("/blog")
 
     await expect(page.locator("h1")).toHaveCount(1)
@@ -39,8 +46,29 @@ test.describe("the Blog index", () => {
       "page"
     )
 
-    await expect(page.locator("main button[aria-expanded]")).toHaveCount(0)
-    await expect(page.getByText("No notes yet.")).toBeVisible()
+    await expect(page.locator("main button[aria-expanded]")).toHaveCount(
+      NOTES.length
+    )
+    await expect(page.getByText("No notes yet.")).toHaveCount(0)
+    await expect(
+      page.getByRole("link", { name: "Read the note" }).first()
+    ).toBeVisible()
+  })
+
+  test("opens a Note at its own address, with its sections", async ({
+    page,
+  }) => {
+    const note = NOTES[0]
+    await page.goto(`/blog/${note.id}`)
+
+    await expect(page.locator("h1")).toHaveCount(1)
+    await expect(
+      page.getByRole("heading", { level: 1, name: note.title })
+    ).toBeVisible()
+    await expect(
+      page.getByRole("heading", { level: 2, name: note.sections[0].heading })
+    ).toBeVisible()
+    await expect(page.getByRole("link", { name: "All notes" })).toBeVisible()
   })
 
   test("an unknown slug follows the site's not-found redirect", async ({
@@ -113,7 +141,7 @@ test.describe("the site navigation", () => {
   })
 })
 
-test.describe("the Blog with no Notes", () => {
+test.describe("an address that is not a Note", () => {
   test("answers an unknown Note address with the site's 404", async ({
     request,
     page,
