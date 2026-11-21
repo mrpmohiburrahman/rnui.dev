@@ -1,0 +1,11 @@
+{
+  "name": "egg-icons-poster",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.9.66 preview",
+    "check": "npx --yes hyperframes@0.9.66 check",
+    "render": "npx --yes hyperframes@0.9.66 render",
+    "publish": "npx --yes hyperframes@0.9.66 publish"
+  }
+}

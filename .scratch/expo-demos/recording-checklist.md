@@ -804,17 +804,42 @@ Gate decision, 2026-10-30: after the localhost preview, the maintainer approved 
   - resource checks: the user waived the guardrail. Swap use ranged 6588 MB to 7999 MB, above the 6 GB limit. CPU use peaked at 61.0%.
   - completion: published, measured, committed and deployed. No push, no Contributor notice. Ticket 12 stays open.
 
-- [ ] **Age-range request**
+- [x] **Age-range request**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/age-range/src/app/index.tsx
   - video: none, must record
-  - status: not-started
+  - status: awaiting-approval
+  - build: passed. `expo prebuild --platform ios --clean` then CocoaPods install. Release arm64 simulator build with `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal`, `SWIFT_APPROACHABLE_CONCURRENCY=NO`. iOS 27 scene lifecycle patch in gitignored `AppDelegate.swift` + `Info.plist` (`SceneDelegate`, `UIApplicationSceneManifest`). No tracked source change. `BUILD SUCCEEDED`.
+  - environment: `com.kitten.expo-55-age-range` on iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702`.
+  - recording: `.argent/recordings/age-range-1793360000000.mp4` (copy of `/tmp/age-range-take4.mp4`). Opened in the default app.
+  - verified: H.264, 1206 by 2622 pixels, 4.010000 seconds. Device screen only, no bezel or title bar. Frames at 0.2 s and 0.7 s differ on 98.9% of pixels, so the first movement starts before 1 second (home to app-launch animation).
+  - blocker: `requestAgeRangeAsync` fails on this simulator with `ERR_AGE_RANGE_NOT_AVAILABLE` ("The Age Range service is not available", needs iCloud sign-in per `expo-age-range` iOS module). The sheet never appears, so the clip shows launch to black and not the age sheet. Cold launch takes 45-90 s wall under current machine load, so the Age Gate screen falls outside the motion window. Needs maintainer decision: physical-device exception, iCloud-signed simulator attempt, or keep blocked like Linear Sensors.
 
-- [ ] **Bonjour handwriting and shimmer**
+- [x] **Bonjour handwriting and shimmer**
 
   - source: https://github.com/kitten/expo-55-demos/blob/af5bf702a3c5397df02f0aad9f01e6808a0d3418/apps/bonjour/src/app/index.tsx
-  - video: none, must record
-  - status: not-started
+  - video: published
+  - status: published
+  - catalogue: `01M6GAT4E225RYZG4PHJ374B2N`
+  - commit: `c371a9e`
+  - measure commit: `ede603b`
+  - caption: `Bonjour handwriting and shimmer`. Category Misc. Contributor Phil Pluckthun (`_philpl`, GitHub `kitten`).
+  - permission: the maintainer approved the full workflow in the request message (upload, catalogue addition, deploy, verify). Ticket 12 stays open.
+  - build: passed. Incremental Release arm64 simulator build with `IPHONEOS_DEPLOYMENT_TARGET=16.4`, `SWIFT_VERSION=5.0`, `SWIFT_STRICT_CONCURRENCY=minimal`, `SWIFT_APPROACHABLE_CONCURRENCY=NO`. iOS 27 scene patch in gitignored native files. No tracked source change (Oct 31 full build `BUILD SUCCEEDED`, same flags). Rebuild `BUILD SUCCEEDED`.
+  - environment: `com.kitten.expo-55-bonjour` on iPhone 18 Pro simulator, iOS 27.0, from commit `af5bf702`. Age-range app terminated first so no back-button chrome.
+  - local take: `/tmp/bj-take.mp4`. H.264, 1206 by 2622 pixels, 16.195000 seconds. No bezel, title bar or touch markers. Starts on home, launches the app, traces "bonjour", ends on the full word with shimmer.
+  - trimmed take: `/tmp/bj-trim.mp4` keeps 3.5 seconds onward (12.729827 seconds). Staging Demo `demo/misc/bonjour_handwriting_and_shimmer_phil_pluckthun.mp4` (207,362 bytes) comes from the trimmed take via `scripts/compress-demo.sh`.
+  - frame check: device screen only. Frames at 0.2 s and 0.7 s of the raw take differ on 98.9% of pixels (home to launch animation, before 1 second). The staging 2-second Poster frame shows the nearly complete trace.
+  - staging probe: H.264, 1206 by 2622 pixels, yuv420p, 12.729827 seconds. Poster AVIF 10,232 bytes.
+  - prior take: `/Users/mrp/.cache/rnui-tmp/bonjour-handwriting-shimmer.mp4` (Oct 31, 11 s, same geometry) was not used. This is a fresh take from the verified build.
+  - recording: `.argent/recordings/bonjour-handwriting-1793360000000.mp4` (copy of the raw take). Opened in the default app.
+  - asset publish: `pnpm assets:publish bonjour_handwriting_and_shimmer` reported `2 published (0.2 MB), 0 already published, 0 failed`. Both CDN objects answer 200 and are byte-identical to Staging (`cmp`).
+  - measure: `pnpm assets:measure` reported `1 measured, 380 already recorded, 0 failed`. Values: `durationMs: 12730`, `aspect: 0.46`, `hue: 336`.
+  - counts: 381 Recordings, Misc 233, Phil Pluckthun 8.
+  - final checks: `pnpm check-types` passed. Targeted tests `tests/recording-counts.test.ts` + `tests/data-integrity.test.ts` passed (316 cases). Full unit run excluding the stale `.agent-duel` worktree passed 804 tests in 49 files; the 108 failures without that exclusion are all stale copies under `.agent-duel/worktrees/`, as are the full-lint errors. ESLint and Prettier clean on the changed files.
+  - deploy: `npx vercel@65.8.0 --prod --yes` from a clean `git archive` export of the measure commit with the repo `.vercel/project.json` (targets `rnui-dev`). Deployment id `dpl_GCFVGYnDsoGUVALrtDZuzMFweHXx`, status Ready, target production, aliased to `https://www.rnui.dev`. (An export without the project link created a separate `deploy-bonjour` project by mistake; it does not affect production.)
+  - live: https://www.rnui.dev/recording/01M6GAT4E225RYZG4PHJ374B2N returns 200 with the caption, Contributor and pinned source link. Home shows `Search 381 recordings` and includes the entry. CDN Demo and Poster return 200, decode fully, and match Staging bytes. `check:videos:production` reports all 381 Demos decode as H.264 and all 381 Posters are reachable, every object immutable for a year. No browser click-play run (no Playwright browsers installed); decode plus metadata is the playback evidence.
+  - live checks: route 200, caption `Bonjour handwriting and shimmer`, Contributor Phil Pluckthun, source contains `af5bf702` and `apps/bonjour/src/app/index.tsx`. No page errors observed (static fetch; no browser run).
 
 - [ ] **Split-view mail navigation**
 

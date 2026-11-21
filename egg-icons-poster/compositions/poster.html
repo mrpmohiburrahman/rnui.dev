@@ -1,0 +1,100 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .layer {
+      position: absolute;
+      object-fit: fill;
+    }
+    /* Any photo dropped into the face layer gets the same soft oval crop. */
+    #face {
+      -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 60%, rgba(0, 0, 0, 0) 76%);
+      mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 60%, rgba(0, 0, 0, 0) 76%);
+    }
+  </style>
+  <div id="root" data-composition-id="poster" data-width="1920" data-height="1080" data-no-timeline>
+      <img id="background" class="clip layer" src="assets/background.png"
+        alt="Kitchen background (rebuilt plate)"
+        data-start="0" data-duration="5" data-track-index="0"
+        style="left: 0.0px; top: 0.0px; width: 1920.0px; height: 1080.0px; z-index: 1;" />
+      <img id="person" class="clip layer" src="assets/person.png"
+        alt="Person: body, hands, eggs (face removed)"
+        data-start="0" data-duration="5" data-track-index="1"
+        style="left: 0.0px; top: 0.0px; width: 1920.0px; height: 1080.0px; z-index: 2;" />
+      <img id="face" class="clip layer" src="assets/face.png" data-var-src="face-src"
+        alt="FACE - swap this layer with your own photo"
+        data-start="0" data-duration="5" data-track-index="2"
+        style="left: 646.96px; top: 0.0px; width: 646.96px; height: 743.48px; z-index: 3;" />
+      <img id="pan" class="clip layer" src="assets/pan.png"
+        alt="Frying pan and handle"
+        data-start="0" data-duration="5" data-track-index="3"
+        style="left: 307.83px; top: 881.74px; width: 1612.17px; height: 198.26px; z-index: 4;" />
+      <img id="icon-eq" class="clip layer" src="assets/icon-eq.png"
+        alt="App icon: audio equalizer card"
+        data-start="0" data-duration="5" data-track-index="4"
+        style="left: 704.35px; top: 448.7px; width: 114.78px; height: 195.65px; z-index: 5;" />
+      <img id="icon-remote" class="clip layer" src="assets/icon-remote.png"
+        alt="App icon: dark remote strip"
+        data-start="0" data-duration="5" data-track-index="5"
+        style="left: 1147.83px; top: 383.48px; width: 86.09px; height: 180.0px; z-index: 6;" />
+      <img id="icon-wave-magenta" class="clip layer" src="assets/icon-wave-magenta.png"
+        alt="App icon: magenta waveform card"
+        data-start="0" data-duration="5" data-track-index="6"
+        style="left: 602.61px; top: 443.48px; width: 151.3px; height: 253.04px; z-index: 7;" />
+      <img id="icon-wave-teal" class="clip layer" src="assets/icon-wave-teal.png"
+        alt="App icon: teal waveform card"
+        data-start="0" data-duration="5" data-track-index="7"
+        style="left: 1095.65px; top: 409.57px; width: 224.35px; height: 331.3px; z-index: 8;" />
+      <img id="icon-wave-blue" class="clip layer" src="assets/icon-wave-blue.png"
+        alt="App icon: blue waveform card"
+        data-start="0" data-duration="5" data-track-index="8"
+        style="left: 769.57px; top: 633.91px; width: 122.61px; height: 143.48px; z-index: 9;" />
+      <img id="icon-trim" class="clip layer" src="assets/icon-trim.png"
+        alt="App icon: yellow trim marker"
+        data-start="0" data-duration="5" data-track-index="9"
+        style="left: 1012.17px; top: 683.48px; width: 86.09px; height: 80.87px; z-index: 10;" />
+      <img id="icon-symbol" class="clip layer" src="assets/icon-symbol.png"
+        alt="App icon: magenta symbol"
+        data-start="0" data-duration="5" data-track-index="10"
+        style="left: 701.74px; top: 704.35px; width: 75.65px; height: 88.7px; z-index: 11;" />
+      <img id="icon-ruler" class="clip layer" src="assets/icon-ruler.png"
+        alt="App icon: timeline ruler"
+        data-start="0" data-duration="5" data-track-index="11"
+        style="left: 618.26px; top: 735.65px; width: 219.13px; height: 109.57px; z-index: 12;" />
+      <img id="icon-fx" class="clip layer" src="assets/icon-fx.png"
+        alt="App icon: fx script"
+        data-start="0" data-duration="5" data-track-index="12"
+        style="left: 873.91px; top: 735.65px; width: 83.48px; height: 96.52px; z-index: 13;" />
+      <img id="icon-wheel" class="clip layer" src="assets/icon-wheel.png"
+        alt="App icon: color wheel card"
+        data-start="0" data-duration="5" data-track-index="13"
+        style="left: 1053.91px; top: 722.61px; width: 180.0px; height: 146.09px; z-index: 14;" />
+      <img id="icon-capcut" class="clip layer" src="assets/icon-capcut.png"
+        alt="App icon: CapCut card"
+        data-start="0" data-duration="5" data-track-index="14"
+        style="left: 550.43px; top: 808.7px; width: 240.0px; height: 226.96px; z-index: 15;" />
+      <img id="icon-blobs" class="clip layer" src="assets/icon-blobs.png"
+        alt="App icon: color blobs card"
+        data-start="0" data-duration="5" data-track-index="15"
+        style="left: 800.87px; top: 782.61px; width: 286.96px; height: 242.61px; z-index: 16;" />
+      <img id="icon-photo" class="clip layer" src="assets/icon-photo.png"
+        alt="App icon: photo diamond"
+        data-start="0" data-duration="5" data-track-index="16"
+        style="left: 735.65px; top: 829.57px; width: 106.96px; height: 143.48px; z-index: 17;" />
+      <img id="icon-pr" class="clip layer" src="assets/icon-pr.png"
+        alt="App icon: Premiere Pro card"
+        data-start="0" data-duration="5" data-track-index="17"
+        style="left: 1106.09px; top: 790.43px; width: 245.22px; height: 250.43px; z-index: 18;" />
+      <img id="icon-mic" class="clip layer" src="assets/icon-mic.png"
+        alt="App icon: microphone"
+        data-start="0" data-duration="5" data-track-index="18"
+        style="left: 1053.91px; top: 866.09px; width: 86.09px; height: 106.96px; z-index: 19;" />
+      <img id="icon-sliders" class="clip layer" src="assets/icon-sliders.png"
+        alt="App icon: temperature sliders card"
+        data-start="0" data-duration="5" data-track-index="19"
+        style="left: 727.83px; top: 944.35px; width: 349.57px; height: 106.96px; z-index: 20;" />
+  </div>
+</template>
