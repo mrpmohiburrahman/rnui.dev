@@ -87,13 +87,15 @@ __data__
 # `.local.` infix is the marker — name anything carrying a real address that way.
 .scratch/notify-and-preview/research/*.local.*
 
-# A Submission fetched with the bare `pnpm submissions:open <key>` lands in the
-# working directory — which for the maintainer is the repo root, and this repo is
-# PUBLIC. The bucket is private precisely so unreviewed work is not; an accidental
-# `git add -A` after a fetch would undo that, so root-level mp4s never stage.
-# Nothing legitimate lives here: Demos are served from cdn.rnui.dev, and the repo
-# tracks no root-level mp4 (checked 2026-09-25).
-/*.mp4
+# Cloudflare R2 stores video assets. Do not commit video files.
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+
+# HyperFrames generates state, previews, checks, and snapshots in this directory.
+**/.hyperframes/
 
 # Wrangler's local state. `wrangler d1 migrations list` creates a local miniflare
 # database even when you only wanted to read the pending list, and the .sqlite
