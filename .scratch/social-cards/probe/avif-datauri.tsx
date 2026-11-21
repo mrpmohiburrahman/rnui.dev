@@ -7,6 +7,7 @@
 import { readFileSync } from "node:fs"
 import { createElement as h } from "react"
 import { ImageResponse } from "next/og"
+import sharp from "sharp"
 
 function font(name: string, weight: number) {
   const d = readFileSync(new URL(`./fonts/${name}-${weight}.ttf`, import.meta.url))
@@ -32,7 +33,6 @@ async function tryOne(label: string, bytes: Buffer, mime: string) {
 }
 
 async function main() {
-  const sharp = require("sharp")
   const avif = readFileSync(new URL("../../../public/thumbnails/accordions/accordion_william_candillon.avif", import.meta.url).pathname)
   await tryOne("AVIF as data URI", avif, "image/avif")
   await tryOne("JPEG as data URI", await sharp(avif).jpeg({ quality: 82 }).toBuffer(), "image/jpeg")

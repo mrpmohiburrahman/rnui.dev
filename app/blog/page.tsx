@@ -1,30 +1,32 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
-import Link from "next/link"
+
+import { NOTES } from "@/data/notes"
+
+import { FoldIndex, FoldList } from "@/components/blog/fold-index"
 
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Writing about the React Native stack and the tools used on rnui.dev.",
+    "Notes from the rnui.dev maintainer on React Native tools and the apps we build.",
 }
 
-export default function BlogIndexPage() {
+export default function BlogPage() {
   return (
-    <div className="mx-auto max-w-[720px] pb-28">
-      <h1 className="text-hero text-t1">Blog</h1>
-      <article className="mt-10 border-t border-line pt-6">
-        <p className="font-mono text-[11px] text-t3">2026-11-06</p>
-        <h2 className="mt-3 text-section text-t1">
-          <Link
-            href="/blog/react-native-stack-2026"
-            className="underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-acc focus-visible:outline-offset-4"
-          >
-            The React Native stack I start with in 2026
-          </Link>
-        </h2>
-        <p className="mt-3 max-w-[620px] text-sm leading-6 text-t2">
-          Nine areas for a new production app. Each pick names its limit.
-        </p>
-      </article>
-    </div>
+    <main className="mx-auto w-full max-w-[760px] px-[22px] pb-[120px] pt-[36px]">
+      <p className="font-mono text-label text-acc">Blog</p>
+      <h1 className="mt-[8px] text-detail font-semibold tracking-[-0.02em] text-t1">
+        Notes
+      </h1>
+      <p className="mt-[8px] max-w-[58ch] text-[15px] leading-[1.5] text-t2">
+        Stack picks, routing, state, and the services that ship an app.
+      </p>
+      <p className="mt-[10px] font-mono text-[10px] uppercase tracking-[0.12em] text-t3">
+        Notes from the maintainer
+      </p>
+      <Suspense fallback={<FoldList notes={NOTES} />}>
+        <FoldIndex notes={NOTES} />
+      </Suspense>
+    </main>
   )
 }

@@ -18,11 +18,13 @@ import { RECORDINGS_PER_CONTRIBUTOR } from "@/data/recording"
 
 import { getCdnUrl } from "@/lib/cdn"
 
-import { getRecordings, getTopViewCount } from "../../actions/get-recordings"
-import { RecordingBody } from "./recording-body"
+import { SectionLinks } from "@/components/nav/section-links"
 
-// The page's counts refresh on the same clock as the grid's.
-export const revalidate = 300
+import {
+  getStaticRecordings,
+  getStaticTopViewCount,
+} from "../../actions/get-recordings"
+import { RecordingBody } from "./recording-body"
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -69,8 +71,8 @@ export default async function RecordingPage(props: Params) {
   // comment above claims and, calling getRecordingsWithCounts() directly, did
   // not do.
   const [withCounts, topViewCount] = await Promise.all([
-    getRecordings(),
-    getTopViewCount(),
+    getStaticRecordings(),
+    getStaticTopViewCount(),
   ])
   const current = withCounts.find((r) => r.id === recording.id) ?? {
     ...recording,
@@ -115,6 +117,11 @@ export default async function RecordingPage(props: Params) {
         >
           rnui<span className="text-acc">.dev</span>
         </Link>
+        <SectionLinks
+          active="catalogue"
+          as="div"
+          catalogueClassName="hidden md:inline-block"
+        />
         <Link
           href="/"
           className="whitespace-nowrap text-[12.5px] text-acc underline underline-offset-3"
